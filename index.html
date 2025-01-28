@@ -1,61 +1,79 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargando Minecraft Bedrock</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #000000; /* Fondo negro */
-            color: white;
-            text-align: center;
-        }
-        .loader-container {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .loader {
-            border: 16px solid #f3f3f3;
-            border-top: 16px solid #4CAF50;
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .percentage {
-            font-size: 24px;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carga de Minecraft Bedrock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: white;
+    }
+    .loading-container {
+      text-align: center;
+    }
+    .loading-text {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #555;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 20px 0;
+      position: relative;
+    }
+    .progress-bar-inner {
+      height: 30px;
+      width: 0;
+      background-color: #00cc00;
+      border-radius: 5px;
+      text-align: center;
+      line-height: 30px;
+      color: white;
+      font-weight: bold;
+      transition: width 0.1s;
+    }
+    .loading-message {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="loader-container">
-        <div class="loader"></div>
-        <div class="percentage" id="percentage">Cargando 0%</div>
-        <div>Minecraft Bedrock</div>
+  <div class="loading-container">
+    <div class="loading-text">Minecraft Bedrock</div>
+    <div class="progress-bar">
+      <div class="progress-bar-inner" id="progress-bar-inner">0%</</div>
     </div>
-    <script>
-        let percentage = 0;
-        const interval = setInterval(() => {
-            percentage++;
-            document.getElementById('percentage').innerText = `Cargando ${percentage}%`;
-            if (percentage >= 100) {
-                clearInterval(interval);
-                window.location.href = 'Inicio';
-            }
-        }, 50);
-    </script>
+    <div class="loading-message" id="loading-message">Cargando...</div>
+  </div>
+
+  <script>
+    let progress = 0;
+    const progressBarInner = document.getElementById('progress-bar-inner');
+    const loadingMessage = document.getElementById('loading-message');
+
+    const interval = setInterval(() => {
+      if (progress < 100) {
+        progress++;
+        progressBarInner.style.width = progress + '%';
+        progressBarInner.textContent = progress + '%';
+        loadingMessage.textContent = `Cargando... ${progress}%`;
+      } else {
+        clearInterval(interval);
+        loadingMessage.textContent = '¡Carga completa!';
+        window.location.href = 'inicio'; // Cambia a la URL de destino deseada
+      }
+    }, 100);
+  </script>
 </body>
 </html>
