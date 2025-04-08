@@ -1,0 +1,67 @@
+body{ 
+    font-family: Arial, sans-serif;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 100vh;
+      margin: 0;
+      background-color: black;
+}
+
+.title {
+            font-family: 'Press Start 2P', sans-serif;
+            color: #494949e3;
+            text-shadow: 2px 2px 0px #000,4px 4px 5px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #32cd32, #228b22);
+            display: inline-block;
+            padding: 10px;
+            border: 3px solid #000;
+            border-radius: 5px;
+            text-align: center;
+}
+    
+.text{
+    margin: 15px;
+    color: #ffffff;
+    padding: 15px;
+    border: 5px dashed ghostwhite;
+    text-align: center;
+    background-color: #88888886;
+    text-shadow: 2px 2px 0px #000,4px 4px 5px rgba(0, 0, 0, 0.3);
+}
+
+a{
+    text-decoration: none;
+    color: #ffffff;
+    border: solid 2px #ffffff;
+    padding: 5px;
+    background-color: #000000;
+    float: left;
+    margin: 10px;
+    margin-top: -7px;
+    text-shadow: 2px 2px 0px #000,4px 4px 5px rgba(0, 0, 0, 0.3);
+}
+
+a:hover{
+    color: green;
+}
+
+.menu{
+    width: 100%;
+    float: left;
+    height: 70px;
+    background-color: #0985009a;
+    
+#8e7c5f}
+
+ .Marca {
+      text-align: center;
+      color: #5c5c5cd0#525252d0;
+      margin-bottom: 10px;
+      
+.textc {
+    color: blanchedalmond;
+}

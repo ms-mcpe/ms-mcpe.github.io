@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso con estilo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .neontext {
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
+        }
+
+        input[type="password"] {
+            padding: 10px;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            box-shadow: 0 0 10pxpx #00ffff;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: white;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff00ff, 0 0 30px #00ffff, 0 0 45px #ff00ff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #ff00ff, 0 0 50px #00ffff, 0 0 70px #ff00ff;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        a{
+            text-decoration: none;
+            color: #ff2b89;
+        }
+    </style>
+    <script>
+        function verificarClave() {
+            const claveCorrecta = "mcpe2025";
+            const claveIngresada = document.getElementById("clave").value;
+
+            if (claveIngresada === claveCorrecta) {
+                window.location.href = "inicio.html";
+            } else {
+                alert("¡Ups! Clave incorrecta, intenta de nuevo.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <p>solicita la clave de acceso <a href="https://wa.me/qr/FJVT7ZXZEJE6P1">AQUI</a></p>
+    <p class="neontext">Acceso Anticipado</p>
+    <input type="password" id="clave" placeholder="Ingrese su clave">
+    <button onclick="verificarClave()">¡Entrar!</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
+</html>
