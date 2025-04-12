@@ -11,18 +11,35 @@ body{
       background-color: black;
 }
 
-.title {
-            font-family: 'Press Start 2P', sans-serif;
-            color: #494949e3;
-            text-shadow: 2px 2px 0px #000,4px 4px 5px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(45deg, #32cd32, #228b22);
-            display: inline-block;
-            padding: 10px;
-            border: 3px solid #000;
-            border-radius: 5px;
-            text-align: center;
+@keyframes neonPulse {
+    0% {
+        text-shadow: 0 0 8px #00ff00, 0 0 16px #00ffff, 0 0 24px #8B4513;
+        color: #00ff00;
+    }
+    50% {
+        text-shadow: 0 0 12px #00ffff, 0 0 24px #8B4513, 0 0 36px #00ff00;
+        color: #00ffff;
+    }
+    100% {
+        text-shadow: 0 0 8px #8B4513, 0 0 16px #00ff00, 0 0 24px #00ffff;
+        color: #8B4513;
+    }
 }
-    
+
+.title {
+    font-family: 'MinecraftFont', sans-serif; /* Fuente desde un archivo local */
+    font-size: 1.5rem; /* Tamaño más pequeño */
+    color: #ffffff; /* Color base */
+    animation: neonPulse 2s infinite; /* Animación neón */
+    text-align: center;
+    display: inline-block;
+    padding: 10px;
+    border: 2px solid #000;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #111111, #222222); /* Fondo minimalista */
+    box-shadow: 0 0 8px #00ff00, 0 0 16px #00ffff, 0 0 24px #8B4513;
+}
+
 .text{
     margin: 15px;
     color: #ffffff;
@@ -33,7 +50,7 @@ body{
     text-shadow: 2px 2px 0px #000,4px 4px 5px rgba(0, 0, 0, 0.3);
 }
 
-a{
+.button{
     text-decoration: none;
     color: #ffffff;
     border: solid 2px #ffffff;
@@ -45,8 +62,9 @@ a{
     text-shadow: 2px 2px 0px #000,4px 4px 5px rgba(0, 0, 0, 0.3);
 }
 
-a:hover{
-    color: green;
+.link{
+    color: #bfbfff;
+    text-decoration: nome;
 }
 
 .menu{
@@ -59,7 +77,7 @@ a:hover{
 
  .Marca {
       text-align: center;
-      color: #5c5c5cd0#525252d0;
+      color: #ffffff;
       margin-bottom: 10px;
       
 .textc {
