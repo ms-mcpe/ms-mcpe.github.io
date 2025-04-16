@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .action-button {
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .action-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Panel de Administración</h1>
+    <p>Accede a las secciones del sistema utilizando los botones de abajo:</p>
+
+    <div class="button-container">
+        <a href="publicmob.html" class="action-button">Moderación de Publicaciones</a>
+        <a href="chatmob.html" class="action-button">Moderación de Mensajes del Chat</a>
+        <a href="proivido.html" class="action-button">Palabras Prohibidas</a>
+        <a href="user.html" class="action-button">Registro de Usuarios</a>
+    </div>
+</body>
+</html>

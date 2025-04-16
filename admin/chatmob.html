@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderación de Mensajes del Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        ul {
+            padding: 0;
+            list-style: none;
+        }
+        li {
+            background-color: #fff;
+            margin: 10px auto;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 80%;
+            text-align: left;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Moderación de Mensajes del Chat</h1>
+    <ul id="chatMessageList"></ul>
+
+    <script>
+        // Obtener los mensajes del chat desde localStorage o inicializar vacío
+        let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+
+        // Función para renderizar los mensajes en la lista
+        function renderChatMessages() {
+            const chatMessageList = document.getElementById('chatMessageList');
+            chatMessageList.innerHTML = ''; // Limpiar la lista antes de renderizar
+            messages.forEach((msg, index) => {
+                chatMessageList.innerHTML += `
+                    <li>
+                        <strong>${msg.username || "Usuario Anónimo"} (${msg.role || "Sin rol"})</strong><br>
+                        <small>${new Date(msg.timestamp).toLocaleString()}</small><br>
+                        <p>${msg.text}</p>
+                        <button onclick="deleteMessage(${index})">Eliminar</button>
+                    </li>
+                `;
+            });
+        }
+
+        // Función para eliminar un mensaje por índice
+        function deleteMessage(index) {
+            messages.splice(index, 1); // Eliminar el mensaje del array
+            localStorage.setItem('chatMessages', JSON.stringify(messages)); // Actualizar localStorage
+            renderChatMessages(); // Renderizar nuevamente la lista
+        }
+
+        // Renderizar los mensajes al cargar la página
+        document.addEventListener('DOMContentLoaded', renderChatMessages);
+    </script>
+</body>
+</html>
