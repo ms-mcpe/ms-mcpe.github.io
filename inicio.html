@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-image: url('img/fondoi.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1, p {
+            background-color: rgba(0, 0, 0, 0.7); /* Fondo negro translúcido */
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            width: fit-content;
+            margin: 10px auto;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center; /* Alinea los botones en la parte superior */
+            gap: 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Caja negra translúcida */
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            position: fixed; /* Posición fija para que siempre estén arriba */
+            top: 0;
+        }
+        .content {
+            margin-top: 80px; /* Espacio para que el contenido quede debajo de la barra de navegación */
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        
+    .text {
+        border: solid #ffffff; /* Borde blanco */
+        padding: 15px; /* Espaciado interno para mayor legibilidad */
+        margin: 15px auto; /* Espaciado entre los párrafos */
+        text-align: justify; /* Alineación justificada para un aspecto más limpio */
+        background-color: rgba(0, 0, 0, 0.6); /* Fondo negro translúcido para destacar */
+        border-radius: 10px; /* Bordes redondeados */
+        width: 80%; /* Ajusta el ancho para mejor proporción */
+        color: #ffffff; /* Color del texto */
+    }
+    </style>
+</head>
+<body>
+    <!-- Botones en la parte superior -->
+    <div class="button-container">
+        <button onclick="window.location.href='publicacion.html'">Publicaciones</button>
+        <button onclick="window.location.href='chat.html'">Zona de Chats</button>
+        <button onclick="window.location.href='menu.html'">Menú</button> <!-- Dirección añadida -->
+    </div>
+
+    <div class="content">
+        <h1>¡Bienvenido a Bedrocking!</h1>
+        <p>¿Qué es Minecraft?<br><p class="text">Minecraft es un videojuego tipo "sandbox" o mundo abierto que permite a los jugadores explorar, construir y sobrevivir en un mundo generado aleatoriamente compuesto por bloques. Fue creado por Markus Persson, conocido como "Notch", y desarrollado por Mojang Studios. En este juego, los jugadores pueden recolectar recursos, crear estructuras, luchar contra enemigos y desarrollar su creatividad.
+
+El juego tiene diferentes modos de juego, como el **Modo Creativo**, donde los jugadores tienen recursos ilimitados para construir, y el **Modo Supervivencia**, donde deben reunir materiales, protegerse de criaturas y manejar su salud y hambre. Su estilo visual único y la libertad creativa que ofrece lo han convertido en uno de los videojuegos más influyentes y populares de todos los tiempos. ¡Es ideal para jugadores de todas las edades! </p></p>
+        <p>Cómo jugar Minecraft.<br><p class="text">Para jugar Minecraft:
+
+1. **Inicia el juego**: Crea un mundo nuevo y elige el modo que prefieras, como Supervivencia o Creativo.
+2. **Recolecta recursos**: Recoge materiales como madera y piedra para fabricar herramientas y construir.
+3. **Construye un refugio**: Protege a tu personaje de las criaturas que aparecen de noche.
+4. **Explora y progresa**: Busca alimentos, descubre biomas y mejora tus herramientas mientras sobrevives.
+
+Es un juego muy flexible que se adapta a tu estilo. ¿Listo para una aventura creativa?</p></p>
+        <p>Cómo iniciar sesión en Minecraft.<br><p class="text">Para iniciar sesión en Minecraft:
+
+1. Abre el juego en tu dispositivo.
+2. Busca la opción para iniciar sesión en la pantalla principal.
+3. Introduce tu correo electrónico y contraseña de tu cuenta de Mojang o Microsoft.
+4. Confirma los datos y procede.
+
+Una vez hecho, estarás listo para empezar tu aventura en el mundo de bloques. ¡A construir y explorar!</p></p>
+    </div>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { username: "Usuario Anónimo", role: "Usuario" };
+    </script>
+    <p>© By Myst Start - 2025<br>(⁠^⁠^⁠)  V1.4.0</p>
+</body>
+</html>

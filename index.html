@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inicio de Sesión</title>
+    <style>
+        /* Estilo general del cuerpo */
+body {
+    font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-image: url('img/fondop.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+}
+
+/* Contenedor principal */
+.container {
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo negro con transparencia */
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra para destacar */
+    text-align: center;
+}
+
+/* Título principal */
+.container h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+/* Párrafos */
+.container p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 20px;
+}
+
+/* Botones principales */
+.container button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 10px 5px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.container button:hover {
+    background-color: #45a049;
+}
+
+/* Formularios */
+.form-container {
+    display: none; /* Ocultar inicialmente */
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Encabezado de formularios */
+.form-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Entradas de formulario */
+.form-container input[type="text"],
+.form-container input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-container input[type="text"]::placeholder,
+.form-container input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Botones de los formularios */
+.form-container button {
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.form-container button:hover {
+    background-color: #0056b3;
+}
+
+/* Errores */
+.form-container p {
+    font-size: 0.9rem;
+    color: #ff4c4c; /* Color rojo para errores */
+    margin: 10px 0 0;
+}
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido</h1>
+        <p>Inicia sesión con tu cuenta. Si aún no tienes una cuenta, regístrate.</p>
+        <button onclick="showForm('login')">Iniciar Sesión</button>
+        <button onclick="showForm('register')">Registrarse</button>
+        
+        <div id="loginForm" class="form-container">
+            <h2>Iniciar Sesión</h2>
+            <input type="text" id="loginUsername" placeholder="Nombre de Usuario">
+            <input type="password" id="loginPassword" placeholder="Contraseña">
+            <button onclick="login()">Entrar</button>
+            <p id="loginError" style="color: red;"></p>
+        </div>
+        
+        <div id="registerForm" class="form-container">
+            <h2>Registrarse</h2>
+            <input type="text" id="registerUsername" placeholder="Nombre de Usuario">
+            <input type="password" id="registerPassword" placeholder="Contraseña">
+            <input type="password" id="confirmPassword" placeholder="Confirmar Contraseña">
+            <button onclick="register()">Registrar</button>
+            <p id="registerError" style="color: red;"></p>
+        </div>
+    </div>
+
+    <script>
+        // Simulación de base de datos de usuarios con localStorage
+        let users;
+        try {
+            users = JSON.parse(localStorage.getItem('users')) || [];
+            if (!Array.isArray(users)) {
+                users = []; // Asegúrate de que sea un arreglo si algo sale mal
+            }
+        } catch (error) {
+            users = []; // Si hay algún error al leer/parsear, reinicializa como un arreglo vacío
+            console.error("Error al leer usuarios de localStorage:", error);
+        }
+
+        // Mostrar el formulario correspondiente
+        function showForm(formId) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById(formId + 'Form').style.display = 'block';
+        }
+
+        // Función para verificar cuentas registradas en admin.html
+        function validateAdminAccounts(username) {
+            const adminContent = localStorage.getItem('adminContent') || "";
+            return adminContent.includes(`<td>${username}</td>`);
+        }
+
+        // Función de inicio de sesión
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (username === "" || password === "") {
+                document.getElementById('loginError').textContent = "Por favor complete todos los campos.";
+                return;
+            }
+
+            // Verificar si la cuenta existe y está registrada
+            const user = users.find(user => user.username === username && user.password === password);
+            const isInAdmin = validateAdminAccounts(username);
+
+            if (user && isInAdmin) {
+                // Redirigir siempre a inicio.html
+                localStorage.setItem('currentUser', JSON.stringify(user)); // Guardar el usuario actual para uso en inicio.html
+                alert("Inicio de sesión exitoso.");
+                window.location.href = "inicio.html";
+            } else {
+                document.getElementById('loginError').textContent = "Nombre de usuario o contraseña incorrectos, o la cuenta no está registrada en admin.html.";
+            }
+        }
+
+        // Función de registro
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (username === "" || password === "" || confirmPassword === "") {
+                document.getElementById('registerError').textContent = "Por favor complete todos los campos.";
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                document.getElementById('registerError').textContent = "Las contraseñas no coinciden.";
+                return;
+            }
+
+            // Comprobar si la cuenta ya existe
+            const userExists = users.some(user => user.username === username);
+            const isInAdmin = validateAdminAccounts(username);
+
+            if (userExists || isInAdmin) {
+                document.getElementById('registerError').textContent = "El nombre de usuario ya está en uso.";
+                return;
+            }
+
+            // Guardar el nuevo usuario (por defecto como Usuario)
+            const newUser = { username, password, date: new Date().toLocaleString(), role: "Usuario" };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Actualizar contenido en admin.html
+            let adminContent = localStorage.getItem('adminContent') || "";
+            adminContent += `
+                <tr>
+                    <td>${username}</td>
+                    <td>${password}</td>
+                    <td>${newUser.date}</td>
+                </tr>`;
+            localStorage.setItem('adminContent', adminContent);
+
+            alert("Registro exitoso. Ahora puedes iniciar sesión.");
+            showForm('login');
+        }
+    </script>
+</body>
+</html>
