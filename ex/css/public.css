@@ -1,0 +1,73 @@
+/* Archivo public.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #021718;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.post-container {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: #021718;
+    border-radius: 12px; /* Bordes redondeados */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombras suaves */
+    padding: 20px;
+    position: relative; /* Permite posicionar elementos dentro del contenedor */
+}
+
+.post-box {
+    text-align: center;
+    padding: 20px; /* Espacio interno para equilibrio visual */
+    border: 1px solid #ccc; /* Borde interno más sutil */
+    border-radius: 10px; /* Bordes redondeados internos */
+    background: #f9f9ff; /* Fondo claro dentro del box */
+    position: relative; /* Para posicionar elementos como la fecha*/margin: 8px;
+}
+
+.post-title {
+    font-size: 1.5rem;
+    color: #333333;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.post-box img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px; /* Bordes redondeados en la imagen */
+    margin: 15px 0;
+    
+}
+
+.post-description {
+    font-size: 1rem;
+    color: #555555;
+    margin: 15px 0;
+    line-height: 1.5;
+}
+
+.post-description a {
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.post-description a:hover {
+    color: #0056b3;
+}
+
+.post-date {
+    font-size: 0.8rem;
+    color: #888888;
+    margin-top: 10px;
+    text-align: right; /* La fecha se alinea hacia la derecha */
+}
