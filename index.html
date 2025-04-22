@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Privado - Servidor Misterioso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo pixelado global inspirado en Minecraft */
+        body, input, button, h1, p {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* Estilos generales */
+        body {
+            margin: 0;
+            /* Fondo con textura de tierra/piedra sutil */
+            background: #021718; /* Color base tierra */
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAPklEQVQoU2NkIBO0gEEYsIEBBlBqgmhYpD6wBhhq/M+ABlBqAmhYpD5wBhhq/M8ABlBqAiQoBBoGAz8MAwBmXw4fI5P9rwAAAABJRU5ErkJggg=='); /* Textura de 8x8 píxeles simple */
+            background-repeat: repeat;
+            color: #333; /* Texto oscuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            image-rendering: pixelated; /* Asegura que las texturas se vean pixeladas */
+        }
+
+        /* Estilo de la pantalla de carga */
+        #loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white; /* Texto blanco para la pantalla de carga */
+            text-shadow: 2px 2px #000; /* Sombra pixelada */
+        }
+
+        #loading-screen h1 {
+            font-size: 1.5rem; /* Ajuste de tamaño para Press Start 2P */
+            margin-bottom: 20px;
+            color: #FFFF00; /* Amarillo brillante */
+        }
+
+        /* Loader simple estilo pixel */
+        .loader {
+            width: 64px;
+            height: 64px;
+            border: 4px solid #f3f3f3; /* Gris claro pixelado */
+            border-top: 4px solid #00FF00; /* Verde brillante pixelado */
+            border-radius: 0; /* Cuadrado */
+            animation: spin 1s linear infinite;
+            box-shadow: 2px 2px #000; /* Sombra pixelada */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilo del contenedor principal - Un "bloque" de UI */
+        #main-container {
+            display: none;
+            text-align: center;
+            background-color: #C0C0C0; /* Gris piedra/metal */
+            border: 4px solid #404040; /* Borde oscuro */
+            box-shadow: 6px 6px #000; /* Sombra pixelada gruesa */
+            padding: 30px;
+            border-radius: 0; /* Esquinas cuadradas */
+        }
+
+        #main-container h1 {
+            font-size: 1.2rem; /* Ajuste de tamaño */
+            margin-bottom: 20px;
+            color: #000; /* Texto negro */
+            text-shadow: 1px 1px #fff; /* Sombra blanca sutil */
+        }
+
+        /* Estilo del campo de entrada - Parece un hueco en el bloque */
+        #main-container input {
+            padding: 10px;
+            font-size: 1rem; /* Ajuste de tamaño */
+            width: 200px; /* Ancho fijo */
+            margin-bottom: 15px;
+            border: none; /* Sin borde nativo */
+            background-color: #202020; /* Fondo oscuro */
+            color: #00FF00; /* Texto verde brillante */
+            text-align: center;
+            box-shadow: inset 2px 2px #000, inset -2px -2px #505050; /* Sombra interior para dar profundidad */
+            outline: none; /* Sin borde al enfocar */
+        }
+
+        /* Estilo de los botones - Botones pixelados */
+        #main-container button, #get-code {
+            padding: 12px 24px; /* Ajuste de padding */
+            font-size: 1rem; /* Ajuste de tamaño */
+            background-color: #A0A0A0; /* Gris botón base */
+            color: #000; /* Texto negro */
+            border: none; /* Sin borde nativo */
+            border-radius: 0; /* Esquinas cuadradas */
+            cursor: pointer;
+            box-shadow: 3px 3px #000; /* Sombra pixelada */
+            text-shadow: 1px 1px #fff; /* Sombra blanca sutil */
+            transition: all 0.1s ease-in-out; /* Transición sutil */
+            margin-top: 10px; /* Espacio arriba del botón */
+        }
+
+        #main-container button:hover, #get-code:hover {
+            background-color: #B0B0B0; /* Color ligeramente más claro al pasar el ratón */
+            box-shadow: 1px 1px #000; /* Sombra reducida para efecto "presionado" */
+            transform: translate(2px, 2px); /* Mover ligeramente para efecto "presionado" */
+        }
+
+        #main-container button:active, #get-code:active {
+             background-color: #909090; /* Color más oscuro al hacer click */
+             box-shadow: none; /* Eliminar sombra */
+             transform: translate(3px, 3px); /* Mover más para efecto "presionado" */
+        }
+
+
+        /* Estilo específico para el botón "Obtener Código" */
+        #get-code {
+            position: absolute;
+            top: 20px; /* Ajuste de posición */
+            right: 20px; /* Ajuste de posición */
+            background-color: #00A000; /* Verde Minecraft */
+            color: #fff; /* Texto blanco */
+            text-shadow: 1px 1px #000; /* Sombra negra */
+        }
+
+        #get-code:hover {
+             background-color: #00B000; /* Verde más claro */
+        }
+
+         #get-code:active {
+             background-color: #009000; /* Verde más oscuro */
+        }
+
+
+        /* Mensaje de error */
+        #error-message {
+            color: #FF0000; /* Rojo brillante */
+            font-size: 0.8rem; /* Tamaño más pequeño */
+            margin-top: 10px;
+            display: none;
+            text-shadow: 1px 1px #000; /* Sombra pixelada */
+        }
+
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <h1>Cargando Mundo...</h1>
+        <div class="loader"></div>
+    </div>
+
+    <div id="main-container">
+        <h1>Ingresa el Código Secreto</h1>
+        <input type="text" id="access-code" placeholder="Código de acceso">
+        <button onclick="validateCode()">Acceder al Servidor</button>
+        <p id="error-message">¡Código Incorrecto! Intenta de nuevo.</p>
+    </div>
+
+    <button id="get-code" onclick="window.location.href='https://linky.io/es/@MystStart/acceso-privado-a-una-pagina'">Obtener Código</button>
+
+    <script>
+        // Simular una carga inicial del "mundo"
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'block';
+        }, 3000); // Mantenemos 3 segundos para simular la carga
+
+        // Función para validar el código de acceso
+        function validateCode() {
+            const codeInput = document.getElementById('access-code').value.trim().toLowerCase();
+            const errorMessage = document.getElementById('error-message');
+
+            // Código de acceso directo
+            if (codeInput === 'mine123') {
+                // En un entorno real, aquí iría una verificación más segura en el servidor
+                alert('¡Código correcto! Accediendo al Servidor...');
+                // Redirigir a la página principal (simulada como inicio.html)
+                window.location.href = 'inicio.html';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
