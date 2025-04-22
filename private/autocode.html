@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Publicaciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .form-container, .output-container {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .post-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .post-box img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador Automático de Código de Publicaciones</h1>
+
+    <div class="form-container">
+        <form id="postForm">
+            <label for="title">Título:</label>
+            <input type="text" id="title" placeholder="Escribe el título aquí">
+
+            <label for="imageUrl">URL de la Imagen:</label>
+            <input type="text" id="imageUrl" placeholder="Pega la URL de la imagen aquí">
+
+            <label for="description">Descripción:</label>
+            <textarea id="description" rows="5" placeholder="Escribe una descripción aquí"></textarea>
+
+            <label for="downloadUrl">URL de Descarga:</label>
+            <input type="text" id="downloadUrl" placeholder="Pega el enlace de descarga aquí">
+
+            <button type="button" onclick="generatePost()">Generar Publicación</button>
+        </form>
+    </div>
+
+    <div class="output-container">
+        <h2>Código Generado:</h2>
+        <pre id="output"></pre>
+    </div>
+
+    <div class="post-box" id="preview"></div>
+
+    <script>
+        function generatePost() {
+            // Obtener valores del formulario
+            const title = document.getElementById('title').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+            const description = document.getElementById('description').value;
+            const downloadUrl = document.getElementById('downloadUrl').value; // Nueva entrada
+            const date = new Date().toLocaleDateString('es-ES');
+
+            // Función para añadir enlaces personalizados a "Descargar"
+            function addCustomDownloadLinks(text, url) {
+                return text.replace(/Descargar/g, `<a href="${url}" target="_blank">Descargar</a>`);
+            }
+
+            // Procesar la descripción para añadir enlaces personalizados
+            const descriptionWithLinks = addCustomDownloadLinks(description, downloadUrl);
+
+            // Generar HTML dinámico para la publicación
+            const postHtml = `
+<div class="post-box">
+    <h2 class="post-title">${title}</h2>
+    <img src="${imageUrl}" alt="Imagen de la publicación">
+    <p class="post-description">${descriptionWithLinks}</p>
+    <span class="post-date">${date}</span>
+</div>
+            `.trim();
+
+            // Mostrar el código generado
+            document.getElementById('output').textContent = postHtml;
+
+            // Mostrar vista previa
+            const preview = document.getElementById('preview');
+            preview.innerHTML = `
+                <h2>${title}</h2>
+                <img src="${imageUrl}" alt="Imagen de la publicación">
+                <p>${descriptionWithLinks}</p>
+                <span>${date}</span>
+            `;
+        }
+    </script>
+</body>
+</html>
