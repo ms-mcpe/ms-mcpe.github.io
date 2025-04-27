@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BG2296</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #4CAF50;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .text {
+            margin-top: 20px;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+        .welcome {
+            display: none;
+            text-align: center;
+            font-size: 24px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    <script>
+        function showWelcome() {
+            document.querySelector('.loader-container').style.display = 'none';
+            const welcomeText = document.querySelector('.welcome');
+            welcomeText.style.display = 'block';
+
+            // Redirige a otro sitio después de 3 segundos
+            setTimeout(() => {
+                window.location.href = "https://sites.google.com/view/mcpe-bedrocking/inicio"; // Cambia esto al enlace deseado
+            }, 3000);
+        }
+
+        // Simula el tiempo de carga
+        window.onload = () => {
+            setTimeout(showWelcome, 3000); // 3 segundos
+        };
+    </script>
+</head>
+<body>
+    <div class="loader-container">
+        <div class="loader"></div>
+        <div class="text">Cargando...</div>
+    </div>
+    <div class="welcome">¡Bienvenido a Bedrocking!</div>
+</body>
+</html>
