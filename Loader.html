@@ -3,76 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BG2296</title>
+    <title>BR-1.7 - Nueva Versión</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
+            background: linear-gradient(135deg, #2d004d, #001f4d);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: black;
-            font-family: Arial, sans-serif;
-            color: #fff;
-            overflow: hidden;
+            margin: 0;
         }
-        .loader-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            width: 50%;
+            border-radius: 10px;
         }
-        .loader {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #4CAF50;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1.5s linear infinite;
+        .icon {
+            width: 80px; /* Ajusta el tamaño según sea necesario */
+            margin-bottom: 10px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .text {
-            margin-top: 20px;
-            font-size: 20px;
-            text-transform: uppercase;
-        }
-        .welcome {
-            display: none;
-            text-align: center;
+        h1 {
             font-size: 24px;
-            animation: fadeIn 1s ease-in-out;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        p {
+            font-size: 18px;
+        }
+        .countdown {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .btn {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
         }
     </style>
-    <script>
-        function showWelcome() {
-            document.querySelector('.loader-container').style.display = 'none';
-            const welcomeText = document.querySelector('.welcome');
-            welcomeText.style.display = 'block';
-
-            // Redirige a otro sitio después de 3 segundos
-            setTimeout(() => {
-                window.location.href = "https://sites.google.com/view/mcpe-bedrocking/inicio"; // Cambia esto al enlace deseado
-            }, 3000);
-        }
-
-        // Simula el tiempo de carga
-        window.onload = () => {
-            setTimeout(showWelcome, 3000); // 3 segundos
-        };
-    </script>
 </head>
 <body>
-    <div class="loader-container">
-        <div class="loader"></div>
-        <div class="text">Cargando...</div>
+
+    <div class="container">
+        <img src="icon.png" alt="Icono" class="icon">
+        <h1>Nueva Versión BR-1.7</h1>
+        <p>El enlace de descarga estará disponible en:</p>
+        <p class="countdown">10</p>
+        <button class="btn" onclick="window.location.href='https://www.mediafire.com/file/rs24eq7iz6wgej5/Bedrocking-BG-1.7.apk/file'">Descargar Aquí</button>
     </div>
-    <div class="welcome">¡Bienvenido a Bedrocking!</div>
+
+    <script>
+        let tiempo = 10;
+        const countdownElement = document.querySelector(".countdown");
+        const btn = document.querySelector(".btn");
+
+        function startCountdown() {
+            const intervalo = setInterval(() => {
+                tiempo--;
+                countdownElement.textContent = tiempo;
+                if (tiempo <= 0) {
+                    clearInterval(intervalo);
+                    countdownElement.style.display = "none";
+                    btn.style.display = "inline-block";
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+    </script>
+
 </body>
 </html>
