@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando...</title>
+    <style>
+        body {
+            background: linear-gradient(#04003a, #111121, #0c0c0c);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .icon {
+            width: 80px; /* Ajusta el tamaño del icono */
+            margin-bottom: 10px;
+        }
+        .loading-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .progress {
+            font-size: 22px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
 
+    <img src="icon.png/Bedrocking" alt="Icono" class="icon">
+    <p class="loading-text">Cargando...</p>
+    <p class="progress">0%</p>
+
+    <script>
+        let progreso = 0;
+        const progressElement = document.querySelector(".progress");
+        const loadingTextElement = document.querySelector(".loading-text");
+
+        function cargar() {
+            const intervalo = setInterval(() => {
+                progreso++;
+                progressElement.textContent = progreso + "%";
+                if (progreso >= 100) {
+                    clearInterval(intervalo);
+                    loadingTextElement.textContent = "Bienvenido a Bedrocking";
+                    setTimeout(() => {
+                        window.location.href = "https://sites.google.com/view/mcpe-bedrocking/inicio";
+                    }, 1500);
+                }
+            }, 20); // 20 ms * 100 = 2 segundos
+        }
+
+        cargar();
+    </script>
+
+</body>
+</html>
