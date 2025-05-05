@@ -3,80 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BR-1.7 - Nueva Versión</title>
+    <title>Descargar Bedrocking</title>
     <style>
         body {
-            background: linear-gradient(135deg, #2d004d, #001f4d);
-            color: white;
             font-family: Arial, sans-serif;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            width: 50%;
-            border-radius: 10px;
-        }
-        .icon {
-            width: 80px; /* Ajusta el tamaño según sea necesario */
-            margin-bottom: 10px;
-        }
-        h1 {
-            font-size: 24px;
-        }
-        p {
-            font-size: 18px;
-        }
-        .countdown {
-            font-size: 20px;
-            font-weight: bold;
+            padding: 50px;
         }
         .btn {
-            display: none;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            display: inline-block;
+            padding: 15px 30px;
             font-size: 18px;
+            color: #fff;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <img src="icon.png" alt="Icono" class="icon">
-        <h1>Nueva Versión BR-1.7</h1>
-        <p>El enlace de descarga estará disponible en:</p>
-        <p class="countdown">10</p>
-        <button class="btn" onclick="window.location.href='https://www.mediafire.com/file/ykxmajy8ns7kjt1/Bedrocking-BG-1.7.apk/file'">Descargar Aquí</button>
-    </div>
+    <h1>Descargar la última versión de Bedrocking</h1>
+    <p>Haz clic en el botón de abajo para descargar:</p>
+    <a class="btn" href="#" id="downloadBtn">Descargar Bedrocking</a>
 
     <script>
-        let tiempo = 10;
-        const countdownElement = document.querySelector(".countdown");
-        const btn = document.querySelector(".btn");
+        document.addEventListener("DOMContentLoaded", function() {
+            const btn = document.getElementById("downloadBtn");
 
-        function startCountdown() {
-            const intervalo = setInterval(() => {
-                tiempo--;
-                countdownElement.textContent = tiempo;
-                if (tiempo <= 0) {
-                    clearInterval(intervalo);
-                    countdownElement.style.display = "none";
-                    btn.style.display = "inline-block";
-                }
-            }, 1000);
-        }
+            btn.addEventListener("click", function(event) {
+                event.preventDefault(); // Evita la redirección inmediata
+                alert("¡La descarga ha comenzado!"); // Muestra una alerta
 
-        startCountdown();
+                // Redirige después de un pequeño retraso
+                setTimeout(() => {
+                    window.location.href = "https://www.mediafire.com/file/ex4k1qoqaonc0ve/Bedrocking_BG-2.0.apk/file";
+                }, 1000);
+            });
+        });
     </script>
-
 </body>
 </html>
