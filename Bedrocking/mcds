@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft 1.21.72</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Minecraft', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        h1 {
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        button {
+            background-color: #00ff00;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        button:hover {
+            background-color: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minecraft 1.21.72</h1>
+        <button onclick="descargar()">Descargar</button>
+    </div>
+    <script>
+        function descargar() {
+            window.location.href = "https://www.mediafire.com/file/g5bc81rjyk3vexd/mcpe1.72.apk/file";
+        }
+    </script>
+</body>
+</html>
