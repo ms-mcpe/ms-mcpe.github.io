@@ -14,6 +14,7 @@
             --text-light: #f5f5f5; /* Off-white text */
             --text-dark: #121212; /* Very dark text, almost black */
             --accent-glow: rgba(255, 152, 0, 0.5);
+            --link-color-light-orange: #ffb74d; /* Lighter orange for links */
         }
 
         body {
@@ -103,6 +104,18 @@
             color: var(--primary-color);
         }
 
+        /* Style for links inside the body, specifically for <a> tags */
+        a {
+            color: var(--link-color-light-orange); /* Light orange color for links */
+            text-decoration: none; /* Optional: remove underline */
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-color); /* Slightly darker orange on hover */
+            text-decoration: underline; /* Optional: add underline on hover */
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             h1 {
@@ -152,7 +165,7 @@
 
         <div class="section">
             <h2>¿Por qué nace MC Proyect?</h2>
-            <p>Concebida por las mentes innovadoras de Myst Start y SrtaMarcy, MC Proyect surge de la necesidad de revolucionar la interacción en la comunidad de Minecraft Bedrock. Nuestro objetivo es claro: ofrecer un espacio libre de las restricciones de plataformas tradicionales como WhatsApp o Facebook, donde la creatividad y la conexión florezcan sin temor a suspensiones.</p>
+            <p>Concebida por las mentes innovadoras de Myst Start y SrtaMarcy, MC Proyect surge de la necesidad de revolucionar la interacción en la comunidad de <a href="https://www.facebook.com/groups/1793498814512192/?ref=share&mibextid=NSMWBT">Minecraft Bedrock.</a> Nuestro objetivo es claro: ofrecer un espacio libre de las restricciones de plataformas tradicionales como WhatsApp o Facebook, donde la creatividad y la conexión florezcan sin temor a suspensiones.</p>
             <p>Imagina un lugar donde la comunidad Bedrock se une como una verdadera familia, compartiendo aventuras, creaciones y momentos épicos. ¡Eso es MC Proyect!</p>
         </div>
 
@@ -177,6 +190,7 @@
                 <li>🛠️ Soporte y mejora: Envía tus reportes de errores y sugerencias directamente desde la app.</li>
                 <li>🔄 Siempre en evolución: Prepárate para chats, publicaciones y muchas más sorpresas en futuras actualizaciones.</li>
             </ul>
+        </ul>
         </div>
     </div>
 </body>
