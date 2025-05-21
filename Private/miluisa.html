@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Amor Secreto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient to bottom, #ffdde1, #ee9ca7;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #4a4a4a;
+        }
+        .access-container, .letter-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 90%;
+            margin: 20px;
+            box-sizing: border-box;
+        }
+        .access-container {
+            display: block; /* Initially visible */
+        }
+        .letter-container {
+            display: none; /* Initially hidden */
+            text-align: left;
+        }
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #d83a56;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .access-container h2 {
+            font-size: 2em;
+            color: #e57373;
+        }
+        input[type="password"] {
+            padding: 12px 15px;
+            border: 2px solid #ff708d;
+            border-radius: 30px;
+            width: calc(100% - 30px);
+            margin-bottom: 20px;
+            outline: none;
+            font-size: 1.1em;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        input[type="password"]:focus {
+            border-color: #d83a56;
+            box-shadow: 0 0 8px rgba(216, 58, 86, 0.3);
+        }
+        button {
+            padding: 12px 30px;
+            background-color: #ff6666;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        button:hover {
+            background-color: #d83a56;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .letter-container p {
+            font-size: 1.15em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #555;
+            text-align: justify;
+        }
+        .letter-container p:last-of-type {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            text-align: right;
+            color: #d83a56;
+            margin-top: 30px;
+        }
+        strong {
+            color: #d83a56;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="access-container" id="access">
+        <h2>💖 Ingresa la clave para acceder a la carta secreta 💖</h2>
+        <input type="password" id="password" placeholder="Introduce la clave">
+        <button onclick="checkPassword()">Acceder</button>
+    </div>
+
+    <div class="letter-container" id="secretLetter">
+        <h2>para mi Luisa✨</h2>
+        <p>
+          Mi amor hoy quiero dedicarte estas palabras con todo mi corazón porque siento la necesidad de expresarte lo mucho que te amo lo mucho que te admiro y la inmensa gratitud que tengo por cada momento que me has regalado  Eres una persona increíble con una fortaleza que deslumbra y un corazón lleno de luz No sé si alguien te ha dicho lo maravillosa que eres lo incansable que trabajas en tus sueños lo valiente que has sido ante cada obstáculo Pero hoy quiero ser yo quien lo grite al mundo: **te admiro profundamente** Admiro cada paso que das cada esfuerzo que haces cada batalla que enfrentas con determinación incluso cuando nadie está mirando A veces la vida es dura a veces los días son largos y agotadores y no siempre recibes el reconocimiento que mereces Pero quiero que sepas que yo lo veo yo lo reconozco y yo estoy aquí para recordarte lo especial que eres  Gracias por cada sonrisa por cada instante bonito por cada momento que has compartido conmigo Gracias por enseñarme lo que es el verdadero amor por mostrarme la belleza que hay en tu esencia por ser simplemente tú  Eres mi admiración mi inspiración y mi paz No importa cuánto tiempo pase cuántas horas me des al día o a la noche cada segundo contigo es un tesoro No hay momento más hermoso que cuando estoy a tu lado cuando puedo sentir tu amor cuando puedo verte ser quien realmente eres  Te amo con cada parte de mí con todo lo que soy y con todo lo que seré Eres y siempre serás lo mejor de mi vida 💖✨  
+        </p>
+        <p>Siempre seras tu mi niña🥰</p>
+    </div>
+
+    <script>
+        function checkPassword() {
+            var password = document.getElementById("password").value;
+            if (password === "2542025") {  // Puedes cambiar la clave aquí
+                document.getElementById("access").style.display = "none";
+                document.getElementById("secretLetter").style.display = "block";
+                document.body.style.background = 'linear-gradient(to bottom, #ffdde1, #ee9ca7)'; /* Soft gradient for the letter view */
+            } else {
+                alert("Clave incorrecta. Inténtalo de nuevo.");
+            }
+        }
+    </script>
+
+</body>
+</html>
