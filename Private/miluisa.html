@@ -3,128 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>carta privada para mi lu:p</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <title>Un Secreto Brillante</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Playfair Display', serif;
-            background: linear-gradient to bottom, #ffdde1, #ee9ca7;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f0e6fa 0%, #e0e9f8 50%, #dbe4fa 100%); /* Soft, shimmering base */
             text-align: center;
-            padding: 50px;
+            padding: 20px; /* Reduced padding to allow more space for content */
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Align to the top instead of center to allow scroll */
             min-height: 100vh;
-            color: #4a4a4a;
+            color: #333;
+            overflow-y: auto; /* Allow scrolling on the body itself */
+            position: relative;
+            box-sizing: border-box; /* Include padding in element's total width and height */
         }
+
+        /* Starry background effect */
+        .star {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out alternate;
+            opacity: 0;
+            filter: blur(0.5px);
+            z-index: 0;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
         .access-container, .letter-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
-            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
             width: 90%;
-            margin: 20px;
+            margin: 30px auto; /* Centered with margin for spacing */
             box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+            border: 2px solid #a8c0f5;
         }
         .access-container {
-            display: block; /* Initially visible */
+            display: block;
         }
         .letter-container {
-            display: none; /* Initially hidden */
+            display: none;
             text-align: left;
+            border: 2px solid #8caddc;
+            /* Allow scrolling within the letter container if its content is too long */
+            max-height: 80vh; /* Set a maximum height to enable scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            padding-right: 20px; /* Add padding for scrollbar, if present */
         }
+        /* Style for the scrollbar (optional) */
+        .letter-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .letter-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .letter-container::-webkit-scrollbar-thumb {
+            background: #a8c0f5;
+            border-radius: 10px;
+        }
+        .letter-container::-webkit-scrollbar-thumb:hover {
+            background: #8a2be2;
+        }
+
+
         h2 {
-            font-family: 'Dancing Script', cursive;
-            color: #d83a56;
-            font-size: 2.5em;
+            font-family: 'Great Vibes', cursive;
+            color: #6a5acd;
+            font-size: 2.8em;
             margin-bottom: 25px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            letter-spacing: 1px;
         }
         .access-container h2 {
-            font-size: 2em;
-            color: #e57373;
+            font-size: 2.2em;
+            color: #8a2be2;
         }
+
         input[type="password"] {
-            padding: 12px 15px;
-            border: 2px solid #ff708d;
-            border-radius: 30px;
-            width: calc(100% - 30px);
-            margin-bottom: 20px;
+            padding: 12px 18px;
+            border: 2px solid #a8c0f5;
+            border-radius: 25px;
+            width: calc(100% - 36px);
+            margin-bottom: 25px;
             outline: none;
             font-size: 1.1em;
             text-align: center;
-            transition: all 0.3s ease;
+            color: #555;
+            transition: all 0.4s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
         input[type="password"]:focus {
-            border-color: #d83a56;
-            box-shadow: 0 0 8px rgba(216, 58, 86, 0.3);
+            border-color: #8a2be2;
+            box-shadow: 0 0 12px rgba(138, 43, 226, 0.4);
+            background-color: #f9f9ff;
         }
+
         button {
-            padding: 12px 30px;
-            background-color: #ff6666;
+            padding: 14px 35px;
+            background: linear-gradient(45deg, #8a2be2, #a8c0f5);
             color: white;
             border: none;
             border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
+            font-size: 1.2em;
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         button:hover {
-            background-color: #d83a56;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #a8c0f5, #8a2be2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
+
         .letter-container p {
-            font-size: 1.15em;
-            line-height: 1.8;
+            font-size: 1.1em;
+            line-height: 1.7;
             margin-bottom: 20px;
-            color: #555;
+            color: #444;
             text-align: justify;
         }
         .letter-container p:last-of-type {
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.5em;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8em;
             text-align: right;
-            color: #d83a56;
-            margin-top: 30px;
+            color: #6a5acd;
+            margin-top: 35px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
         }
         strong {
-            color: #d83a56;
+            color: #8a2be2;
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
 
     <div class="access-container" id="access">
-        <h2>💖 Ingresa la clave para acceder a la carta secreta 💖</h2>
-        <input type="password" id="password" placeholder="Introduce la clave">
-        <button onclick="checkPassword()">Acceder</button>
+        <h2>✨ Desvela Nuestro Secreto ✨</h2>
+        <input type="password" id="password" placeholder="Introduce el Código Mágico">
+        <button onclick="checkPassword()">Acceder al Mensaje</button>
     </div>
 
     <div class="letter-container" id="secretLetter">
-        <h2>para mi Luisa✨</h2>
+        <h2>🥰para mi Luisa✨</h2>
         <p>
-            Mi amor aunque la distancia nos separe físicamente quiero que sepas que mi corazón siempre está contigo No importa cuántos kilómetros haya entre nosotros ni cuántos días pasen sin vernos porque cada instante cada pensamiento cada latido de mi alma está dedicado a ti  Desde el amanecer hasta el anochecer te llevo en mi mente en mis suspiros en cada deseo de tenerte cerca Hay momentos en los que quisiera acortar esta distancia con un solo pensamiento en los que anhelo sentir el calor de tu piel la dulzura de tus labios y la paz que me brindas con solo existir Pero aunque no pueda tocarte besarte o abrazarte sé que estamos juntos de una manera más profunda más eterna… en el corazón  Tengo la certeza de que el destino nos reunirá que un día podré mirarte a los ojos sin pantallas de por medio que podré sostener tu mano y decirte todo lo que mi alma ha gritado en silencio Hasta que ese día llegue quiero que sepas que te amo con una intensidad que no se apaga que cada noche pienso en ti y cada día sueño con nuestro reencuentro  Eres mi amor eterno mi refugio en la distancia mi razón para seguir adelante Y aunque no pueda estar físicamente a tu lado siempre estaré contigo… en cada pensamiento en cada suspiro en cada latido que pronuncia tu nombre  Te amo hoy y siempre 💖✨  Tuyo en cuerpo alma y corazón  
+          Luisa luz de mi universo Luisa estrella que ilumina mis noches  dueña de mis sueños musa de mis voces  En la vastedad de este mundo incierto  tu amor es mi guía mi faro perfecto  Desde la distancia mi alma te llama  como el mar que anhela su luna temprana  Cada día sin ti es un cielo sin sol  pero cuando llegas todo es resplandor  Cuatro horas contigo son oro brillante  un instante eterno un lazo constante  No importa el tiempo no importa el lugar  contigo todo es magia todo es sin igual  Admiro tu fuerza tu espíritu ardiente  la voluntad firme que nunca es ausente  Tu de fe y de amor  Gracias por cada sonrisa sincera  por ser mi refugio en la vida pasajera  Por cada palabra que calma mis miedos  por cada gesto que alivia mis ruegos  Tu amor es la brisa que besa mi ser  el fuego que arde y me hace renacer  Cada instante contigo es un bello milagro  un sueño dorado un canto sagrado  Cuando estoy sin ti la sombra me envuelve  pero tu luz siempre todo resuelve  Eres el sol que todo ilumina  mi musa mi sueño mi dulce heroína  No hay distancia que pueda apagar  el fuego ardiente de nuestro amar  No hay obstáculo que nos detenga  pues nuestra historia nada la frena  Luisa mi amor mi eterno destino  gracias por ser mi estrella mi camino  En cada latido en cada suspiro  tu nombre es mi vida mi dulce delirio  Hoy te digo sin miedo ni duda  Luisa mi amor eres mi fortuna  Gracias por existir por amar por luchar  eres mi fuerza mi paz mi hogar  Cada segundo contigo es un regalo divino  una melodía eterna en nuestro destino  Tus palabras son versos que en mi alma resuenan  tu risa es la música que mis días llenan  Eres la luz que transforma mi sombra  la esperanza que todo desmorona  Tu amor es la brisa que calma mi ser  la razón por la cual quiero renacer  Desde lejos mi corazón te anhela  como el río busca su cauce su estela  Tu presencia es el hogar donde quiero estar  el refugio perfecto mi dulce amar  Y aunque el tiempo nos ponga barreras  y el camino nos llene de pruebas severas  no hay fuerza que pueda romper nuestro lazo  ni distancia que mengüe este dulce abrazo  Luisa mi amor mi sueño infinito  en cada pensamiento tu nombre repito  Gracias por ser mi luz en la oscuridad  gracias por ser mi verdad y mi realidad  
         </p>
-        <p>te amo siempre lo hare🥰</p>
+        <p>Siempre seras tu mi amor🥰</p>
     </div>
 
     <script>
         function checkPassword() {
             var password = document.getElementById("password").value;
-            if (password === "2542025") {  // Puedes cambiar la clave aquí
+            if (password === "Aishiteru0124") {
                 document.getElementById("access").style.display = "none";
                 document.getElementById("secretLetter").style.display = "block";
-                document.body.style.background = 'linear-gradient(to bottom, #ffdde1, #ee9ca7)'; /* Soft gradient for the letter view */
+                // Remove stars after access if desired, or keep them for atmosphere
+                document.querySelectorAll('.star').forEach(star => star.remove());
             } else {
-                alert("Clave incorrecta. Inténtalo de nuevo.");
+                alert("Clave incorrecta. Inténtalo de nuevo, mi amor.");
             }
         }
+
+        // Generate dynamic stars for the background
+        function createStars() {
+            const numStars = 50; // You can adjust the number of stars
+            for (let i = 0; i < numStars; i++) {
+                let star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = star.style.height = `${Math.random() * 3 + 1}px`; // Size between 1px and 4px
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`; // Stagger animation
+                document.body.appendChild(star);
+            }
+        }
+
+        // Call createStars when the page loads
+        document.addEventListener('DOMContentLoaded', createStars);
     </script>
 
 </body>
+</html></body>
 </html>
