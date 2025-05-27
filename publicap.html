@@ -129,13 +129,12 @@
             background-color: #2ea043;
             transform: translateY(-2px);
         }
-        /* Specific button colors (optional, can be expanded) */
-        .discord-button { background-color: #5865F2; }
+        /* Specific button colors */
+        .discord-button { background-color: #5865F2; } /* Discord blue */
         .discord-button:hover { background-color: #7289DA; }
-        .whatsapp-button { background-color: #25D366; }
+        .whatsapp-button { background-color: #25D366; } /* WhatsApp green */
         .whatsapp-button:hover { background-color: #128C7E; }
-        .telegram-button { background-color: #0088CC; }
-        .telegram-button:hover { background-color: #00B1FF; }
+        /* Removed .telegram-button styles */
 
         #generatedCode {
             background-color: #0d1117;
@@ -182,7 +181,7 @@
         <h2>Publicación de Comunidades</h2>
         <input type="text" id="communityTitleInput" placeholder="Nombre de la Comunidad">
         <textarea id="communityDescriptionInput" placeholder="Descripción de la Comunidad (qué ofrecen, reglas básicas, etc.)"></textarea>
-        <textarea id="communityInviteLinksInput" placeholder="URLs de Invitación (una por línea, ej: Discord, WhatsApp, Telegram...)"></textarea>
+        <textarea id="communityInviteLinksInput" placeholder="URLs de Invitación (una por línea, ej: Discord, WhatsApp...)"></textarea>
         <button class="generate-button" onclick="generateCommunityPost()">Generar Publicación de Comunidad</button>
     </div>
 
@@ -197,8 +196,8 @@
 
         // Helper to determine button text and class based on URL
         function getButtonInfo(url) {
-            let buttonText = "Unirse";
-            let buttonClass = "action-button";
+            let buttonText = "Unirse"; // Default text
+            let buttonClass = "action-button"; // Default class
 
             if (url.includes("discord.gg") || url.includes("discord.com")) {
                 buttonText = "Unirse a Discord";
@@ -206,10 +205,8 @@
             } else if (url.includes("chat.whatsapp.com") || url.includes("wa.me")) {
                 buttonText = "Unirse a WhatsApp";
                 buttonClass += " whatsapp-button";
-            } else if (url.includes("t.me")) {
-                buttonText = "Unirse a Telegram";
-                buttonClass += " telegram-button";
             }
+            // Removed Telegram condition.
             // Add more conditions for other platforms if needed
 
             return { text: buttonText, class: buttonClass };
@@ -253,7 +250,6 @@
             let inviteLinksText = document.getElementById("communityInviteLinksInput").value.trim();
             let date = getCurrentDate();
 
-            // Split the input text by new lines, filter out empty lines, and trim each link
             let inviteUrls = inviteLinksText.split('\n').map(link => link.trim()).filter(link => link.startsWith('http://') || link.startsWith('https://'));
 
             if (title && description && inviteUrls.length > 0) {
@@ -271,7 +267,9 @@
                 postDiv.innerHTML = `
                     <h2 class="post-title">${title}</h2>
                     <p class="post-description">${description}</p>
-                    ${buttonsHtml}
+                    <div class="button-group">
+                        ${buttonsHtml}
+                    </div>
                     <p class="post-date">${date}</p>
                 `;
 
@@ -279,7 +277,9 @@
 <div class="post-container">
     <h2 class="post-title">${title}</h2>
     <p class="post-description">${description}</p>
-${buttonsCode.trim()}
+    <div class="button-group">
+${buttonsCode.trimEnd()}
+    </div>
     <p class="post-date">${date}</p>
 </div>`;
 
