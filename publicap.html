@@ -3,53 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Publicaciones Moderno</title>
+    <title>Generador de Publicaciones Moderno - Comunidades</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0d1117; /* Darker background */
-            color: #e6edf3; /* Lighter text for contrast */
+            background-color: #0d1117;
+            color: #e6edf3;
             font-family: 'Poppins', sans-serif;
             text-align: center;
             padding: 20px;
         }
-        h1 {
-            color: #58a6ff; /* A vibrant blue for headings */
+        h1, h2 {
+            color: #58a6ff;
             margin-bottom: 30px;
         }
-        input, button {
+        .section-container {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 800px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        input, button, textarea {
             padding: 12px 15px;
             margin: 10px;
-            border: 1px solid #30363d; /* Subtle border */
+            border: 1px solid #30363d;
             border-radius: 8px;
-            background-color: #161b22; /* Slightly lighter than body */
-            color: #c9d1d9; /* Light gray for input text */
+            background-color: #161b22;
+            color: #c9d1d9;
             outline: none;
-            transition: all 0.3s ease; /* Smooth transitions */
+            transition: all 0.3s ease;
+            width: calc(100% - 24px); /* Adjust for padding and margin */
+            max-width: 500px; /* Limit input width */
         }
-        input:focus {
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            max-height: 200px;
+        }
+        input:focus, textarea:focus {
             border-color: #58a6ff;
             box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
         }
         button {
             cursor: pointer;
             font-weight: 600;
-            background-color: #238636; /* GitHub green for main action */
+            background-color: #238636;
             border-color: #238636;
             color: #fff;
-            box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4); /* Deeper shadow */
+            box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);
+            width: auto; /* Buttons can be auto width */
+            padding: 12px 30px;
         }
         button:hover {
             background-color: #2ea043;
             border-color: #2ea043;
             box-shadow: 0 6px 20px rgba(46, 160, 67, 0.5);
         }
-        #generateButton {
-            background-color: #58a6ff; /* Bright blue for generate */
+        .generate-button {
+            background-color: #58a6ff;
             border-color: #58a6ff;
             box-shadow: 0 4px 15px rgba(88, 166, 255, 0.4);
         }
-        #generateButton:hover {
+        .generate-button:hover {
             background-color: #79c0ff;
             border-color: #79c0ff;
             box-shadow: 0 6px 20px rgba(121, 192, 255, 0.5);
@@ -59,12 +78,12 @@
             padding: 25px;
             margin: 30px auto;
             width: 90%;
-            max-width: 600px; /* Constrain width for better readability */
+            max-width: 600px;
             border-radius: 12px;
             background-color: #161b22;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* More pronounced shadow */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             position: relative;
-            text-align: left; /* Align text within the post */
+            text-align: left;
         }
         .post-title {
             font-size: 24px;
@@ -72,24 +91,31 @@
             color: #58a6ff;
             font-weight: 600;
         }
+        .post-description {
+            font-size: 16px;
+            color: #c9d1d9;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Preserve line breaks for description */
+        }
         .post-date {
             position: absolute;
             bottom: 15px;
             right: 20px;
             font-size: 13px;
-            color: #8b949e; /* Muted date color */
+            color: #8b949e;
         }
         .post-image {
             width: 100%;
-            height: 250px; /* Fixed height for consistency */
+            height: 250px;
             object-fit: cover;
             border-radius: 8px;
             border: 2px solid #30363d;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
         }
-        .download-button {
-            display: inline-block; /* Use inline-block for better layout */
+        .action-button {
+            display: inline-block;
             padding: 12px 25px;
             background-color: #238636;
             color: white;
@@ -99,9 +125,9 @@
             margin-top: 15px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        .download-button:hover {
+        .action-button:hover {
             background-color: #2ea043;
-            transform: translateY(-2px); /* Slight lift on hover */
+            transform: translateY(-2px);
         }
         #generatedCode {
             background-color: #0d1117;
@@ -111,10 +137,11 @@
             border-radius: 8px;
             text-align: left;
             margin-top: 30px;
-            white-space: pre-wrap; /* Preserves formatting */
-            font-family: 'Fira Code', 'Cascadia Code', monospace; /* Monospaced font for code */
+            white-space: pre-wrap;
+            font-family: 'Fira Code', 'Cascadia Code', monospace;
             font-size: 14px;
             line-height: 1.6;
+            overflow-x: auto; /* Enable horizontal scrolling for long code */
         }
         #copyButton {
             margin: 20px auto;
@@ -128,25 +155,42 @@
             box-shadow: 0 6px 20px rgba(121, 192, 255, 0.5);
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <h1>Generador de Publicaciones Moderno</h1>
-    <input type="text" id="titleInput" placeholder="Título del Mod" autocomplete="off">
-    <input type="url" id="imageInput" placeholder="URL de la Imagen" autocomplete="off">
-    <input type="url" id="downloadInput" placeholder="URL de Descarga" autocomplete="off">
-    <button id="generateButton" onclick="generatePost()">Generar Publicación</button>
+
+    <div class="section-container">
+        <h2>Publicación de Mods</h2>
+        <input type="text" id="modTitleInput" placeholder="Título del Mod">
+        <input type="url" id="modImageInput" placeholder="URL de la Imagen del Mod">
+        <input type="url" id="modDownloadInput" placeholder="URL de Descarga del Mod">
+        <button class="generate-button" onclick="generateModPost()">Generar Publicación de Mod</button>
+    </div>
+
+    <div class="section-container">
+        <h2>Publicación de Comunidades</h2>
+        <input type="text" id="communityTitleInput" placeholder="Nombre de la Comunidad">
+        <textarea id="communityDescriptionInput" placeholder="Descripción de la Comunidad (qué ofrecen, reglas básicas, etc.)"></textarea>
+        <input type="url" id="communityImageInput" placeholder="URL del Logo o Banner de la Comunidad">
+        <input type="url" id="communityInviteInput" placeholder="URL de Invitación (Discord, WhatsApp, etc.)">
+        <button class="generate-button" onclick="generateCommunityPost()">Generar Publicación de Comunidad</button>
+    </div>
 
     <div id="postPreview"></div>
-    <pre id="generatedCode"></pre> <button id="copyButton" onclick="copyCode()">Copiar Código</button>
+    <pre id="generatedCode"></pre>
+    <button id="copyButton" onclick="copyCode()">Copiar Código</button>
 
     <script>
-        function generatePost() {
-            let title = document.getElementById("titleInput").value.trim();
-            let imageUrl = document.getElementById("imageInput").value.trim();
-            let downloadUrl = document.getElementById("downloadInput").value.trim();
-            let date = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }); // Formato DD/MM/YYYY
+        function getCurrentDate() {
+            return new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function generateModPost() {
+            let title = document.getElementById("modTitleInput").value.trim();
+            let imageUrl = document.getElementById("modImageInput").value.trim();
+            let downloadUrl = document.getElementById("modDownloadInput").value.trim();
+            let date = getCurrentDate();
 
             if (title && imageUrl && downloadUrl) {
                 let postDiv = document.createElement("div");
@@ -154,33 +198,67 @@
                 postDiv.innerHTML = `
                     <h2 class="post-title">${title}</h2>
                     <img src="${imageUrl}" alt="Imagen del mod" class="post-image">
-                    <a href="${downloadUrl}" class="download-button" target="_blank" rel="noopener noreferrer">Descargar</a>
+                    <a href="${downloadUrl}" class="action-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
                     <p class="post-date">${date}</p>
                 `;
 
-                // Generate well-formatted HTML code for the output
                 let codeBlock = `
 <div class="post-container">
     <h2 class="post-title">${title}</h2>
     <img src="${imageUrl}" alt="Imagen del mod" class="post-image">
-    <a href="${downloadUrl}" class="download-button" target="_blank" rel="noopener noreferrer">Descargar</a>
+    <a href="${downloadUrl}" class="action-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
     <p class="post-date">${date}</p>
 </div>`;
 
                 document.getElementById("postPreview").innerHTML = "";
                 document.getElementById("postPreview").appendChild(postDiv);
-                document.getElementById("generatedCode").textContent = codeBlock; // Use textContent for <pre>
+                document.getElementById("generatedCode").textContent = codeBlock;
             } else {
-                alert("Por favor, completa todos los campos.");
+                alert("Por favor, completa todos los campos para la publicación de mods.");
+            }
+        }
+
+        function generateCommunityPost() {
+            let title = document.getElementById("communityTitleInput").value.trim();
+            let description = document.getElementById("communityDescriptionInput").value.trim();
+            let imageUrl = document.getElementById("communityImageInput").value.trim();
+            let inviteUrl = document.getElementById("communityInviteInput").value.trim();
+            let date = getCurrentDate();
+
+            if (title && description && imageUrl && inviteUrl) {
+                let postDiv = document.createElement("div");
+                postDiv.className = "post-container";
+                postDiv.innerHTML = `
+                    <h2 class="post-title">${title}</h2>
+                    <img src="${imageUrl}" alt="Banner de la comunidad" class="post-image">
+                    <p class="post-description">${description}</p>
+                    <a href="${inviteUrl}" class="action-button" target="_blank" rel="noopener noreferrer">¡Únete Ahora!</a>
+                    <p class="post-date">${date}</p>
+                `;
+
+                let codeBlock = `
+<div class="post-container">
+    <h2 class="post-title">${title}</h2>
+    <img src="${imageUrl}" alt="Banner de la comunidad" class="post-image">
+    <p class="post-description">${description}</p>
+    <a href="${inviteUrl}" class="action-button" target="_blank" rel="noopener noreferrer">¡Únete Ahora!</a>
+    <p class="post-date">${date}</p>
+</div>`;
+
+                document.getElementById("postPreview").innerHTML = "";
+                document.getElementById("postPreview").appendChild(postDiv);
+                document.getElementById("generatedCode").textContent = codeBlock;
+            } else {
+                alert("Por favor, completa todos los campos para la publicación de comunidades.");
             }
         }
 
         function copyCode() {
-            let codeText = document.getElementById("generatedCode").textContent; // Use textContent for <pre>
+            let codeText = document.getElementById("generatedCode").textContent;
             navigator.clipboard.writeText(codeText).then(() => {
                 alert("Código copiado con éxito!");
             }).catch(err => {
-                alert("Error al copiar el código: ", err);
+                alert("Error al copiar el código: " + err);
             });
         }
     </script>
