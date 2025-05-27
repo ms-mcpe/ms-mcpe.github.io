@@ -105,7 +105,7 @@
             font-size: 13px;
             color: #8b949e;
         }
-        .post-image {
+        .post-image { /* Keep this style for mod posts */
             width: 100%;
             height: 250px;
             object-fit: cover;
@@ -114,7 +114,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
         }
-        .action-button {
+        .action-button { /* General button style */
             display: inline-block;
             padding: 12px 25px;
             background-color: #238636;
@@ -122,13 +122,21 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            margin-top: 15px;
+            margin: 5px; /* Added margin for multiple buttons */
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
         .action-button:hover {
             background-color: #2ea043;
             transform: translateY(-2px);
         }
+        /* Specific button colors (optional, can be expanded) */
+        .discord-button { background-color: #5865F2; }
+        .discord-button:hover { background-color: #7289DA; }
+        .whatsapp-button { background-color: #25D366; }
+        .whatsapp-button:hover { background-color: #128C7E; }
+        .telegram-button { background-color: #0088CC; }
+        .telegram-button:hover { background-color: #00B1FF; }
+
         #generatedCode {
             background-color: #0d1117;
             color: #e6edf3;
@@ -141,7 +149,7 @@
             font-family: 'Fira Code', 'Cascadia Code', monospace;
             font-size: 14px;
             line-height: 1.6;
-            overflow-x: auto; /* Enable horizontal scrolling for long code */
+            overflow-x: auto;
         }
         #copyButton {
             margin: 20px auto;
@@ -160,6 +168,7 @@
 
     <h1>Generador de Publicaciones Moderno</h1>
 
+    ---
     <div class="section-container">
         <h2>Publicación de Mods</h2>
         <input type="text" id="modTitleInput" placeholder="Título del Mod">
@@ -168,12 +177,12 @@
         <button class="generate-button" onclick="generateModPost()">Generar Publicación de Mod</button>
     </div>
 
+    ---
     <div class="section-container">
         <h2>Publicación de Comunidades</h2>
         <input type="text" id="communityTitleInput" placeholder="Nombre de la Comunidad">
         <textarea id="communityDescriptionInput" placeholder="Descripción de la Comunidad (qué ofrecen, reglas básicas, etc.)"></textarea>
-        <input type="url" id="communityImageInput" placeholder="URL del Logo o Banner de la Comunidad">
-        <input type="url" id="communityInviteInput" placeholder="URL de Invitación (Discord, WhatsApp, etc.)">
+        <textarea id="communityInviteLinksInput" placeholder="URLs de Invitación (una por línea, ej: Discord, WhatsApp, Telegram...)"></textarea>
         <button class="generate-button" onclick="generateCommunityPost()">Generar Publicación de Comunidad</button>
     </div>
 
@@ -184,6 +193,26 @@
     <script>
         function getCurrentDate() {
             return new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Helper to determine button text and class based on URL
+        function getButtonInfo(url) {
+            let buttonText = "Unirse";
+            let buttonClass = "action-button";
+
+            if (url.includes("discord.gg") || url.includes("discord.com")) {
+                buttonText = "Unirse a Discord";
+                buttonClass += " discord-button";
+            } else if (url.includes("chat.whatsapp.com") || url.includes("wa.me")) {
+                buttonText = "Unirse a WhatsApp";
+                buttonClass += " whatsapp-button";
+            } else if (url.includes("t.me")) {
+                buttonText = "Unirse a Telegram";
+                buttonClass += " telegram-button";
+            }
+            // Add more conditions for other platforms if needed
+
+            return { text: buttonText, class: buttonClass };
         }
 
         function generateModPost() {
@@ -221,27 +250,36 @@
         function generateCommunityPost() {
             let title = document.getElementById("communityTitleInput").value.trim();
             let description = document.getElementById("communityDescriptionInput").value.trim();
-            let imageUrl = document.getElementById("communityImageInput").value.trim();
-            let inviteUrl = document.getElementById("communityInviteInput").value.trim();
+            let inviteLinksText = document.getElementById("communityInviteLinksInput").value.trim();
             let date = getCurrentDate();
 
-            if (title && description && imageUrl && inviteUrl) {
+            // Split the input text by new lines, filter out empty lines, and trim each link
+            let inviteUrls = inviteLinksText.split('\n').map(link => link.trim()).filter(link => link.startsWith('http://') || link.startsWith('https://'));
+
+            if (title && description && inviteUrls.length > 0) {
+                let buttonsHtml = '';
+                let buttonsCode = '';
+
+                inviteUrls.forEach(url => {
+                    const { text, class: btnClass } = getButtonInfo(url);
+                    buttonsHtml += `<a href="${url}" class="${btnClass}" target="_blank" rel="noopener noreferrer">${text}</a>\n`;
+                    buttonsCode += `    <a href="${url}" class="${btnClass}" target="_blank" rel="noopener noreferrer">${text}</a>\n`;
+                });
+
                 let postDiv = document.createElement("div");
                 postDiv.className = "post-container";
                 postDiv.innerHTML = `
                     <h2 class="post-title">${title}</h2>
-                    <img src="${imageUrl}" alt="Banner de la comunidad" class="post-image">
                     <p class="post-description">${description}</p>
-                    <a href="${inviteUrl}" class="action-button" target="_blank" rel="noopener noreferrer">¡Únete Ahora!</a>
+                    ${buttonsHtml}
                     <p class="post-date">${date}</p>
                 `;
 
                 let codeBlock = `
 <div class="post-container">
     <h2 class="post-title">${title}</h2>
-    <img src="${imageUrl}" alt="Banner de la comunidad" class="post-image">
     <p class="post-description">${description}</p>
-    <a href="${inviteUrl}" class="action-button" target="_blank" rel="noopener noreferrer">¡Únete Ahora!</a>
+${buttonsCode.trim()}
     <p class="post-date">${date}</p>
 </div>`;
 
@@ -249,7 +287,7 @@
                 document.getElementById("postPreview").appendChild(postDiv);
                 document.getElementById("generatedCode").textContent = codeBlock;
             } else {
-                alert("Por favor, completa todos los campos para la publicación de comunidades.");
+                alert("Por favor, completa el título, la descripción y al menos una URL de invitación válida para la publicación de comunidades.");
             }
         }
 
