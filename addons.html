@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zona de Publicaciones - Mods/Addons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos generales del cuerpo de la página */
+        body {
+            background-color: #0d1117; /* Fondo oscuro inspirado en GitHub */
+            color: #e6edf3; /* Color de texto claro */
+            font-family: 'Poppins', sans-serif; /* Fuente moderna y legible */
+            text-align: center;
+            padding: 20px;
+            line-height: 1.6;
+            margin: 0; /* Elimina el margen predeterminado del body */
+        }
+
+        /* Contenedor de la barra de búsqueda */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centra la barra de búsqueda */
+            position: relative;
+            margin-bottom: 40px; /* Espacio debajo de la barra de búsqueda */
+            padding-top: 20px; /* Espacio superior para el contenido */
+        }
+
+        /* Caja de búsqueda */
+        .search-box {
+            width: 0; /* Inicialmente oculto */
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #30363d; /* Borde sutil */
+            border-radius: 25px; /* Bordes redondeados para un look moderno */
+            background-color: #161b22; /* Fondo oscuro del input */
+            color: #c9d1d9; /* Color de texto del input */
+            outline: none; /* Elimina el contorno al enfocar */
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.4); /* Sombra azul al enfocar */
+            transition: width 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Transición suave */
+            opacity: 0; /* Inicialmente transparente */
+            margin-left: 10px; /* Espacio desde el botón de búsqueda */
+            max-width: 300px; /* Ancho máximo para el escritorio */
+        }
+
+        /* Estilo de la caja de búsqueda cuando está activa */
+        .search-box.active {
+            width: 250px; /* Se expande cuando está activa */
+            opacity: 1; /* Se vuelve visible */
+        }
+
+        /* Botón de búsqueda */
+        .search-button {
+            padding: 12px;
+            border-radius: 50%; /* Lo hace circular */
+            background-color: #161b22; /* Fondo oscuro del botón */
+            color: #58a6ff; /* Color azul del icono */
+            border: 1px solid #30363d; /* Borde sutil */
+            cursor: pointer; /* Cambia el cursor al pasar por encima */
+            font-size: 20px;
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.4); /* Sombra azul */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+        }
+
+        .search-button:hover {
+            background-color: #21262d; /* Color ligeramente más claro al pasar el ratón */
+            box-shadow: 0 0 12px rgba(88, 166, 255, 0.6); /* Sombra más pronunciada */
+        }
+
+        /* Título principal de la página */
+        .text-title {
+            font-size: 3em; /* Título grande y prominente */
+            text-align: center;
+            font-weight: 600; /* Peso de la fuente más audaz */
+            text-transform: uppercase; /* Texto en mayúsculas */
+            margin-bottom: 40px; /* Espacio debajo del título */
+            animation: rgbSlow 5.5s infinite alternate; /* Animación de color RGB */
+        }
+
+        /* Animación de color para el título */
+        @keyframes rgbSlow {
+            0% { color: #ff0000; }
+            10% { color: #ff6600; }
+            20% { color: #ffff00; }
+            30% { color: #00ff00; }
+            40% { color: #0000ff; }
+            50% { color: #ff00ff; }
+            60% { color: #04F1F9; }
+            70% { color: #F9045A; }
+            80% { color: #04F96B; }
+            90% { color: #046FF9; }
+            100% { color: #A204F9; }
+        }
+
+        /* Contenedor de la cuadrícula para las publicaciones */
+        .posts-grid {
+            display: grid;
+            /* Grid responsivo: columnas que se autoajustan entre 280px y 1fr */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px; /* Espacio entre publicaciones */
+            max-width: 1200px; /* Ancho máximo para la cuadrícula */
+            margin: 0 auto; /* Centra la cuadrícula en la página */
+            padding-bottom: 50px; /* Espacio en la parte inferior */
+        }
+
+        /* Contenedor de cada publicación individual */
+        .post-container {
+            border: 1px solid #30363d; /* Borde sutil */
+            padding: 20px;
+            border-radius: 12px; /* Esquinas más suaves */
+            background-color: #161b22; /* Fondo oscuro de la publicación */
+            display: flex;
+            flex-direction: column; /* Organiza el contenido en columna */
+            align-items: center; /* Centra los ítems horizontalmente */
+            text-align: center; /* Centra el texto */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); /* Sombra más profunda */
+            position: relative; /* Para posicionar la fecha */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efecto hover suave */
+        }
+
+        /* Efecto hover para las publicaciones */
+        .post-container:hover {
+            transform: translateY(-5px); /* Levanta la publicación */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); /* Sombra más pronunciada al pasar el ratón */
+        }
+
+        /* Título de la publicación */
+        .post-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #58a6ff; /* Color azul */
+            font-weight: 600; /* Más audaz */
+            word-break: break-word; /* Evita que los títulos largos se desborden */
+        }
+
+        /* Imagen de la publicación */
+        .post-image {
+            width: 100%;
+            height: 180px; /* Altura fija para consistencia */
+            object-fit: cover; /* La imagen cubre el área, recortando si es necesario */
+            border-radius: 8px; /* Bordes de imagen suaves */
+            border: 2px solid #30363d; /* Borde alrededor de la imagen */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px; /* Espacio debajo de la imagen */
+        }
+
+        /* Botón de descarga */
+        .download-button {
+            display: block; /* Ocupa todo el ancho disponible */
+            width: calc(100% - 20px); /* Ajusta para el padding horizontal */
+            padding: 12px 15px; /* Más padding para facilitar el clic */
+            background-color: #238636; /* Color verde */
+            color: white;
+            text-decoration: none; /* Sin subrayado */
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: auto; /* Empuja el botón hacia abajo si el contenido superior varía */
+            margin-bottom: 10px; /* Espacio sobre la fecha */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Transición suave */
+            box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4); /* Sombra para el botón */
+        }
+
+        /* Efecto hover para el botón de descarga */
+        .download-button:hover {
+            background-color: #2ea043; /* Verde más claro */
+            transform: translateY(-2px); /* Pequeño levantamiento */
+            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.5); /* Sombra más pronunciada */
+        }
+
+        /* Fecha de la publicación */
+        .post-date {
+            position: absolute; /* Posicionamiento absoluto dentro del contenedor */
+            bottom: 10px; /* 10px desde la parte inferior */
+            right: 15px; /* 15px desde la derecha */
+            font-size: 13px;
+            color: #8b949e; /* Color gris */
+        }
+
+        /* Media Queries para responsividad */
+        @media (max-width: 768px) {
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Columnas más pequeñas en tablets */
+                gap: 20px;
+            }
+            .text-title {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+            }
+            .post-container {
+                padding: 15px;
+            }
+            .post-title {
+                font-size: 20px;
+            }
+            .post-image {
+                height: 160px;
+            }
+            .download-button {
+                padding: 10px 12px;
+                width: calc(100% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-box.active {
+                width: 180px; /* Barra de búsqueda más estrecha en móviles */
+            }
+            .posts-grid {
+                grid-template-columns: 1fr; /* Una sola columna en pantallas muy pequeñas */
+                gap: 20px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .text-title {
+                font-size: 2em;
+                margin-bottom: 20px;
+            }
+            .post-container {
+                margin: 20px auto; /* Centra los contenedores */
+                padding: 15px;
+            }
+            .post-title {
+                font-size: 18px;
+            }
+            .post-image {
+                height: 150px;
+            }
+            .download-button {
+                padding: 10px;
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <button class="search-button" onclick="toggleSearch()">🔍</button>
+        <input type="text" class="search-box" id="searchInput" onkeyup="searchPosts()" placeholder="Buscar...">
+    </div>
+    <div><h1 class="text-title"><--[ Complementos ]--></h1></div>
+
+    <div class="posts-grid" id="postsGrid">
+        </div>
+
+    <script>
+        function toggleSearch() {
+            let searchBox = document.getElementById("searchInput");
+            searchBox.classList.toggle("active");
+            searchBox.focus(); // Enfoca la barra de búsqueda cuando se activa
+        }
+
+        function searchPosts() {
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let posts = document.getElementsByClassName("post-container"); // Obtiene todas las publicaciones
+
+            for (let post of posts) {
+                let title = post.querySelector(".post-title").innerText.toLowerCase(); // Obtiene el título de cada publicación
+                // Divide la entrada de búsqueda en palabras y filtra las vacías
+                let words = input.split(" ").filter(word => word.length > 0);
+
+                // Comprueba si la búsqueda está vacía o si el título incluye alguna de las palabras buscadas
+                let match = words.length === 0 || words.some(word => title.includes(word));
+
+                // Muestra u oculta la publicación según el resultado de la búsqueda
+                post.style.display = match ? "flex" : "none"; // 'flex' porque los posts usan flexbox
+            }
+        }
+    </script>
+
+</body>
+</html>
