@@ -1,130 +1,9 @@
-a<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zona de Publicaciones</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-        .search-container {
-            position: absolute;
-            top: 10px;
-            left: 10px; /* Cambié 'right' por 'left' */
-            display: flex;
-            align-items: center;
-          .search-box {
-            width: 0;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #0077ff;
-            border-radius: 25px;
-            background-color: #1a1a1a;
-            color: #00cfff;
-            outline: none;
-            box-shadow: 0 0 8px #0077ff;
-            transition: width 0.5s ease-in-out, opacity 0.3s ease-in-out;
-            opacity: 0;
-        }
-        .search-box.active {
-            width: 200px;
-            opacity: 1;
-        }
-        .search-button {
-            padding: 12px;
-            border-radius: 80%;
-            background-color: #121212;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            box-shadow: 0 0 8px #121259;
-        }
-        .post-container {
-            border: 3px solid #0077ff;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 10px;
-            background-color: #222;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 0 10px #0077ff;
-            position: relative;
-        }
-        .post-title {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-        .post-image {
-            width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 3px solid #00cfff;
-            box-shadow: 0 0 10px #00cfff;
-        }
-        .download-button {
-            display: block;
-            width: 140px;
-            padding: 8px;
-            background-color: #0044aa;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .post-date {
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 12px;
-            color: #00cfff;
-        }
-.text-title {
-    font-size: 30px;
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
-    animation: rgbSlow 5.5s infinite alternate;
-}
-
-@keyframes rgbSlow {
-    0% { color: #ff0000; }
-    10% { color: #ff6600; }
-    20% { color: #ffff00; }
-    30% { color: #00ff00; }
-    40% { color: #0000ff; }
-    50% { color: #ff00ff; }
-    60% { color: #04F1F9; }
-    70% { color: #F9045A; }
-    80% { color: #04F96B; }
-    90% { color: #046FF9; }
-    100% { color: #A204F9; }
-}
-             .header-image {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-                   .header-container {
-            text-align: center;
-            padding: 10px;
-    </style>
-</head>
-<body>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zona de Publicaciones</title>
+    <title>Addons Marcketplace</title>
     <style>
         body {
             background-color: #121212;
@@ -134,6 +13,7 @@ a<!DOCTYPE html>
         }
 
         .header-container {
+            position: relative;
             text-align: center;
             padding: 10px;
         }
@@ -149,6 +29,7 @@ a<!DOCTYPE html>
             position: absolute;
             top: 10px;
             left: 10px;
+            right: 10px; /* Ubicado en la esquina superior derecha */
             display: flex;
             align-items: center;
         }
@@ -175,7 +56,7 @@ a<!DOCTYPE html>
         .search-button {
             padding: 12px;
             border-radius: 80%;
-            background-color: #121212;
+            background-color: rgba(18, 18, 18, 0.7); /* Fondo semi-transparente */
             color: white;
             border: none;
             cursor: pointer;
@@ -189,6 +70,55 @@ a<!DOCTYPE html>
             font-weight: bold;
             text-transform: uppercase;
             animation: rgbSlow 5.5s infinite alternate;
+        }
+
+        .post-container {
+            border: 3px solid #0077ff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            background-color: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 0 10px #0077ff;
+            position: relative;
+        }
+
+        .post-title {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #00cfff;
+            box-shadow: 0 0 10px #00cfff;
+            animation: rgbSlow 4.5s infinite alternate;
+        }
+
+        .download-button {
+            display: block;
+            width: 140px;
+            padding: 8px;
+            background-color: #0044aa;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .post-date {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 12px;
+            color: #00cfff;
         }
 
         @keyframes rgbSlow {
@@ -210,11 +140,10 @@ a<!DOCTYPE html>
 
     <div class="header-container">
         <img src="portada.jpg" alt="Imagen superior" class="header-image">
-    </div>
-
-    <div class="search-container">
-        <button class="search-button" onclick="toggleSearch()">🔍</button>
-        <input type="text" class="search-box" id="searchInput" placeholder="Buscar...">
+        <div class="search-container">
+            <button class="search-button" onclick="toggleSearch()">🔍</button>
+            <input type="text" class="search-box" id="searchInput" placeholder="Buscar...">
+        </div>
     </div>
 
     <div>
