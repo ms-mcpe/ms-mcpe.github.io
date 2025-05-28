@@ -114,7 +114,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
         }
-        .action-button { /* General button style */
+        .download-button { /* General button style */
             display: inline-block;
             padding: 12px 25px;
             background-color: #238636;
@@ -125,7 +125,7 @@
             margin: 5px; /* Added margin for multiple buttons */
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        .action-button:hover {
+        .download-button:hover {
             background-color: #2ea043;
             transform: translateY(-2px);
         }
@@ -197,7 +197,7 @@
         // Helper to determine button text and class based on URL
         function getButtonInfo(url) {
             let buttonText = "Unirse"; // Default text
-            let buttonClass = "action-button"; // Default class
+            let buttonClass = "download-button"; // Default class
 
             if (url.includes("discord.gg") || url.includes("discord.com")) {
                 buttonText = "Unirse a Discord";
@@ -232,7 +232,7 @@
 <div class="post-container">
     <h2 class="post-title">${title}</h2>
     <img src="${imageUrl}" alt="Imagen del mod" class="post-image">
-    <a href="${downloadUrl}" class="action-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
+    <a href="${downloadUrl}" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
     <p class="post-date">${date}</p>
 </div>`;
 
