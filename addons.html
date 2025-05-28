@@ -135,14 +135,14 @@
             word-break: break-word; /* Evita que los títulos largos se desborden */
         }
 /*imagen de la publicacion*/
-.post-image {
-    width: 100%;
-    height: 180px;
-    object-fit: contain; /* ¡CORTA la imagen para rellenar el espacio! */
-    border-radius: 8px;
-    border: 2px solid #30363d;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin-bottom: 15px;
+    .post-image {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #00cfff;
+            box-shadow: 0 0 10px #00cfff;
+        }
 }
 
         /* Botón de descarga */
