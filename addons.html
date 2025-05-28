@@ -11,12 +11,12 @@
             font-family: Arial, sans-serif;
         }
         .search-container {
+            position: absolute;
+            top: 10px;
+            left: 10px; /* Cambié 'right' por 'left' */
             display: flex;
             align-items: center;
-            position: relative;
-            margin-bottom: 20px;
-        }
-        .search-box {
+          .search-box {
             width: 0;
             padding: 12px;
             font-size: 16px;
@@ -26,7 +26,7 @@
             color: #00cfff;
             outline: none;
             box-shadow: 0 0 8px #0077ff;
-            transition: width 0.5s ease-in-out;
+            transition: width 0.5s ease-in-out, opacity 0.3s ease-in-out;
             opacity: 0;
         }
         .search-box.active {
@@ -107,13 +107,25 @@
     90% { color: #046FF9; }
     100% { color: #A204F9; }
 }
+             .header-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+                   .header-container {
+            text-align: center;
+            padding: 10px;
     </style>
 </head>
 <body>
 
+    <div class="header-container">
+        <img src="portada.jpg" alt="Imagen superior" class="header-image">
+    </div>
+
     <div class="search-container">
         <button class="search-button" onclick="toggleSearch()">🔍</button>
-        <input type="text" class="search-box" id="searchInput" onkeyup="searchPosts()" placeholder="Buscar...">
+        <input type="text" class="search-box" id="searchInput" placeholder="Buscar...">
     </div>
 <div><h1 class="text-title" ><--[ Complementos ]--></--></h1></div>
     <!-- Inicio de publicaciones -->
