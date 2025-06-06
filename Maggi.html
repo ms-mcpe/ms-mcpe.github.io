@@ -6,27 +6,44 @@
     <title>Para Maggie</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
             text-align: center;
             padding: 50px;
         }
         .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
             max-width: 600px;
             margin: auto;
+            backdrop-filter: blur(10px);
         }
         h1 {
-            color: #333;
+            font-size: 32px;
+            color: #ffeb3b;
         }
         p {
-            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
         }
         .hidden {
             display: none;
+        }
+        .button {
+            background: #ffeb3b;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #ffd700;
         }
     </style>
     <script>
@@ -35,22 +52,25 @@
             if (contraseña === "41del2024") {
                 document.getElementById("mensaje").classList.remove("hidden");
             } else {
-                alert("Contraseña incorrecta.");
+                alert("Contraseña incorrecta. Inténtalo de nuevo.");
             }
         }
     </script>
 </head>
-<body onload="verificarContraseña()">
+<body>
     <div class="container">
         <h1>Para Maggie</h1>
+        <button class="button" onclick="verificarContraseña()">Ver mensaje</button>
         <div id="mensaje" class="hidden">
-            <p>Maggie,</p>
-            <p>Eras y siempre serás una persona increíble. Tu grandeza no tiene límites y espero, con todo mi corazón, que alcances cada una de tus metas, que persigas tus sueños sin miedo, con determinación y fuerza.</p>
-            <p>No importa si yo ya no estoy aquí, porque este regalo es para recordarte lo mucho que significaste para mí. Mi felicidad, mis esfuerzos y todo lo que aprendí fueron gracias a ti. Tus abrazos, tus noches conmigo, tu calidez, todo quedó grabado en mi alma.</p>
-            <p>Perderte duele más de lo que puedo expresar, pero si existe otro mundo donde debo seguir adelante con este dolor, prefiero llevarlo en el corazón antes que culparme eternamente.</p>
-            <p>Solo deseo que seas feliz, infinitamente feliz, aunque no sea a mi lado.</p>
-            <p>Siempre te recordaré.</p>
+            <p>Querida Maggie,</p>
+            <p>Desde el primer momento en que nuestras vidas se cruzaron, supe que había encontrado a alguien extraordinario. Tu luz, tu esencia, tu grandeza han sido un regalo invaluable. Espero, desde lo más profundo de mi corazón, que persigas tus sueños con valentía y que nunca dejes de luchar por lo que realmente anhelas.</p>
+            <p>Aunque el destino nos haya llevado por caminos distintos, quiero que sepas que siempre estarás en un rincón especial de mi alma. No importa la distancia ni el tiempo, siempre recordaré cada risa compartida, cada abrazo reconfortante y cada instante que me llenó de felicidad a tu lado.</p>
+            <p>Me duele profundamente perderte, más de lo que las palabras pueden expresar. Pero si en otra vida debo cargar con este dolor, lo haré sin arrepentimientos, porque prefiero sufrir antes que culparme eternamente.</p>
+            <p>Lo único que deseo es que seas inmensamente feliz. Que vivas una vida plena, llena de amor y logros, aunque no sea a mi lado. Porque si tú eres feliz, entonces todo habrá valido la pena.</p>
+            <p>Gracias por haber sido mi refugio, mi alegría, mi inspiración.</p>
+            <p>Por siempre en mi corazón,</p>
+            <p><strong>Myst</strong></p>
         </div>
     </div>
 </body>
-</html> 
+</html>
