@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Maggie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function verificarContraseña() {
+            var contraseña = prompt("Ingresa la contraseña:");
+            if (contraseña === "41del2024") {
+                document.getElementById("mensaje").classList.remove("hidden");
+            } else {
+                alert("Contraseña incorrecta.");
+            }
+        }
+    </script>
+</head>
+<body onload="verificarContraseña()">
+    <div class="container">
+        <h1>Para Maggie</h1>
+        <div id="mensaje" class="hidden">
+            <p>Maggie,</p>
+            <p>Eras y siempre serás una persona increíble. Tu grandeza no tiene límites y espero, con todo mi corazón, que alcances cada una de tus metas, que persigas tus sueños sin miedo, con determinación y fuerza.</p>
+            <p>No importa si yo ya no estoy aquí, porque este regalo es para recordarte lo mucho que significaste para mí. Mi felicidad, mis esfuerzos y todo lo que aprendí fueron gracias a ti. Tus abrazos, tus noches conmigo, tu calidez, todo quedó grabado en mi alma.</p>
+            <p>Perderte duele más de lo que puedo expresar, pero si existe otro mundo donde debo seguir adelante con este dolor, prefiero llevarlo en el corazón antes que culparme eternamente.</p>
+            <p>Solo deseo que seas feliz, infinitamente feliz, aunque no sea a mi lado.</p>
+            <p>Siempre te recordaré.</p>
+        </div>
+    </div>
+</body>
+</html> 
