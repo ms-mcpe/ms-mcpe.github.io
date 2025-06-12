@@ -453,36 +453,45 @@
                
 
     <script>
-        function toggleSearch() {
-            let searchBox = document.getElementById("searchInput");
-            searchBox.classList.toggle("active");
-            searchBox.focus();
+    function toggleSearch() {
+        let searchBox = document.getElementById("searchInput");
+        searchBox.classList.toggle("active");
+        searchBox.focus();
+    }
+
+    function searchPosts() {
+        let input = document.getElementById("searchInput").value.toLowerCase().trim();
+        let posts = document.getElementsByClassName("post-container");
+
+        if (input === "") {
+            // Si el campo está vacío, muestra todas las publicaciones
+            for (let post of posts) {
+                post.style.display = "flex";
+            }
+            return;
         }
 
-        function searchPosts() {
-            let input = document.getElementById("searchInput").value.toLowerCase();
-            let posts = document.getElementsByClassName("post-container");
+        for (let post of posts) {
+            let title = post.querySelector(".post-title").innerText.toLowerCase().trim();
+            let words = input.split(" ").filter(word => word.length >= 2);
+            let match = words.length > 0 && words.every(word => title.includes(word));
 
-            for (let post of posts) {
-                let title = post.querySelector(".post-title").innerText.toLowerCase();
-                let words = input.split(" "); // Divide las palabras de búsqueda
+            post.style.display = match ? "flex" : "none";
+        }
+    }
 
-                let match = words.some(word => title.includes(word)); // Busca coincidencias parciales
+    document.getElementById("searchInput").addEventListener("input", searchPosts);
 
-                post.style.display = match || input === "" ? "flex" : "none";
+    document.addEventListener("DOMContentLoaded", function() {
+        let posts = document.getElementsByClassName("post-container");
+        for (let post of posts) {
+            let imageUrl = post.querySelector(".post-image")?.src;
+            if (!imageUrl || imageUrl.trim() === "") {
+                post.style.display = "none";
             }
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            let posts = document.getElementsByClassName("post-container");
-            for (let post of posts) {
-                let imageUrl = post.querySelector(".post-image").src;
-                if (!imageUrl || imageUrl === "") {
-                    post.style.display = "none"; // Oculta las publicaciones sin imagen válida
-                }
-            }
-        });
-    </script>
+    });
+</script>
 
 </body>
 </html>
