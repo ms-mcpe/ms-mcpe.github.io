@@ -3,154 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Proyect - Red social mcpe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>MC Proyect - Red social MCPE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #ff9800; /* Orange */
-            --secondary-color: #e0e0e0; /* Light Gray */
-            --background-dark: #1a1a1a; /* Darker background */
-            --background-medium: #2a2a2a; /* Medium dark background */
-            --text-light: #f5f5f5; /* Off-white text */
-            --text-dark: #121212; /* Very dark text, almost black */
-            --accent-glow: rgba(255, 152, 0, 0.5);
-            --link-color-light-orange: #ffb74d; /* Lighter orange for links */
+            --primary-pixel: #00FF00; /* Verde pixel */
+            --secondary-pixel: #00FFFF; /* Cian pixel */
+            --tertiary-pixel: #FFFF00; /* Amarillo pixel */
+            --background-deep-dark: #0f0f0f; /* Fondo muy oscuro */
+            --background-dark: #1a1a1a; /* Fondo oscuro */
+            --background-medium: #2a2a2a; /* Fondo medio oscuro */
+            --text-light: #C0C0C0; /* Gris claro para pixel */
+            --text-highlight: #FFFFFF; /* Blanco puro */
+            --button-glow: rgba(0, 255, 0, 0.4); /* Brillo para botones */
+            --section-glow: rgba(0, 255, 255, 0.3); /* Brillo para secciones */
+            --link-glow: rgba(255, 255, 0, 0.4); /* Brillo para enlaces */
+        }
+
+        /* Animación de fondo sutil y eficiente */
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-dark);
+            font-family: 'VT323', monospace; /* Fuente pixel para el cuerpo */
+            background: linear-gradient(90deg, var(--background-deep-dark), var(--background-dark));
+            background-size: 200% 100%; /* Tamaño más simple */
+            animation: backgroundShift 15s linear infinite alternate; /* Animación más simple */
             color: var(--text-light);
             text-align: center;
             padding: 20px;
-            line-height: 1.6;
+            line-height: 1.5; /* Ajustado para la fuente pixel */
             margin: 0;
             overflow-x: hidden;
+            image-rendering: pixelated; /* Intenta forzar el pixelado en todo lo posible */
+            -webkit-font-smoothing: none; /* Desactiva el suavizado de fuentes en WebKit */
+            -moz-osx-font-smoothing: grayscale; /* Desactiva el suavizado en Firefox */
         }
 
         h1, h2 {
-            font-family: 'Press Start 2P', cursive;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px var(--accent-glow);
+            font-family: 'Press Start 2P', cursive; /* Títulos pixelados */
+            color: var(--primary-pixel);
+            margin-bottom: 25px;
+            text-shadow: 0 0 8px var(--primary-pixel), 0 0 15px var(--secondary-pixel); /* Sombras más sutiles */
+            letter-spacing: 1px; /* Más compacto */
+            line-height: 1.2;
+        }
+        
+        h1 {
+            font-size: 3em; /* Ajustado para pixel */
+            margin-top: 40px;
+        }
+
+        h2 {
+            font-size: 2em; /* Ajustado para pixel */
+            padding-bottom: 10px;
+            border-bottom: 2px dashed rgba(0, 255, 0, 0.2); /* Borde punteado */
+            text-shadow: 0 0 8px var(--secondary-pixel);
         }
 
         p {
-            margin-bottom: 15px;
-            font-size: 1.1em;
+            margin-bottom: 20px;
+            font-size: 1.1em; /* Ajustado para pixel */
+            color: var(--text-light);
+            font-weight: normal; /* Asegura que no haya negritas que rompan el pixel */
         }
 
         .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 15px;
+            max-width: 900px; /* Un poco más pequeño */
+            margin: 50px auto;
+            padding: 0 20px;
         }
 
         .button-download {
             display: inline-block;
-            background-color: var(--primary-color);
-            color: var(--text-dark);
-            padding: 15px 30px;
+            background: linear-gradient(45deg, var(--primary-pixel), var(--secondary-pixel));
+            color: var(--background-dark); /* Texto oscuro para contraste */
+            padding: 16px 35px; /* Más compacto */
             margin: 25px 0;
             text-decoration: none;
-            font-size: 20px;
-            border-radius: 8px;
+            font-size: 22px; /* Ajustado */
+            border-radius: 5px; /* Bordes más cuadrados */
             font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
-            border: none;
+            transition: all 0.2s ease-out; /* Transición más rápida */
+            box-shadow: 0 0 15px var(--button-glow); /* Sombra más sutil */
+            border: 2px solid var(--primary-pixel); /* Borde definido */
             cursor: pointer;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .button-download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1); /* Efecto más sutil */
+            transition: all 0.3s ease; /* Transición más rápida */
+            z-index: -1;
+            transform: skewX(-20deg);
+        }
+
+        .button-download:hover::before {
+            left: 100%;
         }
 
         .button-download:hover {
-            background-color: #ffb74d; /* Lighter orange */
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.6);
+            transform: translateY(-3px); /* Menos movimiento */
+            box-shadow: 0 0 25px var(--primary-pixel), 0 0 40px var(--secondary-pixel);
+            background: linear-gradient(45deg, var(--secondary-pixel), var(--primary-pixel));
+            border-color: var(--secondary-pixel);
         }
 
         .section {
-            margin: 40px 0;
-            padding: 30px;
+            margin: 40px 0; /* Menos margen */
+            padding: 30px; /* Menos padding */
             background: var(--background-medium);
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 152, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px; /* Bordes más cuadrados */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Sombra más estándar */
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transiciones más rápidas */
+            border: 2px solid var(--primary-pixel); /* Borde sólido */
         }
 
+        /* Eliminamos el pseudo-elemento ::before animado en las secciones para rendimiento */
+        /* Si se desea un borde brillante, se puede aplicar directamente con box-shadow multiple o una imagen de borde más simple */
+        
         .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+            transform: translateY(-5px); /* Menos movimiento */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7), 0 0 25px var(--section-glow); /* Sombra de brillo al hover */
         }
 
         ul {
             list-style: none;
             padding: 0;
             margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Columnas más pequeñas */
+            gap: 15px; /* Menos espacio entre items */
         }
 
         ul li {
-            padding: 10px 0;
-            font-size: 1.15em;
-            border-bottom: 1px dashed rgba(255, 152, 0, 0.2);
-            transition: color 0.2s ease;
+            background-color: rgba(0, 0, 0, 0.3); /* Fondo semitransparente */
+            padding: 12px 15px; /* Menos padding */
+            border-radius: 5px; /* Bordes más cuadrados */
+            font-size: 1em; /* Ajustado para pixel */
+            color: var(--text-light);
+            border-left: 3px solid var(--primary-pixel);
+            transition: all 0.2s ease; /* Transición más rápida */
+            text-align: left;
+            position: relative;
         }
 
-        ul li:last-child {
-            border-bottom: none;
+        ul li::before {
+            content: '>'; /* Icono de flecha tipo comando */
+            color: var(--tertiary-pixel);
+            position: absolute;
+            left: 8px; /* Ajuste de posición */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9em;
+            opacity: 0.8;
         }
 
         ul li:hover {
-            color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.5);
+            border-left-color: var(--secondary-pixel);
+            transform: translateX(3px); /* Menos movimiento */
+            color: var(--text-highlight);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
         }
 
-        /* Style for links inside the body, specifically for <a> tags */
+        ul li span {
+            margin-left: 20px; /* Espacio para el icono */
+            display: block;
+        }
+
         a {
-            color: var(--link-color-light-orange); /* Light orange color for links */
-            text-decoration: none; /* Optional: remove underline */
-            transition: color 0.3s ease;
+            color: var(--tertiary-pixel);
+            text-decoration: none;
+            transition: all 0.2s ease; /* Transición más rápida */
+            text-shadow: 0 0 5px var(--link-glow);
         }
 
         a:hover {
-            color: var(--primary-color); /* Slightly darker orange on hover */
-            text-decoration: underline; /* Optional: add underline on hover */
+            color: var(--primary-pixel);
+            text-decoration: underline;
+            text-shadow: 0 0 10px var(--primary-pixel);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-            h2 {
-                font-size: 1.4em;
-            }
-            .button-download {
-                font-size: 18px;
-                padding: 12px 25px;
-            }
-            .section {
-                padding: 20px;
-                margin: 30px 0;
-            }
-            ul li {
-                font-size: 1em;
-            }
+        /* Responsive Design (mantener, pero ajustar valores) */
+        @media (max-width: 900px) {
+            h1 { font-size: 2.5em; }
+            h2 { font-size: 1.6em; }
+            .button-download { font-size: 18px; padding: 14px 28px; }
+            .section { padding: 25px; margin: 30px 0; }
+            ul { grid-template-columns: 1fr; }
+            ul li { font-size: 0.95em; }
         }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            h1 {
-                font-size: 1.5em;
-            }
-            h2 {
-                font-size: 1.2em;
-            }
-            .button-download {
-                font-size: 16px;
-                padding: 10px 20px;
-            }
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; letter-spacing: 0.5px; }
+            h2 { font-size: 1.4em; letter-spacing: 0.2px; }
+            p { font-size: 1em; }
+            .button-download { font-size: 16px; padding: 12px 22px; }
+            .section { padding: 20px; margin: 25px 0; }
+            ul li { font-size: 0.9em; }
+        }
+
+        @media (max-width: 400px) {
+            body { padding: 10px; }
+            h1 { font-size: 1.6em; }
+            h2 { font-size: 1.2em; }
+            .button-download { font-size: 14px; padding: 10px 18px; }
         }
     </style>
 </head>
@@ -159,24 +231,24 @@
         <h1>Bienvenido a MC Proyect</h1>
         <p>Tu portal definitivo para explorar, conectar y vivir la experiencia de Minecraft Bedrock como nunca antes.</p>
 
-        <a href="https://www.mediafire.com/file/zx1imk88xpekulm/MC_Proyect-1.0.apk/file" class="button-download" download="MCProyect.apk">
+        <a href="https://www.mediafire.com/file/tnzw3p5xqsctyl3/MC_Proyect_1.2.apk/file" class="button-download" download="MCProyect.apk">
             Descargar App Ahora
         </a>
 
         <div class="section">
             <h2>¿Por qué nace MC Proyect?</h2>
-            <p>Concebida por las mentes innovadoras de Myst Start, MC Proyect surge de la necesidad de revolucionar la interacción en la comunidad de <a href="https://www.facebook.com/groups/1793498814512192/?ref=share&mibextid=NSMWBT">Minecraft Bedrock.</a> Nuestro objetivo es claro: ofrecer un espacio libre de las restricciones de plataformas tradicionales como WhatsApp o Facebook, donde la creatividad y la conexión florezcan sin temor a suspensiones.</p>
+            <p>Concebida por las mentes innovadoras de Myst Start, MC Proyect surge de la necesidad de revolucionar la interacción en la comunidad de <a href="https://whatsapp.com/channel/0029Vb5UY1hHbFUz5RJftC0q">Minecraft Bedrock.</a> Nuestro objetivo es claro: ofrecer un espacio libre de las restricciones de plataformas tradicionales como WhatsApp o Facebook, donde la creatividad y la conexión florezcan sin temor a suspensiones.</p>
             <p>Imagina un lugar donde la comunidad Bedrock se une como una verdadera familia, compartiendo aventuras, creaciones y momentos épicos. ¡Eso es MC Proyect!</p>
         </div>
 
         <div class="section">
             <h2>Descubre los Beneficios de MC Proyect</h2>
             <ul>
-                <li>🚀 Descarga rápida: Accede a Minecraft de forma segura y sin complicaciones.</li>
-                <li>📦 Contenido exclusivo: Explora y descarga addons del Marketplace y creaciones de la comunidad.</li>
-                <li>💬 Conexión sin límites: Chatea con amigos y comparte tu contenido sin restricciones.</li>
-                <li>📸 Libertad de expresión: Publica tus aventuras, fotos y videos sin preocuparte por suspensiones.</li>
-                <li>✨ Experiencia personalizada: Personaliza tu perfil, recibe notificaciones en tiempo real y mucho más.</li>
+                <li><span>> Descarga rápida: Accede a Minecraft de forma segura y sin complicaciones.</span></li>
+                <li><span>> Contenido exclusivo: Explora y descarga addons del Marketplace y creaciones de la comunidad.</span></li>
+                <li><span>> Conexión sin límites: Chatea con amigos y comparte tu contenido sin restricciones.</span></li>
+                <li><span>> Libertad de expresión: Publica tus aventuras, fotos y videos sin preocuparte por suspensiones.</span></li>
+                <li><span>> Experiencia personalizada: Personaliza tu perfil, recibe notificaciones en tiempo real y mucho más.</span></li>
             </ul>
         </div>
 
@@ -184,13 +256,12 @@
             <h2>Sumérgete en MC Proyect: Tu Guía Rápida</h2>
             <p>Nuestra interfaz intuitiva está diseñada para que explores y disfrutes cada función al máximo:</p>
             <ul>
-                <li>🧭 Navegación sencilla: Una barra lateral completa con secciones interesantes a tu alcance.</li>
-                <li>⚡ Acceso rápido: Un menú inferior con tus funciones más usadas.</li>
-                <li>🔔 Mantente informado: Nuestra "campanita" de notificaciones te avisará de todo lo importante.</li>
-                <li>🛠️ Soporte y mejora: Envía tus reportes de errores y sugerencias directamente desde la app.</li>
-                <li>🔄 Siempre en evolución: Prepárate para chats, publicaciones y muchas más sorpresas en futuras actualizaciones.</li>
+                <li><span>> Navegación sencilla: Una barra lateral completa con secciones interesantes a tu alcance.</span></li>
+                <li><span>> Acceso rápido: Un menú inferior con tus funciones más usadas.</span></li>
+                <li><span>> Mantente informado: Nuestra "campanita" de notificaciones te avisará de todo lo importante.</span></li>
+                <li><span>> Soporte y mejora: Envía tus reportes de errores y sugerencias directamente desde la app.</span></li>
+                <li><span>> Siempre en evolución: Prepárate para chats, publicaciones y muchas más sorpresas en futuras actualizaciones.</span></li>
             </ul>
-        </ul>
         </div>
     </div>
 </body>
