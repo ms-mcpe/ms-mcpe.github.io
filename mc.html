@@ -94,13 +94,8 @@
             line-height: 1.6;
         }
 
-        .button-link {
-            text-decoration: none;
-            display: inline-block;
-            width: 100%; /* Botón que ocupa todo el ancho */
-        }
-
-        .button {
+        /* Eliminamos la clase .button-link y aplicamos los estilos directamente al <a> */
+        .download-button { /* Cambiado de .button a .download-button para evitar conflictos si hay otros botones */
             background: linear-gradient(45deg, var(--accent-green), var(--accent-green-dark)); /* Degradado para el botón */
             border: none;
             padding: 15px 30px;
@@ -115,9 +110,13 @@
             cursor: pointer;
             position: relative;
             overflow: hidden; /* Para el efecto de brillo */
+            text-decoration: none; /* Quita el subrayado predeterminado del enlace */
+            display: inline-block; /* Permite aplicar padding y ancho */
+            width: 100%; /* Botón que ocupa todo el ancho */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho */
         }
 
-        .button::before {
+        .download-button::before {
             content: '';
             position: absolute;
             top: 0;
@@ -129,17 +128,17 @@
             transition: all 0.6s ease;
         }
 
-        .button:hover {
+        .download-button:hover {
             background: linear-gradient(45deg, var(--accent-green-hover), var(--accent-green));
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0, 255, 0, 0.5);
         }
 
-        .button:hover::before {
+        .download-button:hover::before {
             left: 100%;
         }
 
-        .button:active {
+        .download-button:active {
             transform: translateY(0);
             box-shadow: 0 2px 10px rgba(0, 255, 0, 0.3);
         }
@@ -156,7 +155,7 @@
             p {
                 font-size: 1em;
             }
-            .button {
+            .download-button {
                 padding: 12px 25px;
                 font-size: 18px;
             }
@@ -169,8 +168,8 @@
         <h2>Nueva Versión de Minecraft Bedrock</h2>
         <p>¡Prepárate para la aventura! Descarga la última actualización:</p>
         <p>Versión 1.21.92</p>
-        <a href="https://linky.io/es/@MystStart/minecraft-bedrock-2192-official-descarga-minecraftapk" class="button-link">
-            <button class="button">Descargar Ahora</button>
+        <a href="https://linky.io/es/@MystStart/minecraft-bedrock-2192-official-descarga-minecraftapk" class="download-button" target="_blank" rel="noopener noreferrer">
+            Descargar Ahora
         </a>
     </div>
 
