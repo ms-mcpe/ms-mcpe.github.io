@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addons Marcketplace</title>
+    <title>Addons Marketplace</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap');
+
         body {
             background-color: #121212;
             color: #fff;
-            font-family: Arial, sans-serif;
+            font-family: 'Oxanium', sans-serif; /* Usando Oxanium desde el import */
             position: relative;
+            margin: 0;
         }
 
         .header-container {
             position: relative;
             text-align: center;
             padding: 10px;
+            margin-bottom: 20px; /* Margen para separar del título */
         }
 
         .header-image {
@@ -23,15 +27,17 @@
             max-height: 200px;
             object-fit: cover;
             border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7); /* Brillo neón para la imagen de cabecera */
         }
 
         .search-container {
             position: absolute;
             top: 10px;
             left: 10px;
-            right: 10px; /* Ubicado en la esquina superior derecha */
+            right: 10px;
             display: flex;
             align-items: center;
+            justify-content: flex-end; /* Alinea los elementos a la derecha */
         }
 
         .search-box {
@@ -46,6 +52,7 @@
             box-shadow: 0 0 8px #0077ff;
             transition: width 0.5s ease-in-out, opacity 0.3s ease-in-out;
             opacity: 0;
+            margin-right: 10px; /* Espacio entre el campo de búsqueda y el botón */
         }
 
         .search-box.active {
@@ -55,27 +62,41 @@
 
         .search-button {
             padding: 12px;
-            border-radius: 80%;
-            background-color: rgba(18, 18, 18, 0.7); /* Fondo semi-transparente */
-            color: white;
-            border: none;
+            width: 45px; /* Asegura un tamaño fijo para el botón de búsqueda */
+            height: 45px; /* Asegura un tamaño fijo */
+            border-radius: 50%; /* 80% no es una propiedad válida, debe ser 50% para círculo */
+            background-color: rgba(18, 18, 18, 0.7);
+            color: #00ffcc; /* Color del ícono de búsqueda */
+            border: 2px solid #00cfff; /* Borde del botón de búsqueda */
             cursor: pointer;
             font-size: 20px;
-            box-shadow: 0 0 8px #121259;
+            box-shadow: 0 0 10px #00cfff;
+            display: flex; /* Para centrar el ícono */
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 15px #00cfff;
         }
 
         .text-title {
+            font-family: 'Oxanium', sans-serif;
             font-size: 30px;
             text-align: center;
             font-weight: bold;
             text-transform: uppercase;
             animation: rgbSlow 5.5s infinite alternate;
+            margin-bottom: 25px; /* Margen para separar del primer post */
         }
 
         .post-container {
             border: 3px solid #0077ff;
             padding: 15px;
-            margin: 20px 0;
+            margin: 20px auto; /* Centrar publicaciones */
+            max-width: 400px; /* Limitar ancho para consistencia */
             border-radius: 10px;
             background-color: #222;
             display: flex;
@@ -83,12 +104,15 @@
             align-items: center;
             text-align: center;
             box-shadow: 0 0 10px #0077ff;
-            position: relative;
+            position: relative; /* Para posicionar fecha y versión */
+            overflow: hidden; /* Asegura que los elementos posicionados no se salgan */
         }
 
         .post-title {
             font-size: 20px;
-            margin-bottom: 5px;
+            margin-bottom: 10px; /* Más espacio */
+            color: #00cfff; /* Color del título del post */
+            text-shadow: 0 0 5px #00cfff;
         }
 
         .post-image {
@@ -98,41 +122,127 @@
             border-radius: 10px;
             border: 3px solid #00cfff;
             box-shadow: 0 0 10px #00cfff;
-            animation: rgbSlow 4.5s infinite alternate;
+            animation: rgbSlow 4.5s infinite alternate; /* Animación de color en el borde de la imagen */
+            margin-bottom: 15px; /* Espacio antes del botón */
         }
 
         .download-button {
             display: block;
-            width: 140px;
-            padding: 8px;
+            width: calc(30% - 20px); /* Ocupa casi todo el ancho */
+            padding: 10px; /* Más padding */
             background-color: #0044aa;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
             margin-top: 10px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 8px #0044aa;
+        }
+
+        .download-button:hover {
+            background-color: #0055bb;
+            box-shadow: 0 0 15px #0055bb;
         }
 
         .post-date {
             position: absolute;
-            bottom: 5px;
+            bottom: 8px;
             right: 10px;
-            font-size: 12px;
+            font-size: 13px;
             color: #00cfff;
+            text-shadow: 0 0 5px rgba(0, 207, 255, 0.5); /* Sombra para efecto neón */
         }
 
+        /* Nuevo estilo para la versión compatible */
+        .compatible-version {
+            position: absolute;
+            bottom: 8px;
+            left: 10px;
+            font-size: 13px;
+            color: #88eeff; /* Celeste clarito */
+            text-shadow: 0 0 5px #88eeff, 0 0 10px rgba(136, 238, 255, 0.5); /* Brillo neón */
+            animation: rgbSlowCompatible 6s infinite alternate; /* Animación RGB para la versión */
+        }
+
+        /* Animación RGB para el título y borde de la imagen (más colores) */
         @keyframes rgbSlow {
-            0% { color: #ff0000; }
-            10% { color: #ff6600; }
-            20% { color: #ffff00; }
-            30% { color: #00ff00; }
-            40% { color: #0000ff; }
-            50% { color: #ff00ff; }
-            60% { color: #04F1F9; }
-            70% { color: #F9045A; }
-            80% { color: #04F96B; }
-            90% { color: #046FF9; }
-            100% { color: #A204F9; }
+            0% { color: #ff0000; box-shadow: 0 0 10px #ff0000; }
+            10% { color: #ff6600; box-shadow: 0 0 10px #ff6600; }
+            20% { color: #ffff00; box-shadow: 0 0 10px #ffff00; }
+            30% { color: #00ff00; box-shadow: 0 0 10px #00ff00; }
+            40% { color: #0000ff; box-shadow: 0 0 10px #0000ff; }
+            50% { color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
+            60% { color: #04F1F9; box-shadow: 0 0 10px #04F1F9; } /* Cian */
+            70% { color: #F9045A; box-shadow: 0 0 10px #F9045A; } /* Rosa */
+            80% { color: #04F96B; box-shadow: 0 0 10px #04F96B; } /* Verde brillante */
+            90% { color: #046FF9; box-shadow: 0 0 10px #046FF9; } /* Azul intenso */
+            100% { color: #A204F9; box-shadow: 0 0 10px #A204F9; } /* Púrpura */
+        }
+
+        /* Animación RGB específica para la versión compatible (celeste y neón) */
+        @keyframes rgbSlowCompatible {
+            0% { color: #88eeff; text-shadow: 0 0 5px #88eeff, 0 0 10px rgba(136, 238, 255, 0.5); }
+            25% { color: #00ffcc; text-shadow: 0 0 5px #00ffcc, 0 0 10px rgba(0, 255, 204, 0.5); }
+            50% { color: #00cfff; text-shadow: 0 0 5px #00cfff, 0 0 10px rgba(0, 207, 255, 0.5); }
+            75% { color: #88eeff; text-shadow: 0 0 5px #88eeff, 0 0 10px rgba(136, 238, 255, 0.5); }
+            100% { color: #00ffcc; text-shadow: 0 0 5px #00ffcc, 0 0 10px rgba(0, 255, 204, 0.5); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .header-image {
+                max-height: 150px;
+            }
+            .search-container {
+                flex-direction: column; /* Apila búsqueda y botón en móviles */
+                align-items: flex-end; /* Alinea a la derecha */
+                top: 5px;
+                right: 5px;
+                left: unset; /* Desactiva left para que flex-end funcione */
+            }
+            .search-box.active {
+                width: 150px; /* Ancho más pequeño en móviles */
+                margin-right: 0;
+                margin-bottom: 10px; /* Espacio entre caja y botón */
+            }
+            .search-button {
+                margin-top: 5px;
+            }
+            .text-title {
+                font-size: 24px;
+            }
+            .post-container {
+                padding: 10px;
+                margin: 15px auto;
+            }
+            .post-title {
+                font-size: 18px;
+            }
+            .post-image {
+                max-height: 200px;
+            }
+            .download-button {
+                padding: 8px;
+                font-size: 15px;
+            }
+            .post-date,
+            .compatible-version {
+                font-size: 11px;
+                bottom: 5px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .search-box.active {
+                width: 120px; /* Aún más pequeño */
+            }
+            .text-title {
+                font-size: 20px;
+            }
+            .post-title {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -152,7 +262,7 @@
 
     <!-- Inicio de publicaciones -->
 
-    
+
 
 
 <div class="post-container">
@@ -941,15 +1051,20 @@
     function toggleSearch() {
         let searchBox = document.getElementById("searchInput");
         searchBox.classList.toggle("active");
-        searchBox.focus();
+        // Asegúrate de que el search box tenga un ancho inicial para que la transición sea visible
+        if (!searchBox.classList.contains("active")) {
+            searchBox.value = ""; // Limpia el campo al cerrarlo
+            searchPosts(); // Vuelve a mostrar todos los posts
+        }
+        searchBox.focus(); // Enfoca la caja de búsqueda cuando se activa
     }
 
     function searchPosts() {
         let input = document.getElementById("searchInput").value.toLowerCase().trim();
         let posts = document.getElementsByClassName("post-container");
 
+        // Si el campo de búsqueda está vacío, muestra todas las publicaciones
         if (input === "") {
-            // Si el campo está vacío, muestra todas las publicaciones
             for (let post of posts) {
                 post.style.display = "flex";
             }
@@ -958,8 +1073,12 @@
 
         for (let post of posts) {
             let title = post.querySelector(".post-title").innerText.toLowerCase().trim();
-            let words = input.split(" ").filter(word => word.length >= 2);
-            let match = words.length > 0 && words.every(word => title.includes(word));
+            // Permite buscar por palabras completas o parciales, ignorando mayúsculas/minúsculas
+            // Filtra palabras de búsqueda vacías o muy cortas (opcional)
+            let words = input.split(" ").filter(word => word.length > 0); 
+            
+            // Comprueba si TODAS las palabras de búsqueda están incluidas en el título del post
+            let match = words.every(word => title.includes(word));
 
             post.style.display = match ? "flex" : "none";
         }
@@ -967,11 +1086,13 @@
 
     document.getElementById("searchInput").addEventListener("input", searchPosts);
 
+    // Asegura que las publicaciones con imagen vacía se oculten al cargar
     document.addEventListener("DOMContentLoaded", function() {
         let posts = document.getElementsByClassName("post-container");
         for (let post of posts) {
             let imageUrl = post.querySelector(".post-image")?.src;
-            if (!imageUrl || imageUrl.trim() === "") {
+            // Oculta el post si la URL de la imagen está vacía o es un placeholder
+            if (!imageUrl || imageUrl.trim() === "" || imageUrl.includes("placehold.co")) { // También comprueba placehold.co
                 post.style.display = "none";
             }
         }
