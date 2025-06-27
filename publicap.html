@@ -105,7 +105,13 @@
             font-size: 13px;
             color: #8b949e;
         }
-        .post-image { /* Keep this style for mod posts */
+        .post-version { /* Nuevo estilo para la versión */
+            font-size: 14px;
+            color: #8b949e;
+            margin-top: -10px; /* Ajuste para que esté más cerca del título */
+            margin-bottom: 15px;
+        }
+        .post-image {
             width: 100%;
             height: 250px;
             object-fit: cover;
@@ -134,7 +140,6 @@
         .discord-button:hover { background-color: #7289DA; }
         .whatsapp-button { background-color: #25D366; } /* WhatsApp green */
         .whatsapp-button:hover { background-color: #128C7E; }
-        /* Removed .telegram-button styles */
 
         #generatedCode {
             background-color: #0d1117;
@@ -171,6 +176,7 @@
     <div class="section-container">
         <h2>Publicación de Mods</h2>
         <input type="text" id="modTitleInput" placeholder="Título del Mod">
+        <input type="text" id="modVersionInput" placeholder="Versión Compatible (ej: 1.21.90)">
         <input type="url" id="modImageInput" placeholder="URL de la Imagen del Mod">
         <input type="url" id="modDownloadInput" placeholder="URL de Descarga del Mod">
         <button class="generate-button" onclick="generateModPost()">Generar Publicación de Mod</button>
@@ -206,7 +212,6 @@
                 buttonText = "Unirse a WhatsApp";
                 buttonClass += " whatsapp-button";
             }
-            // Removed Telegram condition.
             // Add more conditions for other platforms if needed
 
             return { text: buttonText, class: buttonClass };
@@ -214,23 +219,25 @@
 
         function generateModPost() {
             let title = document.getElementById("modTitleInput").value.trim();
+            let version = document.getElementById("modVersionInput").value.trim(); // Nueva variable para la versión
             let imageUrl = document.getElementById("modImageInput").value.trim();
             let downloadUrl = document.getElementById("modDownloadInput").value.trim();
             let date = getCurrentDate();
 
-            if (title && imageUrl && downloadUrl) {
+            if (title && version && imageUrl && downloadUrl) { // Asegurarse de que la versión también esté presente
                 let postDiv = document.createElement("div");
                 postDiv.className = "post-container";
                 postDiv.innerHTML = `
                     <h2 class="post-title">${title}</h2>
-                    <img src="${imageUrl}" alt="Imagen del mod" class="post-image">
-                    <a href="${downloadUrl}" class="action-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
+                    <p class="post-version">Versión Compatible: ${version}</p> <img src="${imageUrl}" alt="Imagen del mod" class="post-image">
+                    <a href="${downloadUrl}" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
                     <p class="post-date">${date}</p>
                 `;
 
                 let codeBlock = `
 <div class="post-container">
     <h2 class="post-title">${title}</h2>
+    <p class="compatible-version">Versión Compatible: ${version}</p>
     <img src="${imageUrl}" alt="Imagen del mod" class="post-image">
     <a href="${downloadUrl}" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
     <p class="post-date">${date}</p>
@@ -240,7 +247,7 @@
                 document.getElementById("postPreview").appendChild(postDiv);
                 document.getElementById("generatedCode").textContent = codeBlock;
             } else {
-                alert("Por favor, completa todos los campos para la publicación de mods.");
+                alert("Por favor, completa todos los campos (Título, Versión, URL de Imagen, URL de Descarga) para la publicación de mods.");
             }
         }
 
@@ -302,4 +309,4 @@ ${buttonsCode.trimEnd()}
     </script>
 
 </body>
-</html>
+            </html>
