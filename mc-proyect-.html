@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente MC Proyect</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for a professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Dark background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        /* Custom scrollbar for chat messages */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #161b22;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #444c56;
+        }
+
+        /* Ensure the main container takes full width on small screens */
+        @media (max-width: 768px) {
+            .chat-container {
+                width: 100%;
+                height: 95vh; /* Make it taller on mobile */
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="chat-container bg-gray-900 shadow-2xl rounded-2xl p-6 flex flex-col max-w-md w-full h-[80vh] border border-gray-700">
+        <!-- Chat Header -->
+        <div class="chat-header bg-gray-800 p-4 rounded-t-xl mb-4 flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-cyan-400">MC Proyect Asistente</h1>
+            <span class="text-green-500 text-sm font-medium">En línea</span>
+        </div>
+
+        <!-- Chat Messages Display Area -->
+        <div id="chatMessages" class="chat-messages flex-1 overflow-y-auto p-4 bg-gray-800 rounded-lg mb-4 space-y-4">
+            <!-- Initial Bot Message -->
+            <div class="flex justify-start">
+                <div class="bg-gray-700 text-gray-200 p-3 rounded-xl rounded-bl-none shadow-md max-w-[80%]">
+                    <p>¡Hola! Soy tu asistente de MC Proyect. Escribe <span class="font-bold text-cyan-300">-ayuda</span> para ver todos los comandos disponibles.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input flex items-center space-x-3">
+            <input type="text" id="userInput" placeholder="Escribe un comando (ej: -como usar)"
+                   class="flex-1 p-3 rounded-full bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder-gray-400 text-sm">
+            <button id="sendButton"
+                    class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-gray-900">
+                Enviar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Get references to HTML elements
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+
+        // Function to add a message to the chat display
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', isUser ? 'justify-end' : 'justify-start');
+
+            const messageBubble = document.createElement('div');
+            messageBubble.classList.add(
+                'p-3',
+                'rounded-xl',
+                'shadow-md',
+                'max-w-[80%]',
+                isUser ? 'bg-cyan-600' : 'bg-gray-700',
+                isUser ? 'rounded-br-none' : 'rounded-bl-none',
+                isUser ? 'text-white' : 'text-gray-200'
+            );
+            messageBubble.innerHTML = message;
+            messageDiv.appendChild(messageBubble);
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to the bottom of the chat
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Object containing bot commands and their responses
+        const commands = {
+            "-ayuda": `
+                <p class="font-bold text-cyan-300">Comandos disponibles:</p>
+                <ul class="list-disc list-inside text-sm mt-2 space-y-1">
+                    <li><span class="font-semibold">-MC Proyect</span>: Enlace de descarga de la app.</li>
+                    <li><span class="font-semibold">-inicio app</span>: Cómo funciona la app al iniciar.</li>
+                    <li><span class="font-semibold">-registro</span>: Proceso de registro.</li>
+                    <li><span class="font-semibold">-verificar correo</span>: Pasos para verificar tu email.</li>
+                    <li><span class="font-semibold">-soporte dueños</span>: Cómo contactar a los dueños.</li>
+                    <li><span class="font-semibold">-secciones</span>: Descripción de las secciones principales.</li>
+                    <li><span class="font-semibold">-subir contenido</span>: Cómo subir videos y contenido.</li>
+                    <li><span class="font-semibold">-foros</span>: Cómo usar los foros de Minecraft.</li>
+                    <li><span class="font-semibold">-chat publico</span>: Cómo funciona el chat general.</li>
+                    <li><span class="font-semibold">-descargar minecraft</span>: Descarga gratuita de Minecraft.</li>
+                    <li><span class="font-semibold">-descargar addons</span>: Descarga de addons.</li>
+                    <li><span class="font-semibold">-notificaciones</span>: Gestión de alertas.</li>
+                    <li><span class="font-semibold">-editar perfil</span>: Cómo personalizar tu perfil.</li>
+                    <li><span class="font-semibold">-seguir usuarios</span>: Cómo seguir a otros jugadores.</li>
+                    <li><span class="font-semibold">-reportar usuario</span>: Cómo reportar a alguien.</li>
+                    <li><span class="font-semibold">-chat privado</span>: Cómo chatear uno a uno.</li>
+                    <li><span class="font-semibold">-futuras funciones</span>: Novedades que llegarán.</li>
+                    <li><span class="font-semibold">-como usar</span>: Guía básica de la app.</li>
+                    <li><span class="font-semibold">-iniciar sesion</span>: Cómo acceder a tu cuenta.</li>
+                    
+                </ul>
+            `,
+            "-MC Proyect": `
+                <p>¡Claro! Puedes descargar la aplicación de MC Proyect desde el siguiente enlace:</p>
+                <a href="https://drive.google.com/file/d/1RIVPRrO5XJS_FalnuXKegz1zCKQ-R5HV/view?usp=drivesdk" target="_blank" class="text-cyan-400 hover:underline">Descargar MC Proyect aquí</a>
+                <p class="text-xs text-gray-400 mt-1">Asegúrate de tener permisos para descargar desde Google Drive si es necesario.</p>
+            `,
+            "-inicio app": "Al entrar a la aplicación de MC Proyect, primero verás nuestro logotipo y una pantalla de carga. Una vez finalizada, se te pedirá que te registres o inicies sesión para acceder al contenido.",
+            "-registro": "Para registrarte en MC Proyect, deberás proporcionar una foto de perfil, tu correo electrónico y una contraseña (ambos obligatorios). También puedes añadir tu género y una descripción de perfil de forma opcional. Es un proceso sencillo para que puedas empezar a disfrutar de la comunidad.",
+            "-verificar correo": "Después de registrarte, te enviaremos un correo electrónico a tu dirección de Gmail. Deberás abrir ese correo y hacer clic en el enlace de verificación para activar tu cuenta. Este paso es crucial para la seguridad de tu cuenta.",
+            "-soporte dueños": "Una vez dentro de la aplicación, en la pantalla de inicio, encontrarás una sección dedicada donde podrás hablar directamente con los dueños de la aplicación. Esto es ideal para soporte técnico, enviar sugerencias o cualquier consulta directa.",
+            "-secciones": `
+                <p>MC Proyect cuenta con varias secciones accesibles desde el menú de tres líneas en la parte superior:</p>
+                <ul class="list-disc list-inside text-sm mt-2 space-y-1">
+                    <li><span class="font-semibold">Subir Contenido:</span> Para compartir tus videos y otros contenidos.</li>
+                    <li><span class="font-semibold">Foros:</span> Espacio para publicaciones y debates sobre temas de Minecraft.</li>
+                    <li><span class="font-semibold">Chat Público:</span> Para interactuar con todos los jugadores de Minecraft registrados.</li>
+                    <li><span class="font-semibold">Descargar Minecraft:</span> Acceso gratuito a las últimas versiones de Minecraft.</li>
+                    <li><span class="font-semibold">Descargar Addons:</span> Descargas gratuitas de addons de la comunidad y del Marketplace oficial de Minecraft.</li>
+                    <li><span class="font-semibold">Notificaciones:</span> Para gestionar tus alertas.</li>
+                    <li><span class="font-semibold">Edición de Perfil:</span> Para personalizar tu información y foto.</li>
+                    <li>Y más funciones como seguir/reportar usuarios y chatear en privado.</li>
+                </ul>
+            `,
+            "-subir contenido": "En la sección 'Subir Contenido' (accesible desde el menú principal), podrás cargar tus propios videos, imágenes y otros tipos de contenido relacionado con Minecraft para compartir con la comunidad.",
+            "-foros": "Los foros de MC Proyect son el lugar para crear y participar en publicaciones sobre diferentes temas relacionados con Minecraft. Es un espacio para debates, compartir ideas y resolver dudas con otros jugadores.",
+            "-chat publico": "El chat público es una sala de chat general donde podrás hablar en tiempo real con todos los jugadores registrados en la aplicación que comparten tu pasión por Minecraft. ¡Es ideal para conocer gente nueva!",
+            "-descargar minecraft": "Sí, en MC Proyect ofrecemos un apartado donde podrás descargar las últimas versiones de Minecraft de manera completamente gratuita. ¡Mantente siempre actualizado!",
+            "-descargar addons": "Además de Minecraft, también podrás descargar addons. Tenemos una sección dedicada a addons de la comunidad y también ofrecemos acceso a addons del Marketplace oficial de Minecraft, ¡todo de forma gratuita!",
+            "-notificaciones": "Puedes gestionar tus notificaciones desde la sección 'Configuración' > 'Notificaciones'. Allí puedes activar o desactivar diferentes tipos de alertas para mantenerte al tanto de lo que te interesa.",
+            "-editar perfil": "Para personalizar tu perfil, ve a 'Mi Perfil' desde el menú principal. Podrás cambiar tu foto de perfil, nombre de usuario, género (opcional) y descripción para que otros te conozcan mejor.",
+            "-seguir usuarios": "Puedes seguir a otros usuarios para ver sus publicaciones y actividades en tu feed. Simplemente visita el perfil de un usuario y busca el botón 'Seguir'.",
+            "-reportar usuario": "Si encuentras un usuario que infringe nuestras reglas o te acosa, puedes reportarlo. Ve a su perfil, busca el ícono de opciones (generalmente tres puntos) y selecciona 'Reportar'. Tu informe nos ayuda a mantener la comunidad segura.",
+            "-chat privado": "Sí, MC Proyect te permite chatear en privado con otros usuarios. Ve a la sección 'Mensajes', selecciona un contacto o inicia una nueva conversación para hablar de forma individual.",
+            "-futuras funciones": "Estamos constantemente trabajando para mejorar MC Proyect. Algunas de las futuras funciones que se irán añadiendo incluyen nuevas herramientas de moderación, eventos comunitarios, y más opciones de personalización. ¡Mantente atento a las actualizaciones!",
+            "-como usar": "MC Proyect es una red social intuitiva. Puedes crear tu perfil, hacer publicaciones, interactuar con otros usuarios y enviar mensajes. Explora los comandos de ayuda para funciones específicas.",
+            "-iniciar sesion": "En la pantalla de inicio, ingresa tu correo electrónico y contraseña en los campos correspondientes y haz clic en 'Iniciar Sesión'.",
+                 "default": "Lo siento, no entiendo ese comando. Por favor, asegúrate de escribirlo correctamente (ej: <span class='font-bold text-cyan-300'>-ayuda</span>) o consulta la lista de comandos disponibles."
+        };
+
+        // Function to process user input and get bot response
+        function getBotResponse(input) {
+            const normalizedInput = input.toLowerCase().trim();
+            // Check if the input starts with '-' and is a known command
+            if (normalizedInput.startsWith('-') && commands[normalizedInput]) {
+                return commands[normalizedInput];
+            } else if (normalizedInput.startsWith('-')) {
+                // It's a command but not recognized
+                return commands["default"];
+            } else {
+                // It's not a command, respond with a general prompt
+                return "Parece que no es un comando. Recuerda que puedes usar <span class='font-bold text-cyan-300'>-ayuda</span> para ver los comandos disponibles.";
+            }
+        }
+
+        // Event listener for the send button
+        sendButton.addEventListener('click', () => {
+            const userMessage = userInput.value.trim();
+            if (userMessage) {
+                addMessage(userMessage, true); // Display user message
+                userInput.value = ''; // Clear input field
+
+                // Get bot response after a short delay to simulate typing
+                setTimeout(() => {
+                    const botResponse = getBotResponse(userMessage);
+                    addMessage(botResponse); // Display bot message
+                }, 500);
+            }
+        });
+
+        // Event listener for Enter key in the input field
+        userInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendButton.click(); // Simulate a click on the send button
+            }
+        });
+
+        // Initial message on load (already in HTML, but good to know for dynamic additions)
+        // addMessage("¡Hola! Soy tu asistente de MC Proyect. Escribe <span class='font-bold text-cyan-300'>-ayuda</span> para ver todos los comandos disponibles.", false);
+    </script>
+</body>
+</html>
+ 
