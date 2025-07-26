@@ -1,1233 +1,154 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addons Marketplace</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap');
+  <meta charset="UTF-8">
+  <title>Addons MC Proyect</title>
+  <style>
+    * { box-sizing: border-box; }
 
-        body {
-            background-color: #121212;
-            color: #fff;
-            font-family: 'Oxanium', sans-serif; /* Usando Oxanium desde el import */
-            position: relative;
-            margin: 0;
-        }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #121212;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .header-container {
-            position: relative;
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 20px; /* Margen para separar del título */
-        }
+    input[type="text"] {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      margin-bottom: 30px;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+    }
 
-        .header-image {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7); /* Brillo neón para la imagen de cabecera */
-        }
+    #contenedor {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+    }
 
-        .search-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end; /* Alinea los elementos a la derecha */
-        }
+    .box {
+      background-color: #1f1f1f;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 320px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
 
-        .search-box {
-            width: 0;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #0077ff;
-            border-radius: 25px;
-            background-color: #1a1a1a;
-            color: #00cfff;
-            outline: none;
-            box-shadow: 0 0 8px #0077ff;
-            transition: width 0.5s ease-in-out, opacity 0.3s ease-in-out;
-            opacity: 0;
-            margin-right: 10px; /* Espacio entre el campo de búsqueda y el botón */
-        }
+    .inner-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      justify-content: flex-start;
+    }
 
-        .search-box.active {
-            width: 200px;
-            opacity: 1;
-        }
+    .nombre {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 10px 0;
+      word-wrap: break-word;
+    }
 
-        .search-button {
-            padding: 12px;
-            width: 45px; /* Asegura un tamaño fijo para el botón de búsqueda */
-            height: 45px; /* Asegura un tamaño fijo */
-            border-radius: 50%; /* 80% no es una propiedad válida, debe ser 50% para círculo */
-            background-color: rgba(18, 18, 18, 0.7);
-            color: #00ffcc; /* Color del ícono de búsqueda */
-            border: 2px solid #00cfff; /* Borde del botón de búsqueda */
-            cursor: pointer;
-            font-size: 20px;
-            box-shadow: 0 0 10px #00cfff;
-            display: flex; /* Para centrar el ícono */
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
+    .imagen {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      object-fit: cover;
+      max-height: 180px;
+    }
 
-        .search-button:hover {
-            background-color: rgba(0, 0, 0, 0.9);
-            box-shadow: 0 0 15px #00cfff;
-        }
+    .fecha {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      font-size: 12px;
+      color: #aaa;
+    }
 
-        .text-title {
-            font-family: 'Oxanium', sans-serif;
-            font-size: 30px;
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase;
-            animation: rgbSlow 5.5s infinite alternate;
-            margin-bottom: 25px; /* Margen para separar del primer post */
-        }
+    .descargar {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      padding: 4px 8px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
 
-        .post-container {
-            border: 3px solid #0077ff;
-            padding: 15px;
-            margin: 20px auto; /* Centrar publicaciones */
-            max-width: 400px; /* Limitar ancho para consistencia */
-            border-radius: 10px;
-            background-color: #222;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 0 10px #0077ff;
-            position: relative; /* Para posicionar fecha y versión */
-            overflow: hidden; /* Asegura que los elementos posicionados no se salgan */
-        }
+    .descargar:hover {
+      background-color: #555;
+    }
 
-        .post-title {
-            font-size: 20px;
-            margin-bottom: 10px; /* Más espacio */
-            color: #00cfff; /* Color del título del post */
-            text-shadow: 0 0 5px #00cfff;
-        }
-
-        .post-image {
-            width: 100%;
-            max-height: 250px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 3px solid #00cfff;
-            box-shadow: 0 0 10px #00cfff;
-            animation: rgbSlow 4.5s infinite alternate; /* Animación de color en el borde de la imagen */
-            margin-bottom: 15px; /* Espacio antes del botón */
-        }
-
-        .download-button {
-            display: block;
-            width: calc(30% - 20px); /* Ocupa casi todo el ancho */
-            padding: 10px; /* Más padding */
-            background-color: #0044aa;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 10px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 0 8px #0044aa;
-        }
-
-        .download-button:hover {
-            background-color: #0055bb;
-            box-shadow: 0 0 15px #0055bb;
-        }
-
-        .post-date {
-            position: absolute;
-            bottom: 8px;
-            right: 10px;
-            font-size: 13px;
-            color: #00cfff;
-            text-shadow: 0 0 5px rgba(0, 207, 255, 0.5); /* Sombra para efecto neón */
-        }
-
-        /* Nuevo estilo para la versión compatible */
-        .compatible-version {
-            position: absolute;
-            bottom: 8px;
-            left: 10px;
-            font-size: 13px;
-            color: #88eeff; /* Celeste clarito */
-            text-shadow: 0 0 5px #88eeff, 0 0 10px rgba(136, 238, 255, 0.5); /* Brillo neón */
-            animation: rgbSlowCompatible 6s infinite alternate; /* Animación RGB para la versión */
-        }
-
-        /* Animación RGB para el título y borde de la imagen (más colores) */
-        @keyframes rgbSlow {
-            0% { color: #ff0000; box-shadow: 0 0 10px #ff0000; }
-            10% { color: #ff6600; box-shadow: 0 0 10px #ff6600; }
-            20% { color: #ffff00; box-shadow: 0 0 10px #ffff00; }
-            30% { color: #00ff00; box-shadow: 0 0 10px #00ff00; }
-            40% { color: #0000ff; box-shadow: 0 0 10px #0000ff; }
-            50% { color: #ff00ff; box-shadow: 0 0 10px #ff00ff; }
-            60% { color: #04F1F9; box-shadow: 0 0 10px #04F1F9; } /* Cian */
-            70% { color: #F9045A; box-shadow: 0 0 10px #F9045A; } /* Rosa */
-            80% { color: #04F96B; box-shadow: 0 0 10px #04F96B; } /* Verde brillante */
-            90% { color: #046FF9; box-shadow: 0 0 10px #046FF9; } /* Azul intenso */
-            100% { color: #A204F9; box-shadow: 0 0 10px #A204F9; } /* Púrpura */
-        }
-
-        /* Animación RGB específica para la versión compatible (celeste y neón) */
-        @keyframes rgbSlowCompatible {
-            0% { color: #88eeff; text-shadow: 0 0 5px #88eeff, 0 0 10px rgba(136, 238, 255, 0.5); }
-            25% { color: #00ffcc; text-shadow: 0 0 5px #00ffcc, 0 0 10px rgba(0, 255, 204, 0.5); }
-            50% { color: #00cfff; text-shadow: 0 0 5px #00cfff, 0 0 10px rgba(0, 207, 255, 0.5); }
-            75% { color: #88eeff; text-shadow: 0 0 5px #88eeff, 0 0 10px rgba(136, 238, 255, 0.5); }
-            100% { color: #00ffcc; text-shadow: 0 0 5px #00ffcc, 0 0 10px rgba(0, 255, 204, 0.5); }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .header-image {
-                max-height: 150px;
-            }
-            .search-container {
-                flex-direction: column; /* Apila búsqueda y botón en móviles */
-                align-items: flex-end; /* Alinea a la derecha */
-                top: 5px;
-                right: 5px;
-                left: unset; /* Desactiva left para que flex-end funcione */
-            }
-            .search-box.active {
-                width: 150px; /* Ancho más pequeño en móviles */
-                margin-right: 0;
-                margin-bottom: 10px; /* Espacio entre caja y botón */
-            }
-            .search-button {
-                margin-top: 5px;
-            }
-            .text-title {
-                font-size: 24px;
-            }
-            .post-container {
-                padding: 10px;
-                margin: 15px auto;
-            }
-            .post-title {
-                font-size: 18px;
-            }
-            .post-image {
-                max-height: 200px;
-            }
-            .download-button {
-                padding: 8px;
-                font-size: 15px;
-            }
-            .post-date,
-            .compatible-version {
-                font-size: 11px;
-                bottom: 5px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .search-box.active {
-                width: 120px; /* Aún más pequeño */
-            }
-            .text-title {
-                font-size: 20px;
-           }
-            .post-title {
-               font-size: 16px;
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      .box {
+        max-width: 95%;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <img src="portada.jpg" alt="Imagen superior" class="header-image">
-        <div class="search-container">
-            <button class="search-button" onclick="toggleSearch()">🔍</button>
-            <input type="text" class="search-box" id="searchInput" placeholder="Buscar...">
-        </div>
+  <input type="text" id="buscador" placeholder="Buscar por letra inicial..." onkeyup="filtrar()">
+
+  <div id="contenedor">
+    <div class="box" data-nombre="Aurora">
+      <div class="inner-box">
+        <div class="nombre">Aurora</div>
+        <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Aurora">
+      </div>
+      <span class="fecha">2023-05-15</span>
+      <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
     </div>
 
-    <div>
-        <h1 class="text-title"><--[ Complementos ]--></h1>
+    <div class="box" data-nombre="Bruno">
+      <div class="inner-box">
+        <div class="nombre">Bruno</div>
+        <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Bruno">
+      </div>
+      <span class="fecha">2023-07-02</span>
+      <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
     </div>
+  </div>
 
-    <!-- Inicio de publicaciones -->
-
-
-
-    
-
-<div class="post-container">
-    <h2 class="post-title">Miners++</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/wr4atnybxPOK14guMMNPXtItpED6cq5caepPYKsw.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official135" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Epic Helpers</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/GiMNwPwK46B7w3VEaOOgsHxNBuOOhFQDb2F7kruX.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official134" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">XXL TNT</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/6C0N1aeK6511TLLT7DVGEMU5gg1ubx4e1jAqwUy7.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official133" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Airdrop</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/3h6kj7xgVjjZvZdCFo0acSvoTaCe7ZoAqPrS9dG9.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official132" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Storage drawers</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/33NUXlZL4AbrVewY1ndxOclRe5splPeNzZ6QPlDl.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official131" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Secret doors</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/CAfSrs4iM61gTl038JNmbvG2c7VbzW4teJWzJqIE.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official13p" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Security Vaults</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/uPGWaVCoUnIiDOy7kkCf5xqhLTpi7MGVMGLuUsJY.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official129" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">The Backrooms</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/Ou50WonvB9SFdv3UaqYCPV3T0PSUJ0Hai4neeaG0.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official128" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Ale'x Caves Addons</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/EhF8hN9KkF9bj1o5oyeVHsGH7LRidVRm1Q8eHqjX.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official127" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Nature</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/yJG4cVz63sZWdrN1yWBfTivi4ng96cLAnWQGvS1P.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official125" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">EpicBoss</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/tCW0ATxZBg34OOmijqXXOGF8W91rgczu3pge9Vvq.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official124" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Java - saturation & Regeneration</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/XIc49Ch2Vq6ZveMkRZ7K2gdYxTPigBvaX1FEC84B.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official123" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">24/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Cats Girls</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/VNYamYiWMAlilxbyYrUYqK0O8R8pRdMCZb73pmSt.webp" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official122" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Mickey Mouse</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/chOFhU6PPzFt6PYy32imTCKBjTXSe0JLGZCy3uSH.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official121" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Witherstorm</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/DddnGdeHVVKKoURxn6cdC4oqAZqIKf3xRVkaKeqS.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official119" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Clássic texture</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/uz9PJqmGCFQTh7UHnnBzXepfynf7XYOGvuFRvpyP.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official118" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">More Creepers</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/egJUWIfpYevLVIKgXNIhkiHuYUzGCfRh5L5C6DDy.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official117" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Insane Disaster</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/OAyARhMbKNPjPqeL6dhkrBimFulY59gDwstrylhj.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official116" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Biomes Animals & Structure</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/8XpSrEWSyjkkkFhuNT2CL09yShUiuHud0SOXrSfJ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official115" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Hansters</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linkyshare.com/storage/posts/thumbnails/zw0tnmD7F4oCMz386wrngZ2SRd1ahKtTCgr5oqMF.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linkyshare.com/es/@MystStart/complementos-de-minecraft-bedrock-official114" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">23/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Underwater Danger</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/ivUa1tQ2VU1IdX6sAHVi0ZAqESGlRuf6QrUZppMt.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official113" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">CuZtom Vanilla Lights</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/vqd7wVyH8uKcwYY5HsWhdNHSkdBticY6nbvGBy3v.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official112" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Lunar Moon</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/UVm6csoK2dmMUK00Zq4pmktia0HN8cWNt8mTIpxB.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official111" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Mob Action</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/BiFOR4iOdP14ZXaXShhPhes2UKSoFy0NfBXNn22v.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official110" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Blocks Update</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/TGTuMMBcRJGbgsq7M8SZfKa66Uz7jQuri84yPudM.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official109" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Giant Bugs</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/gBrCwCH0QLykCyyxOWqTEXAXPcsOZJCgoFXKvp36.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official108" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Backpacks plus+</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/W0mlEUmyAu4Dz82w0x8bDuILPK4uAV6MOOjlRXBp.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official107" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Dark Harvest</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/jl1CJqhCYqi0Fl1MYwGGZmVT3kC0M2oCY9GizZOU.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official106" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">How to Train Your Dragon</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/nb6UG13ljQh9pK6MFkSObOxsTn6tPfBTBgKxXtCe.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official105" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Utilites Bots</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/fdfFOGpQy6Qmk6nb0uDaRckRdBTey4ZF73v2I2WM.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official104" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Steven Universe</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/UJAMx0yjxKgZKv3ppzXYF0fTbxqF1V2l5QMQuVBZ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official103" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Myth and Dragons</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/cRK6XvScp6KejlUHXGGX4VypVjP11h3ZuKTsM3BF.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official102" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Castle</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/cQcFDJOdzs95uaTdF8fQNC8mr3FGQjgX9DWcpxwB.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official101" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">{THEIA DIMENSION}</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/8M0UhKvH47ipE4I9RJmXORd9A39YnqI51ncRnWvd.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official100" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Sniffer Village</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/amgMQuMr4eizrdltJgfa87VCgWWmOSRjRpMuAJve.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official99" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Connected glass</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/09DmxGdnWUeA7zDMdEO605Z1OSuxrg3JHdbTq1xo.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official98" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Cats And Dogs</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/I4oo47aBR8JkZPR3rnfjGLWoCwlNU1IKyWOnR47B.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official97" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Backpacks</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/x5hRTJ7jiKqNKfLeOf8ppHCRX4pITwAy1MET8EEk.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official96" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Cars MultiPack</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/Zwp5dVfRh5bgXIOu5lOgK9OETtU9Qsv7roPpvcJZ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official95" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Abandoned City</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/PffHOP0oZumonsCjAMYwMriFlO0dXftJCDcvLvvO.webp" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official94" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">20/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">The Boiled One</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/oeCbflXEvfWgUHDgXcAQQ31kzPazt6SgPRQDp0wx.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official93" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Capybaras+</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/xykcV7XA7m12KuqB6ATCqtMeqxI4fwqrplKasvtr.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official92" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Doors</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/Exne50vZk7dzzHuY4z9ekzAR1xcVrEO5AGUM1klw.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official91" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Fire Vooid</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/lGoyG2anqk2VinsarkCwDQ2dfK1ylhKqUipdT4b1.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official90" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Auto Factory</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/McsrEmoHVFYU7h5ItmJA6pFP6ksBfq0c4pXsI5wR.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official89" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Airplanes</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/tdGSyLTEjda1z7CRnqovQ9vxERIwD13z1QAXXIaf.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/comphttps://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official88lementos-de-minecraft-bedrock-official87" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Immersive Horror</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/BL7VMlo7XvElrh5FfvIi6CuXhNF8LB8klpMFqebR.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official87" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Dinosaurs & y Weapons</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/4Zw6dhN4nnFp5MBhIWnWcoUpbxaYJ3knpsk8qnfR.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official86" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Wings</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/6KOlfjDWHe7q305IxcDVQsbsDSWrIymxNxu8xTlE.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official85" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Damage Effects</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/KQYqqaXSq63WVQsoquCbEtL5ewPqGgQMtNveKjDD.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official84" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Biome Beyond</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/aUBmZlzLCs2tSbWxKWQ746hxVtFYqeDuTd16qhtE.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official83" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Sky Island</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/4XuKjjPCgBSGDcuROfnETrKzPPkCntGXcbnrNrK5.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official82" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">BiomaCraft</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/KRpGxXyq1aOCFeKAvDdgaNZHQX6qZYX14lhb1Oam.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official81" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Weapons</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/1HYQTUHkpEgtUeklHwjpHmxbU98MuQVi48MlPa1K.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official80" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Avatar legens</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/p6CwDKYvL6Tf1hGzZtZ2kOFtcLnpbeOWO4BmgYoe.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official79" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">More Chickens</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/bwFQ2wel5enm2Jqs43Nw2O0EoBNlDRAGKSH9dMM2.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official78" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Horse5+</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/pOJk8Iks7naL9U4nSUGaM9rnHtXYuubpzedQfbe4.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official77" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Smooth Craft</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/xZxI3NBphMdsV252WO9137VPk8fhCMAo9YKjyYt0.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official76" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">19/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Ultra Fantasy</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/Er8KCkEwRTlJr7rkM75sC1yO0I0ZeJ0S6BWD137o.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official73" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Lucky Oneblock</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/OVi99z2CYDkzO3LCfPM0W4Q6ztThBXxeB4CDOmYy.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official72" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Prima Visuals</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/qZrmCRmkFewPbVEcM0RXZlLM2qhobRWY5p0UqEt2.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official71" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Biomes Realism</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/NMjFxU65M56w3MR0HUp57hYCsZVY4HAB65oHusZM.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official70" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Mutant Creatures</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/dLFflCVTL1baJYIcpyFreZ3ibMoyAjRn1115DX7M.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official69" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Newb X Gemini</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/E1nq1kyEQtZqrmZBMG8oOdDvD4GpBg4hUFmEALBw.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official68" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Newb X Gemini</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/7yahFDuvduM2cj0DjdBZJvVRhyW1qscay0TGpx0k.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official67" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Computers Update</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/fZh1Tk4H4Qq7QEOB3wbtClmAJFDj21GVp9LcbbRf.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official66" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div> 
-<div class="post-container">
-    <h2 class="post-title">Security Add-ons</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/YB9YUYkDafLpOtEZ0sy5zroFoVtl1LD9CpfC6wDY.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official65" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Ultra Apocalypse</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/PpF3AwQSraGwFLTPJyY7a1FqAJTZzrvFvdHLaPAC.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official64" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Dino labs</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/sSs1aDDoYn2628VMynbE9evS1jKomo0kKvKT6O9c.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official63" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Ultimate OP Spawners</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/9ur0l3i2aiiWW0x8sqO1quQA4R8bUYBQiEPn8rsR.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official62" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Multipixel</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/YdOXwZbrb7oq1trkOwfEdGq5sEosKomCvwmrOUIc.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official61" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">16/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Lunar Client</h2>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    <img src="https://linky.io/storage/posts/thumbnails/l3KNpNa53F8GmcSqi0b2aNMzpMZsMaui3NRs76PZ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official59" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">15/06/2025</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Biome Survival Mash-Up</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/flfK85I5H493T8VENv6E5ZFdWWTzGJ5iaqAkPt4l.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official58" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">15/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Be a Werewolf</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/9wX3nZF1k9XWgEeuWDk3Ikyd872d5vyp32O7J7jE.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official57" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">15/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Elemento Bending</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/buLyLraMPwk9r5bsnsUsAOe74kK8KtHfhiQ1GAvF.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official56" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">15/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">MiniMap</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/C0mALyBXYXSsFfDKextR9kVKVHb7FWtmo2h6OCGZ.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official55" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">15/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Time Capsule</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/pQqh3pnaOompTEct9W5acVUc3bdJCcN9H3keyJPh.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official54" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">15/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Auto Enchants</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/2HjZzj84ndRhj2s5FewtDezWZ6J0A89mWHSR3OUf.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official53" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">13/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Shounen De Fantasy</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/A4F640K6l7Kzn0Hoz2JDkspfYpd2fHEZvTNGOAx7.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official52" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">13/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">markers v2.3.1</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/3CfeDBiXAWBBtw2rwDE4GTNfwm0roEIRo5IfaQOX.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official51" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">13/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Full Bright Night Vision</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/tHRAgO8Dcso0SZfPyNQkE8vTnppoMZAt3PdCsUoP.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official50" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">13/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Dark Creepers</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/nQy4b3U5HsEOamBXLF4CbDiHDBKqJxWBREmvzDMX.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official49" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">13/06/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Smilers</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/6sLiNX6iIgzBig8bJZ0a0B7tzjcG8KeMksBcbR3L.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official48" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Luxury cars</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/iG8IPJW7Sh5hNcTpCp0Afw2WR1Yv5YmbDMjqbXL7.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official47" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Toycat</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/XPMwJDf0S1rh92BXw1zJsSrw2oGjZI2Uyp91pByn.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official46" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Boats</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/rOLMujo0P2HHNpo3UeXcHgKStNO9uggtLSV2qpWe.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official45" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Natures</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/7JzwRPUUmXyMEiDNGneLhjBvTejMXketnB206pKp.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/en/@MystStart/minecraft-bedrock-addons-official44" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Elementals Weaponsz</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/Fcv1k23rZ6zQmJiH43wY89nde3ij7cxYs8YtX9Sd.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official43" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">MLB Fan Cave</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/1PdmIbuOC8020yrWTGy7J2G2L9DHe5bZeZ3CV4JJ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official42" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Animals</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/QmI5FVfohfQYbXr539cZBQPGdFDbBHId44NXWHmp.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official41" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">28/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">One Block v-1.5.4</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/eAZSjMRkGF19Q7Ev8rn4X13N27oK3XXRK8XtvuxL.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official40" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Fantasy ores</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/3xdGfQtxaw4Wm6SjPDTfv3qykmm62WDGVe0VRGce.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official39" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">DLCraft v1.4.2</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/L4yQjyOsoJ8GIMdTf0ixCaToiZqnk2P68xWLGqvS.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official37" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Magic Armor</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/xm8bmmn99ncFfKPkQukAIOkg7Q8iXeMRHRSRwB5v.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official36" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Warden Backrooms</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/EN86pP8teSti1FAQQdxrA7r7BRAnjXgWSIIFwr84.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official35" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Bobs Planes</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/8GTRPSiXDX5ydkYL5hbw09kBJJsh6ngYQUJdXSV0.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official34" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Wings</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/j0bZrwTRLU2iw29kymTueqGsIlc6rOgjldAek5Bw.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official33" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Portal</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/l5P3du6g05vklAxrS0J6Sx0SJReeYRFlJGhJZ1Pq.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official32" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Spawners</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/K4SleVg2OzBN0e4qLUT4NFsv20NqXchmKItHrQu2.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official31" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">SCP Assassins</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/6bY0Hy9NwdyxFEvTiANqw6AmG3pIvtDbX29FOW2L.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official30" class="download-button" target="_blank" rel="noopener noreferrer">Descargar Mod</a>
-    <p class="post-date">27/05/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Medieval Fantasy</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/wJqrh1wN8lxd0dfYTQCVtWWcgvMd7vBOVrsXlZ5R.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official28" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">26/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Night Vision</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/VkQSmMzYHHUKn2goDLjnEPrvSNo6AKw5j7eB9OLw.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official27" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">26/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">X-Ray 1.21</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/u9DrcIVQzdZqamMSyOBTNLdRtCUXcNlMiPJl5llQ.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official26" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">26/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Parasite Outbreak</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/zJ3ys59oFf9KAcx6tKBs7wPdolLqVdb2GO4ZbsPO.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official25" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">26/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Security Expancion</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/BRrb15NydfeSfcXzvUUaLYqV4yuUMWINZjq1FBem.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official24" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">25/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Security Bunker</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/xeaWZJzCHOxpCOZoeeafaurf4WQeiXYosIrjGDIS.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official23" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">25/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">DawnCraft</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/oLxl5URmBjl6Lngrcm38EYgX7kjojkTVZipKvImZ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official22" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">25/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">enderman dragon knights</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/IzbPjHslaSbtUBLOyza74PKzIxrebs42qXJQAYZL.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official21" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">25/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Biomes Mosnters</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/EoU1H4YIm4aAW1iYwx827JMigCok3T5DNTsyqdwk.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official20" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">25/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Warden Plus+</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/gas8oPwUxCPn9UlErtvp71gXyo7slzf2qycr7xXV.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official19" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Giga Chad Steve</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/cGYTFirAz2TRZOUbLtQ6uwihCr7iLRjU8Z75z7a7.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official18" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Mons In Bottele</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/mop0xGTesmLn4bxHuNs5iORX3zOqsmFzxrHWRX81.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official17" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Eternal End</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/cb43Eo5CB17KWlmuHNSCdn58aKUTCcsBmxbMJ9QO.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official29" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">26/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Sonic</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/GS7FzsidVxe2DIKzy8Il4kWjtJaLTqriG0kQSjzL.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official16" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Horror Circus</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/bPLUY3ymXSoHZ7q2ujyg036lN40G978ebj2N9UH9.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official15" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Ore Finder</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/979oRkB9VMYTCfgLrZOa3l6TryjBcRDAs5kK7TlC.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official14" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Can You Survive?</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/0nxluxHY5LWVrodv2pM3EtKv6jVQAa05WT4NbMMc.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official13" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Economy</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/VO7NK5wBFYMV6IBRI0ZO6Dg4sgRwrDtcuo4ElLiN.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official12" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Structure Generation</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/j6NvxQpIRpV7n0I3L94DyT2HUAjMywpbmknZDYEH.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official11" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Actions & Stuff</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/2U08VM8RnzeIV0FSVKiH62xDhoDW3DqVM5slWrIM.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official10" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Naturalist 3.0</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/gjGacl3l0lylSYbKgJda5U941EwJTAmgzTix2p21.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official9" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Animated RGB GUI</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/mhirP8RpcuiQNbWtBj58hsf3RgkZ3g3YI0VYm6VJ.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official8" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">DWELLERS 2.0</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/uJxEdxXincY6Nr7MqWFFfeydnSV5Xkzhk290K0rF.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official7" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Horror Survival</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/vpDXsK6QHCKpO2p0vkP85t8pBsQ325WZvhWiYypM.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official6" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Proyect Walker</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/RsgKXwKfI6K6CaiuLhbiJQZfNrcffq74x3VdDVP9.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official5" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Dinosaur Era 2.2</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/S2t6h6NktGHBlcmmgvtud75nsRlX5knwEHi1LoZR.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official4" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Health Bars 1.1</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/QM8G1pT84RNlA62zYAfCJSpsVHXVnbA24h1F4U8O.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official3" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Dinosaurs Add-On 2.2</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/robzcdphhEe9KUpgzqEfAXxkXhcp0DiFdVzUZkR6.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official2" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">The Dawn Era</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/AT8cyTQi03LFye5P0HVywEiS0qSIzygAvoVva7NR.jpg" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official1" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-</div>
-<div class="post-container">
-    <h2 class="post-title">Star Wars'c</h2>
-    <img src="https://linky.io/storage/posts/thumbnails/5zGLu21Mz14PJttlS6EAhCbEiHYDPn3k8v1yeDA0.png" alt="Imagen del mod" class="post-image">
-    <a href="https://linky.io/es/@MystStart/complementos-de-minecraft-bedrock-official0" class="download-button" target="_blank">Descargar</a>
-    <p class="post-date">24/5/2025</p>
-    <p class="compatible-version">Versión Compatible: 1.21.90</p>
-    </div>               
-
-    <script>
-    function toggleSearch() {
-        let searchBox = document.getElementById("searchInput");
-        searchBox.classList.toggle("active");
-        // Asegúrate de que el search box tenga un ancho inicial para que la transición sea visible
-        if (!searchBox.classList.contains("active")) {
-            searchBox.value = ""; // Limpia el campo al cerrarlo
-            searchPosts(); // Vuelve a mostrar todos los posts
-        }
-        searchBox.focus(); // Enfoca la caja de búsqueda cuando se activa
+  <script>
+    function filtrar() {
+      const letra = document.getElementById('buscador').value.toLowerCase();
+      const boxes = document.querySelectorAll('.box');
+      boxes.forEach(box => {
+        const nombre = box.getAttribute('data-nombre').toLowerCase();
+        box.style.display = nombre.startsWith(letra) || letra === "" ? 'block' : 'none';
+      });
     }
 
-    function searchPosts() {
-        let input = document.getElementById("searchInput").value.toLowerCase().trim();
-        let posts = document.getElementsByClassName("post-container");
-
-        // Si el campo de búsqueda está vacío, muestra todas las publicaciones
-        if (input === "") {
-            for (let post of posts) {
-                post.style.display = "flex";
-            }
-            return;
-        }
-
-        for (let post of posts) {
-            let title = post.querySelector(".post-title").innerText.toLowerCase().trim();
-            // Permite buscar por palabras completas o parciales, ignorando mayúsculas/minúsculas
-            // Filtra palabras de búsqueda vacías o muy cortas (opcional)
-            let words = input.split(" ").filter(word => word.length > 0); 
-            
-            // Comprueba si TODAS las palabras de búsqueda están incluidas en el título del post
-            let match = words.every(word => title.includes(word));
-
-            post.style.display = match ? "flex" : "none";
-        }
+    function descargarImagen(boton) {
+      const url = boton.getAttribute('data-src');
+      const nombre = boton.closest('.box').getAttribute('data-nombre') || 'imagen';
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = `${nombre}.png`;
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
     }
-
-    document.getElementById("searchInput").addEventListener("input", searchPosts);
-
-    // Asegura que las publicaciones con imagen vacía se oculten al cargar
-    document.addEventListener("DOMContentLoaded", function() {
-        let posts = document.getElementsByClassName("post-container");
-        for (let post of posts) {
-            let imageUrl = post.querySelector(".post-image")?.src;
-            // Oculta el post si la URL de la imagen está vacía o es un placeholder
-            if (!imageUrl || imageUrl.trim() === "" || imageUrl.includes("placehold.co")) { // También comprueba placehold.co
-                post.style.display = "none";
-            }
-        }
-    });
-</script>
+  </script>
 
 </body>
-</html>
+          </html>
