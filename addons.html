@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Addons MC Proyect</title>
+  <title>Galería Básica</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -109,24 +109,26 @@
   <input type="text" id="buscador" placeholder="Buscar por letra inicial..." onkeyup="filtrar()">
 
   <div id="contenedor">
-    <div class="box" data-nombre="Aurora">
-      <div class="inner-box">
-        <div class="nombre">Aurora</div>
-        <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Aurora">
-      </div>
-      <span class="fecha">2023-05-15</span>
-      <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
+  <div class="box" data-nombre="Aurora">
+    <div class="inner-box">
+      <div class="nombre">Aurora</div>
+      <div style="font-size: 12px; color: #ccc; margin-bottom: 6px;">Formato: .mcaddon</div>
+      <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Aurora">
     </div>
-
-    <div class="box" data-nombre="Bruno">
-      <div class="inner-box">
-        <div class="nombre">Bruno</div>
-        <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Bruno">
-      </div>
-      <span class="fecha">2023-07-02</span>
-      <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
-    </div>
+    <span class="fecha">2023-05-15</span>
+    <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
   </div>
+
+  <div class="box" data-nombre="Bruno">
+    <div class="inner-box">
+      <div class="nombre">Bruno</div>
+      <div style="font-size: 12px; color: #ccc; margin-bottom: 6px;">Formato: .mcaddon</div>
+      <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Bruno">
+    </div>
+    <span class="fecha">2023-07-02</span>
+    <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
+  </div>
+</div>
 
   <script>
     function filtrar() {
@@ -151,4 +153,4 @@
   </script>
 
 </body>
-          </html>
+</html>
