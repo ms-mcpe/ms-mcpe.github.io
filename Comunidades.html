@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Comunidades MC-Project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -13,31 +14,31 @@
     }
 
     .main-container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 20px;
+      max-width: 100%;
+      margin: 16px auto;
+      padding: 12px;
     }
 
     .community-box {
       background-color: #242424;
-      border-radius: 12px;
+      border-radius: 10px;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-      padding: 30px;
-      margin-bottom: 40px;
+      padding: 16px;
+      margin-bottom: 24px;
     }
 
     .community-box h2 {
       color: #00c4ff;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       text-align: center;
-      font-size: 1.6rem;
+      font-size: 1.2rem;
     }
 
     .community-box p,
     .community-box ul {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #cccccc;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .community-box ul {
@@ -53,15 +54,15 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 25px;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     .btn {
-      padding: 12px 20px;
+      padding: 10px 16px;
       border: none;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.9rem;
       cursor: pointer;
       text-decoration: none;
       color: white;
@@ -88,35 +89,30 @@
 
     .contact {
       text-align: center;
-      margin-top: 20px;
-      font-size: 0.9rem;
+      margin-top: 16px;
+      font-size: 0.85rem;
       color: #aaaaaa;
     }
 
     footer {
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #888;
-      margin-top: 40px;
+      margin-top: 24px;
     }
 
-    @media screen and (max-width: 768px) {
-      .main-container {
-        margin: 20px;
-        padding: 10px;
-      }
-
+    @media screen and (max-width: 480px) {
       .community-box {
-        padding: 20px;
+        padding: 12px;
       }
 
       .button-group {
         flex-direction: column;
-        align-items: stretch;
+        gap: 8px;
       }
 
       .btn {
-        width: 100%;
+        flex: 1 1 100%;
       }
     }
   </style>
@@ -167,4 +163,4 @@
 
   </div>
 </body>
-</html> 
+</html>
