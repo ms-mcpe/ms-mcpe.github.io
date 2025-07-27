@@ -17,25 +17,61 @@
       align-items: center;
     }
 
+    h2 {
+      color: #00c4ff;
+      margin: 20px 0 10px;
+    }
+
     input[type="text"] {
       width: 100%;
       max-width: 400px;
       padding: 10px;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       background-color: #1e1e1e;
       border: 1px solid #333;
       border-radius: 6px;
       color: #fff;
     }
 
-    #contenedor {
-      display: flex;
+    /* Botones filtro */
+    #botones-filtro {
+      margin-bottom: 20px;
+    }
+
+    .boton-filtro {
+      margin: 0 5px;
+      padding: 8px 16px;
+      background-color: #00c4ff;
+      border: none;
+      border-radius: 5px;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .boton-filtro:hover {
+      background-color: #008eb4;
+    }
+
+    .boton-filtro.active {
+      background-color: #007a99;
+      border-bottom: 2px solid #fff;
+    }
+
+    /* Contenedores de sección */
+    .contenedor {
+      display: none;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
       width: 100%;
     }
 
+    .contenedor.activo {
+      display: flex;
+    }
+
+    /* Boxes */
     .box {
       background-color: #1f1f1f;
       border-radius: 8px;
@@ -57,7 +93,7 @@
     .nombre {
       font-size: 18px;
       font-weight: bold;
-      margin: 10px 0 2px 0;
+      margin: 10px 0 2px;
       word-wrap: break-word;
     }
 
@@ -113,39 +149,26 @@
 
   <input type="text" id="buscador" placeholder="Buscar por letra inicial..." onkeyup="filtrar()">
 
-  <div id="contenedor">
-    <div class="box" data-nombre="Aurora">
-      <div class="inner-box">
-        <div class="nombre">Aurora</div>
-        <div class="formato">Formato: .mcaddon</div>
-        <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Aurora">
-        <div class="bottom-info">
-          <span class="fecha">2023-05-15</span>
-          <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="box" data-nombre="Bruno">
-      <div class="inner-box">
-        <div class="nombre">Bruno</div>
-        <div class="formato">Formato: .mcaddon</div>
-        <img src="https://i.imgur.com/Mv141nl.png" class="imagen" alt="Bruno">
-        <div class="bottom-info">
-          <span class="fecha">2023-07-02</span>
-          <button class="descargar" onclick="descargarImagen(this)" data-src="https://i.imgur.com/Mv141nl.png">Descargar</button>
-        </div>
-      </div>
-    </div>
+  <div id="botones-filtro">
+    <button id="btn-addons" onclick="mostrarSeccion('addons')" class="boton-filtro">Addons</button>
+    <button id="btn-textures" onclick="mostrarSeccion('textures')" class="boton-filtro">Texturas</button>
+    <button id="btn-mundos" onclick="mostrarSeccion('mundos')" class="boton-filtro">Mundos</button>
   </div>
 
+  <div id="seccion-addons" class="contenedor"></div>
+  <div id="seccion-textures" class="contenedor"></div>
+  <div id="seccion-mundos" class="contenedor"></div>
+
+  <!-- Bloques iniciales ocultos -->
+  
+  
+  
   <script>
     function filtrar() {
       const letra = document.getElementById('buscador').value.toLowerCase();
-      const boxes = document.querySelectorAll('.box');
-      boxes.forEach(box => {
+      document.querySelectorAll('.box').forEach(box => {
         const nombre = box.getAttribute('data-nombre').toLowerCase();
-        box.style.display = nombre.startsWith(letra) || letra === "" ? 'block' : 'none';
+        box.style.display = (nombre.startsWith(letra) || letra === "") ? 'block' : 'none';
       });
     }
 
@@ -159,7 +182,44 @@
       enlace.click();
       document.body.removeChild(enlace);
     }
+
+    function mostrarSeccion(seccion) {
+      ['addons', 'textures', 'mundos'].forEach(id => {
+        document.getElementById('seccion-' + id).classList.remove('activo');
+        document.getElementById('btn-' + id).classList.remove('active');
+      });
+      document.getElementById('seccion-' + seccion).classList.add('activo');
+      document.getElementById('btn-' + seccion).classList.add('active');
+    }
+
+    function actualizarContadores() {
+      document.getElementById('btn-addons').textContent =
+        `Addons (${document.querySelectorAll('#seccion-addons .box').length})`;
+      document.getElementById('btn-textures').textContent =
+        `Texturas (${document.querySelectorAll('#seccion-textures .box').length})`;
+      document.getElementById('btn-mundos').textContent =
+        `Mundos (${document.querySelectorAll('#seccion-mundos .box').length})`;
+    }
+
+    window.onload = () => {
+      // Clasificar bloques por formato
+      document.querySelectorAll('.box').forEach(box => {
+        const formato = box.querySelector('.formato').textContent.toLowerCase();
+        if (formato.includes('.mcaddon')) {
+          document.getElementById('seccion-addons').appendChild(box);
+        } else if (formato.includes('.mcpack')) {
+          document.getElementById('seccion-textures').appendChild(box);
+        } else if (formato.includes('.mcworld')) {
+          document.getElementById('seccion-mundos').appendChild(box);
+        }
+      });
+
+      // Mostrar sección Addons por defecto
+      mostrarSeccion('addons');
+      // Actualizar contadores en los botones
+      actualizarContadores();
+    }
   </script>
 
 </body>
-  </html>
+</html>
