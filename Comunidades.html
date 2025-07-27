@@ -7,7 +7,7 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #121212;
+      background-color: #0c0c0c;
       font-family: 'Segoe UI', sans-serif;
       color: #e0e0e0;
     }
@@ -19,9 +19,9 @@
     }
 
     .community-box {
-      background-color: #3b3b3b;
+      background-color: #242424;
       border-radius: 12px;
-      box-shadow: 0 0 25px rgba(0,0,0,0.3);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
       padding: 30px;
       margin-bottom: 40px;
     }
@@ -30,11 +30,13 @@
       color: #00c4ff;
       margin-bottom: 10px;
       text-align: center;
+      font-size: 1.6rem;
     }
 
-    .community-box p, .community-box ul {
-      font-size: 15px;
-      color: #ccc;
+    .community-box p,
+    .community-box ul {
+      font-size: 1rem;
+      color: #cccccc;
       line-height: 1.6;
     }
 
@@ -59,11 +61,13 @@
       padding: 12px 20px;
       border: none;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 1rem;
       cursor: pointer;
       text-decoration: none;
       color: white;
       transition: transform 0.2s;
+      text-align: center;
+      flex: 1 1 200px;
     }
 
     .btn:hover {
@@ -71,29 +75,49 @@
     }
 
     .whatsapp {
-      background-color: #25D366;
+      background-color: #20b558;
     }
 
     .realm {
-      background-color: #7851A9;
+      background-color: #663399;
     }
 
     .facebook {
-      background-color: #3b5998;
+      background-color: #2a3c67;
     }
 
     .contact {
       text-align: center;
       margin-top: 20px;
-      font-size: 14px;
-      color: #b9b9b9;
+      font-size: 0.9rem;
+      color: #aaaaaa;
     }
 
     footer {
       text-align: center;
-      font-size: 13px;
-      color: #777;
+      font-size: 0.85rem;
+      color: #888;
       margin-top: 40px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .main-container {
+        margin: 20px;
+        padding: 10px;
+      }
+
+      .community-box {
+        padding: 20px;
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -101,45 +125,46 @@
 
   <div class="main-container">
 
- <!-- Bloque 1: Comunidades Oficiales -->
-<div class="community-box">
-  <h2>🌍 Comunidades Oficiales de MC-Proyect</h2>
-  <p>
-    Comunidad activa con usuarios escribiendo diariamente, servidor dedicado, bot personalizado y página oficial conectada con jugadores de Minecraft Bedrock.
-  </p>
+    <!-- Bloque 1: Comunidades Oficiales -->
+    <div class="community-box">
+      <h2>🌍 Comunidades Oficiales de MC-Proyect</h2>
+      <p>
+        Comunidad activa con usuarios escribiendo diariamente, servidor dedicado, bot personalizado y página oficial conectada con jugadores de Minecraft Bedrock.
+      </p>
 
-  <div class="button-group">
-    <a class="btn facebook" href="https://facebook.com/groups/1255311589025436/" target="_blank">Grupo en Facebook</a>
-    <a class="btn whatsapp" href="https://chat.whatsapp.com/IXde2jgW6wa1EbXzAfaHiH?mode=ac_t" target="_blank">Grupo en WhatsApp</a>
+      <div class="button-group">
+        <a class="btn facebook" href="https://facebook.com/groups/1255311589025436/" target="_blank">Grupo en Facebook</a>
+        <a class="btn whatsapp" href="https://chat.whatsapp.com/IXde2jgW6wa1EbXzAfaHiH?mode=ac_t" target="_blank">Grupo en WhatsApp</a>
+      </div>
+    </div>
+
+    <!-- Bloque 2: Gorilas Army -->
+    <div class="community-box">
+      <h2>🌐 Comunidad MC-Proyect: Gorilas Army</h2>
+      <p>¡Sé parte del grupo de WhatsApp y de la comunidad oficial en alianza con MC-Proyect!</p>
+      <ul>
+        <li>Más de 440 miembros y un realm activo.</li>
+        <li>Comunidad de amigos que comparten memes, stickers, música, links y más.</li>
+        <li>¡Promociona tu comunidad o grupo!</li>
+        <li>Clanes en constante conflicto dentro del realm.</li>
+        <li>Canales dedicados a los clanes en la descripción del grupo o contactando a un admin.</li>
+      </ul>
+
+      <div class="button-group">
+        <a class="btn whatsapp" href="https://chat.whatsapp.com/K4DoCJYOBeNHmYZBEzuODP" target="_blank">Unirse al Grupo WhatsApp</a>
+        <a class="btn realm" href="https://realms.gg/4E2MQo6WFvM" target="_blank">Acceso al Realm</a>
+      </div>
+
+      <div class="contact">
+        Para más información, contacte al representante de la comunidad:<br>
+        <strong>+52 984 190 1463</strong>
+      </div>
+    </div>
+
+    <footer>
+      © JR-TechStudios | Diseño por Myst
+    </footer>
+
   </div>
-</div>
-
-<!-- Bloque 2: Gorilas Army -->
-<div class="community-box">
-  <h2>🌐 Comunidad MC-Proyect: Gorilas Army</h2>
-  <p>¡Sé parte del grupo de WhatsApp y de la comunidad oficial en alianza con MC-Proyect!</p>
-  <ul>
-    <li>Más de 440 miembros y un realm activo.</li>
-    <li>Comunidad de amigos que comparten memes, stickers, música, links y más.</li>
-    <li>¡Promociona tu comunidad o grupo!</li>
-    <li>Clanes en constante conflicto dentro del realm.</li>
-    <li>Canales dedicados a los clanes en la descripción del grupo o contactando a un admin.</li>
-  </ul>
-
-  <div class="button-group">
-    <a class="btn whatsapp" href="https://chat.whatsapp.com/K4DoCJYOBeNHmYZBEzuODP" target="_blank">Unirse al Grupo WhatsApp</a>
-    <a class="btn realm" href="https://realms.gg/4E2MQo6WFvM" target="_blank">Acceso al Realm</a>
-  </div>
-
-  <div class="contact">
-    Para más información, contacte al representante de la comunidad:<br>
-    <strong>+52 984 190 1463</strong>
-  </div>
-</div>
-
-  <footer>
-    © JR-TechStudios | Diseño por Myst
-  </footer>
-
 </body>
-</html>
+</html> 
