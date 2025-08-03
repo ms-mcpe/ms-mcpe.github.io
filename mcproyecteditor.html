@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>editor addons mc proyect</title>
+  <title>Editor Addons MC Project</title>
   <style>
     body {
       background-color: #121212;
@@ -20,30 +20,28 @@
       padding: 20px;
       border: 4px solid transparent;
       border-radius: 10px;
-      /* Capa 1: fondo sólido / Capa 2: gradiente animado para el borde */
       background-image:
         linear-gradient(#1e1e1e, #1e1e1e),
-        linear-gradient(45deg, #ff0040, #00ffd5, #fffc00, #ff0040, #ff0000, #ff4000, #ff8000, #ffbf00, #ffff00,
-        #bfff00, #80ff00, #40ff00, #00ff00, #00ff40,
-        #00ff80, #00ffbf, #00ffff, #00bfff, #0080ff,
-        #0040ff, #0000ff, #4000ff, #8000ff, #bf00ff,
-        #ff00ff, #ff00bf, #ff0080, #ff0040, #ff0022,
-        #ff0055, #ff0099, #ff00cc, #cc00ff, #9900ff,
-        #6600ff, #3300ff, #0000ff, #0033ff, #0066ff,
-        #0099ff, #00ccff, #00ffff, #00ffcc, #00ff99,
-        #00ff66, #00ff33, #00ff00);
+        linear-gradient(45deg,
+          #ff0040, #00ffd5, #fffc00, #ff0040, #ff0000, #ff4000, #ff8000, #ffbf00, #ffff00,
+          #bfff00, #80ff00, #40ff00, #00ff00, #00ff40, #00ff80, #00ffbf, #00ffff, #00bfff,
+          #0080ff, #0040ff, #0000ff, #4000ff, #8000ff, #bf00ff, #ff00ff, #ff00bf, #ff0080,
+          #ff0040, #ff0022, #ff0055, #ff0099, #ff00cc, #cc00ff, #9900ff, #6600ff, #3300ff,
+          #0000ff, #0033ff, #0066ff, #0099ff, #00ccff, #00ffff, #00ffcc, #00ff99, #00ff66,
+          #00ff33, #00ff00
+        );
       background-origin: padding-box, border-box;
       background-clip: padding-box, border-box;
       background-size: auto, 400% 400%;
       background-position: center, 0% 50%;
-      animation: gradientBorder 8s ease infinite;
-      max-width: 500px;
-      width: 70%;
+      animation: gradientBorder 8s linear infinite;
+      max-width: 600px;
+      width: 90%;
     }
 
     @keyframes gradientBorder {
       0%   { background-position: center, 0% 50%; }
-      50%  { background-position: center, 50% 50%; }
+      50%  { background-position: center, 100% 50%; }
       100% { background-position: center, 0% 50%; }
     }
 
@@ -77,19 +75,30 @@
       font-weight: bold;
     }
 
-    pre {
+    #resultado {
       margin-top: 20px;
       background-color: #2a2a2a;
       padding: 15px;
       border-radius: 8px;
       white-space: pre-wrap;
     }
+
+    #copiar {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #fffc00;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <form onsubmit="generarTexto(event)">
-      <h2>🎮 text Addon MC Proyect</h2>
+      <h2>🎮 Text Addon MC Project</h2>
 
       <label for="nombre">Nombre:</label>
       <input type="text" id="nombre" required>
@@ -100,7 +109,7 @@
       <label for="descripcion">Descripción:</label>
       <textarea id="descripcion" rows="3" required></textarea>
 
-      <label for="link">Link (debe contener “enalces correctos”):</label>
+      <label for="link">Link (debe contener “cuty.io”):</label>
       <input type="text" id="link" required>
 
       <label for="formato">Formato:</label>
@@ -113,35 +122,44 @@
 
       <label for="decorativos">¿Símbolos decorativos?</label>
       <select id="decorativos">
-        <option value="si">Sí</option>
-        <option value="no">No</option>
+        <option value="si">canal WhatsApp</option>
+        <option value="no">MC Project</option>
       </select>
 
       <button type="submit">Generar</button>
     </form>
 
     <pre id="resultado"></pre>
+    <button id="copiar" onclick="copiarTexto()">📋 Copiar texto</button>
   </div>
 
   <script>
     function generarTexto(e) {
       e.preventDefault();
-      const nombre      = nombre.value.trim();
-      const version     = version.value.trim();
-      const descripcion = descripcion.value.trim();
-      const link        = link.value.trim();
-      const formato     = formato.value;
-      const decorativos = decorativos.value;
+      const nombre      = document.getElementById('nombre').value.trim();
+      const version     = document.getElementById('version').value.trim();
+      const descripcion = document.getElementById('descripcion').value.trim();
+      const link        = document.getElementById('link').value.trim();
+      const formato     = document.getElementById('formato').value;
+      const decorativos = document.getElementById('decorativos').value;
 
       if (!link.toLowerCase().includes("cuty.io")) {
-        return alert("❌ El enlace debe contener su formato official");
+        alert("❌ El enlace debe contener 'cuty.io'.");
+        return;
       }
 
       let texto = decorativos === "si"
         ? `🌟 *${nombre}* 🌟\n\n*📁 formato:* ${formato}\n\n*📃 Versión:* \`${version}\`\n\n*📜 descripción*\n\n${descripcion}\n\n🔗 *Link:* ${link}`
         : `🌟 ${nombre} 🌟\n\n📁 formato: ${formato}\n\n📃 Versión: ${version}\n\n📜 descripción\n\n${descripcion}\n\n🔗 Link: ${link}`;
 
-      resultado.textContent = texto;
+      document.getElementById('resultado').textContent = texto;
+    }
+
+    function copiarTexto() {
+      const resultado = document.getElementById('resultado');
+      navigator.clipboard.writeText(resultado.textContent)
+        .then(() => alert("✅ Texto copiado al portapapeles"))
+        .catch(() => alert("❌ No se pudo copiar el texto"));
     }
   </script>
 </body>
