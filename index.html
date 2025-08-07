@@ -1,232 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minetutoriales - Tu Guía para Minecraft</title>
-    <style>
-        /* Estilos básicos para el cuerpo y fuentes */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adiós Myst Start</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0f0f0f;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+    }
 
-        /* Estilos de la cabecera */
-        header {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 5px solid #e67e22;
-        }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 3em;
-            text-shadow: 2px 2px #34495e;
-        }
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
 
-        /* Estilos de la navegación */
-        nav {
-            background-color: #34495e;
-            padding: 10px 0;
-            text-align: center;
-        }
+    p {
+      margin-bottom: 20px;
+      text-align: justify;
+    }
 
-        nav a {
-            color: #ecf0f1;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 1.2em;
-            transition: color 0.3s ease;
-        }
+    .signature {
+      text-align: right;
+      font-style: italic;
+      color: #888;
+    }
 
-        nav a:hover {
-            color: #e67e22;
-        }
-
-        /* Contenido principal */
-        main {
-            padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .hero {
-            text-align: center;
-            background-color: #ffffff;
-            padding: 40px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero h2 {
-            color: #e67e22;
-            font-size: 2.5em;
-        }
-
-        .hero p {
-            font-size: 1.2em;
-            line-height: 1.6;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: #e67e22;
-            color: #ffffff;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #d35400;
-        }
-
-        /* Sección de tutoriales */
-        .tutorial-section {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .tutorial-section h2 {
-            text-align: center;
-            color: #2c3e50;
-            border-bottom: 2px solid #e67e22;
-            padding-bottom: 10px;
-        }
-
-        .tutorials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .tutorial-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #f9f9f9;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .tutorial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .tutorial-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .card-content h3 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
-
-        .card-content p {
-            font-size: 0.9em;
-            line-height: 1.5;
-        }
-
-        /* Estilos del pie de página */
-        footer {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            text-align: center;
-            padding: 20px 0;
-            margin-top: 20px;
-            border-top: 5px solid #e67e22;
-        }
-    </style>
+    .highlight {
+      color: #00ffff;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-
-    <header>
-        <h1>Minetutoriales</h1>
-        <p>Tu aventura en Minecraft comienza aquí</p>
-    </header>
-
-    <nav>
-        <a href="#inicio">Inicio</a>
-        <a href="#tutoriales">Tutoriales</a>
-        <a href="#sobre-nosotros">Sobre Nosotros</a>
-        <a href="#contacto">Contacto</a>
-    </nav>
-
-    <main>
-        <section class="hero" id="inicio">
-            <h2>¡Bienvenido al Mundo de Minecraft!</h2>
-            <p>Descubre los secretos de la supervivencia, la construcción y la minería. Nuestros tutoriales te guiarán paso a paso, desde tu primer bloque hasta tu primera granja automática.</p>
-            <a href="#tutoriales" class="btn">Empezar a Aprender</a>
-        </section>
-
-        <hr>
-
-        <section class="tutorial-section" id="tutoriales">
-            <h2>Tutoriales para Principiantes</h2>
-            <div class="tutorials-grid">
-                <div class="tutorial-card">
-                    <img src="https://via.placeholder.com/400x200?text=Primeros+Pasos" alt="Primeros Pasos en Minecraft">
-                    <div class="card-content">
-                        <h3>Tus Primeros Pasos</h3>
-                        <p>Aprende a crear tu primer mundo, recoger madera, fabricar herramientas básicas y construir tu primer refugio antes de que caiga la noche.</p>
-                        <a href="#" class="btn">Ver Tutorial</a>
-                    </div>
-                </div>
-
-                <div class="tutorial-card">
-                    <img src="https://via.placeholder.com/400x200?text=Minando+y+Recogiendo" alt="Minando y Recogiendo Recursos">
-                    <div class="card-content">
-                        <h3>Minando y Recogiendo</h3>
-                        <p>Descubre los minerales más importantes como el carbón, el hierro y el diamante. Te enseñaremos las técnicas de minería más seguras y eficientes.</p>
-                        <a href="#" class="btn">Ver Tutorial</a>
-                    </div>
-                </div>
-
-                <div class="tutorial-card">
-                    <img src="https://via.placeholder.com/400x200?text=Granjas+Autom%C3%A1ticas" alt="Granjas Automáticas y Redstone">
-                    <div class="card-content">
-                        <h3>Granjas y Redstone</h3>
-                        <p>Una vez que domines lo básico, te mostraremos cómo construir granjas automáticas y usar la redstone para automatizar tu mundo.</p>
-                        <a href="#" class="btn">Ver Tutorial</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <hr>
-
-        <section class="info-section" id="sobre-nosotros">
-            <h2>Sobre Nosotros</h2>
-            <p>Somos un grupo de entusiastas de Minecraft dedicados a compartir nuestro conocimiento y ayudar a nuevos jugadores a disfrutar al máximo de este increíble juego. Nuestra misión es ser tu guía de confianza.</p>
-        </section>
-
-        <section class="info-section" id="contacto">
-            <h2>Contacto</h2>
-            <p>¿Tienes alguna pregunta o sugerencia? ¡Nos encantaría escucharte! Contáctanos a través de nuestro correo electrónico: contacto@minetutoriales.com</p>
-        </section>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Minetutoriales. Todos los derechos reservados.</p>
-    </footer>
-
+  <div class="container">
+    <h1>Mi despedida</h1>
+    <p>
+      Me despido de todos aquellos que me conocen por redes, por comunidades de WhatsApp o Facebook. 
+      <span class="highlight">Gracias</span> por contar conmigo, por esperar mis proyectos, por confiar en mí y por toda la fe que le dieron a mis ideas. 
+      Gracias por todo el apoyo, por todo el amor, por todo.
+    </p>
+    <p>
+      Actualmente me despido. Sé que es algo repentino, algo triste, o incluso sé que algunos no les va a importar. 
+      Pero quiero decirles que <span class="highlight">agradezco</span> todo lo que hicieron por mí, por mis comunidades. 
+      Realmente no odio a nadie, incluso a las personas que insultaron o dijeron algo mal. 
+      El proyecto ya está en el proyecto, y las personas que no lo dieron, gracias por confiar en mí.
+    </p>
+    <p>
+      Tengo razones personales para retirarme, razones personales para decir adiós. 
+      Pero tengan en cuenta que para mí, <span class="highlight">ustedes fueron una familia</span>, ustedes <span class="highlight">son mi familia</span>. 
+      Soy del tipo de persona que pasa todo el tiempo de su vida solo, pegado a una simple pantalla, tratando de ser mejor y de dar lo mejor simplemente por el bien de los demás.
+    </p>
+    <p>
+      Realmente soy una persona que es feliz viendo a los demás felices, pero nunca encuentra su propia felicidad. 
+      Agradezco muchas cosas, incluso a los amigos que hice dentro de mis comunidades. 
+      Algunos me hicieron su superior, cuando simplemente era una persona más. 
+      Me vieron como su líder, como su jefe, mientras solo era una persona más en este mundo.
+    </p>
+    <p>
+      Tal vez no merezco el rol de superioridad, cuando nunca supe cómo socializar bien con las personas, nunca supe cómo hablarle a una persona. 
+      Y con ustedes aprendí muchas cosas. 
+      Realmente agradezco todo el tiempo que me brindaron, cada risa que tuvimos juntos, todos los servidores. 
+      Todos formarán parte de mi corazón, formarán parte de mi vida, formarán parte de mí.
+    </p>
+    <p>
+      <span class="highlight">Gracias por creer en mí.</span> Y esta es mi despedida.
+    </p>
+    <p class="signature">— Myst</p>
+  </div>
 </body>
 </html>
