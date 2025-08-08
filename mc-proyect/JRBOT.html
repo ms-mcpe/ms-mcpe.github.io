@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MC Addons Bot</title>
+  <style>
+    /* --- Estilos Generales --- */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .chat-container {
+      width: 360px;
+      height: 600px;
+      background: #121212;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0,150,136,0.3);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Trigger para mostrar lista de comandos */
+    #cmd-list-trigger {
+      padding: 8px 16px;
+      cursor: pointer;
+      color: #00ff99;
+      border-bottom: 1px solid #222;
+      user-select: none;
+    }
+    #commands-list {
+      display: none;
+      margin: 0;
+      padding: 8px 16px;
+      list-style: none;
+      background: #121212;
+      color: #aaa;
+      font-size: 14px;
+    }
+    #commands-list li {
+      margin-bottom: 6px;
+    }
+
+    /* Ventana de chat */
+    #chat {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    /* Input */
+    .input-container {
+      display: flex;
+      border-top: 1px solid #222;
+    }
+    .input-container input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: #1f1f1f;
+      color: #fff;
+      outline: none;
+      font-size: 14px;
+    }
+    .input-container button {
+      padding: 0 16px;
+      background: #00ff99;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .input-container button:hover {
+      background: #00e68a;
+    }
+
+    /* Burbujas de mensaje */
+    .message {
+      margin-bottom: 12px;
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      line-height: 1.4em;
+      word-break: break-word;
+    }
+    .message.user {
+      background: #272727;
+      margin-left: auto;
+      border-right: 4px solid #ff3399;
+    }
+    .message.bot {
+      background: #1b1b1b;
+      border-left: 4px solid #00ff99;
+    }
+
+    /* Caja de addon / versión */
+    .addon-box {
+      background: #1b1b1b;
+      border: 1px solid #00ff99;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .addon-box .addon-title {
+      font-weight: bold;
+      color: #00ff99;
+      margin-bottom: 6px;
+    }
+    .addon-box .addon-format,
+    .addon-box .addon-version {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+    .addon-box img {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .download-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #00ff99;
+      color: #000;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 13px;
+      transition: background .2s;
+    }
+    .download-btn:hover {
+      background: #00e68a;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Trigger para listar comandos -->
+    <div id="cmd-list-trigger">Mostrar comandos</div>
+    <ul id="commands-list">
+      <li><code>-tutorial</code> — Lista tutoriales paso a paso</li>
+      <li><code>-versión</code> — Última versión de Minecraft</li>
+      <li><code>-addon &lt;término&gt;</code> — Buscar addons por prefijo</li>
+    </ul>
+
+    <!-- Chat -->
+    <div id="chat"></div>
+
+    <!-- Input -->
+    <div class="input-container">
+      <input id="userInput" placeholder="Escribe comando o número..." />
+      <button id="sendBtn">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    // Estructura de comandos fácil de ampliar
+    const COMMANDS = {
+      "-tutorial": {
+        steps: [
+          {
+            title: "Iniciar sesión",
+            detail: "1) Abre Minecraft Bedrock. 2) Haz clic en 'Iniciar sesión'. 3) Ingresa tu correo y contraseña de Microsoft. 4) Confirma y espera a que cargue tu perfil."
+          },
+          {
+            title: "Crear un mundo",
+            detail: "1) En el menú principal, haz clic en 'Jugar'. 2) Pulsa 'Crear nuevo'. 3) Elige modo: 'Creativo', 'Supervivencia' o 'Aventura'. 4) Ajusta nombre y permisos. 5) Presiona 'Crear'."
+          },
+          {
+            title: "Unirse a un servidor",
+            detail: "1) En 'Jugar', ve a la pestaña 'Servidores'. 2) Elige uno preconfigurado o añade IP manualmente. 3) Ingresa dirección y puerto. 4) Presiona 'Unirse' y ¡disfruta!"
+          },
+          {
+            title: "Configurar ajustes",
+            detail: "1) Ve a 'Configuración' desde el menú principal. 2) Ajusta controles, video, audio y accesibilidad. 3) Guarda y retrocede para jugar con tu perfil personalizado."
+          },
+          {
+            title: "Instalar mods/addons",
+            detail: "1) Descarga un archivo .mcaddon o .mcpack. 2) Ábrelo y acepta los permisos. 3) Minecraft importará el addon. 4) Ve a 'Recursos globales' y actívalo en tu mundo."
+          },
+          {
+            title: "Multijugador LAN",
+            detail: "1) Crea un mundo y activa 'Multijugador LAN'. 2) Tus amigos en la misma red verán tu partida en la pestaña 'Amigos'. 3) Selecciónalo y únete."
+          }
+        ],
+        isTutorialMode: false
+      },
+
+      "-versión": {
+        action: () => {
+          sendBot(`
+            <div class="addon-box">
+              <div class="addon-title">Minecraft</div>
+              <div class="addon-version">Versión: 1.21.0</div>
+              <img src="https://via.placeholder.com/300x150?text=Minecraft+1.21.0" alt="Minecraft 1.21.0" />
+              <a href="#" class="download-btn">Descargar</a>
+            </div>
+          `);
+        }
+      },
+
+      "-addon": {
+        action: term => {
+          const matches = ADDONS.filter(a =>
+            a.name.toLowerCase().startsWith(term.toLowerCase())
+          );
+          if (!matches.length) {
+            sendBot(`No se encontraron addons que empiecen con "<b>${term}</b>".`);
+            return;
+          }
+          matches.forEach(a => {
+            sendBot(`
+              <div class="addon-box">
+                <div class="addon-title">${a.name}</div>
+                <div class="addon-format">Formato: ${a.format}</div>
+                <img src="${a.img}" alt="${a.name}" />
+                <a href="${a.url}" class="download-btn">Descargar</a>
+              </div>
+            `);
+          });
+        }
+      }
+    };
+
+    // Datos de ejemplo: fácil de añadir más addons
+    const ADDONS = [
+     { name: "AdvTools",      format: ".mcaddon", img: "https://via.placeholder.com/300x150?text=AdvTools",      url: "#" },
+      { name: "AquaExpansion", format: ".mcpack",  img: "https://via.placeholder.com/300x150?text=AquaExp",        url: "#" },
+      { name: "BetterAnimals", format: ".mcpack",  img: "https://via.placeholder.com/300x150?text=BetterAnimals",  url: "#" }
+    ];
+
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("userInput");
+    const btn   = document.getElementById("sendBtn");
+    const cmdTrigger = document.getElementById("cmd-list-trigger");
+    const cmdList = document.getElementById("commands-list");
+
+    // Enviar mensaje del bot
+    function sendBot(html) {
+      const m = document.createElement("div");
+      m.classList.add("message", "bot");
+      m.innerHTML = html;
+      chat.appendChild(m);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Enviar mensaje del usuario
+    function sendUser(text) {
+      const m = document.createElement("div");
+      m.classList.add("message", "user");
+      m.textContent = text;
+      chat.appendChild(m);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Manejo de entrada con delay
+    function handleInput(raw) {
+      const text = raw.trim();
+      if (!text) return;
+
+      sendUser(text);
+      input.value = "";
+
+      setTimeout(() => {
+        // Si estamos en modo tutorial y el usuario elige un paso
+        const tut = COMMANDS["-tutorial"];
+        if (tut.isTutorialMode && /^\d+$/.test(text)) {
+          const idx = parseInt(text, 10) - 1;
+          if (tut.steps[idx]) {
+            sendBot(`<div class="addon-title">${tut.steps[idx].title}</div>
+                     <p style="color:#ccc;">${tut.steps[idx].detail}</p>`);
+            return;
+          }
+        }
+
+        // Procesar comando con argumentos
+        const parts = text.split(" ");
+        const cmd = parts[0].toLowerCase();
+        const arg = parts.slice(1).join(" ");
+
+        if (cmd === "-tutorial" && COMMANDS["-tutorial"]) {
+          // Listar tutoriales numerados
+          const list = COMMANDS["-tutorial"].steps
+            .map((s,i) => `<li>${i+1}. ${s.title}</li>`)
+            .join("");
+          sendBot(`<div class="addon-title">Tutoriales disponibles</div>
+                   <ul style="padding-left:20px;color:#ccc;margin:0;">${list}</ul>
+                   <p style="color:#aaa;">Escribe el número para ver el paso detallado.</p>`);
+          COMMANDS["-tutorial"].isTutorialMode = true;
+        }
+        else if (COMMANDS[cmd] && typeof COMMANDS[cmd].action === "function") {
+          // Ejecutar acción de comando
+          COMMANDS[cmd].action(arg);
+          // Salir de modo tutorial si fue otro comando
+          if (cmd !== "-tutorial") COMMANDS["-tutorial"].isTutorialMode = false;
+        }
+        else {
+          sendBot("🤖 Comando no reconocido. Pulsa ‘Mostrar comandos’ para ver la lista.");
+          COMMANDS["-tutorial"].isTutorialMode = false;
+        }
+      }, 3000);
+    }
+
+    // Eventos
+    btn.addEventListener("click", () => handleInput(input.value));
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") handleInput(input.value);
+    });
+    cmdTrigger.addEventListener("click", () => {
+      cmdList.style.display = cmdList.style.display === "none" ? "block" : "none";
+    });
+
+    // Mensaje de bienvenida
+    sendBot("¡Hola! soy JRBOT pulsa ^ para continuar.");
+  </script>
+</body>
+</html>
