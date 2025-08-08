@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crear Addon Minecraft</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #111;
+      color: #eee;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ff99;
+    }
+
+    .form-container {
+      max-width: 500px;
+      margin: 0 auto 30px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,255,153,0.2);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #ccc;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #222;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .form-group select {
+      appearance: none;
+      background-image: url('data:image/svg+xml,<svg fill="%23aaa" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #00ff99;
+      border: none;
+      border-radius: 4px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn:hover {
+      background: #00e68a;
+    }
+
+    #preview {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .addon-box {
+      background: #1b1b1b;
+      border: 1px solid #00ff99;
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .addon-box .addon-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00ff99;
+      margin-bottom: 8px;
+    }
+    .addon-box .addon-format {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+    .addon-box img {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .addon-box .addon-url {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #00ff99;
+      color: #000;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 13px;
+      transition: background .2s;
+    }
+    .addon-box .addon-url:hover {
+      background: #00e68a;
+    }
+
+    pre {
+      background: #222;
+      padding: 12px;
+      border-radius: 4px;
+      overflow-x: auto;
+      color: #ccc;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Crear Nuevo Addon</h1>
+
+  <div class="form-container">
+    <div class="form-group">
+      <label for="name">Nombre del Addon</label>
+      <input type="text" id="name" placeholder="ArmorPlus" />
+    </div>
+
+    <div class="form-group">
+      <label for="format">Formato</label>
+      <select id="format">
+        <option value=".mcaddon">.mcaddon</option>
+        <option value=".mcpack">.mcpack</option>
+        <option value=".mcworld">.mcworld</option>
+        <option value=".mctemplate">.mctemplate</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="img">URL de la Imagen</label>
+      <input type="url" id="img" placeholder="https://..." />
+    </div>
+
+    <div class="form-group">
+      <label for="url">URL de Descarga</label>
+      <input type="url" id="url" placeholder="https://..." />
+    </div>
+
+    <button class="btn" id="addBtn">Agregar Addon</button>
+  </div>
+
+  <div id="preview"></div>
+
+  <script>
+    const preview = document.getElementById('preview');
+    const btn = document.getElementById('addBtn');
+
+    function renderAddon(a) {
+      const box = document.createElement('div');
+      box.className = 'addon-box';
+      box.innerHTML = `
+        <div class="addon-title">${a.name}</div>
+        <div class="addon-format">Formato: ${a.format}</div>
+        <img src="${a.img}" alt="${a.name}" />
+        <a href="${a.url}" class="addon-url" target="_blank">Descargar</a>
+      `;
+      preview.appendChild(box);
+
+      // Mostrar estructura JS en consola y en pantalla
+      const objStr = JSON.stringify(a, null, 2);
+      console.log(objStr);
+      const pre = document.createElement('pre');
+      pre.textContent = objStr;
+      preview.appendChild(pre);
+    }
+
+    btn.addEventListener('click', () => {
+      const name   = document.getElementById('name').value.trim();
+      const format = document.getElementById('format').value;
+      const img    = document.getElementById('img').value.trim();
+      const url    = document.getElementById('url').value.trim();
+
+      if (!name || !img || !url) {
+        alert('Por favor completa todos los campos.');
+        return;
+      }
+
+      const addon = { name, format, img, url };
+      renderAddon(addon);
+
+      // Limpiar campos
+      document.getElementById('name').value = '';
+      document.getElementById('img').value  = '';
+      document.getElementById('url').value  = '';
+    });
+  </script>
+</body>
+</html>
