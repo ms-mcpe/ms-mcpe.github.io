@@ -121,6 +121,26 @@
       color: #ccc;
       white-space: nowrap;
       overflow-x: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .copy-btn {
+      margin-left: 10px;
+      padding: 6px 10px;
+      background: #00ff99;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .copy-btn:hover {
+      background: #00e68a;
     }
   </style>
 </head>
@@ -174,10 +194,26 @@
       `;
       preview.appendChild(box);
 
-      // Mostrar código en una sola línea
+      const code = `{ name: "${a.name}", format: "${a.format}", img: "${a.img}", url: "${a.url}" },`;
+
       const line = document.createElement('div');
       line.className = 'code-line';
-      line.textContent = `{ name: "${a.name}", format: "${a.format}", img: "${a.img}", url: "${a.url}" },`;
+
+      const span = document.createElement('span');
+      span.textContent = code;
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.textContent = '📋 Copiar código';
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(code).then(() => {
+          copyBtn.textContent = '✅ Copiado';
+          setTimeout(() => copyBtn.textContent = '📋 Copiar código', 1500);
+        });
+      });
+
+      line.appendChild(span);
+      line.appendChild(copyBtn);
       preview.appendChild(line);
     }
 
