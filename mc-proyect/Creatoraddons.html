@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crear Addon Minecraft</title>
+  <title>Generador de Addons Minecraft</title>
   <style>
     body {
       margin: 0;
@@ -113,24 +113,25 @@
       background: #00e68a;
     }
 
-    pre {
+    .code-line {
       background: #222;
-      padding: 12px;
+      padding: 10px;
       border-radius: 4px;
-      overflow-x: auto;
-      color: #ccc;
       font-size: 13px;
+      color: #ccc;
+      white-space: nowrap;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
 
-  <h1>Crear Nuevo Addon</h1>
+  <h1>Generador de Addons</h1>
 
   <div class="form-container">
     <div class="form-group">
       <label for="name">Nombre del Addon</label>
-      <input type="text" id="name" placeholder="ArmorPlus" />
+      <input type="text" id="name" placeholder="Ej: ArmorPlus" />
     </div>
 
     <div class="form-group">
@@ -153,7 +154,7 @@
       <input type="url" id="url" placeholder="https://..." />
     </div>
 
-    <button class="btn" id="addBtn">Agregar Addon</button>
+    <button class="btn" id="addBtn">Generar Addon</button>
   </div>
 
   <div id="preview"></div>
@@ -173,12 +174,11 @@
       `;
       preview.appendChild(box);
 
-      // Mostrar estructura JS en consola y en pantalla
-      const objStr = JSON.stringify(a, null, 2);
-      console.log(objStr);
-      const pre = document.createElement('pre');
-      pre.textContent = objStr;
-      preview.appendChild(pre);
+      // Mostrar código en una sola línea
+      const line = document.createElement('div');
+      line.className = 'code-line';
+      line.textContent = `{ name: "${a.name}", format: "${a.format}", img: "${a.img}", url: "${a.url}" },`;
+      preview.appendChild(line);
     }
 
     btn.addEventListener('click', () => {
