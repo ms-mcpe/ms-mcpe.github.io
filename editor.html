@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Editor Live con ZIP y Teclado</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Live con ZIP</title>
 
   <!-- CodeMirror CSS -->
   <link
@@ -21,10 +21,12 @@
       height: 100%;
       font-family: sans-serif;
     }
+
     #app {
       display: flex;
       height: 100%;
     }
+
     #editorPanel {
       width: 50%;
       display: flex;
@@ -32,10 +34,12 @@
       background: #2b303b;
       color: #c0c5ce;
     }
+
     #tabs {
       display: flex;
       background: #3b3f4a;
     }
+
     #tabs button {
       flex: 1;
       padding: 10px;
@@ -44,40 +48,50 @@
       color: inherit;
       cursor: pointer;
     }
+
     #tabs .active {
       background: #4b5170;
     }
+
     .codeContainer {
       flex: 1;
-     ;
+      position: relative;
     }
+
     .codeContainer textarea {
       display: none;
     }
+
     .CodeMirror {
       position: absolute;
-      top: 0; right: 0; bottom: 0; left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       border: 1px solid #4b5170;
       border-radius: 4px;
-      z-index: 1;
     }
+
     #previewPanel {
       width: 50%;
       border-left: 1px solid #4b5170;
       position: relative;
     }
+
     #preview {
       width: 100%;
       height: 100%;
       border: none;
       background: white;
     }
+
     #controls {
       position: absolute;
       top: 10px;
       right: 10px;
-      z-index: 2;
+      z-index: 10;
     }
+
     #controls button {
       margin-left: 8px;
       padding: 6px 12px;
@@ -140,6 +154,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
 
   <script>
+    // Referencias y configuración común
     const tabs        = document.querySelectorAll('#tabs button');
     const containers  = {
       html: document.getElementById('htmlContainer'),
@@ -162,14 +177,13 @@
       js:   CodeMirror.fromTextArea(document.getElementById('jsCode'),  { mode: 'javascript',...commonOpts })
     };
 
-    // Mostrar/Ocultar pestañas y poner foco
+    // Mostrar/Ocultar pestañas
     function showTab(tab) {
       tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
       Object.keys(containers).forEach(key => {
         containers[key].style.display = key === tab ? 'block' : 'none';
       });
       editors[tab].refresh();
-      editors[tab].focus();                // <— enfocamos aquí
     }
 
     // Actualizar vista previa
@@ -242,9 +256,8 @@ ${editors.html.getValue()}
     toggleBtn.addEventListener('click', toggleTheme);
 
     // Inicialización
-    showTab('html');                // Esto refresca, muestra y hace focus en HTML
+    showTab('html');
     updatePreview();
-    editors.html.focus();           // <— aseguramos foco al cargar
   </script>
 </body>
 </html>
