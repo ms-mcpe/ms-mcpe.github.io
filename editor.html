@@ -2,52 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Editor HTML Live – Tema Oscuro</title>
-
-  <!-- Estilos globales -->
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
-      font-family: sans-serif;
-      background: #2b303b;
-      color: #c0c5ce;
-    }
-    .editor-container {
-      display: flex;
-      flex: 1;
-      gap: 10px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-    .CodeMirror {
-      height: 100%;
-      border: 1px solid #4b5170;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    #preview {
-      flex: 1;
-      border: 1px solid #4b5170;
-      border-radius: 4px;
-      background: white;
-    }
-    .controls {
-      padding: 10px;
-      text-align: right;
-      background: #3b3f4a;
-      border-top: 1px solid #4b5170;
-    }
-    .controls button {
-      padding: 8px 16px;
-      font-size: 14px;
-      margin-left: 8px;
-    }
-  </style>
-
-  <!-- CodeMirror 5 desde CDN -->
+  <title>Editor Live con Pestañas</title>
+  <!-- CodeMirror CSS -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
@@ -56,110 +12,205 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
   />
+  <style>
+    /* Reset y contenedor principal */
+    body, html {
+      margin: 0;
+      height: 100%;
+      font-family: sans-serif;
+    }
+    #app {
+      display: flex;
+      height: 100%;
+    }
+
+    /* Panel lateral de código */
+    #editorPanel {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      background: #2b303b;
+      color: #c0c5ce;
+    }
+    #tabs {
+      display: flex;
+      background: #3b3f4a;
+    }
+    #tabs button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    #tabs .active {
+      background: #4b5170;
+    }
+    .codeContainer {
+      flex: 1;
+      position: relative;
+    }
+    .codeContainer textarea {
+      display: none;
+    }
+    .codeContainer .CodeMirror {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+    }
+
+    /* Panel de vista previa */
+    #previewPanel {
+      width: 50%;
+      border-left: 1px solid #4b5170;
+      position: relative;
+    }
+    #preview {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    /* Barra de controles */
+    #controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+    #controls button {
+      margin-left: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <!-- Panel de pestañas y editores -->
+    <div id="editorPanel">
+      <div id="tabs">
+        <button data-tab="html" class="active">HTML</button>
+        <button data-tab="css">CSS</button>
+        <button data-tab="js">JavaScript</button>
+      </div>
+      <div id="htmlContainer" class="codeContainer">
+        <textarea id="htmlCode" placeholder="Escribe tu HTML aquí"></textarea>
+      </div>
+      <div id="cssContainer" class="codeContainer">
+        <textarea id="cssCode" placeholder="Escribe tu CSS aquí"></textarea>
+      </div>
+      <div id="jsContainer" class="codeContainer">
+        <textarea id="jsCode" placeholder="Escribe tu JavaScript aquí"></textarea>
+      </div>
+    </div>
+
+    <!-- Panel de vista previa -->
+    <div id="previewPanel">
+      <div id="controls">
+        <button id="toggleTheme">Tema</button>
+        <button id="downloadBtn">Descargar</button>
+      </div>
+      <iframe id="preview"></iframe>
+    </div>
+  </div>
+
+  <!-- CodeMirror JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
-</head>
-
-<body>
-  <div class="editor-container">
-    <textarea id="htmlCode" placeholder="HTML"></textarea>
-    <textarea id="cssCode" placeholder="CSS"></textarea>
-    <textarea id="jsCode" placeholder="JavaScript"></textarea>
-    <iframe id="preview"></iframe>
-  </div>
-
-  <div class="controls">
-    <button id="toggleTheme">Alternar tema</button>
-    <button id="downloadBtn">Descargar archivo</button>
-  </div>
 
   <script>
-    // Referencias a los elementos
-    const htmlArea   = document.getElementById('htmlCode');
-    const cssArea    = document.getElementById('cssCode');
-    const jsArea     = document.getElementById('jsCode');
+    // Referencias
+    const tabs       = document.querySelectorAll('#tabs button');
+    const containers = {
+      html: document.getElementById('htmlContainer'),
+      css:  document.getElementById('cssContainer'),
+      js:   document.getElementById('jsContainer')
+    };
     const preview    = document.getElementById('preview');
-    const downloadBtn= document.getElementById('downloadBtn');
     const toggleBtn  = document.getElementById('toggleTheme');
+    const downloadBtn= document.getElementById('downloadBtn');
 
-    // Inicializar editores CodeMirror
-    const commonOptions = {
+    // Crear editores CodeMirror
+    const commonOpts = {
       lineNumbers: true,
       theme: 'dracula',
       viewportMargin: Infinity
     };
+    const editors = {
+      html: CodeMirror.fromTextArea(document.getElementById('htmlCode'), {
+        mode: 'htmlmixed',
+        ...commonOpts
+      }),
+      css:  CodeMirror.fromTextArea(document.getElementById('cssCode'), {
+        mode: 'css',
+        ...commonOpts
+      }),
+      js:   CodeMirror.fromTextArea(document.getElementById('jsCode'), {
+        mode: 'javascript',
+        ...commonOpts
+      })
+    };
 
-    const htmlEditor = CodeMirror.fromTextArea(htmlArea, {
-      mode: 'htmlmixed',
-      ...commonOptions
-    });
-    const cssEditor = CodeMirror.fromTextArea(cssArea, {
-      mode: 'css',
-      ...commonOptions
-    });
-    const jsEditor = CodeMirror.fromTextArea(jsArea, {
-      mode: 'javascript',
-      ...commonOptions
-    });
-
-    // Genera el código completo y actualiza el iframe
-    function updatePreview() {
-      const fullCode = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Vista Previa</title>
-  <style>${cssEditor.getValue()}</style>
-</head>
-<body>
-${htmlEditor.getValue()}
-<script>${jsEditor.getValue()}<\/script>
-</body>
-</html>`;
-      preview.srcdoc = fullCode;
+    // Mostrar solo el editor activo
+    function showTab(tab) {
+      tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+      Object.keys(containers).forEach(key =>
+        containers[key].style.display = key === tab ? 'block' : 'none'
+      );
+      editors[tab].refresh();
     }
 
-    // Descarga el HTML combinado
+    // Generar vista previa
+    function updatePreview() {
+      const code = `
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><style>${editors.css.getValue()}</style></head>
+<body>${editors.html.getValue()}
+<script>${editors.js.getValue()}<\/script>
+</body></html>`;
+      preview.srcdoc = code;
+    }
+
+    // Descargar archivo
     function downloadHTML() {
       const blob = new Blob([preview.srcdoc], { type: 'text/html' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-
-      a.href = url;
+      a.href   = url;
       a.download = 'mi-archivo.html';
-      document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
-    // Alterna tema claro/oscuro para CodeMirror y la página
-    let isDark = true;
+    // Alternar tema CodeMirror
+    let dark = true;
     function toggleTheme() {
-      isDark = !isDark;
-      document.body.style.background = isDark ? '#2b303b' : '#f5f5f5';
-      document.body.style.color      = isDark ? '#c0c5ce' : '#333';
-      document.querySelector('.controls')
-        .style.background           = isDark ? '#3b3f4a' : '#fafafa';
-      const themeName = isDark ? 'dracula' : 'default';
-      [htmlEditor, cssEditor, jsEditor].forEach(ed =>
-        ed.setOption('theme', themeName)
-      );
+      dark = !dark;
+      const theme = dark ? 'dracula' : 'default';
+      Object.values(editors).forEach(ed => ed.setOption('theme', theme));
+      document.getElementById('editorPanel').style.background = dark ? '#2b303b' : '#f5f5f5';
     }
 
-    // Eventos para actualización y botones
-    [htmlEditor, cssEditor, jsEditor].forEach(ed =>
+    // Eventos
+    tabs.forEach(btn =>
+      btn.addEventListener('click', () => showTab(btn.dataset.tab))
+    );
+    Object.values(editors).forEach(ed =>
       ed.on('change', updatePreview)
     );
     downloadBtn.addEventListener('click', downloadHTML);
     toggleBtn.addEventListener('click', toggleTheme);
 
-    // Vista previa inicial
+    // Inicializar
+    showTab('html');
     updatePreview();
   </script>
 </body>
-</html>
+    </html>
