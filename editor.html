@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Editor Live con Pestañas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Live con ZIP</title>
+
   <!-- CodeMirror CSS -->
   <link
     rel="stylesheet"
@@ -12,19 +14,19 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
   />
+
   <style>
-    /* Reset y contenedor principal */
     body, html {
       margin: 0;
       height: 100%;
       font-family: sans-serif;
     }
+
     #app {
       display: flex;
       height: 100%;
     }
 
-    /* Panel lateral de código */
     #editorPanel {
       width: 50%;
       display: flex;
@@ -32,10 +34,12 @@
       background: #2b303b;
       color: #c0c5ce;
     }
+
     #tabs {
       display: flex;
       background: #3b3f4a;
     }
+
     #tabs button {
       flex: 1;
       padding: 10px;
@@ -44,27 +48,36 @@
       color: inherit;
       cursor: pointer;
     }
+
     #tabs .active {
       background: #4b5170;
     }
+
     .codeContainer {
       flex: 1;
       position: relative;
     }
+
     .codeContainer textarea {
       display: none;
     }
-    .codeContainer .CodeMirror {
+
+    .CodeMirror {
       position: absolute;
-      top: 0; right: 0; bottom: 0; left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      border: 1px solid #4b5170;
+      border-radius: 4px;
     }
 
-    /* Panel de vista previa */
     #previewPanel {
       width: 50%;
       border-left: 1px solid #4b5170;
       position: relative;
     }
+
     #preview {
       width: 100%;
       height: 100%;
@@ -72,13 +85,13 @@
       background: white;
     }
 
-    /* Barra de controles */
     #controls {
       position: absolute;
       top: 10px;
       right: 10px;
       z-index: 10;
     }
+
     #controls button {
       margin-left: 8px;
       padding: 6px 12px;
@@ -89,128 +102,162 @@
 <body>
 
   <div id="app">
-    <!-- Panel de pestañas y editores -->
     <div id="editorPanel">
       <div id="tabs">
         <button data-tab="html" class="active">HTML</button>
         <button data-tab="css">CSS</button>
         <button data-tab="js">JavaScript</button>
       </div>
+
       <div id="htmlContainer" class="codeContainer">
-        <textarea id="htmlCode" placeholder="Escribe tu HTML aquí"></textarea>
+        <textarea id="htmlCode"><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Proyecto</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <h1>¡Hola Mundo!</h1>
+
+  <script src="script.js"></script>
+</body>
+</html></textarea>
       </div>
+
       <div id="cssContainer" class="codeContainer">
-        <textarea id="cssCode" placeholder="Escribe tu CSS aquí"></textarea>
+        <textarea id="cssCode">/* Escribe tu CSS aquí */</textarea>
       </div>
+
       <div id="jsContainer" class="codeContainer">
-        <textarea id="jsCode" placeholder="Escribe tu JavaScript aquí"></textarea>
+        <textarea id="jsCode">// Escribe tu JavaScript aquí</textarea>
       </div>
     </div>
 
-    <!-- Panel de vista previa -->
     <div id="previewPanel">
       <div id="controls">
         <button id="toggleTheme">Tema</button>
-        <button id="downloadBtn">Descargar</button>
+        <button id="downloadBtn">Descargar ZIP</button>
       </div>
       <iframe id="preview"></iframe>
     </div>
   </div>
 
-  <!-- CodeMirror JS -->
+  <!-- Librerías JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
 
   <script>
-    // Referencias
-    const tabs       = document.querySelectorAll('#tabs button');
-    const containers = {
+    // Referencias y configuración común
+    const tabs        = document.querySelectorAll('#tabs button');
+    const containers  = {
       html: document.getElementById('htmlContainer'),
       css:  document.getElementById('cssContainer'),
       js:   document.getElementById('jsContainer')
     };
-    const preview    = document.getElementById('preview');
-    const toggleBtn  = document.getElementById('toggleTheme');
-    const downloadBtn= document.getElementById('downloadBtn');
+    const preview     = document.getElementById('preview');
+    const toggleBtn   = document.getElementById('toggleTheme');
+    const downloadBtn = document.getElementById('downloadBtn');
 
-    // Crear editores CodeMirror
     const commonOpts = {
       lineNumbers: true,
       theme: 'dracula',
       viewportMargin: Infinity
     };
+
     const editors = {
-      html: CodeMirror.fromTextArea(document.getElementById('htmlCode'), {
-        mode: 'htmlmixed',
-        ...commonOpts
-      }),
-      css:  CodeMirror.fromTextArea(document.getElementById('cssCode'), {
-        mode: 'css',
-        ...commonOpts
-      }),
-      js:   CodeMirror.fromTextArea(document.getElementById('jsCode'), {
-        mode: 'javascript',
-        ...commonOpts
-      })
+      html: CodeMirror.fromTextArea(document.getElementById('htmlCode'), { mode: 'htmlmixed', ...commonOpts }),
+      css:  CodeMirror.fromTextArea(document.getElementById('cssCode'),  { mode: 'css',       ...commonOpts }),
+      js:   CodeMirror.fromTextArea(document.getElementById('jsCode'),  { mode: 'javascript',...commonOpts })
     };
 
-    // Mostrar solo el editor activo
+    // Mostrar/Ocultar pestañas
     function showTab(tab) {
       tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-      Object.keys(containers).forEach(key =>
-        containers[key].style.display = key === tab ? 'block' : 'none'
-      );
+      Object.keys(containers).forEach(key => {
+        containers[key].style.display = key === tab ? 'block' : 'none';
+      });
       editors[tab].refresh();
     }
 
-    // Generar vista previa
+    // Actualizar vista previa
     function updatePreview() {
       const code = `
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><style>${editors.css.getValue()}</style></head>
-<body>${editors.html.getValue()}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>${editors.css.getValue()}</style>
+</head>
+<body>
+${editors.html.getValue()}
 <script>${editors.js.getValue()}<\/script>
-</body></html>`;
+</body>
+</html>`;
       preview.srcdoc = code;
     }
 
-    // Descargar archivo
-    function downloadHTML() {
-      const blob = new Blob([preview.srcdoc], { type: 'text/html' });
+    // Descargar proyecto en ZIP
+    async function downloadZip() {
+      const htmlContent = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>${editors.css.getValue()}</style>
+</head>
+<body>
+${editors.html.getValue()}
+<script>${editors.js.getValue()}<\/script>
+</body>
+</html>`;
+
+      const zip = new JSZip();
+      zip.file('mi-proyecto.html', htmlContent);
+
+      const blob = await zip.generateAsync({ type: 'blob' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-      a.href   = url;
-      a.download = 'mi-archivo.html';
+
+      a.href     = url;
+      a.download = 'mi-proyecto.zip';
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
-    // Alternar tema CodeMirror
+    // Alternar tema oscuro/claro
     let dark = true;
     function toggleTheme() {
       dark = !dark;
-      const theme = dark ? 'dracula' : 'default';
+      const theme     = dark ? 'dracula' : 'default';
+      const bgColor   = dark ? '#2b303b' : '#f5f5f5';
+      const textColor = dark ? '#c0c5ce' : '#333';
+
+      document.getElementById('editorPanel').style.background = bgColor;
+      document.body.style.background                        = bgColor;
+      document.body.style.color                             = textColor;
       Object.values(editors).forEach(ed => ed.setOption('theme', theme));
-      document.getElementById('editorPanel').style.background = dark ? '#2b303b' : '#f5f5f5';
     }
 
     // Eventos
-    tabs.forEach(btn =>
-      btn.addEventListener('click', () => showTab(btn.dataset.tab))
-    );
-    Object.values(editors).forEach(ed =>
-      ed.on('change', updatePreview)
-    );
-    downloadBtn.addEventListener('click', downloadHTML);
+    tabs.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
+    Object.values(editors).forEach(ed => ed.on('change', updatePreview));
+    downloadBtn.addEventListener('click', downloadZip);
     toggleBtn.addEventListener('click', toggleTheme);
 
-    // Inicializar
+    // Inicialización
     showTab('html');
     updatePreview();
   </script>
 </body>
-    </html>
+</html>
