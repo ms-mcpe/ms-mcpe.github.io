@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>JR BOT Addons</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00ffcc;
+    }
+
+    .addon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      justify-items: center;
+    }
+
+    .addon-box {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      width: 150px;
+      transition: transform 0.2s ease;
+    }
+
+    .addon-box:hover {
+      transform: scale(1.05);
+      border-color: #00ffcc;
+    }
+
+    .addon-box img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .addon-name {
+      margin-top: 8px;
+      font-size: 0.95em;
+      color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Addons Disponibles en JR BOT</h1>
+  <div class="addon-grid">
+    <div class="addon-box">
+      <img src="ruta/a/imagen1.png" alt="Addon 1">
+      <div class="addon-name">Addon 1</div>
+    </div>
+    <div class="addon-box">
+      <img src="ruta/a/imagen2.png" alt="Addon 2">
+      <div class="addon-name">Addon 2</div>
+    </div>
+    <div class="addon-box">
+      <img src="ruta/a/imagen3.png" alt="Addon 3">
+      <div class="addon-name">Addon 3</div>
+    </div>
+    <div class="addon-box">
+      <img src="ruta/a/imagen4.png" alt="Addon 4">
+      <div class="addon-name">Addon 4</div>
+    </div>
+    <!-- Puedes seguir agregando más addons aquí -->
+  </div>
+</body>
+</html>
