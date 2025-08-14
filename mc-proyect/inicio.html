@@ -16,11 +16,11 @@
             color: #e2e8f0; /* Texto claro */
         }
         
-        /* Efecto de brillo neón para el texto principal */
-        .neon-text-green {
-            color: #34d399; /* Verde esmeralda */
-            text-shadow: 0 0 5px #34d399, 0 0 10px #34d399, 0 0 20px #34d399;
-            animation: pulse-green 3s infinite alternate;
+        /* Efecto de brillo neón para el texto principal, ahora en rosa vibrante */
+        .neon-text-pink {
+            color: #ff69b4; /* Rosa neón */
+            text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff69b4;
+            animation: pulse-pink 3s infinite alternate;
         }
 
         /* Efecto de brillo para los botones y elementos interactivos */
@@ -49,9 +49,9 @@
         }
 
         /* Animación de pulso para el texto principal */
-        @keyframes pulse-green {
-            from { text-shadow: 0 0 5px #34d399, 0 0 10px #34d399, 0 0 20px #34d399; }
-            to { text-shadow: 0 0 8px #34d399, 0 0 15px #34d399, 0 0 30px #34d399; }
+        @keyframes pulse-pink {
+            from { text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff69b4; }
+            to { text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff69b4, 0 0 30px #ff69b4; }
         }
     </style>
 </head>
@@ -59,23 +59,13 @@
 
     <!-- Sección de Cabecera (Hero Section) -->
     <header class="w-full max-w-5xl text-center pt-8 pb-16">
-        <h1 class="neon-text-green text-6xl md:text-8xl font-extrabold mb-4 uppercase">
+        <h1 class="neon-text-pink text-6xl md:text-8xl font-extrabold mb-4 uppercase">
             MC Addons
         </h1>
         <p class="text-xl md:text-2xl font-light mb-8 max-w-3xl mx-auto text-slate-300">
-            Esta es una app de addons para Minecraft. Fue creada para brindarte una **nueva experiencia de juego** con addons oficiales del marketplace y de la comunidad.
+            Esta es una app de addons para Minecraft. Fue creada para brindarte una nueva experiencia de juego con addons oficiales del marketplace y de la comunidad.
         </p>
 
-        <!-- Contenedor de botones de acción principales -->
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mt-8">
-            <a href="#" class="neon-glow-blue bg-transparent text-white px-10 py-4 rounded-full text-lg font-semibold">
-                Empezar Ahora
-            </a>
-            <a href="#" class="text-blue-300 font-semibold text-lg hover:underline transition-all duration-300">
-                Ver en Tiendas
-            </a>
-        </div>
-    </header>
 
     <!-- Sección de Características (Features Section) -->
     <section class="w-full max-w-5xl py-16">
@@ -86,7 +76,7 @@
             
             <!-- Característica 1: Explorar Addons -->
             <div class="neon-glow-purple bg-gray-800 bg-opacity-30 p-8 rounded-2xl flex flex-col items-center text-center">
-                <svg class="w-16 h-16 text-purple-300 mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm-1 12H7v-2h2v2zm0-4H7V8h2v2zm4-4h-2V6h2v2zm0 4h-2v-2h2v2zM6 10a4 4 110-8 4 4 0 010 8zm8-4a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg class="w-16 h-16 text-purple-300 mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm-1 12H7v-2h2v2zm0-4H7V8h2v2zm4-4h-2V6h2v2zm0 4h-2v-2h2v2zM6 10a4 4 0 110-8 4 4 0 010 8zm8-4a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 <h3 class="text-xl font-bold mb-2 text-purple-300">Explora la variedad</h3>
                 <p class="text-sm text-slate-400">
                     Descubre una amplia biblioteca de addons del Marketplace oficial y de creadores de la comunidad.
@@ -113,25 +103,9 @@
         </div>
     </section>
 
-    <!-- Sección de Llamada a la Acción (CTA) -->
-    <section class="w-full max-w-5xl text-center py-16">
-        <div class="bg-gray-800 bg-opacity-50 border border-blue-400 rounded-3xl p-10 md:p-16 neon-glow-blue">
-            <h2 class="text-3xl md:text-5xl font-bold mb-4 text-white">
-                ¡Tu aventura comienza aquí!
-            </h2>
-            <p class="text-md md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-                No esperes más. Transforma tu experiencia en Minecraft con los mejores addons.
-            </p>
-            <a href="https://ms-mcpe.github.io/mc-proyect
-/inicio" class="neon-glow-blue bg-transparent text-white px-10 py-4 rounded-full text-lg font-bold">
-                MC Addons
-            </a>
-        </div>
-    </section>
-
     <!-- Pie de página (Footer) -->
     <footer class="w-full max-w-5xl text-center py-8 text-slate-500 text-sm">
-        <p>Pronto disponible para iOS y Android. Sigue nuestras redes sociales para más novedades.</p>
+        <p>JR-TechStudios - creado por Myst</p>
     </footer>
 
 </body>
