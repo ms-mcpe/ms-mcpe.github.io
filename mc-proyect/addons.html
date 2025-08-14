@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Addons | MC Addons</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos base para el tema oscuro y la tipografía */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0f1c; /* Fondo azul oscuro profundo */
+            color: #e2e8f0; /* Texto claro */
+        }
+
+        /* Estilo para las tarjetas de addons */
+        .addon-card {
+            background-color: #1a202c; /* Fondo oscuro para las tarjetas */
+            border: 1px solid #c084fc; /* Borde neón púrpura */
+            box-shadow: 0 0 5px #c084fc, 0 0 10px #c084fc;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .addon-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 10px #c084fc, 0 0 20px #c084fc, 0 0 40px rgba(192, 132, 252, 0.5);
+        }
+
+        /* Estilo para el botón de descarga */
+        .download-button {
+            border: 2px solid #60a5fa; /* Azul vibrante */
+            color: #60a5fa;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .download-button:hover {
+            background-color: #60a5fa;
+            color: #0d0f1c;
+            box-shadow: 0 0 5px #60a5fa, 0 0 15px #60a5fa;
+        }
+        
+        .neon-text-blue {
+            color: #60a5fa; /* Azul vibrante */
+            text-shadow: 0 0 5px #60a5fa, 0 0 10px #60a5fa, 0 0 20px rgba(96, 165, 250, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+
+    <!-- Encabezado de la página de addons -->
+    <header class="w-full max-w-7xl mx-auto text-center pt-8 pb-12 relative">
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 neon-text-blue">
+           MC Addons 
+        </h1>
+        <p class="text-xl text-slate-300">
+            Descubre y descarga los mejores addons para mejorar tu experiencia en Minecraft.
+        </p>
+
+        <!-- Contador de addons en la esquina superior derecha -->
+        <div class="absolute top-8 right-8 text-sm text-purple-400">
+            Addons: <span id="addon-count" class="font-bold">4</span>
+        </div>
+    </header>
+
+    <!-- Contenedor principal de los addons -->
+    <main class="w-full max-w-7xl mx-auto">
+        
+        <!-- Búsqueda y filtros (sección de ejemplo) -->
+        <div class="mb-12 flex justify-center">
+            <input type="text" id="search-input" placeholder="Buscar addons por nombre..." class="w-full max-w-md px-5 py-3 rounded-full bg-slate-800 text-white border-2 border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400 transition-all duration-300">
+        </div>
+
+        <!-- Cuadrícula de addons, cada tarjeta en un div para el diseño visual -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            
+            <!-- Tarjeta de Addon de ejemplo 1 -->
+            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Addon de Mobs</h3><img src="https://placehold.co/150x150/1a202c/60a5fa?text=Addon+1" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mcaddon</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
+
+            <!-- Tarjeta de Addon de ejemplo 2 -->
+            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Texturas 4K</h3><img src="https://placehold.co/150x150/1a202c/c084fc?text=Addon+2" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mcpack</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
+
+            <!-- Tarjeta de Addon de ejemplo 3 -->
+            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Mecánicas de Redstone</h3><img src="https://placehold.co/150x150/1a202c/34d399?text=Addon+3" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mctemplate</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
+            
+            <!-- Tarjeta de Addon de ejemplo 4 -->
+            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Nuevos Biomas</h3><img src="https://placehold.co/150x150/1a202c/fcd34d?text=Addon+4" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mcworld</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
+
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="w-full max-w-7xl mx-auto text-center py-8 text-slate-500 text-sm">
+        <p>JR-TechStudios - creado por Myst</p>
+    </footer>
+
+    <script>
+        // Obtiene el campo de búsqueda y todas las tarjetas de addons
+        const searchInput = document.getElementById('search-input');
+        const addonCards = document.querySelectorAll('.addon-card');
+
+        // Escucha el evento de teclear en el campo de búsqueda
+        searchInput.addEventListener('keyup', (event) => {
+            const searchTerm = event.target.value.toLowerCase();
+            
+            // Recorre cada tarjeta de addon
+            addonCards.forEach(card => {
+                const titleElement = card.querySelector('h3');
+                if (titleElement) {
+                    const title = titleElement.textContent.toLowerCase();
+                    
+                    // Si el título incluye el término de búsqueda, muestra la tarjeta. Si no, la oculta.
+                    if (title.includes(searchTerm)) {
+                        card.style.display = 'flex'; // Usamos 'flex' porque las tarjetas tienen flexbox
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
