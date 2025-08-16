@@ -92,7 +92,7 @@
       const descripcion = document.getElementById('descripcion').value.trim();
       const link = document.getElementById('link').value.trim();
 
-      const codigo = `"match": "${nombre}",\n"answer": "Nombre: *${nombre}* \\nFormato: *${formato}* \\nDescripción:\\n> ${descripcion}\\n\\nLINK: ${link}"`;
+      const codigo = `"match": "${nombre}",\n"answer": "Nombre: *${nombre}* \\nFormato: *${formato}* \\nDescripción:\\n> ${descripcion}\\n\\nLINK: ${link}"\n},\n{`;
 
       document.getElementById('resultado').textContent = codigo;
       document.getElementById('copiarBtn').style.display = 'inline-block';
