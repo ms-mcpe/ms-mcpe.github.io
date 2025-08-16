@@ -2,262 +2,112 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor Live con ZIP</title>
-
-  <!-- CodeMirror CSS -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
-  />
-
+  <title>Generador de Código de Addon</title>
   <style>
-    body, html {
-      margin: 0;
-      height: 100%;
-      font-family: sans-serif;
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
     }
-
-    #app {
-      display: flex;
-      height: 100%;
+    h1 {
+      color: #00ffd5;
     }
-
-    #editorPanel {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-      background: #2b303b;
-      color: #c0c5ce;
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
     }
-
-    #tabs {
-      display: flex;
-      background: #3b3f4a;
-    }
-
-    #tabs button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      background: none;
-      color: inherit;
-      cursor: pointer;
-    }
-
-    #tabs .active {
-      background: #4b5170;
-    }
-
-    .codeContainer {
-      flex: 1;
-      position: relative;
-    }
-
-    .codeContainer textarea {
-      display: none;
-    }
-
-    .CodeMirror {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      border: 1px solid #4b5170;
-      border-radius: 4px;
-    }
-
-    #previewPanel {
-      width: 50%;
-      border-left: 1px solid #4b5170;
-      position: relative;
-    }
-
-    #preview {
+    input, textarea, select {
       width: 100%;
-      height: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      color: #fff;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #00ffd5;
+      color: #000;
       border: none;
-      background: white;
-    }
-
-    #controls {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 10;
-    }
-
-    #controls button {
-      margin-left: 8px;
-      padding: 6px 12px;
+      border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #00c9aa;
+    }
+    pre {
+      background-color: #1e1e1e;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1px solid #333;
+    }
+    #copiarBtn {
+      display: none;
+      margin-top: 10px;
+      background-color: #444;
+      color: #fff;
+    }
+    #copiarBtn:hover {
+      background-color: #666;
     }
   </style>
 </head>
 <body>
+  <h1>🎮 Generador de Código de Addon</h1>
 
-  <div id="app">
-    <div id="editorPanel">
-      <div id="tabs">
-        <button data-tab="html" class="active">HTML</button>
-        <button data-tab="css">CSS</button>
-        <button data-tab="js">JavaScript</button>
-      </div>
+  <label for="nombre">Nombre del Addon:</label>
+  <input type="text" id="nombre" placeholder="Ej: SuperAddon">
 
-      <div id="htmlContainer" class="codeContainer">
-        <textarea id="htmlCode"><!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Proyecto</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  <label for="formato">Formato del Addon:</label>
+  <select id="formato">
+    <option value=".mcaddon">.mcaddon</option>
+    <option value=".mcpack">.mcpack</option>
+    <option value=".mcworld">.mcworld</option>
+    <option value=".mctemplate">.mctemplate</option>
+  </select>
 
-  <h1>¡Hola Mundo!</h1>
+  <label for="descripcion">Descripción:</label>
+  <textarea id="descripcion" rows="4" placeholder="Describe el addon aquí..."></textarea>
 
-  <script src="script.js"></script>
-</body>
-</html></textarea>
-      </div>
+  <label for="link">Enlace de descarga:</label>
+  <input type="text" id="link" placeholder="Ej: https://example.com/addon">
 
-      <div id="cssContainer" class="codeContainer">
-        <textarea id="cssCode">/* Escribe tu CSS aquí */</textarea>
-      </div>
+  <button onclick="generarCodigo()">Generar Código</button>
 
-      <div id="jsContainer" class="codeContainer">
-        <textarea id="jsCode">// Escribe tu JavaScript aquí</textarea>
-      </div>
-    </div>
-
-    <div id="previewPanel">
-      <div id="controls">
-        <button id="toggleTheme">Tema</button>
-        <button id="downloadBtn">Descargar ZIP</button>
-      </div>
-      <iframe id="preview"></iframe>
-    </div>
-  </div>
-
-  <!-- Librerías JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
+  <pre id="resultado"></pre>
+  <button id="copiarBtn" onclick="copiarCodigo()">📋 Copiar Código</button>
 
   <script>
-    // Referencias y configuración común
-    const tabs        = document.querySelectorAll('#tabs button');
-    const containers  = {
-      html: document.getElementById('htmlContainer'),
-      css:  document.getElementById('cssContainer'),
-      js:   document.getElementById('jsContainer')
-    };
-    const preview     = document.getElementById('preview');
-    const toggleBtn   = document.getElementById('toggleTheme');
-    const downloadBtn = document.getElementById('downloadBtn');
+    function generarCodigo() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const formato = document.getElementById('formato').value;
+      const descripcion = document.getElementById('descripcion').value.trim();
+      const link = document.getElementById('link').value.trim();
 
-    const commonOpts = {
-      lineNumbers: true,
-      theme: 'dracula',
-      viewportMargin: Infinity
-    };
+      const codigo = `"match": "${nombre}",\n"answer": "Nombre: *${nombre}* \\nFormato: *${formato}* \\nDescripción:\\n> ${descripcion}\\n\\nLINK: ${link}"`;
 
-    const editors = {
-      html: CodeMirror.fromTextArea(document.getElementById('htmlCode'), { mode: 'htmlmixed', ...commonOpts }),
-      css:  CodeMirror.fromTextArea(document.getElementById('cssCode'),  { mode: 'css',       ...commonOpts }),
-      js:   CodeMirror.fromTextArea(document.getElementById('jsCode'),  { mode: 'javascript',...commonOpts })
-    };
-
-    // Mostrar/Ocultar pestañas
-    function showTab(tab) {
-      tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-      Object.keys(containers).forEach(key => {
-        containers[key].style.display = key === tab ? 'block' : 'none';
-      });
-      editors[tab].refresh();
+      document.getElementById('resultado').textContent = codigo;
+      document.getElementById('copiarBtn').style.display = 'inline-block';
     }
 
-    // Actualizar vista previa
-    function updatePreview() {
-      const code = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>${editors.css.getValue()}</style>
-</head>
-<body>
-${editors.html.getValue()}
-<script>${editors.js.getValue()}<\/script>
-</body>
-</html>`;
-      preview.srcdoc = code;
+    function copiarCodigo() {
+      const resultado = document.getElementById('resultado');
+      navigator.clipboard.writeText(resultado.textContent)
+        .then(() => {
+          alert("✅ Código copiado al portapapeles");
+        })
+        .catch(err => {
+          alert("❌ Error al copiar: " + err);
+        });
     }
-
-    // Descargar proyecto en ZIP
-    async function downloadZip() {
-      const htmlContent = `
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>${editors.css.getValue()}</style>
-</head>
-<body>
-${editors.html.getValue()}
-<script>${editors.js.getValue()}<\/script>
-</body>
-</html>`;
-
-      const zip = new JSZip();
-      zip.file('mi-proyecto.html', htmlContent);
-
-      const blob = await zip.generateAsync({ type: 'blob' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-
-      a.href     = url;
-      a.download = 'mi-proyecto.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    // Alternar tema oscuro/claro
-    let dark = true;
-    function toggleTheme() {
-      dark = !dark;
-      const theme     = dark ? 'dracula' : 'default';
-      const bgColor   = dark ? '#2b303b' : '#f5f5f5';
-      const textColor = dark ? '#c0c5ce' : '#333';
-
-      document.getElementById('editorPanel').style.background = bgColor;
-      document.body.style.background                        = bgColor;
-      document.body.style.color                             = textColor;
-      Object.values(editors).forEach(ed => ed.setOption('theme', theme));
-    }
-
-    // Eventos
-    tabs.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.tab)));
-    Object.values(editors).forEach(ed => ed.on('change', updatePreview));
-    downloadBtn.addEventListener('click', downloadZip);
-    toggleBtn.addEventListener('click', toggleTheme);
-
-    // Inicialización
-    showTab('html');
-    updatePreview();
   </script>
 </body>
 </html>
