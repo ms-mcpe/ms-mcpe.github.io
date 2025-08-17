@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contenido</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: rgba(68, 68, 68, 0.5);
+            color: #f0f0f0;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .output-section {
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* Alinea el botón a la derecha */
+        }
+        
+        #outputCode {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            background-color: #2b2b2b;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #f0f0f0;
+            white-space: pre-wrap;
+            box-sizing: border-box;
+            resize: vertical;
+            margin-bottom: 10px; /* Espacio entre el textarea y el botón */
+        }
+
+        .instruction {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="message-box" id="messageBox">¡Código copiado!</div>
+
+    <div class="container">
+        <h1>Generador de Tarjetas de Contenido</h1>
+        <div class="form-group">
+            <label for="addonTitle">Título del Complemento:</label>
+            <input type="text" id="addonTitle" placeholder="Ej: Complemento de Armaduras">
+        </div>
+        <div class="form-group">
+            <label for="addonCategory">Categoría:</label>
+            <select id="addonCategory">
+                <option value="1.14">1.14</option>
+                <option value="1.16">1.16</option>
+                <option value="1.17">1.17</option>
+                <option value="1.18">1.18</option>
+                <option value="1.19">1.19</option>
+               <option value="1.20">1.20</option>
+                <option value="1.21">1.21</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="imageLink">Enlace de la Imagen:</label>
+            <input type="url" id="imageLink" placeholder="Ej: https://ejemplo.com/imagen.jpg">
+        </div>
+        <div class="form-group">
+            <label for="downloadLink">Enlace de Descarga:</label>
+            <input type="url" id="downloadLink" placeholder="Ej: https://ejemplo.com/descarga.zip">
+        </div>
+        
+        <button onclick="generateCode()">Generar Código HTML</button>
+
+        <div class="output-section">
+            <textarea id="outputCode" readonly></textarea>
+            <button onclick="copyCode()">Copiar Código</button>
+        </div>
+        
+        <p class="instruction">Haz clic en "Generar Código" y luego en "Copiar Código" para pegarlo en tu documento principal.</p>
+    </div>
+
+    <script>
+        function generateCode() {
+            // Get input values
+            const title = document.getElementById('addonTitle').value;
+            const category = document.getElementById('addonCategory').value;
+            const image = document.getElementById('imageLink').value;
+            const download = document.getElementById('downloadLink').value;
+            
+            // Check if all fields are filled
+            if (!title || !category || !image || !download) {
+                document.getElementById('outputCode').value = 'Por favor, rellena todos los campos para generar el código.';
+                return;
+            }
+
+            // Create the HTML code snippet without line breaks
+            const code = `<li class="addon-item" data-category="${category}"><h2>${title}</h2><img src="${image}" alt="Imagen de ${title}"><a href="${download}" class="download-button">Descargar</a></li>`;
+
+            // Display the generated code in the textarea
+            document.getElementById('outputCode').value = code;
+        }
+
+        function copyCode() {
+            const outputCode = document.getElementById('outputCode');
+            
+            if (outputCode.value.trim() === '') {
+                // No code to copy
+                return;
+            }
+
+            // Use the older `document.execCommand` for better compatibility in iframes
+            outputCode.select();
+            document.execCommand('copy');
+            
+            // Show a temporary message to confirm the copy
+            const messageBox = document.getElementById('messageBox');
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>
