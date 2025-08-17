@@ -3,126 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Addons</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>MC Proyect - Complementos</title>
     <style>
-        /* Estilos base para el tema oscuro y la tipografía */
+        /* Estilos generales */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0d0f1c; /* Fondo azul oscuro profundo */
-            color: #e2e8f0; /* Texto claro */
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            min-height: 100vh;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Estilo para las tarjetas de addons */
-        .addon-card {
-            background-color: #1a202c; /* Fondo oscuro para las tarjetas */
-            border: 1px solid #c084fc; /* Borde neón púrpura */
-            box-shadow: 0 0 5px #c084fc, 0 0 10px #c084fc;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* Contenedor de la barra superior */
+        .top-bar {
+            width: 100%;
+            background-color: #1f1f1f;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        /* Estilo para el buscador */
+        #addonSearch {
+            flex-grow: 1;
+            max-width: 450px;
+            padding: 12px 20px;
+            border: 1px solid #444;
+            border-radius: 25px;
+            background-color: rgba(68, 68, 68, 0.5);
+            color: #f0f0f0;
+            outline: none;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+            margin-right: 10px;
+        }
+        
+        #addonSearch:focus {
+            border-color: #777;
+        }
+        
+        /* Estilo para el contador */
+        .counter-container {
+            font-size: 0.9em;
+            color: #ccc;
+            white-space: nowrap;
         }
 
-        .addon-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 0 10px #c084fc, 0 0 20px #c084fc, 0 0 40px rgba(192, 132, 252, 0.5);
+        /* Estilo para la barra de secciones */
+        .section-bar {
+            width: 100%;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #333;
+            overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+        }
+        
+        .section-button {
+            background-color: transparent;
+            border: none;
+            color: #f0f0f0;
+            font-size: 1em;
+            font-weight: bold;
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            white-space: nowrap;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .section-button.active, .section-button:hover {
+            background-color: #333;
+            color: #007bff;
         }
 
+        /* Contenedor de la lista de complementos */
+        .main-container {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        /* Estilo para la lista de complementos */
+        .addon-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Estilo para cada tarjeta de complemento */
+        .addon-item {
+            background-color: #1f1f1f;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Estilos de ocultar elementos */
+        .addon-item.hidden {
+            display: none;
+        }
+
+        .addon-item h2 {
+            margin: 0 0 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .addon-item img {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
         /* Estilo para el botón de descarga */
         .download-button {
-            border: 2px solid #60a5fa; /* Azul vibrante */
-            color: #60a5fa;
-            transition: all 0.3s ease-in-out;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: auto;
         }
 
         .download-button:hover {
-            background-color: #60a5fa;
-            color: #0d0f1c;
-            box-shadow: 0 0 5px #60a5fa, 0 0 15px #60a5fa;
-        }
-        
-        .neon-text-blue {
-            color: #FFFFFF; /* Azul vibrante */
-            text-shadow: 0 0 5px #60a5fa, 0 0 10px #60a5fa, 0 0 20px rgba(96, 165, 250, 0.5);
+            background-color: #0056b3;
         }
     </style>
 </head>
-<body class="min-h-screen p-6">
+<body>
 
-    <!-- Encabezado de la página de addons -->
-    <header class="w-full max-w-7xl mx-auto text-center pt-8 pb-12 relative">
-        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 neon-text-blue">
-           Addons 
-        </h1>
-        <p class="text-xl text-slate-300">
-            Descubre y descarga los mejores addons para mejorar tu experiencia en Minecraft.
-        </p>
-
-        <!-- Contador de addons en la esquina superior derecha -->
-        <div class="absolute top-8 right-8 text-sm text-purple-400">
-            Addons: <span id="addon-count" class="font-bold">4</span>
-        </div>
+    <!-- Barra superior con el buscador y el contador -->
+    <header class="top-bar">
+        <input type="text" id="addonSearch" placeholder="Buscar por título...">
+        <div id="addonCounter" class="counter-container"></div>
     </header>
 
-    <!-- Contenedor principal de los addons -->
-    <main class="w-full max-w-7xl mx-auto">
-        
-        <!-- Búsqueda y filtros (sección de ejemplo) -->
-        <div class="mb-12 flex justify-center">
-            <input type="text" id="search-input" placeholder="Buscar addons por nombre..." class="w-full max-w-md px-5 py-3 rounded-full bg-slate-800 text-white border-2 border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-400 transition-all duration-300">
-        </div>
+    <!-- Barra de secciones -->
+    <nav class="section-bar">
+        <button class="section-button active" data-category="all">Todo</button>
+        <button class="section-button" data-category="addons">Addons</button>
+        <button class="section-button" data-category="texturas">Texturas</button>
+        <button class="section-button" data-category="shaders">Shaders</button>
+        <button class="section-button" data-category="skins">Skins</button>
+        <button class="section-button" data-category="mapas">Mapas</button>
+    </nav>
 
-        <!-- Cuadrícula de addons, cada tarjeta en un div para el diseño visual -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            
-            <!-- Tarjeta de Addon de ejemplo 1 -->
-            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Addon de Mobs</h3><img src="https://placehold.co/150x150/1a202c/60a5fa?text=Addon+1" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mcaddon</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
-
-            <!-- Tarjeta de Addon de ejemplo 2 -->
-            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Texturas 4K</h3><img src="https://placehold.co/150x150/1a202c/c084fc?text=Addon+2" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mcpack</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
-
-            <!-- Tarjeta de Addon de ejemplo 3 -->
-            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Mecánicas de Redstone</h3><img src="https://placehold.co/150x150/1a202c/34d399?text=Addon+3" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mctemplate</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
-            
-            <!-- Tarjeta de Addon de ejemplo 4 -->
-            <div class="addon-card p-6 rounded-xl flex flex-col items-center text-center"><h3 class="text-2xl font-bold mb-2 neon-text-blue">Nuevos Biomas</h3><img src="https://placehold.co/150x150/1a202c/fcd34d?text=Addon+4" alt="Imagen del Addon" class="rounded-lg my-4"><p class="text-sm text-slate-400 mb-4">Formato: mcworld</p><a href="#" class="download-button px-6 py-2 rounded-full text-lg font-semibold mt-auto">Descargar</a></div>
-
-        </div>
-    </main>
-
-    <!-- Pie de página -->
-    <footer class="w-full max-w-7xl mx-auto text-center py-8 text-slate-500 text-sm">
-        <p>JR-TechStudios - creado por Myst</p>
-    </footer>
+    <!-- Contenedor principal de la página -->
+    <div class="main-container">
+        <!-- Lista de complementos con categorías (ejemplo) -->
+        <ul id="addonList" class="addon-list">
+            <!-- Addons -->
+          
+        </ul>
+    </div>
 
     <script>
-        // Obtiene el campo de búsqueda y todas las tarjetas de addons
-        const searchInput = document.getElementById('search-input');
-        const addonCards = document.querySelectorAll('.addon-card');
+        // Obtiene los elementos del DOM
+        const searchInput = document.getElementById('addonSearch');
+        const addonList = document.getElementById('addonList');
+        const addonItems = addonList.getElementsByClassName('addon-item');
+        const addonCounter = document.getElementById('addonCounter');
+        const sectionButtons = document.querySelectorAll('.section-button');
+        
+        let currentCategory = 'all';
 
-        // Escucha el evento de teclear en el campo de búsqueda
-        searchInput.addEventListener('keyup', (event) => {
-            const searchTerm = event.target.value.toLowerCase();
-            
-            // Recorre cada tarjeta de addon
-            addonCards.forEach(card => {
-                const titleElement = card.querySelector('h3');
-                if (titleElement) {
-                    const title = titleElement.textContent.toLowerCase();
-                    
-                    // Si el título incluye el término de búsqueda, muestra la tarjeta. Si no, la oculta.
-                    if (title.includes(searchTerm)) {
-                        card.style.display = 'flex'; // Usamos 'flex' porque las tarjetas tienen flexbox
-                    } else {
-                        card.style.display = 'none';
+        // Función para actualizar el contador
+        function updateAddonCount() {
+            let visibleCount = 0;
+            let totalCount = 0;
+
+            // Recorre los elementos para contar los visibles y el total en la categoría actual
+            for (let i = 0; i < addonItems.length; i++) {
+                const item = addonItems[i];
+                const isInCategory = currentCategory === 'all' || item.dataset.category === currentCategory;
+                
+                if (isInCategory) {
+                    totalCount++;
+                    if (item.style.display !== 'none') {
+                        visibleCount++;
                     }
                 }
-            });
+            }
+            
+            // Actualiza el texto del contador
+            addonCounter.textContent = `Mostrando ${visibleCount} de ${totalCount}`;
+        }
+        
+        // Agrega un escuchador de eventos al buscador
+        searchInput.addEventListener('input', function() {
+            // Convierte el valor del input a minúsculas
+            const filter = this.value.toLowerCase();
+            
+            // Itera sobre cada elemento de la lista para filtrar
+            for (let i = 0; i < addonItems.length; i++) {
+                const item = addonItems[i];
+                const titleText = item.querySelector('h2').textContent.toLowerCase();
+                const isInCategory = currentCategory === 'all' || item.dataset.category === currentCategory;
+
+                if (isInCategory && titleText.includes(filter)) {
+                    item.style.display = ""; // Muestra el elemento
+                } else {
+                    item.style.display = "none"; // Esconde el elemento
+                }
+            }
+            
+            // Llama a la función para actualizar el contador
+            updateAddonCount();
         });
+
+        // Función para filtrar por categoría
+        function filterByCategory(category) {
+            currentCategory = category;
+            searchInput.value = ''; // Limpia el buscador al cambiar de categoría
+
+            // Actualiza el estado activo de los botones de sección
+            sectionButtons.forEach(button => {
+                if (button.dataset.category === category) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+
+            // Itera sobre los elementos para mostrar u ocultar según la categoría
+            for (let i = 0; i < addonItems.length; i++) {
+                const item = addonItems[i];
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = ""; // Muestra el elemento
+                } else {
+                    item.style.display = "none"; // Esconde el elemento
+                }
+            }
+            
+            updateAddonCount();
+        }
+
+        // Asigna el evento a cada botón
+        sectionButtons.forEach(button => {
+            button.addEventListener('click', () => filterByCategory(button.dataset.category));
+        });
+
+        // Llama a la función al cargar la página para mostrar el contador inicial
+        window.onload = () => {
+             filterByCategory('all');
+        };
     </script>
+
 </body>
 </html>
-
-
-
