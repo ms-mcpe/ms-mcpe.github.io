@@ -25,6 +25,7 @@
             padding: 10px 20px;
             background-color: #1f1f1f;
             border-bottom: 1px solid #333;
+            position: relative; /* Necesario para el posicionamiento del menú desplegable */
         }
 
         .top-bar .title {
@@ -32,19 +33,17 @@
             font-weight: bold;
         }
         
-        .top-bar .profile-button,
-        .top-bar .menu-button { /* Se añade la nueva clase para el botón de menú */
+        .top-bar .menu-button {
             border: none;
             background: none;
             cursor: pointer;
             padding: 0;
         }
 
-        .top-bar .profile-button img,
         .top-bar .menu-button img {
             width: 35px;
             height: 35px;
-            border-radius: 50%; /* Se mantiene para el botón de perfil */
+            border-radius: 50%;
         }
 
         /* Estilos para el menú inferior */
@@ -87,18 +86,16 @@
             font-weight: bold;
         }
 
-        /* --- ESTILOS DEL MENÚ LATERAL --- */
-        
-        /* Menú lateral (inicialmente oculto) */
+        /* Estilos para el menú lateral */
         .side-menu {
             position: fixed;
             top: 0;
             left: 0;
             width: 250px;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparente */
+            background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
-            transform: translateX(-100%); /* Oculto por defecto */
+            transform: translateX(-100%);
             transition: transform 0.4s ease-in-out;
             z-index: 1000;
             padding: 20px;
@@ -107,7 +104,6 @@
             flex-direction: column;
         }
 
-        /* Estado visible del menú */
         .side-menu.active {
             transform: translateX(0);
         }
@@ -139,11 +135,147 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Línea de separación */
         .separator {
             height: 1px;
             background-color: #444;
             margin: 10px 0;
+        }
+
+        /* --- ESTILOS SIMPLES PARA EL CONTENIDO PRINCIPAL --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px auto 20px;
+            max-width: 90%;
+        }
+
+        .main-content h1 {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .main-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .round-button {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .round-button img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+        }
+
+        /* Nuevo estilo para el cuadro semi-transparente */
+        .content-box {
+            background-color: rgba(31, 31, 31, 0.8);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .content-box h2 {
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .content-box p {
+            font-size: 0.9em;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        /* Estilos para el creador */
+        .creator-section {
+            background-color: rgba(31, 31, 31, 0.8);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .creator-section h2 {
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .creator-profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 2px solid #555;
+        }
+
+        .creator-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .creator-description {
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        /* Estilos para el menú desplegable */
+        .dropdown-button {
+            background: none;
+            border: none;
+            color: #f0f0f0;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 55px; /* Ajusta la posición vertical */
+            right: 10px;
+            background-color: rgba(31, 31, 31, 0.9);
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 1001;
+            min-width: 150px;
+            text-align: left;
+        }
+
+        .dropdown-menu.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-menu a {
+            color: #f0f0f0;
+            text-decoration: none;
+            padding: 8px 12px;
+            display: block;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
     </style>
@@ -156,11 +288,14 @@
         <a href="javascript:void(0)" class="menu-button" onclick="toggleMenu()">
             <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/menu.png" alt="Botón de Menú">
         </a>
-        <span class="title">MC Proyect</span>
-        <!-- Botón de perfil con href para redireccionar -->
-        <a href="http://action_profile" class="profile-button">
-            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/perfil.png" alt="Botón de Perfil">
-        </a>
+        <span class="title">MC Proyect v1.6</span>
+        <!-- Botón de menú desplegable -->
+        <button class="dropdown-button" onclick="toggleDropdown()">&#8942;</button>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="http://action_offices">Support y sugerencias</a>
+            <a href="http://action_profile">Perfil</a>
+            <a href="http://action_exit">Salir</a>
+        </div>
     </header>
 
     <!-- Menú lateral (oculto por defecto) -->
@@ -176,8 +311,27 @@
     </nav>
 
     <!-- Contenido principal de la página -->
-    <main style="flex-grow: 1; padding: 20px;">
-        <h1 style="text-align: center;">  </h1>
+    <main class="main-content">
+        <h1>👋 ¡Bienvenido/a a MC Proyect! Esperamos te sientas a gusto aquí y hagas muchos amigos. 😊</h1>
+        <div class="main-buttons">
+            <a href="http://action_share" class="round-button">
+                <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/compartir.png" alt="Botón 1">
+            </a>
+        </div>
+        <!-- Nuevo cuadro semi-transparente con contenido -->
+        <div class="content-box">
+            <h2>¿Para qué fue creado MC Proyect?</h2>
+            <p>La app fue creada para darle a los jugadores de Minecraft un espacio más libre para compartir sus mundos, aventuras, servidores y demás cosas, y brindarte contenido diario que puedas usar en tu juego.</p>
+            <h2>¿Qué brinda MC Proyect?</h2>
+            <p>MC Proyect le brinda la oportunidad al jugador de descargar addons de la comunidad y del Marketplace del juego mismo, además de poder descargar Minecraft desde la versión 0.1.0 hasta la última más reciente, completamente gratis y sin anuncios molestos.</p>
+        </div>
+        <!-- Sección del Creador -->
+        <div class="creator-section">
+            <h2>Creador</h2>
+            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/myst.jpg" alt="Foto de perfil del creador" class="creator-profile-img">
+            <p class="creator-name">Myst Start</p>
+            <p class="creator-description">MC Proyect no es solo una aplicación, es la materialización de un sueño compartido. Este proyecto fue concebido a partir de la inspiración de innumerables usuarios de Minecraft que anhelaban un espacio libre y sin restricciones. Agradezco sinceramente a todos los que depositaron su confianza en esta idea desde el principio; su apoyo y entusiasmo fueron el motor que impulsó cada etapa de su desarrollo. Mi mayor deseo es que este sea un lugar donde cada jugador se sienta en casa, y que el contenido aquí compartido enriquezca su experiencia de juego. Gracias nuevamente, de corazón, por ser parte de esta comunidad.</p>
+        </div>
     </main>
 
     <!-- Menú de navegación inferior -->
@@ -202,14 +356,25 @@
             const sideMenu = document.getElementById('sideMenu');
             sideMenu.classList.toggle('active');
         }
+
+        function toggleDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.classList.toggle('active');
+        }
+
+        // Cierra el menú si se hace clic fuera de él
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-button') && !event.target.closest('.dropdown-menu')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('active')) {
+                        openDropdown.classList.remove('active');
+                    }
+                }
+            }
+        }
     </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
