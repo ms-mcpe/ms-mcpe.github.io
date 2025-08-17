@@ -9,12 +9,12 @@
             font-family: sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212; /* Color de fondo oscuro */
+            background-color: #121212;
             min-height: 100vh;
-            color: #f0f0f0; /* Color de texto claro para el contraste */
+            color: #f0f0f0;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Distribuye el espacio entre el contenido y el menú */
+            justify-content: space-between;
         }
 
         /* Estilos para la barra superior */
@@ -32,26 +32,28 @@
             font-weight: bold;
         }
         
-        .top-bar .profile-button {
+        .top-bar .profile-button,
+        .top-bar .menu-button { /* Se añade la nueva clase para el botón de menú */
             border: none;
             background: none;
             cursor: pointer;
             padding: 0;
         }
 
-        .top-bar .profile-button img {
+        .top-bar .profile-button img,
+        .top-bar .menu-button img {
             width: 35px;
             height: 35px;
-            border-radius: 50%;
+            border-radius: 50%; /* Se mantiene para el botón de perfil */
         }
 
         /* Estilos para el menú inferior */
         .bottom-menu {
             display: flex;
-            justify-content: space-around; /* Distribuye los botones equitativamente */
+            justify-content: space-around;
             align-items: center;
             padding: 10px 0;
-            background-color: #1f1f1f; /* Color de fondo del menú */
+            background-color: #1f1f1f;
             border-top: 1px solid #333;
             position: sticky;
             bottom: 0;
@@ -75,8 +77,8 @@
         }
 
         .menu-item img {
-            width: 30px; /* Ancho de la imagen */
-            height: 30px; /* Alto de la imagen */
+            width: 30px;
+            height: 30px;
             margin-bottom: 5px;
         }
 
@@ -84,19 +86,94 @@
             font-size: 0.8em;
             font-weight: bold;
         }
+
+        /* --- ESTILOS DEL MENÚ LATERAL --- */
+        
+        /* Menú lateral (inicialmente oculto) */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparente */
+            backdrop-filter: blur(5px);
+            transform: translateX(-100%); /* Oculto por defecto */
+            transition: transform 0.4s ease-in-out;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estado visible del menú */
+        .side-menu.active {
+            transform: translateX(0);
+        }
+
+        .side-menu-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .side-menu a {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 1.1em;
+            padding: 15px 0;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .side-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Línea de separación */
+        .separator {
+            height: 1px;
+            background-color: #444;
+            margin: 10px 0;
+        }
+
     </style>
 </head>
 <body>
 
     <!-- Barra superior -->
     <header class="top-bar">
+        <!-- Botón de menú de imagen -->
+        <a href="javascript:void(0)" class="menu-button" onclick="toggleMenu()">
+            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/menu.png" alt="Botón de Menú">
+        </a>
         <span class="title">MC Proyect</span>
         <!-- Botón de perfil con href para redireccionar -->
         <a href="http://action_profile" class="profile-button">
-            <img src="ms-mcpe.github.io/mc-proyect/imagenes
-/perfil.png" alt="Botón de Perfil">
+            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/perfil.png" alt="Botón de Perfil">
         </a>
     </header>
+
+    <!-- Menú lateral (oculto por defecto) -->
+    <nav class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <button class="close-button" onclick="toggleMenu()">&times;</button>
+        </div>
+        <a href="https://ms-mcpe.github.io/mc-proyect/addons">Complementos</a>
+        <div class="separator"></div>
+        <a href="https://ms-mcpe.github.io/mc-proyect/mcversion">MC Version</a>
+        <div class="separator"></div>
+        <a href="https://ms-mcpe.github.io/mc-proyect/herramientas">Herramientas</a>
+    </nav>
 
     <!-- Contenido principal de la página -->
     <main style="flex-grow: 1; padding: 20px;">
@@ -107,24 +184,29 @@
     <nav class="bottom-menu">
         <!-- Botones con href para redireccionar -->
         <a href="go:foros" class="menu-item">
-            <img src="ms-mcpe.github.io/mc-proyect/imagenes
-/foros.png" alt="Icono 1">
+            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/foros.png" alt="Icono 1">
             <span>Foros</span>
         </a>
         <a href="go:chat" class="menu-item">
-            <img src="ms-mcpe.github.io/mc-proyect/imagenes
-/chat.png" alt="Icono 2">
+            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/chat.png" alt="Icono 2">
             <span>Chat</span>
         </a>
         <a href="go:videos" class="menu-item">
-            <img src="ms-mcpe.github.io/mc-proyect/imagenes
-/videos.png" alt="Icono 3">
+            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/videos.png" alt="Icono 3">
             <span>Videos</span>
         </a>
     </nav>
 
+    <script>
+        function toggleMenu() {
+            const sideMenu = document.getElementById('sideMenu');
+            sideMenu.classList.toggle('active');
+        }
+    </script>
+
 </body>
 </html>
+
 
 
 
