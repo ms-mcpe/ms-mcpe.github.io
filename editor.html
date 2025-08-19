@@ -3,205 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Contenido</title>
+    <title>Generador de Texto para Addons</title>
     <style>
+        /* Estilo del fondo gris oscuro */
         body {
-            font-family: sans-serif;
+            background-color: #333333;
+            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            background-color: #121212;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             color: #f0f0f0;
+        }
+        
+        /* Estilo del contenedor principal o "box" */
+        .container {
+            background-color: #2b2b2b;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            max-width: 500px;
+            width: 90%;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 1.5rem;
         }
-        
-        .container {
-            width: 90%;
-            max-width: 600px;
-            background-color: #1f1f1f;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
+
         h1 {
             text-align: center;
             color: #007bff;
+            margin-top: 0;
         }
         
+        /* Estilo de los elementos del formulario */
         .form-group {
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
         }
-        
+
         label {
-            display: block;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
             font-weight: bold;
         }
-        
-        input, select {
-            width: 100%;
-            padding: 10px;
+
+        input, select, textarea {
+            padding: 0.75rem;
             border: 1px solid #444;
             border-radius: 5px;
-            background-color: rgba(68, 68, 68, 0.5);
+            background-color: #1e1e1e;
             color: #f0f0f0;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
             outline: none;
-            box-sizing: border-box;
+            border-color: #007bff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
         button {
-            width: 100%;
-            padding: 15px;
             background-color: #007bff;
             color: white;
             border: none;
+            padding: 0.75rem 1.5rem;
             border-radius: 5px;
-            font-size: 1.1em;
-            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
-        
+
         button:hover {
             background-color: #0056b3;
         }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .button-group button {
-            flex: 1;
-        }
-        
-        .output-section {
-            width: 100%;
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end; /* Alinea el botón a la derecha */
-        }
-        
-        #outputCode {
-            width: 100%;
-            height: 200px;
-            padding: 10px;
-            background-color: #2b2b2b;
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: #f0f0f0;
-            white-space: pre-wrap;
-            box-sizing: border-box;
-            resize: vertical;
-            margin-bottom: 10px; /* Espacio entre el textarea y el botón */
-        }
 
-        .instruction {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.9em;
-            color: #ccc;
-        }
-        
-        .message-box {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 20px;
+        #output {
+            background-color: #1e1e1e;
+            padding: 1rem;
             border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-            text-align: center;
+            border: 1px dashed #444;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 50px;
         }
     </style>
 </head>
 <body>
 
-    <div class="message-box" id="messageBox">¡Código copiado!</div>
-
     <div class="container">
-        <h1>Generador de Tarjetas de Contenido</h1>
-        <div class="form-group">
-            <label for="addonTitle">Título del Complemento:</label>
-            <input type="text" id="addonTitle" placeholder="Ej: Complemento de Armaduras">
-        </div>
-        <div class="form-group">
-            <label for="addonCategory">Categoría:</label>
-            <select id="addonCategory">
-                <option value="addons">Addons</option>
-                <option value="texturas">Texturas</option>
-                <option value="shaders">Shaders</option>
-                <option value="skins">Skins</option>
-                <option value="mapas">Mapas</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="imageLink">Enlace de la Imagen:</label>
-            <input type="url" id="imageLink" placeholder="Ej: https://ejemplo.com/imagen.jpg">
-        </div>
-        <div class="form-group">
-            <label for="downloadLink">Enlace de Descarga:</label>
-            <input type="url" id="downloadLink" placeholder="Ej: https://ejemplo.com/descarga.zip">
-        </div>
+        <h1>Generador de Texto para Addons</h1>
+        <form id="addonForm">
+            <div class="form-group">
+                <label for="addonName">Nombre del Addon</label>
+                <input type="text" id="addonName" required>
+            </div>
+            <div class="form-group">
+                <label for="addonDesc">Descripción del Addon</label>
+                <textarea id="addonDesc" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="addonFormat">Formato del Addon</label>
+                <select id="addonFormat" required>
+                    <option value=".mcpack">.mcpack</option>
+                    <option value=".mcaddon">.mcaddon</option>
+                    <option value=".mctemplate">.mctemplate</option>
+                    <option value=".mcworld">.mcworld</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="addonUrl">URL de Imagen del Addon</label>
+                <input type="url" id="addonUrl" required>
+            </div>
+            <div class="form-group">
+                <label for="addonDownloadLink">Enlace de Descarga</label>
+                <input type="url" id="addonDownloadLink" required>
+            </div>
+            <button type="submit">Generar Texto</button>
+        </form>
         
-        <button onclick="generateCode()">Generar Código HTML</button>
-
-        <div class="output-section">
-            <textarea id="outputCode" readonly></textarea>
-            <button onclick="copyCode()">Copiar Código</button>
-        </div>
-        
-        <p class="instruction">Haz clic en "Generar Código" y luego en "Copiar Código" para pegarlo en tu documento principal.</p>
+        <h2>Texto Generado</h2>
+        <pre id="output"></pre>
     </div>
 
     <script>
-        function generateCode() {
-            // Get input values
-            const title = document.getElementById('addonTitle').value;
-            const category = document.getElementById('addonCategory').value;
-            const image = document.getElementById('imageLink').value;
-            const download = document.getElementById('downloadLink').value;
+        // Obtenemos los elementos del DOM
+        const addonForm = document.getElementById('addonForm');
+        const addonNameInput = document.getElementById('addonName');
+        const addonDescTextarea = document.getElementById('addonDesc');
+        const addonFormatSelect = document.getElementById('addonFormat');
+        const addonUrlInput = document.getElementById('addonUrl');
+        const addonDownloadLinkInput = document.getElementById('addonDownloadLink');
+        const outputPre = document.getElementById('output');
+
+        // Manejamos el envío del formulario
+        addonForm.addEventListener('submit', function(event) {
+            // Prevenimos el comportamiento por defecto del formulario
+            event.preventDefault();
+
+            // Obtenemos los valores de los campos
+            const name = addonNameInput.value;
+            const desc = addonDescTextarea.value;
+            const format = addonFormatSelect.value;
+            const url = addonUrlInput.value;
+            const downloadLink = addonDownloadLinkInput.value;
             
-            // Check if all fields are filled
-            if (!title || !category || !image || !download) {
-                document.getElementById('outputCode').value = 'Por favor, rellena todos los campos para generar el código.';
-                return;
-            }
-
-            // Create the HTML code snippet without line breaks
-            const code = `<li class="addon-item" data-category="${category}"><h2>${title}</h2><img src="${image}" alt="Imagen de ${title}"><a href="${download}" class="download-button">Descargar</a></li>`;
-
-            // Display the generated code in the textarea
-            document.getElementById('outputCode').value = code;
-        }
-
-        function copyCode() {
-            const outputCode = document.getElementById('outputCode');
+            // Generamos el texto con los caracteres \n literales y el nuevo enlace de descarga
+            const generatedText = `>add|${name}|*Nombre:* ${name}\\n*Formato:* ${format}\\n\\n*descripcion*\\n> ${desc}\\n\\n*link de descarga:* ${downloadLink}|${url}`;
             
-            if (outputCode.value.trim() === '') {
-                // No code to copy
-                return;
-            }
-
-            // Use the older `document.execCommand` for better compatibility in iframes
-            outputCode.select();
-            document.execCommand('copy');
-            
-            // Show a temporary message to confirm the copy
-            const messageBox = document.getElementById('messageBox');
-            messageBox.style.display = 'block';
-            setTimeout(() => {
-                messageBox.style.display = 'none';
-            }, 2000);
-        }
+            // Mostramos el texto en el área de salida
+            outputPre.textContent = generatedText;
+        });
     </script>
-
 </body>
 </html>
