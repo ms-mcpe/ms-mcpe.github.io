@@ -1,67 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MC Proyect - Minecraft</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Host</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #121212;
-      text-align: center;
-      padding: 40px 20px;
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-footer {
+    .error-box {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
       text-align: center;
-      font-size: 13px;
-      color: #777;
-      margin-top: 40px;
-}
-    
-    .logo {
-      width: 150px;
-      height: 150px;
-      border-radius: 20px;
-      object-fit: cover;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
     }
-    .title {
-      font-size: 28px;
-      font-weight: bold;
-      margin-top: 20px;
-      color: white;
-      padding: 12px 24px;
+
+    .error-box h2 {
+      color: #ff5252;
+      margin-bottom: 12px;
     }
-    .description {
-      font-size: 20px;
-      color: #666;
-      margin-bottom: 30px;
+
+    .error-box p {
+      font-size: 16px;
+      margin-bottom: 20px;
+      line-height: 1.5;
     }
-    .download-btn {
+
+    .error-box a {
       display: inline-block;
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 24px;
-      font-size: 18px;
+      background-color: #25d366;
+      color: #121212;
       text-decoration: none;
-      border-radius: 25px;
-      transition: background-color 0.3s;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
     }
-    .download-btn:hover {
-      background-color: #45a049;
+
+    .error-box a:hover {
+      background-color: #1ebc5c;
     }
   </style>
 </head>
 <body>
-
-  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5z-KfI6PqT-ZpUqaxyxl2S5goTD2XMiwTgg&s" alt="Logo MC Proyect" class="logo">
-  <div class="title"> Minecraft Bedrock </div>
-  <div class="description">Version official<br> V1.21.94 </div>
-  <a href="https://linkyshare.com/es/@MystStart/minecraft-bedrock-21-official-descarga-minecraftapk" class="download-btn">Descargar App</a>
-
-<footer>
-    © JR-TechStudios | Diseño por Myst
-</footer>
-  
+  <div class="error-box">
+    <h2>🛠️ Error del sistema</h2>
+    <p>Tenemos problemas con el host que gestiona el sistema de alguna de las aplicaciones de addons y sus funciones.</p>
+    <p>Si quieres saber más información, entra aquí:</p>
+    <a href="https://whatsapp.com/channel/0029Vb6MoFQ0gcfCKJhYNU33" target="_blank">Más información</a>
+  </div>
 </body>
-</html> 
+</html>
