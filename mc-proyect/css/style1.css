@@ -1,1 +1,149 @@
+/* Estilos generales */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    min-height: 100vh;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Contenedor de la barra superior */
+.top-bar {
+    width: 100%;
+    background-color: #1f1f1f;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+}
+
+/* Estilo para el buscador */
+#addonSearch {
+    flex-grow: 1;
+    max-width: 450px;
+    padding: 12px 20px;
+    border: 1px solid #444;
+    border-radius: 25px;
+    background-color: rgba(68, 68, 68, 0.5);
+    color: #f0f0f0;
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    margin-right: 10px;
+}
+
+#addonSearch:focus {
+    border-color: #777;
+}
+
+/* Estilo para el contador */
+.counter-container {
+    font-size: 0.9em;
+    color: #ccc;
+    white-space: nowrap;
+}
+
+/* Estilo para la barra de secciones, ahora en la parte inferior */
+.section-bar {
+    width: 100%;
+    background-color: #1f1f1f;
+    padding: 10px 0;
+    display: flex;
+    justify-content: flex-start;
+    border-top: 1px solid #333;
+    overflow-x: auto;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.section-button {
+    background-color: transparent;
+    border: none;
+    color: #f0f0f0;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.section-button.active, .section-button:hover {
+    background-color: #333;
+    color: #007bff;
+}
+
+/* Contenedor de la lista de complementos */
+.main-container {
+    width: 90%;
+    max-width: 600px;
+    margin-top: 20px;
+    margin-bottom: 70px;
+}
+
+/* Estilo para la lista de complementos */
+.addon-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Estilo para cada tarjeta de complemento */
+.addon-item {
+    background-color: #1f1f1f;
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos de ocultar elementos */
+.addon-item.hidden {
+    display: none;
+}
+
+.addon-item h2 {
+    margin: 0 0 10px;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.addon-item img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Estilo para el botón de descarga */
+.download-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: auto;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+}
 
