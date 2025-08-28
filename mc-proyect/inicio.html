@@ -217,6 +217,20 @@
             margin-top: 0;
             margin-bottom: 15px;
         }
+        
+        .creator-profiles {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap; /* Permite que los perfiles se envuelvan en pantallas pequeñas */
+        }
+        
+        .creator-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
         .creator-profile-img {
             width: 80px;
@@ -321,8 +335,16 @@
         </div>
         <div class="creator-section">
             <h2>Creador</h2>
-            <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/myst.jpg" alt="Foto de perfil del creador" class="creator-profile-img">
-            <p class="creator-name">Myst Start</p>
+            <div class="creator-profiles">
+                <div class="creator-profile">
+                    <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/myst.jpg" alt="Foto de perfil del creador" class="creator-profile-img">
+                    <p class="creator-name">Myst Start</p>
+                </div>
+                <div class="creator-profile">
+                    <img src="https://ms-mcpe.github.io/mc-proyect/imagenes/avatar_generico.jpg" alt="Foto de perfil del creador" class="creator-profile-img">
+                    <p class="creator-name">Emma 42151</p>
+                </div>
+            </div>
             <p class="creator-description">MC Addons no es solo una aplicación, es la materialización de un sueño compartido. Este proyecto fue concebido a partir de la inspiración de innumerables usuarios de Minecraft Bedrock que anhelaban un espacio libre y sin restricciones. La app actualmente brindará utilidades para ustedes como addons, herramientas, chats, foros y demás cosas para hacer de esto una experiencia más divertida y libre de contenido no adecuado. Gracias por ser parte de esta comunidad. </p>
         </div>
     </main>
