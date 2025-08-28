@@ -4,162 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MC Proyect - Complementos</title>
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            min-height: 100vh;
-            color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Contenedor de la barra superior */
-        .top-bar {
-            width: 100%;
-            background-color: #1f1f1f;
-            padding: 10px 20px;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-        }
-        
-        /* Estilo para el buscador */
-        #addonSearch {
-            flex-grow: 1;
-            max-width: 450px;
-            padding: 12px 20px;
-            border: 1px solid #444;
-            border-radius: 25px;
-            background-color: rgba(68, 68, 68, 0.5);
-            color: #f0f0f0;
-            outline: none;
-            transition: border-color 0.3s ease;
-            box-sizing: border-box;
-            margin-right: 10px;
-        }
-        
-        #addonSearch:focus {
-            border-color: #777;
-        }
-        
-        /* Estilo para el contador */
-        .counter-container {
-            font-size: 0.9em;
-            color: #ccc;
-            white-space: nowrap;
-        }
-
-        /* Estilo para la barra de secciones */
-        .section-bar {
-            width: 100%;
-            background-color: #1f1f1f;
-            padding: 10px 0;
-            display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #333;
-            overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
-        }
-        
-        .section-button {
-            background-color: transparent;
-            border: none;
-            color: #f0f0f0;
-            font-size: 1em;
-            font-weight: bold;
-            padding: 10px 15px;
-            margin: 0 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            white-space: nowrap;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        .section-button.active, .section-button:hover {
-            background-color: #333;
-            color: #007bff;
-        }
-
-        /* Contenedor de la lista de complementos */
-        .main-container {
-            width: 90%;
-            max-width: 600px;
-            margin-top: 20px;
-        }
-
-        /* Estilo para la lista de complementos */
-        .addon-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        /* Estilo para cada tarjeta de complemento */
-        .addon-item {
-            background-color: #1f1f1f;
-            margin-bottom: 15px;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Estilos de ocultar elementos */
-        .addon-item.hidden {
-            display: none;
-        }
-
-        .addon-item h2 {
-            margin: 0 0 10px;
-            font-size: 1.3em;
-            font-weight: bold;
-        }
-        
-        .addon-item img {
-            width: 100%;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        /* Estilo para el botón de descarga */
-        .download-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            margin-top: auto;
-        }
-
-        .download-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style1.css">
 </head>
 <body>
 
-    <!-- Barra superior con el buscador y el contador -->
     <header class="top-bar">
         <input type="text" id="addonSearch" placeholder="Buscar por título...">
         <div id="addonCounter" class="counter-container"></div>
     </header>
 
-    <!-- Barra de secciones -->
+    <div class="main-container">
+        <ul id="addonList" class="addon-list">
+            <li class="addon-item" data-category="addons">
+                <h2>Gravity Gun Addon</h2>
+                <img src="https://via.placeholder.com/400x150?text=Gravity+Gun+Addon" alt="Imagen del Addon de la Pistola de Gravedad">
+                <a href="go:download_gravity_gun" class="download-button">Descargar</a>
+            </li>
+            
+            <li class="addon-item" data-category="texturas">
+                <h2>Faithful Texturas</h2>
+                <img src="https://via.placeholder.com/400x150?text=Faithful+Texturas" alt="Imagen del Paquete de Texturas Faithful">
+                <a href="go:download_faithful_textures" class="download-button">Descargar</a>
+            </li>
+            
+            <li class="addon-item" data-category="shaders">
+                <h2>BSL Shaders</h2>
+                <img src="https://via.placeholder.com/400x150?text=BSL+Shaders" alt="Imagen de los Shaders BSL">
+                <a href="go:download_bsl_shaders" class="download-button">Descargar</a>
+            </li>
+
+            <li class="addon-item" data-category="skins">
+                <h2>Super Hero Skin Pack</h2>
+                <img src="https://via.placeholder.com/400x150?text=Super+Hero+Skins" alt="Imagen del Paquete de Skins de Superhéroes">
+                <a href="go:download_superhero_skins" class="download-button">Descargar</a>
+            </li>
+            
+            <li class="addon-item" data-category="mapas">
+                <h2>Parkour Challenge Map</h2>
+                <img src="https://via.placeholder.com/400x150?text=Parkour+Map" alt="Imagen del Mapa de Parkour">
+                <a href="go:download_parkour_map" class="download-button">Descargar</a>
+            </li>
+            
+            <li class="addon-item" data-category="mcpe">
+                <h2>MCPE 1.20 APK</h2>
+                <img src="https://via.placeholder.com/400x150?text=MCPE+1.20+APK" alt="Imagen del APK de MCPE 1.20">
+                <a href="go:download_mcpe_1_20" class="download-button">Descargar</a>
+            </li>
+        </ul>
+    </div>
+    
     <nav class="section-bar">
         <button class="section-button active" data-category="all">Todo</button>
         <button class="section-button" data-category="addons">Addons</button>
@@ -167,16 +60,8 @@
         <button class="section-button" data-category="shaders">Shaders</button>
         <button class="section-button" data-category="skins">Skins</button>
         <button class="section-button" data-category="mapas">Mapas</button>
+        <button class="section-button" data-category="mcpe">MCPE</button>
     </nav>
-
-    <!-- Contenedor principal de la página -->
-    <div class="main-container">
-        <!-- Lista de complementos con categorías (ejemplo) -->
-        <ul id="addonList" class="addon-list">
-            <!-- Addons -->
-          
-        </ul>
-    </div>
 
     <script>
         // Obtiene los elementos del DOM
@@ -272,4 +157,3 @@
 
 </body>
 </html>
-
