@@ -56,7 +56,7 @@
     }
 
     /* Estilos para el botón */
-    button {
+    .form-button {
         width: 100%;
         padding: 12px 15px;
         border: none;
@@ -69,7 +69,7 @@
         transition: background-color 0.3s ease;
     }
 
-    button:hover {
+    .form-button:hover {
         background-color: #0056b3;
     }
 
@@ -81,13 +81,38 @@
         border-radius: 8px;
     }
 
+    /* Estilo del contenedor del textarea y el botón de copiar */
+    .copy-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     #addonCodeOutput {
+        flex-grow: 1;
         background: #1e1e1e;
         color: #00ff00;
         border: 1px solid #444;
         font-family: 'Courier New', Courier, monospace;
         resize: vertical;
         min-height: 80px;
+    }
+    
+    /* Estilos para el nuevo botón de copiar */
+    .copy-button {
+        background-color: #00aaff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        white-space: nowrap; /* Evita que el texto se parta en varias líneas */
+        transition: background-color 0.3s ease;
+    }
+
+    .copy-button:hover {
+        background-color: #0077b3;
     }
   </style>
 </head>
@@ -106,11 +131,14 @@
       <option value="mapas">Mapas</option>
       <option value="mcpe">MCPE</option>
     </select>
-    <button onclick="generateAddonCode()">Generar Código</button>
+    <button class="form-button" onclick="generateAddonCode()">Generar Código</button>
 
     <div id="output-container" style="display:none;">
         <h3>Código HTML para tu complemento:</h3>
-        <textarea id="addonCodeOutput" readonly></textarea>
+        <div class="copy-container">
+            <textarea id="addonCodeOutput" readonly></textarea>
+            <button class="copy-button" onclick="copyCode()">Copiar</button>
+        </div>
     </div>
   </div>
 
@@ -138,6 +166,20 @@
       document.getElementById('addonImage').value = '';
       document.getElementById('addonDownload').value = '';
       document.getElementById('addonCategory').value = 'addons';
+    }
+
+    function copyCode() {
+      const output = document.getElementById('addonCodeOutput');
+      output.select();
+      output.setSelectionRange(0, 99999); // Para dispositivos móviles
+      navigator.clipboard.writeText(output.value)
+        .then(() => {
+          alert('¡Código copiado al portapapeles!');
+        })
+        .catch(err => {
+          console.error('Error al copiar el código: ', err);
+          alert('Hubo un error al intentar copiar el código.');
+        });
     }
   </script>
 
