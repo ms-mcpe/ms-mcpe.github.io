@@ -1,138 +1,137 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Proyect - Complementos</title>
-    <link rel="stylesheet" href="css/addons.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MC Proyect – Complementos Modernos</title>
+  <link rel="stylesheet" href="css/addons.css" />
 </head>
 <body>
 
-    <header class="top-bar">
-        <input type="text" id="addonSearch" placeholder="Buscar por título...">
-        <div id="addonCounter" class="counter-container"></div>
-    </header>
-
-    <div class="main-container">
-        <ul id="addonList" class="addon-list">
-                   
-
-            
-         <li class="addon-item" data-category="mcpe"><h2>Minecraft 1.21.110.26 beta</h2><img src="https://linkyshare.com/storage/posts/thumbnails/RPA5R6ScnmybLFSAnxAukR4dkMlWumg8xv4O7qgz.jpg" alt="Imagen de Minecraft 1.21.110.26 beta" style="width:100%; border-radius:4px;"><a href="https://linkyshare.com/es/@MystStart/descarga-minecraft-bedrock-beta-ultima-version-12111026" class="download-button" target="_blank">Descargar</a></li>
-             <li class="addon-item" data-category="mcpe"><h2>Minecraft 1.21.110.25 beta</h2><img src="https://linkyshare.com/storage/posts/thumbnails/KvQrFz7FwHCKGPxsCpe2EFEj0efTBojOZKAxCbwH.jpg" alt="Imagen de Minecraft 1.21.110.25 beta" style="width:100%; border-radius:4px;"><a href="https://linkyshare.com/es/@MystStart/descarga-minecraft-bedrock-beta-ultima-version-12111025" class="download-button" target="_blank">Descargar</a></li>
-  <li class="addon-item" data-category="mcpe"><h2>Minecraft 1.21.101</h2><img src="https://linkyshare.com/storage/posts/thumbnails/OsdUjevBp0OjiqdcZEoFhg1IKuKj7GfOZmRP5Qn4.webp" alt="Imagen de Minecraft 1.21.101" style="width:100%; border-radius:4px;"><a href="https://linkyshare.com/es/@MystStart/descarga-minecraft-bedrock-oficial-ultima-version-version-121101" class="download-button" target="_blank">Descargar</a></li>
-<li class="addon-item" data-category="mapas"><h2>200 PETS</h2><img src="https://linkyshare.com/storage/posts/thumbnails/tCvKog83NGtp50LiQO7nV4Hd15PucLD5AnzTBwGP.jpg" alt="Imagen de 200 PETS" style="width:100%; border-radius:4px;"><a href="https://linkyshare.com/es/@MystStart/minecraft-addons-para-tu-mundo-200-pets" class="download-button" target="_blank">Descargar</a></li>
-            <li class="addon-item" data-category="addons"><h2>35 TNTs</h2><img src="https://linkyshare.com/storage/posts/thumbnails/o5OYGHjjDsUObwmnM7N35ReP2K6kvHScN4pMRu7F.jpg" alt="Imagen de 35 TNTs" style="width:100%; border-radius:4px;"><a href="https://linkyshare.com/es/@MystStart/minecraft-addons-para-tu-mundo-35-tnt" class="download-button" target="_blank">Descargar</a></li>
-            
-            
-        </ul>
+  <header class="header">
+    <div class="header__search">
+      <input type="text" id="addonSearch" placeholder="Buscar complementos…" />
+      <span id="addonCounter" class="header__counter"></span>
     </div>
-    
-    <nav class="section-bar">
-        <button class="section-button active" data-category="all">Todo</button>
-        <button class="section-button" data-category="addons">Addons</button>
-        <button class="section-button" data-category="texturas">Texturas</button>
-        <button class="section-button" data-category="shaders">Shaders</button>
-        <button class="section-button" data-category="skins">Skins</button>
-        <button class="section-button" data-category="mapas">Mapas</button>
-        <button class="section-button" data-category="mcpe">MCPE</button>
+    <button id="themeToggle" class="header__theme-toggle" aria-label="Cambiar tema">🌙</button>
+  </header>
+
+  <main class="main">
+    <nav class="filters" role="navigation">
+      <button class="filter-button active" data-category="all">Todo</button>
+      <button class="filter-button" data-category="addons">Addons</button>
+      <button class="filter-button" data-category="texturas">Texturas</button>
+      <button class="filter-button" data-category="shaders">Shaders</button>
+      <button class="filter-button" data-category="skins">Skins</button>
+      <button class="filter-button" data-category="mapas">Mapas</button>
+      <button class="filter-button" data-category="mcpe">MCPE</button>
     </nav>
 
-    <script>
+    <section class="addon-grid" id="addonList">
+      <article class="addon-card" data-category="mcpe">
+        <h2 class="addon-card__title">Minecraft 1.21.110.26 beta</h2>
+        <img loading="lazy"
+             src="https://linkyshare.com/.../RPA5R6ScnmybLFSAnxAukR4dkMlWumg8xv4O7qgz.jpg"
+             alt="Minecraft 1.21.110.26 beta"
+             class="addon-card__image" />
+        <a href="https://linkyshare.com/…12111026"
+           class="addon-card__button" target="_blank">Descargar</a>
+      </article>
+      <article class="addon-card" data-category="mcpe">
+        <h2 class="addon-card__title">Minecraft 1.21.110.25 beta</h2>
+        <img loading="lazy"
+             src="https://linkyshare.com/.../KvQrFz7FwHCKGPxsCpe2EFEj0efTBojOZKAxCbwH.jpg"
+             alt="Minecraft 1.21.110.25 beta"
+             class="addon-card__image" />
+        <a href="https://linkyshare.com/…12111025"
+           class="addon-card__button" target="_blank">Descargar</a>
+      </article>
+      <article class="addon-card" data-category="mcpe">
+        <h2 class="addon-card__title">Minecraft 1.21.101</h2>
+        <img loading="lazy"
+             src="https://linkyshare.com/.../OsdUjevBp0OjiqdcZEoFhg1IKuKj7GfOZmRP5Qn4.webp"
+             alt="Minecraft 1.21.101"
+             class="addon-card__image" />
+        <a href="https://linkyshare.com/…121101"
+           class="addon-card__button" target="_blank">Descargar</a>
+      </article>
+      <article class="addon-card" data-category="mapas">
+        <h2 class="addon-card__title">200 PETS</h2>
+        <img loading="lazy"
+             src="https://linkyshare.com/.../tCvKog83NGtp50LiQO7nV4Hd15PucLD5AnzTBwGP.jpg"
+             alt="200 PETS"
+             class="addon-card__image" />
+        <a href="https://linkyshare.com/.../200-pets"
+           class="addon-card__button" target="_blank">Descargar</a>
+      </article>
+      <article class="addon-card" data-category="addons">
+        <h2 class="addon-card__title">35 TNTs</h2>
+        <img loading="lazy"
+             src="https://linkyshare.com/.../o5OYGHjjDsUObwmnM7N35ReP2K6kvHScN4pMRu7F.jpg"
+             alt="35 TNTs"
+             class="addon-card__image" />
+        <a href="https://linkyshare.com/.../35-tnt"
+           class="addon-card__button" target="_blank">Descargar</a>
+      </article>
+    </section>
+  </main>
 
-        const searchInput = document.getElementById('addonSearch');
-        const addonList = document.getElementById('addonList');
-        const addonItems = addonList.getElementsByClassName('addon-item');
-        const addonCounter = document.getElementById('addonCounter');
-        const sectionButtons = document.querySelectorAll('.section-button');
-        
-        let currentCategory = 'all';
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('addonSearch');
+      const cards       = document.querySelectorAll('.addon-card');
+      const counter     = document.getElementById('addonCounter');
+      const filters     = document.querySelectorAll('.filter-button');
+      const themeToggle = document.getElementById('themeToggle');
+      let activeCategory = 'all';
 
-        // Función para actualizar el contador
-        function updateAddonCount() {
-            let visibleCount = 0;
-            let totalCount = 0;
+      function updateDisplay() {
+        const query = searchInput.value.trim().toLowerCase();
+        let shown = 0, total = 0;
 
-            // Recorre los elementos para contar los visibles y el total en la categoría actual
-            for (let i = 0; i < addonItems.length; i++) {
-                const item = addonItems[i];
-                const isInCategory = currentCategory === 'all' || item.dataset.category === currentCategory;
-                
-                if (isInCategory) {
-                    totalCount++;
-                    if (item.style.display !== 'none') {
-                        visibleCount++;
-                    }
-                }
-            }
-            
-            // Actualiza el texto del contador
-            addonCounter.textContent = `Mostrando ${visibleCount} de ${totalCount}`;
-        }
-        
-        // Agrega un escuchador de eventos al buscador
-        searchInput.addEventListener('input', function() {
-            // Convierte el valor del input a minúsculas
-            const filter = this.value.toLowerCase();
-            
-            // Itera sobre cada elemento de la lista para filtrar
-            for (let i = 0; i < addonItems.length; i++) {
-                const item = addonItems[i];
-                const titleText = item.querySelector('h2').textContent.toLowerCase();
-                const isInCategory = currentCategory === 'all' || item.dataset.category === currentCategory;
+        cards.forEach(card => {
+          const title = card.querySelector('h2').textContent.toLowerCase();
+          const matchCat = activeCategory === 'all' || card.dataset.category === activeCategory;
+          const matchSearch = title.includes(query);
 
-                if (isInCategory && titleText.includes(filter)) {
-                    item.style.display = ""; // Muestra el elemento
-                } else {
-                    item.style.display = "none"; // Esconde el elemento
-                }
-            }
-            
-            // Llama a la función para actualizar el contador
-            updateAddonCount();
+          if (matchCat && matchSearch) {
+            card.style.display = '';
+            shown++; total++;
+          } else if (matchCat) {
+            card.style.display = 'none';
+            total++;
+          } else {
+            card.style.display = 'none';
+          }
         });
 
-        // Función para filtrar por categoría
-        function filterByCategory(category) {
-            currentCategory = category;
-            searchInput.value = ''; // Limpia el buscador al cambiar de categoría
+        counter.textContent = `Mostrando ${shown} de ${total}`;
+      }
 
-            // Actualiza el estado activo de los botones de sección
-            sectionButtons.forEach(button => {
-                if (button.dataset.category === category) {
-                    button.classList.add('active');
-                } else {
-                    button.classList.remove('active');
-                }
-            });
+      searchInput.addEventListener('input', updateDisplay);
 
-            // Itera sobre los elementos para mostrar u ocultar según la categoría
-            for (let i = 0; i < addonItems.length; i++) {
-                const item = addonItems[i];
-                if (category === 'all' || item.dataset.category === category) {
-                    item.style.display = ""; // Muestra el elemento
-                } else {
-                    item.style.display = "none"; // Esconde el elemento
-                }
-            }
-            
-            updateAddonCount();
-        }
-
-        // Asigna el evento a cada botón
-        sectionButtons.forEach(button => {
-            button.addEventListener('click', () => filterByCategory(button.dataset.category));
+      filters.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filters.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCategory = btn.dataset.category;
+          searchInput.value = '';
+          updateDisplay();
         });
+      });
 
-        // Llama a la función al cargar la página para mostrar el contador inicial
-        window.onload = () => {
-             filterByCategory('all');
-        };
-    </script>
+      themeToggle.addEventListener('click', () => {
+        const root = document.documentElement;
+        const isDark = root.getAttribute('data-theme') === 'dark';
+        root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        themeToggle.textContent = isDark ? '🌙' : '☀️';
+      });
+
+      // Inicializa estado
+      document.documentElement.setAttribute('data-theme', 'light');
+      updateDisplay();
+    });
+  </script>
 
 </body>
-</html>
-
-
-
-
+    </html>
