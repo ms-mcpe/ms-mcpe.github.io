@@ -2,7 +2,7 @@
         /* Estilos generales para el cuerpo */
         body {
             /* Cambia el fondo de color sólido a una imagen. */
-            background-image: url('fondo.png');
+            background-image: url('https://ms-mcpe.github.io/mc-proyect/css/fondo.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
