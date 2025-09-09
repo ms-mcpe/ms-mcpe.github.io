@@ -5,12 +5,7 @@
         const contentData = [
        
 
-{
-  name: "Minecraft 1.21.101",
-  category: "official",
-  image: "https://linkyshare.com/storage/posts/thumbnails/6DJCkTGG4fb3Y7j0JFdy8pba07Zr0EhDG7ht78fz.jpg",
-  link: "https://sites.google.com/view/mcproyect/minecraft/1-21-101"
-}
+{ name: "Minecraft 1.21.101", category: "official", image: "https://linkyshare.com/storage/posts/thumbnails/6DJCkTGG4fb3Y7j0JFdy8pba07Zr0EhDG7ht78fz.jpg", link: "https://sites.google.com/view/mcproyect/minecraft/1-21-101" }
      
    ];
 
