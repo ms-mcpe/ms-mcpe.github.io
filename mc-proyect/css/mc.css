@@ -1,0 +1,131 @@
+ <style>
+        /* Estilos generales para el cuerpo */
+        body {
+            /* Cambia el fondo de color sólido a una imagen. */
+            background-image: url('https://placehold.co/1920x1080/0d0c1d/ffffff?text=Fondo+Espacial');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff; /* Color de texto blanco para que sea visible */
+            font-family: 'Inter', sans-serif; /* Usamos una fuente moderna */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        /* Estilos para la barra superior de navegación */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem; /* Espacio entre los botones */
+            /* Fondo semi-transparente que combina con el fondo de la imagen */
+            background-color: rgba(13, 12, 29, 0.8);
+            backdrop-filter: blur(8px); /* Efecto de desenfoque */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+
+        /* Estilos para los botones de la barra superior */
+        .nav-button {
+            text-decoration: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Degradado semi-transparente para el botón 'Official' */
+        .official-button {
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
+        }
+        
+        /* Degradado semi-transparente para el botón 'Betas' */
+        .betas-button {
+            background: linear-gradient(45deg, rgba(243, 156, 18, 0.7), rgba(211, 84, 0, 0.7));
+        }
+
+        /* Degradado semi-transparente para el botón 'Patched' */
+        .patched-button {
+            background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
+        }
+
+        /* Estilos para el contenedor principal, si es necesario */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-top: 8rem; /* Espacio para la barra superior */
+            min-height: 100vh;
+        }
+
+        .content-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .content-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            /* Degradado semi-transparente para la caja de contenido */
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(15, 15, 30, 0.7));
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 300px; /* Ancho fijo para las cajas */
+        }
+        
+        .content-box img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-box h3 {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .download-link {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #4CAF50;
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        .download-link:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+    </style>
