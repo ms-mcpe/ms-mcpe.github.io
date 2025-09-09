@@ -1,4 +1,4 @@
- <style>
+<style>
         /* Estilos generales para el cuerpo */
         body {
             /* Cambia el fondo de color sólido a una imagen. */
@@ -21,9 +21,8 @@
             width: 100%;
             padding: 1rem 2rem;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 1.5rem; /* Espacio entre los botones */
             /* Fondo semi-transparente que combina con el fondo de la imagen */
             background-color: rgba(13, 12, 29, 0.8);
             backdrop-filter: blur(8px); /* Efecto de desenfoque */
@@ -32,6 +31,14 @@
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
             z-index: 10;
+        }
+
+        /* Contenedor de los botones */
+        .button-container {
+            display: flex;
+            gap: 1.5rem;
+            flex-grow: 1;
+            justify-content: center;
         }
 
         /* Estilos para los botones de la barra superior */
@@ -66,7 +73,22 @@
             background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
         }
 
-        /* Estilos para el contenedor principal, si es necesario */
+        /* Estilos del buscador */
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            width: 200px;
+            font-size: 1rem;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Estilos para el contenedor principal */
         .main-container {
             display: flex;
             justify-content: center;
