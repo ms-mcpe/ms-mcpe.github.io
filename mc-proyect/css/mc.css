@@ -1,167 +1,99 @@
-  <style>
-        /* Estilos generales para el cuerpo */
-        body {
-            /* Cambia el fondo de color sólido a una imagen. */
-            background-image: url('https://ms-mcpe.github.io/mc-proyect/css/fondo.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #ffffff; /* Color de texto blanco para que sea visible */
-            font-family: 'Inter', sans-serif; /* Usamos una fuente moderna */
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+
+        let currentCategory = 'official';
+
+        // Datos de ejemplo para las diferentes categorías
+        const contentData = [
+            {
+                name: "Minecraft 1.20",
+                category: "official",
+                image: "https://placehold.co/400x300/e0e0e0/0d0c1d?text=Minecraft+1.20",
+                link: "#"
+            },
+            {
+                name: "Minecraft 1.19",
+                category: "official",
+                image: "https://placehold.co/400x300/d0d0d0/0d0c1d?text=Minecraft+1.19",
+                link: "#"
+            },
+            {
+                name: "Addon Beta 1.0",
+                category: "betas",
+                image: "https://placehold.co/400x300/f0f0f0/0d0c1d?text=Addon+Beta+1.0",
+                link: "#"
+            },
+            {
+                name: "Addon Beta 1.1",
+                category: "betas",
+                image: "https://placehold.co/400x300/f5f5f5/0d0c1d?text=Addon+Beta+1.1",
+                link: "#"
+            },
+            {
+                name: "Patched 1.18",
+                category: "patched",
+                image: "https://placehold.co/400x300/c0c0c0/0d0c1d?text=Patched+1.18",
+                link: "#"
+            },
+            {
+                name: "Patched 1.17",
+                category: "patched",
+                image: "https://placehold.co/400x300/b0b0b0/0d0c1d?text=Patched+1.17",
+                link: "#"
+            }
+        ];
+
+        // Función para renderizar el contenido según la categoría y el término de búsqueda
+        function renderContent(category, searchTerm = '') {
+            currentCategory = category;
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = ''; // Limpia el contenido anterior
+
+            let filteredData = contentData.filter(item => item.category === category);
+
+            // Filtra por término de búsqueda si existe
+            if (searchTerm) {
+                const lowerCaseSearchTerm = searchTerm.toLowerCase();
+                filteredData = filteredData.filter(item => 
+                    item.name.toLowerCase().startsWith(lowerCaseSearchTerm)
+                );
+            }
+
+            if (filteredData.length === 0) {
+                contentArea.innerHTML = '<p>No hay contenido disponible para esta categoría.</p>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const box = document.createElement('div');
+                box.className = 'content-box';
+
+                const title = document.createElement('h3');
+                title.textContent = item.name;
+
+                const image = document.createElement('img');
+                image.src = item.image;
+                image.alt = item.name;
+
+                const link = document.createElement('a');
+                link.href = item.link;
+                link.textContent = 'Descargar';
+                link.className = 'download-link';
+
+                box.appendChild(title);
+                box.appendChild(image);
+                box.appendChild(link);
+                contentArea.appendChild(box);
+            });
         }
 
-        /* Estilos de la barra de navegación superior */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(13, 12, 29, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-            z-index: 10;
+        // Función que maneja la búsqueda al escribir
+        function handleSearch() {
+            const searchTerm = document.getElementById('search-box').value;
+            renderContent(currentCategory, searchTerm);
         }
 
-        /* Estilos del buscador */
-        .search-box {
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #ffffff;
-            width: 200px;
-            font-size: 1rem;
+        // Renderiza el contenido oficial por defecto al cargar la página
+        window.onload = function() {
+            renderContent('official');
         }
 
-        .search-box::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Contenedor principal del contenido */
-        .main-container {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding-top: 8rem; /* Espacio para la barra superior */
-            padding-bottom: 8rem; /* Espacio para la barra inferior */
-        }
-
-        .content-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            padding: 2rem;
-        }
-
-        .content-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(15, 15, 30, 0.7));
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 300px;
-        }
-        
-        .content-box img {
-            width: 100%;
-            max-width: 250px;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .content-box h3 {
-            margin: 0 0 1rem;
-            font-size: 1.5rem;
-        }
-
-        .download-link {
-            text-decoration: none;
-            color: #ffffff;
-            background-color: #4CAF50;
-            padding: 0.75rem 1.5rem;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        }
-
-        .download-link:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-        }
-
-        /* Estilos de la nueva barra inferior */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem;
-            background-color: rgba(13, 12, 29, 0.8);
-            backdrop-filter: blur(8px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            z-index: 10;
-        }
-
-        /* Estilos para los botones de la barra inferior */
-        .nav-button {
-            text-decoration: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Degradado semi-transparente para el botón 'Official' */
-        .official-button {
-            background: linear-gradient(45deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
-        }
-        
-        /* Degradado semi-transparente para el botón 'Betas' */
-        .betas-button {
-            background: linear-gradient(45deg, rgba(243, 156, 18, 0.7), rgba(211, 84, 0, 0.7));
-        }
-
-        /* Degradado semi-transparente para el botón 'Patched' */
-        .patched-button {
-            background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
-        }
-    </style>
+  
