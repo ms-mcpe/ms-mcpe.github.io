@@ -1,4 +1,4 @@
-<style>
+  <style>
         /* Estilos generales para el cuerpo */
         body {
             /* Cambia el fondo de color sólido a una imagen. */
@@ -11,9 +11,12 @@
             margin: 0;
             padding: 0;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        /* Estilos para la barra superior de navegación */
+        /* Estilos de la barra de navegación superior */
         .top-bar {
             position: fixed;
             top: 0;
@@ -21,56 +24,15 @@
             width: 100%;
             padding: 1rem 2rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            /* Fondo semi-transparente que combina con el fondo de la imagen */
             background-color: rgba(13, 12, 29, 0.8);
-            backdrop-filter: blur(8px); /* Efecto de desenfoque */
+            backdrop-filter: blur(8px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
             z-index: 10;
-        }
-
-        /* Contenedor de los botones */
-        .button-container {
-            display: flex;
-            gap: 1.5rem;
-            flex-grow: 1;
-            justify-content: center;
-        }
-
-        /* Estilos para los botones de la barra superior */
-        .nav-button {
-            text-decoration: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Degradado semi-transparente para el botón 'Official' */
-        .official-button {
-            background: linear-gradient(45deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
-        }
-        
-        /* Degradado semi-transparente para el botón 'Betas' */
-        .betas-button {
-            background: linear-gradient(45deg, rgba(243, 156, 18, 0.7), rgba(211, 84, 0, 0.7));
-        }
-
-        /* Degradado semi-transparente para el botón 'Patched' */
-        .patched-button {
-            background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
         }
 
         /* Estilos del buscador */
@@ -88,14 +50,15 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Estilos para el contenedor principal */
+        /* Contenedor principal del contenido */
         .main-container {
+            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             padding-top: 8rem; /* Espacio para la barra superior */
-            min-height: 100vh;
+            padding-bottom: 8rem; /* Espacio para la barra inferior */
         }
 
         .content-area {
@@ -113,13 +76,12 @@
             align-items: center;
             text-align: center;
             padding: 2rem;
-            /* Degradado semi-transparente para la caja de contenido */
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(15, 15, 30, 0.7));
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 300px; /* Ancho fijo para las cajas */
+            width: 300px;
         }
         
         .content-box img {
@@ -149,5 +111,57 @@
         .download-link:hover {
             background-color: #45a049;
             transform: translateY(-2px);
+        }
+
+        /* Estilos de la nueva barra inferior */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            background-color: rgba(13, 12, 29, 0.8);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            z-index: 10;
+        }
+
+        /* Estilos para los botones de la barra inferior */
+        .nav-button {
+            text-decoration: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Degradado semi-transparente para el botón 'Official' */
+        .official-button {
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
+        }
+        
+        /* Degradado semi-transparente para el botón 'Betas' */
+        .betas-button {
+            background: linear-gradient(45deg, rgba(243, 156, 18, 0.7), rgba(211, 84, 0, 0.7));
+        }
+
+        /* Degradado semi-transparente para el botón 'Patched' */
+        .patched-button {
+            background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
         }
     </style>
