@@ -3,8 +3,12 @@
 
         // Datos de ejemplo para las diferentes categorías
         const contentData = [
-       
 
+
+
+{ name: "Minecraft 1.21.120.20",  category: "betas",  image: "https://linkyshare.com/storage/posts/thumbnails/jmOMJkCf0IQc3TqK6dUeKNUHprTAFOiv2lRi1VHt.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-beta/1-21-120-20" },
+{ name: "Minecraft 1.21.110.26",  category: "betas",  image: "https://linkyshare.com/storage/posts/thumbnails/RPA5R6ScnmybLFSAnxAukR4dkMlWumg8xv4O7qgz.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-beta/1-21-110-26" },
+{ name: "Minecraft 1.21.110.25",  category: "betas",  image: "https://linkyshare.com/storage/posts/thumbnails/KvQrFz7FwHCKGPxsCpe2EFEj0efTBojOZKAxCbwH.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-beta/1-21-110-25" },
 { name: "Minecraft 1.21.101", category: "official", image: "https://linkyshare.com/storage/posts/thumbnails/6DJCkTGG4fb3Y7j0JFdy8pba07Zr0EhDG7ht78fz.jpg", link: "https://sites.google.com/view/mcproyect/minecraft/1-21-101" }
      
    ];
