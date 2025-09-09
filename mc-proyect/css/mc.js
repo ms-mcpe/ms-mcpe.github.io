@@ -3,43 +3,16 @@
 
         // Datos de ejemplo para las diferentes categorías
         const contentData = [
-            {
-                name: "Minecraft 1.20",
-                category: "official",
-                image: "https://placehold.co/400x300/e0e0e0/0d0c1d?text=Minecraft+1.20",
-                link: "#"
-            },
-            {
-                name: "Minecraft 1.19",
-                category: "official",
-                image: "https://placehold.co/400x300/d0d0d0/0d0c1d?text=Minecraft+1.19",
-                link: "#"
-            },
-            {
-                name: "Addon Beta 1.0",
-                category: "betas",
-                image: "https://placehold.co/400x300/f0f0f0/0d0c1d?text=Addon+Beta+1.0",
-                link: "#"
-            },
-            {
-                name: "Addon Beta 1.1",
-                category: "betas",
-                image: "https://placehold.co/400x300/f5f5f5/0d0c1d?text=Addon+Beta+1.1",
-                link: "#"
-            },
-            {
-                name: "Patched 1.18",
-                category: "patched",
-                image: "https://placehold.co/400x300/c0c0c0/0d0c1d?text=Patched+1.18",
-                link: "#"
-            },
-            {
-                name: "Patched 1.17",
-                category: "patched",
-                image: "https://placehold.co/400x300/b0b0b0/0d0c1d?text=Patched+1.17",
-                link: "#"
-            }
-        ];
+       
+
+{
+  name: "Minecraft 1.21.101",
+  category: "official",
+  Image: "https://linkyshare.com/storage/posts/thumbnails/6DJCkTGG4fb3Y7j0JFdy8pba07Zr0EhDG7ht78fz.jpg",
+  link: "https://sites.google.com/view/mcproyect/minecraft/1-21-101"
+}
+     
+   ];
 
         // Función para renderizar el contenido según la categoría y el término de búsqueda
         function renderContent(category, searchTerm = '') {
