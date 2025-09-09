@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fondo Azul Oscuro</title>
+   
+    <!-- Enlace a la fuente Inter para una mejor tipografía -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+    <style>
+        /* Estilos generales para el cuerpo */
+        body {
+            /* Cambia el fondo de color sólido a una imagen. */
+            background-image: url('https://ms-mcpe.github.io/mc-proyect/css/fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff; /* Color de texto blanco para que sea visible */
+            font-family: 'Inter', sans-serif; /* Usamos una fuente moderna */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Estilos de la barra de navegación superior */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(13, 12, 29, 0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+
+        /* Estilos del buscador */
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            width: 200px;
+            font-size: 1rem;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Contenedor principal del contenido */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-top: 8rem; /* Espacio para la barra superior */
+            padding-bottom: 8rem; /* Espacio para la barra inferior */
+        }
+
+        .content-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .content-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(15, 15, 30, 0.7));
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 300px;
+        }
+        
+        .content-box img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-box h3 {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .download-link {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #4CAF50;
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        .download-link:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        /* Estilos de la nueva barra inferior */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            background-color: rgba(13, 12, 29, 0.8);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            z-index: 10;
+        }
+
+        /* Estilos para los botones de la barra inferior */
+        .nav-button {
+            text-decoration: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Degradado semi-transparente para el botón 'Official' */
+        .official-button {
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
+        }
+        
+        /* Degradado semi-transparente para el botón 'Betas' */
+        .betas-button {
+            background: linear-gradient(45deg, rgba(243, 156, 18, 0.7), rgba(211, 84, 0, 0.7));
+        }
+
+        /* Degradado semi-transparente para el botón 'Patched' */
+        .patched-button {
+            background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
+        }
+        
+        /* Media Query para teléfonos móviles (ancho máximo de 768px) */
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 1rem;
+            }
+
+            .bottom-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+
+            .content-area {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .content-box {
+                width: 90%;
+            }
+
+            .download-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación superior (solo con el buscador) -->
+    <nav class="top-bar">
+        <input type="search" id="search-box" class="search-box" placeholder="Buscar..." oninput="handleSearch()">
+    </nav>
+
+    <!-- El contenido principal de la página irá aquí, centrado si se desea -->
+    <div class="main-container">
+        <div id="content-area" class="content-area">
+            <!-- El contenido se generará aquí con JavaScript -->
+        </div>
+    </div>
+
+    <!-- Barra de navegación inferior con los botones -->
+    <nav class="bottom-bar">
+        <a href="#" class="nav-button official-button" onclick="renderContent('official')">Official</a>
+        <a href="#" class="nav-button betas-button" onclick="renderContent('betas')">Betas</a>
+        <a href="#" class="nav-button patched-button" onclick="renderContent('patched')">Patched</a>
+    </nav>
+
+    <!-- Enlazar el archivo JavaScript externo -->
+    <script src="https://ms-mcpe.github.io/mc-proyect/css/mc.js"></script>
+</body>
+</html>
