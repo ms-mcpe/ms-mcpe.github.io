@@ -2,7 +2,7 @@
         /* Estilos generales para el cuerpo */
         body {
             /* Cambia el fondo de color sólido a una imagen. */
-            background-image: url('https://placehold.co/1920x1080/0d0c1d/ffffff?text=Fondo+Espacial');
+            background-image: url('mc.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
