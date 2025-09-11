@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Agregado: Etiqueta meta para asegurar que la página se vea bien en dispositivos móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Carpetas</title>
+  <style>
+    body {
+      background-color: #0d1b2a; /* Azul oscuro elegante */
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
+      justify-content: center;
+    }
+
+    /* Contenedor principal para la caja transparente */
+    .main-content-box {
+      background-color: rgba(13, 27, 42, 0.8); /* Fondo semi-oscuro transparente */
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      width: 100%;
+      max-width: 450px; /* Ancho máximo para la caja */
+      box-sizing: border-box; /* Incluye padding en el ancho */
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #e0e0e0;
+      text-align: center;
+    }
+
+    /* Contenedor flexible para los botones */
+    .folders-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 300px; /* Ancho máximo para que los botones sean más angostos */
+      margin: 0 auto; /* Centra el contenedor de botones */
+    }
+
+    .boton-carpeta {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin: 10px 0;
+      font-size: 16px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      color: #fff;
+      transition: transform 0.2s ease;
+      justify-content: flex-start;
+    }
+
+    .boton-carpeta:hover {
+      transform: scale(1.05); /* Ligeramente más grande al pasar el cursor */
+    }
+
+    .icono {
+      margin-right: 12px;
+      font-size: 20px;
+    }
+
+    /* Colores de fondo para cada carpeta */
+    .shaders { background-color: #673ab7; }
+    .mapas { background-color: #2196f3; }
+    .skins { background-color: #e91e63; }
+    .texturas { background-color: #4caf50; }
+    .addons { background-color: #ff9800; }
+
+    /* Media query para hacer el diseño más compacto en pantallas pequeñas */
+    @media (max-width: 500px) {
+      body {
+        padding: 10px;
+      }
+      .main-content-box {
+        max-width: 100%;
+        padding: 20px 15px;
+      }
+      .folders-container {
+        padding: 0;
+      }
+      .boton-carpeta {
+        font-size: 14px;
+        padding: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content-box">
+    <h1>Carpeta de Complementos</h1>
+
+    <!-- Contenedor para los botones -->
+    <div class="folders-container">
+      <a href="https://linkyshare.com/es/@MystStart/carpeta-de-complementos-v-shaders" class="boton-carpeta shaders">
+        <span class="icono">🌀</span> Shaders
+      </a>
+
+      <a href="https://linkyshare.com/es/@MystStart/carpeta-de-complementos-v-mapas" class="boton-carpeta mapas">
+        <span class="icono">🗺️</span> Mapas
+      </a>
+
+      <a href="https://linkyshare.com/es/@MystStart/carpeta-de-complementos-v-skins" class="boton-carpeta skins">
+        <span class="icono">🧍</span> Skins
+      </a>
+
+      <a href="https://linkyshare.com/es/@MystStart/carpeta-de-complementos-v-texturas" class="boton-carpeta texturas">
+        <span class="icono">🎨</span> Texturas
+      </a>
+
+      <a href="https://linkyshare.com/es/@MystStart/carpeta-de-complementos-v-addons" class="boton-carpeta addons">
+        <span class="icono">🧩</span> Addons
+      </a>
+    </div>
+  </div>
+</body>
+</html>
