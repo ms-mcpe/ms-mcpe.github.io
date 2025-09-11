@@ -3,42 +3,13 @@
 
             // Array de objetos con la información de los archivos
             const files = [
-                {
-                    name: 'MapaAventura',
-                    preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+del+Mapa',
-                    downloadLink: 'https://ejemplo.com/file.mcworld',
-                    date: '15 de Mayo de 2024',
-                    formato: '.mcworld'
-                },
-                {
-                    name: 'PackTexturasFantasia',
-                    preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+del+Pack',
-                    downloadLink: 'https://ejemplo.com/file.mcpack',
-                    date: '10 de Febrero de 2024',
-                    formato: '.mcpack'
-                },
-                {
-                    name: 'AddonMagia',
-                    preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+del+Addon',
-                    downloadLink: 'https://ejemplo.com/file.mcaddon',
-                    date: '22 de Marzo de 2024',
-                    formato: '.mcaddon'
-                },
-                {
-                    name: 'PlantillaSurvival',
-                    preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+de+la+Plantilla',
-                    downloadLink: 'https://ejemplo.com/file.mctemplate',
-                    date: '05 de Enero de 2024',
-                    formato: '.mctemplate'
-                },
-                 {
-                    name: 'AjustesAvanzados',
-                    preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+de+Ajustes',
-                    downloadLink: 'https://ejemplo.com/file.mcaddon',
-                    date: '18 de Febrero de 2024',
-                    formato: '.mcaddon'
-                }
-            ];
+            
+             { name: 'Lunar Moon Add-On', preview: 'https://linkyshare.com/storage/posts/thumbnails/oInMfDxy5Xt6yfkffGqVC4PESnfqRcYqx5ttJhGL.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-lunar-moon-add-on-para-minecraft', date: '11/09/2025', formato: '.mcaddon' },
+             { name: 'Actions & Stuff', preview: 'https://linkyshare.com/storage/posts/thumbnails/aDxUfWQX0AnfsgHCGlYyusxYSY1zaCaEBiJay3aN.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-actions-stuff-para-minecraft', date: '11/09/2025', formato: '.mcpack' },
+             { name: 'BareBones & Stuff', preview: 'https://linkyshare.com/storage/posts/thumbnails/CQ9oUBA6ry17VSucuzcCjeBHUObtGZptYvGS4gT1.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-barebones-stuff-para-minecraft', date: '11/09/2025', formato: '.mcpack' },
+             { name: 'Mr. Nidos Spider-Man', preview: 'https://linkyshare.com/storage/posts/thumbnails/Gxb5yjKJfthixhX486M7wg0midzGjctPVRPi2QeC.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-mr-nidos-spider-man-minecraft', date: '11/09/2025', formato: '.mcaddon' },
+             { name: 'Alien Apocalypse Add-On', preview: 'https://linkyshare.com/storage/posts/thumbnails/SEyNtY1NmcHHRHb1g8bJOlxdPgxVqeLGlINl2mzn.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-alien-apocalypse-add-on-para-minecraft', date: '11/09/2025', formato: '.mcaddon' }
+                          ];
 
             const container = document.getElementById('file-list-container');
             const modal = document.getElementById('preview-modal');
