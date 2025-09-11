@@ -9,7 +9,7 @@
 
 
 
-
+{ name: "Minecraft 1.21.120.21",  category: "betas",  image: "https://linkyshare.com/storage/posts/thumbnails/AOyX6OzFYp6Qswgq9mCwph5p7MohSIcoi1glwcQf.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-beta/1-21-120-21" },
 { name: "Minecraft 1.21.101 Path",  category: "patched",  image: "https://linkyshare.com/storage/posts/thumbnails/AHK6ZbxlRwDS4rtaaVnpReglwSXujKHHsjMKbzfJ.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-path/1-21-101-path" },
 { name: "Minecraft 1.21.120.20",  category: "betas",  image: "https://linkyshare.com/storage/posts/thumbnails/jmOMJkCf0IQc3TqK6dUeKNUHprTAFOiv2lRi1VHt.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-beta/1-21-120-20" },
 { name: "Minecraft 1.21.110.26",  category: "betas",  image: "https://linkyshare.com/storage/posts/thumbnails/RPA5R6ScnmybLFSAnxAukR4dkMlWumg8xv4O7qgz.jpg",  link: "https://sites.google.com/view/mcproyect/minecraft-beta/1-21-110-26" },
