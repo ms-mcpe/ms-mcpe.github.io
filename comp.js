@@ -1,4 +1,4 @@
- <script>
+ 
         document.addEventListener('DOMContentLoaded', () => {
 
             // Array de objetos con la información de los archivos
@@ -144,4 +144,4 @@
                 }
             });
         });
-    </script>
+    
