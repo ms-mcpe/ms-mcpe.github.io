@@ -1,40 +1,40 @@
  <script>
         document.addEventListener('DOMContentLoaded', () => {
-          
+
             // Array de objetos con la información de los archivos
             const files = [
                 {
                     name: 'MapaAventura',
                     preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+del+Mapa',
-                    downloadLink: fileUrls.mcworld,
+                    downloadLink: 'https://ejemplo.com/file.mcworld',
                     date: '15 de Mayo de 2024',
                     formato: '.mcworld'
                 },
                 {
                     name: 'PackTexturasFantasia',
                     preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+del+Pack',
-                    downloadLink: fileUrls.mcpack,
+                    downloadLink: 'https://ejemplo.com/file.mcpack',
                     date: '10 de Febrero de 2024',
                     formato: '.mcpack'
                 },
                 {
                     name: 'AddonMagia',
                     preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+del+Addon',
-                    downloadLink: fileUrls.mcaddon,
+                    downloadLink: 'https://ejemplo.com/file.mcaddon',
                     date: '22 de Marzo de 2024',
                     formato: '.mcaddon'
                 },
                 {
                     name: 'PlantillaSurvival',
                     preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+de+la+Plantilla',
-                    downloadLink: fileUrls.mctemplate,
+                    downloadLink: 'https://ejemplo.com/file.mctemplate',
                     date: '05 de Enero de 2024',
                     formato: '.mctemplate'
                 },
                  {
                     name: 'AjustesAvanzados',
                     preview: 'https://placehold.co/400x300/1a1a2e/e0e0f0?text=Vista+Previa+de+Ajustes',
-                    downloadLink: fileUrls.mcaddon,
+                    downloadLink: 'https://ejemplo.com/file.mcaddon',
                     date: '18 de Febrero de 2024',
                     formato: '.mcaddon'
                 }
