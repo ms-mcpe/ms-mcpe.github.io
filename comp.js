@@ -29,7 +29,7 @@
             // Function to generate dynamically the file elements
             function createFiles() {
                 // Filtramos los archivos para mostrar solo los que tienen el formato .mcaddon
-             
+             <script src="https://ms-mcpe.github.io/cd/cons/addons.js"></script>
                 filteredFiles.forEach(file => {
                     const fileItem = document.createElement('div');
                     fileItem.classList.add('file-item');
