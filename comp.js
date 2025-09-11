@@ -3,7 +3,10 @@
 
             // Array de objetos con la información de los archivos
             const files = [
-            
+
+
+
+             { name: 'Craftable Dungeons Add-On', preview: 'https://linkyshare.com/storage/posts/thumbnails/qZonFG8aLZ0daWJppd6344dJfmwTJ8b6OOgKQAeA.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-craftable-dungeons-para-minecraft', date: '11/09/2025', formato: '.mcaddon' },
              { name: 'Lunar Moon Add-On', preview: 'https://linkyshare.com/storage/posts/thumbnails/oInMfDxy5Xt6yfkffGqVC4PESnfqRcYqx5ttJhGL.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-lunar-moon-add-on-para-minecraft', date: '11/09/2025', formato: '.mcaddon' },
              { name: 'Actions & Stuff', preview: 'https://linkyshare.com/storage/posts/thumbnails/aDxUfWQX0AnfsgHCGlYyusxYSY1zaCaEBiJay3aN.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-actions-stuff-para-minecraft', date: '11/09/2025', formato: '.mcpack' },
              { name: 'BareBones & Stuff', preview: 'https://linkyshare.com/storage/posts/thumbnails/CQ9oUBA6ry17VSucuzcCjeBHUObtGZptYvGS4gT1.jpg', downloadLink: 'https://linkyshare.com/es/@MystStart/descarga-barebones-stuff-para-minecraft', date: '11/09/2025', formato: '.mcpack' },
