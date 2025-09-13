@@ -39,7 +39,8 @@
 
                     fileItem.innerHTML = `
                         <div class="file-icon">
-                            <img src="https://placehold.co/400x400/1a1a2e/e0e0f0?text=File" alt="File icon">
+                            <img src="https://ms-mcpe.github.io/cd/img
+/file.png" alt="File icon">
                         </div>
                         <div class="file-info">
                             <span class="file-name">${fullFileName}</span>
