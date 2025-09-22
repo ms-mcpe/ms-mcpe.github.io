@@ -3,228 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fondo Azul Oscuro</title>
-   
-    <!-- Enlace a la fuente Inter para una mejor tipografía -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+    <title>Descargar MC Addons App</title>
+    <!-- Incluye Tailwind CSS para un diseño limpio y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para un aspecto profesional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilos generales para el cuerpo */
         body {
-            /* Cambia el fondo de color sólido a una imagen. */
-            background-image: url('https://ms-mcpe.github.io/mc-proyect/css/fondo.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #ffffff; /* Color de texto blanco para que sea visible */
-            font-family: 'Inter', sans-serif; /* Usamos una fuente moderna */
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            /* Fuente personalizada para el cuerpo */
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* Gris oscuro para el fondo */
+            color: #E5E7EB; /* Gris claro para el texto */
         }
 
-        /* Estilos de la barra de navegación superior */
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
+        .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: rgba(13, 12, 29, 0.8);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-            z-index: 10;
-        }
-
-        /* Estilos del buscador */
-        .search-box {
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #ffffff;
-            width: 200px;
-            font-size: 1rem;
-        }
-
-        .search-box::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Contenedor principal del contenido */
-        .main-container {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding-top: 8rem; /* Espacio para la barra superior */
-            padding-bottom: 8rem; /* Espacio para la barra inferior */
-        }
-
-        .content-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
+            min-height: 100vh;
             padding: 2rem;
         }
 
-        .content-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .card {
+            background-color: #1F2937; /* Gris más oscuro para el fondo de la tarjeta */
+            border-radius: 1.5rem; /* Esquinas más redondeadas */
+            padding: 3rem;
             text-align: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(15, 15, 30, 0.7));
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 300px;
-        }
-        
-        .content-box img {
-            width: 100%;
-            max-width: 250px;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra para profundidad */
+            border: 1px solid #374151; /* Borde sutil */
         }
 
-        .content-box h3 {
-            margin: 0 0 1rem;
-            font-size: 1.5rem;
+        .app-icon {
+            /* El icono de la app, si usas una URL */
+            /* Si no tienes un icono, puedes usar una imagen temporal como esta */
+            width: 120px;
+            height: 120px;
+            border-radius: 2rem;
+            margin: 0 auto 1.5rem;
+            display: block;
         }
 
-        .download-link {
-            text-decoration: none;
-            color: #ffffff;
-            background-color: #4CAF50;
-            padding: 0.75rem 1.5rem;
-            font-weight: bold;
-            border-radius: 8px;
-            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        }
-
-        .download-link:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-        }
-
-        /* Estilos de la nueva barra inferior */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem;
-            background-color: rgba(13, 12, 29, 0.8);
-            backdrop-filter: blur(8px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            z-index: 10;
-        }
-
-        /* Estilos para los botones de la barra inferior */
-        .nav-button {
-            text-decoration: none;
+        .download-button {
+            background-color: #2563EB; /* Un azul vibrante para el botón */
             color: white;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
+            padding: 0.75rem 2.5rem;
+            border-radius: 0.75rem;
             font-weight: bold;
-            border-radius: 8px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: inline-block;
         }
 
-        .nav-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Degradado semi-transparente para el botón 'Official' */
-        .official-button {
-            background: linear-gradient(45deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
-        }
-        
-        /* Degradado semi-transparente para el botón 'Betas' */
-        .betas-button {
-            background: linear-gradient(45deg, rgba(243, 156, 18, 0.7), rgba(211, 84, 0, 0.7));
-        }
-
-        /* Degradado semi-transparente para el botón 'Patched' */
-        .patched-button {
-            background: linear-gradient(45deg, rgba(34, 49, 63, 0.7), rgba(28, 40, 51, 0.7));
-        }
-        
-        /* Media Query para teléfonos móviles (ancho máximo de 768px) */
-        @media (max-width: 768px) {
-            .top-bar {
-                padding: 1rem;
-            }
-
-            .bottom-bar {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 0.5rem;
-                padding: 1rem;
-            }
-
-            .content-area {
-                padding: 1rem;
-                gap: 1rem;
-            }
-
-            .content-box {
-                width: 90%;
-            }
-
-            .download-link {
-                width: 100%;
-                text-align: center;
-            }
+        .download-button:hover {
+            background-color: #1D4ED8; /* Oscurece el botón al pasar el mouse */
         }
     </style>
 </head>
 <body>
-    <!-- Barra de navegación superior (solo con el buscador) -->
-    <nav class="top-bar">
-        <input type="search" id="search-box" class="search-box" placeholder="Buscar..." oninput="handleSearch()">
-    </nav>
 
-    <!-- El contenido principal de la página irá aquí, centrado si se desea -->
-    <div class="main-container">
-        <div id="content-area" class="content-area">
-            <!-- El contenido se generará aquí con JavaScript -->
+    <div class="container">
+        <div class="card">
+            <!-- Icono de la aplicación -->
+            <img class="app-icon" src="https://www.appcreator24.com/srv/imgs/gen/3707514_ico.png?v=4" alt="MC Addons App Icon">
+            
+            <!-- Título de la aplicación -->
+            <h1 class="text-4xl font-bold mb-2">MC Addons App</h1>
+            
+            <!-- Descripción o subtítulo (opcional) -->
+            <p class="text-gray-400 mb-8">descarga addons para tus mundos con MC Addons.</p>
+
+            <!-- Botón de descarga -->
+            <a href="https://mobidrive.com/sharelink/u/5wwTqSANRujfeHK6zGjUlO4X1czSKmSkMkzKjeWeOGCS" class="download-button">
+                Descargar
+            </a>
         </div>
     </div>
 
-    <!-- Barra de navegación inferior con los botones -->
-    <nav class="bottom-bar">
-        <a href="#" class="nav-button official-button" onclick="renderContent('official')">Official</a>
-        <a href="#1" class="nav-button betas-button" onclick="renderContent('betas')">Betas</a>
-        <a href="#2" class="nav-button patched-button" onclick="renderContent('patched')">Patched</a>
-    </nav>
-
-    <!-- Enlazar el archivo JavaScript externo -->
-    <script src="https://ms-mcpe.github.io/mc-proyect/css
-/mc.js"> </script>
 </body>
 </html>
