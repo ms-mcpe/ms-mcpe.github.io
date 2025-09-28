@@ -2,17 +2,21 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Contenido externo</title>
-  <style>
-    body { margin: 0;}
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-}
-  </style>
+  <title>Contenido externo con fetch</title>
 </head>
 <body>
-  <iframe src="http://mx-cmx2.altr.cc:25008/addons.html"></iframe>
+  <div id="contenido">Cargando contenido...</div>
+
+  <script>
+    fetch("http://mx-cmx2.altr.cc:25008/addons.html")
+.then(response => response.text())
+.then(data => {
+        document.getElementById("contenido").innerHTML = data;
+})
+.catch(error => {
+        document.getElementById("contenido").innerHTML = "Error al cargar el contenido.";
+        console.error("Error:", error);
+});
+  </script>
 </body>
 </html>
