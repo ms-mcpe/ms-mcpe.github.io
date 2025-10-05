@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Para la niña nas hermosa e mundo Maggi :></title>
+<style>
+  :root{
+    --bg: #0c0f14;
+    --panel: #121722;
+    --accent: #ff4da6;
+    --accent-2: #ffd166;
+    --paper: #fff8f3;
+    --text: #1d1f23;
+    --title: #ff3b7a;
+    --good: #3ddc97;
+  }
+
+  /* Reset básico */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background: radial-gradient(1200px 600px at 50% 0%, #141a26, var(--bg));
+    color:#e9eef7;
+    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  /* Decoración: corazones en esquinas */
+  .corner-heart{
+    position:fixed;
+    width:44px; height:40px;
+    z-index:2;
+    opacity:0.9;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+  }
+  .corner-heart.top-right{top:16px; right:16px; transform: rotate(-12deg) scale(1.05);}
+  .corner-heart.bottom-left{bottom:16px; left:16px; transform: rotate(12deg) scale(1.05);}
+  .corner-heart .heart{
+    position:relative; width:40px; height:36px; margin:2px auto;
+  }
+  .heart::before, .heart::after{
+    content:"";
+    position:absolute;
+    width:20px; height:32px;
+    background: linear-gradient(180deg, var(--accent), #d81b60);
+    border-radius:12px 12px 0 0;
+  }
+  .heart::before{left:0; transform: rotate(-45deg) translate(-2px, 2px);}
+  .heart::after{right:0; transform: rotate(45deg) translate(2px, 2px);}
+  /* Pequeño latido */
+  .corner-heart .heart{animation: beat 2.4s ease-in-out infinite;}
+  @keyframes beat{
+    0%, 100%{transform: scale(1)}
+    10%{transform: scale(1.08)}
+    20%{transform: scale(0.98)}
+    30%{transform: scale(1.04)}
+    40%{transform: scale(1)}
+  }
+
+  /* Overlay de contraseña */
+  .gate{
+    position:fixed; inset:0;
+    background: linear-gradient(180deg, rgba(10,12,18,0.85), rgba(10,12,18,0.92));
+    backdrop-filter: blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    z-index:5;
+    transition: opacity .4s ease, visibility .4s ease;
+  }
+  .gate.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+  .gate .panel{
+    width: min(92vw, 460px);
+    background: linear-gradient(180deg, #141a22, #0f1420);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:20px 20px 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  }
+  .panel h2{
+    margin:0 0 8px;
+    font-size:1.25rem;
+    letter-spacing:.2px;
+    color:#f7f9fc;
+  }
+  .panel p{
+    margin:0 0 14px; color:#cbd5e1; font-size:.95rem;
+  }
+  .field{
+    display:flex; gap:10px; margin-top:6px;
+  }
+  .input{
+    flex:1;
+    background:#0d1220;
+    color:#eaf0ff;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:10px;
+    padding:12px 12px;
+    outline:none;
+    font-size:1rem;
+    letter-spacing:.8px;
+  }
+  .btn{
+    background: linear-gradient(180deg, var(--accent), #d81b60);
+    color:white; border:none; border-radius:10px;
+    padding:12px 16px; font-weight:600; cursor:pointer;
+    box-shadow: 0 6px 18px rgba(216,27,96,0.35);
+    transition: transform .08s ease, box-shadow .2s ease;
+  }
+  .btn:active{transform: translateY(1px); box-shadow: 0 4px 14px rgba(216,27,96,0.3);}
+  .hint{margin-top:10px; font-size:.9rem; color:#97a3b6;}
+  .error{margin-top:8px; color:#ff6b6b; font-weight:600; min-height:20px;}
+
+  /* Escena del sobre */
+  .scene{
+    position:relative;
+    width:min(92vw, 540px);
+    height:min(64vh, 520px);
+    display:flex; align-items:center; justify-content:center;
+    perspective: 1200px;
+  }
+
+  /* Confetti sutil al abrir */
+  .confetti{
+    position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:1;
+    opacity:0; transition: opacity .4s ease;
+  }
+  .open + .confetti, .envelope.open ~ .confetti{opacity:1;}
+  .confetti span{
+    position:absolute; width:10px; height:16px;
+    background: var(--accent-2);
+    top:-20px;
+    left: calc(2% + (var(--i) * 9%));
+    transform: rotate(calc(var(--i) * 18deg));
+    animation: fall 3.6s ease-in infinite;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  }
+  .confetti span:nth-child(odd){ background: #73d2de;}
+  .confetti span:nth-child(3n){ background: #ff3b7a;}
+  @keyframes fall{
+    0%{transform: translateY(-40px) rotate(0deg); opacity:0}
+    10%{opacity:1}
+    70%{transform: translateY(70vh) rotate(180deg); opacity:1}
+    100%{transform: translateY(90vh) rotate(260deg); opacity:0}
+  }
+
+  /* Sobre */
+  .envelope{
+    position:relative;
+    width: min(84vw, 520px);
+    height: min(42vh, 340px);
+    background: linear-gradient(180deg, #f5c9dc, #f1b3cf);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(.23,1,.32,1);
+    z-index:2;
+  }
+  /* Flap (tapa del sobre) */
+  .flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:60%;
+    background: linear-gradient(180deg, #ff6fa6, #f1548e);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 1s cubic-bezier(.23,1,.32,1);
+    box-shadow: inset 0 -8px 16px rgba(0,0,0,0.12);
+  }
+
+  /* Carta (contenido) */
+  .letter{
+    position:absolute;
+    left:50%; top:52%;
+    transform: translate(-50%, -50%) translateY(20px);
+    width: calc(100% - 44px);
+    height: calc(100% - 60px);
+    background: var(--paper);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+    overflow:auto;
+    transition: transform 1s cubic-bezier(.23,1,.32,1), opacity .6s ease;
+    opacity:0;
+  }
+
+  .letter h1{
+    margin:0 0 10px;
+    text-align:center;
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    color: var(--title);
+    letter-spacing:.3px;
+  }
+  .letter p{
+    margin:8px 0;
+    line-height:1.6;
+    font-size: clamp(1rem, 3.4vw, 1.05rem);
+    color:#3a3f47;
+  }
+
+  /* Apertura: animación */
+  .envelope.open .flap{
+    transform: rotateX(-170deg);
+  }
+  .envelope.open .letter{
+    transform: translate(-50%, -50%) translateY(-10px);
+    opacity:1;
+  }
+
+  /* Nota de éxito */
+  .success{
+    position:absolute;
+    bottom:-38px; left:50%;
+    transform: translateX(-50%);
+    background: #0f1626;
+    color:#d9f7e9;
+    border:1px solid rgba(255,255,255,0.08);
+    padding:8px 12px; border-radius:10px;
+    font-size:.9rem;
+    opacity:0; transition: opacity .4s ease;
+  }
+  .envelope.open ~ .success{opacity:1;}
+
+  /* Accesibilidad y scroll suave */
+  ::selection{ background: rgba(255,59,122,0.25); }
+
+  /* Ajustes móviles */
+  @media (max-width: 420px){
+    .envelope{ height: 300px; }
+    .letter{ padding: 18px }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Corazones en dos esquinas -->
+  <div class="corner-heart top-right"><div class="heart"></div></div>
+  <div class="corner-heart bottom-left"><div class="heart"></div></div>
+
+  <!-- Escena principal -->
+  <div class="scene">
+    <div class="envelope" id="envelope">
+      <div class="flap"></div>
+      <div class="letter" aria-live="polite">
+        <h1>Feliz cumpleaños Maggi</h1>
+        <p>
+          Hoy celebro tu vida con una sonrisa que no me cabe en el pecho. Gracias por existir, por iluminar mis días
+          y por enseñarme que el amor se encuentra en los detalles: en una mirada, en un abrazo, en ese “aquí estoy”
+          que siempre me regalas.
+        </p>
+        <p>
+          Deseo que este año te traiga aventuras que te hagan brillar, calma para abrazar cada momento, y sueños tan
+          grandes como tu corazón. Mereces lo más bonito, lo más sincero, lo más feliz.
+        </p>
+        <p>
+          Si pudiera envolver mis palabras en colores, escogería los que más te gustan: esos que bailan entre la ternura
+          y la alegría. Porque tú eres eso: ternura y alegría, luz y magia, mi mejor casualidad.
+        </p>
+        <p>
+          Feliz vuelta al sol. Que cada paso te recuerde cuánto te te amo y cuánto admiro tu forma de sentir.
+        </p>
+        <p style="text-align:right; font-weight:600; color:#444;">
+          Con todo mi cariño, hoy y siempre. 💖
+        </p>
+        <p>espero este dia sea especial y unico para ti. quiero que sepas que cada momento junto a ti es como esperar un nuevo dia nunca sabes lo que pasara, y aun asi se conbierte en un lindo y hermoso dia junto a ti.</p>
+        <p>Me gustas mucho eres especial y quiero hacertelo saber. para mi brillas mas que cualquier estrella mas que cualquier luz eres esa luz que nunca dejare de admirar porque solo esa luz me demostro que este es mi lugar seguro.</p>
+        <p>Gracias por todo cada momento bonito junto a ti cada regalo cada segundo es especial asi sea pequeño. no puedo dejar de soñar en nuestro futuro juntos y todo lo que podremos lograr.</p>
+        <p>quiero que te esfuerses por lograr todas tus metas y puedas ser grande en la vida tienes mi apoyo y motivacion en cada paso que des en la vida te amo mucho y espero esto te guste es poco me tomo tiempo pero espero sea suficiente almenos para decirte cuanto te amo y creo en ti mas que nadie.</p>
+        <p>Por ultimo habre la caja que esta a un lado de el monitor de la pc. ten feliz cumpleaños tesoro mio...</p>
+  
+        <p>Att: Jhecsen Torrens</p>
+      </div>
+    </div>
+
+    <div class="success">La carta se ha abierto. ¡Disfruta! Mi regalo 🎉</div>
+
+    <!-- Confetti -->
+    <div class="confetti" aria-hidden="true">
+      <!-- 12 piezas de confetti con variación -->
+      <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+      <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+      <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+      <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+    </div>
+  </div>
+
+  <!-- Overlay de contraseña -->
+  <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Acceso a carta">
+    <div class="panel">
+      <h2>Acceso a tu sorpresa ✨</h2>
+      <p>Ingresa la contraseña para abrir la carta :></p>
+      <div class="field">
+        <input class="input" id="pwd" type="password" inputmode="numeric" autocomplete="off"
+               placeholder="Contraseña" aria-label="Contraseña" />
+        <button class="btn" id="go">Abrir</button>
+      </div>
+      <div class="hint">Pista: en que dia mes y año nos conosimos? "formato numerico".</div>
+      <div class="error" id="error" aria-live="polite"></div>
+    </div>
+  </div>
+
+<script>
+  (function(){
+    const PASSWORD = "412024";
+    const gate = document.getElementById('gate');
+    const envelope = document.getElementById('envelope');
+    const input = document.getElementById('pwd');
+    const btn = document.getElementById('go');
+    const error = document.getElementById('error');
+
+    function openEnvelope(){
+      envelope.classList.add('open');
+      gate.classList.add('hidden');
+    }
+
+    function check(){
+      const val = (input.value || "").trim();
+      if(val === PASSWORD){
+        openEnvelope();
+      }else{
+        error.textContent = "Contraseña incorrecta. Intenta de nuevo.";
+        input.focus();
+      }
+    }
+
+    btn.addEventListener('click', check);
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){ check(); }
+    });
+
+    // Enfoque inicial
+    setTimeout(()=> input.focus(), 300);
+  })();
+</script>
+</body>
+</html>
