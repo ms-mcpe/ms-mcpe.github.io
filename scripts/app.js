@@ -3,7 +3,77 @@
 /* ===== Data box (extensible) ===== */
 const dataBox = (function(){
   const items = [
+   {
+    "nombre": "Realism Weapons",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-realism-weapons-para-minecraft",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/MGDr8AWhXeeB8Eif8TeJuvi4lm1EiJ5xPpvQMBdv.jpg",
+    "descripcion": ""
+  },
   {
+    "nombre": "Supplementaries",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-supplementaries-para-minecraft-pe",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/juxp82bC0zSLZkCoWc1noVbpUmbGkT2OkSWLkh9W.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Spacecraft",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-spacecraft-para-minecraft-pe",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/RD8ZWjLOIhzDROTwadRqN6CwEmtVvl949B9SwjNs.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Secret Base++",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-secret-base-para-minecrat",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/tVzWoDzD60XaB8fBrxFtSPlKGZ4MyT69ll2fkppV.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Extreme Survival",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-extreme-survival-para-minecraft",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/5bQCNjqqc0ilNhmvI35QGaqHgmqpyq3OW9uIPURA.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Horrorcraft",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-horrorcraft-para-minecraft-pe",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/hljzsbZh3o7ZChv9J8rnySF2p2tdhskFgtJFx2TT.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Minemail",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-minemail-para-minecraft-pe",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/lhXvfzhplHV4UgczsDLF6lI7ORE31YXD2sgDKNBu.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Craftable Builds",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-craftable-builds-para-minecraft",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/bZb9URgB3rsWp6UXMKGSdIcNNSiSJj2FUg85Wzxo.jpg",
+    "descripcion": ""
+  },
+  {
+    "nombre": "Clear Pixels",
+    "formato": ".mcpack",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-clear-pixels-para-minecraft",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/CXGzdg7Cw37q3hPYbrcLUh8y0hL8HKk7ADTRjcn4.png",
+    "descripcion": ""
+  },
+  {
+    "nombre": "BackPacks++",
+    "formato": ".mcaddon",
+    "urlDws": "https://linkyshare.com/es/@MystStart/descarga-backpacks-para-minecraft-pocket",
+    "urlImg": "https://linkyshare.com/storage/posts/thumbnails/jJdT9Ao4xEjj1I4QxwPqxrZlUpigRflZ3y54d3tY.jpg",
+    "descripcion": ""
+  },
+    {
     "nombre": "Rise Of Horror",
     "formato": ".mcaddon",
     "urlDws": "https://linkyshare.com/es/@MystStart/descarga-rise-of-horror-para-minecraft",
