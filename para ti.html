@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hola no dire nombre — Un regalo</title>
+<style>
+  :root{
+    --bg:#07070b;
+    --panel:#0f1116;
+    --accent1:#ff5c8a;   /* rosa brillante */
+    --accent2:#7df9ff;   /* cyan brillante */
+    --muted:#9aa3b2;
+    --glass: rgba(255,255,255,0.04);
+  }
+
+  /* Reseteo y tipografía */
+  *{box-sizing: border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.06), transparent 8%),
+                radial-gradient(800px 400px at 90% 90%, rgba(255,92,138,0.03), transparent 6%),
+                var(--bg);
+    color: #eaf0ff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+
+  /* Contenedor central */
+  .wrap{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    position:relative;
+  }
+
+  /* Tarjeta principal */
+  .card{
+    width:980px;
+    max-width:96%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    border-radius:18px;
+    padding:36px;
+    box-shadow: 0 10px 40px rgba(2,6,23,0.7), 0 1px 0 rgba(255,255,255,0.02) inset;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Encabezado */
+  .header{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:18px;
+  }
+  .logo{
+    width:68px;
+    height:68px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    box-shadow: 0 6px 24px rgba(124,58,237,0.12), 0 2px 8px rgba(0,0,0,0.6);
+    transform: rotate(-8deg);
+  }
+  .logo svg{filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));}
+
+  .title{
+    line-height:1;
+  }
+  .title h1{
+    font-size:20px;
+    margin-bottom:4px;
+    letter-spacing:-0.2px;
+  }
+  .title p{
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  /* Intro / botón */
+  .intro{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:6px;
+  }
+  .intro .lead{
+    max-width:70%;
+    color:#dfe8ff;
+  }
+  .btn{
+    background: linear-gradient(90deg, rgba(255,92,138,0.16), rgba(125,249,255,0.08));
+    border: 1px solid rgba(255,255,255,0.06);
+    color:var(--accent1);
+    padding:12px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    letter-spacing:0.4px;
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 8px 30px rgba(124,58,237,0.06);
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .btn:hover{ transform: translateY(-4px); box-shadow: 0 18px 50px rgba(124,58,237,0.12); }
+
+  /* Sección destino (animación y mensaje) */
+  .stage{
+    margin-top:26px;
+    border-radius:12px;
+    padding:26px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.025);
+    position:relative;
+    overflow:hidden;
+    min-height:420px;
+  }
+
+  /* Canvas de estrellas ocupa todo */
+  #starsCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    display:block;
+  }
+
+  .stageContent{
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:24px;
+    align-items:center;
+    color:#f4f7ff;
+  }
+  @media (max-width:900px){
+    .stageContent{ grid-template-columns: 1fr; }
+  }
+
+  /* Panel del texto */
+  .note{
+    background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.012));
+    border-radius:12px;
+    padding:22px;
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+    max-height:420px;
+    overflow:auto;
+    font-size:15px;
+    line-height:1.6;
+  }
+  .note b{ color:var(--accent1); font-weight:700; }
+  .note em{ color:var(--accent2); font-style:normal; font-weight:600; }
+
+  /* Panel derecho con corazón grande */
+  .visual{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    flex-direction:column;
+  }
+  .bigHeart{
+    width:220px;
+    height:220px;
+    display:grid;
+    place-items:center;
+    transform: scale(.86);
+  }
+
+  /* corazón animado (SVG dentro) */
+  .pulse{
+    filter: drop-shadow(0 12px 26px rgba(255,92,138,0.12));
+    transform-origin:center;
+    animation: heartbeat 1.6s ease-in-out infinite;
+  }
+  .sparkles{
+    margin-top:12px;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  @keyframes heartbeat{
+    0%{ transform: scale(.94) translateY(0) }
+    18%{ transform: scale(1.06) translateY(-6px) }
+    40%{ transform: scale(.98) translateY(0) }
+    60%{ transform: scale(1.02) translateY(-4px) }
+    100%{ transform: scale(.94) translateY(0) }
+  }
+
+  /* Efecto de letra revelada para el mensaje cuando aparece */
+  .note.show{
+    animation: fadeInUp .9s cubic-bezier(.2,.9,.2,1) both;
+  }
+  @keyframes fadeInUp{
+    from{ transform: translateY(16px); opacity:0 }
+    to{ transform: translateY(0); opacity:1 }
+  }
+
+  /* Estilos de citas y firma */
+  .meta{
+    margin-top:12px;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .signature{
+    margin-top:18px;
+    color:var(--accent2);
+    font-weight:700;
+    letter-spacing:0.6px;
+    font-size:15px;
+  }
+
+  /* Indicador en la parte inferior */
+  .hint{
+    margin-top:14px;
+    text-align:center;
+    color:rgba(255,255,255,0.06);
+    font-size:12px;
+  }
+
+  /* Pequeñas estrellas fugaces generadas por DOM */
+  .shoot{
+    position:absolute;
+    width:2px;
+    height:80px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(125,249,255,0.8));
+    transform: rotate(20deg) translateY(-30px);
+    border-radius:2px;
+    opacity:0;
+    filter: blur(0.6px);
+    z-index:1;
+    pointer-events:none;
+    mix-blend-mode: screen;
+  }
+
+  /* Suavizar scroll */
+  html{ scroll-behavior: smooth; }
+
+  /* scrollbar minimal */
+  .note::-webkit-scrollbar{ width:8px; height:8px }
+  .note::-webkit-scrollbar-thumb{ background: linear-gradient(180deg,#3a3f51,#1f2229); border-radius:8px }
+  .note::-webkit-scrollbar-track{ background:transparent }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card" role="main" aria-labelledby="titleHeading">
+    <div class="header">
+      <div class="logo" aria-hidden="true">
+        <!-- icono corazón minimal -->
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" >
+          <path d="M12 20s-7-4.5-9-8.5C1.5 7.5 5 4 8.5 5.5 10 6.2 11 7.5 12 8.5c1-1 2-2.3 3.5-3C19 4 22.5 7.5 21 11.5 19 15.5 12 20 12 20z" fill="white" opacity="0.95"/>
+        </svg>
+      </div>
+
+      <div class="title">
+        <h1 id="titleHeading">Hola nombre </h1>
+        <p>Un pequeño regalo con cariño — fecha xd</p>
+      </div>
+    </div>
+
+    <div class="intro">
+      <div class="lead">
+        <p style="font-size:15px; color:#dfe8ff;">
+          Toca el botón y te llevaré a un rincón con secretos, susurros y una carta que quería darte desde hace tiempo.
+        </p>
+      </div>
+      <div>
+        <button id="openBtn" class="btn" aria-controls="stage" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" style="transform:translateY(-1px)" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5v14M5 12h14" stroke="#ff5c8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          Abrir regalo
+        </button>
+      </div>
+    </div>
+
+    <div id="stage" class="stage" tabindex="-1" aria-hidden="true">
+      <canvas id="starsCanvas"></canvas>
+
+      <div class="stageContent" id="stageContent">
+        <div class="note" id="message">
+          <!-- Texto inicial breve visible antes de revelar -->
+          <p style="margin-bottom:10px; font-weight:600; color:#fff">Hola xd, hermana cullo nombre no dire solo hermana de un colega amigo y ya esto fue creado principalmente para un proposito futuro mas no estoy seguro de nada por cosas que limitan el paso...obstaculos</p>
+
+          <div id="longText" style="opacity:0; transform:translateY(8px)">
+            <p>Hola y ya luevo veo que decir</p>
+
+            <p><b>AQui puedo poner un texto</p>
+
+            <p>aqui otro texto 2 xd</p>
+
+            <p>aqui si hace falta</p>
+
+            <p>este por si las dudas</p>
+
+            <p>este por si se cae mi abuela jaja.....</p>
+
+            <p class="meta">Con cariño y respeto — 11 de noviembre del 2025</p>
+            <div class="signature">Con todo el corazon... ja</div>
+          </div>
+
+        </div>
+
+        <div class="visual" aria-hidden="true">
+          <div class="bigHeart" id="heartWrap" title="Corazón">
+            <!-- SVG corazón con gradiente y glow -->
+            <svg viewBox="0 0 120 120" width="220" height="220" class="pulse" id="heartSVG" role="img" aria-label="Corazón">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0" stop-color="#ff7aa2"/>
+                  <stop offset="1" stop-color="#7df9ff"/>
+                </linearGradient>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <g filter="url(#glow)">
+                <path d="M60 108s-2-1.6-10.7-8.8C27 78 8 58 8 40 8 26.5 19.5 16 33 16c8.8 0 13.8 4.3 17 8.3C54.2 20.3 59.2 16 68 16c13.5 0 25 10.5 25 24 0 18-19 38-41.3 59.2C62 106.4 60 108 60 108z"
+                      fill="url(#g1)"/>
+              </g>
+            </svg>
+          </div>
+          <div class="sparkles" id="sparklesText">Estrellas, susurros y promesas</div>
+        </div>
+      </div>
+
+      <div class="hint">Creado por JJ</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* -------------------------
+   Lógica: control de apertura,
+   animación de estrellas fugaces (DOM),
+   canvas de fondo con pequeñas estrellas,
+   y revelado de texto.
+   ------------------------- */
+
+(function(){
+  const openBtn = document.getElementById('openBtn');
+  const stage = document.getElementById('stage');
+  const message = document.getElementById('message');
+  const longText = document.getElementById('longText');
+  const stageContent = document.getElementById('stageContent');
+  const starsCanvas = document.getElementById('starsCanvas');
+  const heartSVG = document.getElementById('heartSVG');
+
+  // Manejo botón: desplazar y revelar
+  openBtn.addEventListener('click', () => {
+    openBtn.setAttribute('aria-expanded','true');
+    stage.setAttribute('aria-hidden','false');
+    // desplazar a la sección
+    stage.scrollIntoView({behavior:'smooth', block:'center'});
+    // activar efectos
+    revealMessage();
+    startShootingStars();
+    // pequeña animación extra en corazón
+    animateHeartOnce();
+  });
+
+  function revealMessage(){
+    longText.style.transition = 'opacity .9s ease, transform .9s cubic-bezier(.2,.9,.2,1)';
+    setTimeout(()=> {
+      longText.style.opacity = 1;
+      longText.style.transform = 'translateY(0)';
+      message.classList.add('show');
+    }, 450);
+  }
+
+  function animateHeartOnce(){
+    // pulsos intensos cortos
+    heartSVG.style.animation = 'heartbeat .9s ease-in-out 1';
+    setTimeout(()=> { heartSVG.style.animation = 'heartbeat 1.6s ease-in-out infinite'; }, 950);
+  }
+
+  /* ---------------------------
+     Canvas: estrellas de fondo
+     --------------------------- */
+  const ctx = starsCanvas.getContext('2d');
+  let w = starsCanvas.width = starsCanvas.clientWidth;
+  let h = starsCanvas.height = starsCanvas.clientHeight;
+  const stars = [];
+  const STAR_COUNT = Math.max(80, Math.floor((w*h)/12000));
+
+  function rand(min, max){ return Math.random()*(max-min)+min; }
+
+  for(let i=0;i<STAR_COUNT;i++){
+    stars.push({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.2 + 0.2,
+      alpha: Math.random()*0.9+0.05,
+      phase: Math.random()*Math.PI*2,
+      twinkle: rand(0.002, 0.01)
+    });
+  }
+
+  function resizeCanvas(){
+    w = starsCanvas.width = starsCanvas.clientWidth;
+    h = starsCanvas.height = starsCanvas.clientHeight;
+  }
+  window.addEventListener('resize', ()=>{
+    resizeCanvas();
+  });
+
+  function drawStars(){
+    ctx.clearRect(0,0,w,h);
+    for(let s of stars){
+      s.phase += s.twinkle;
+      const a = 0.4 + Math.sin(s.phase)*0.6;
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(255,255,255,'+ (a * s.alpha * 0.9) +')';
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  /* ---------------------------
+     Estrellas fugaces DOM
+     --------------------------- */
+  let shootingActive = false;
+  function startShootingStars(){
+    if(shootingActive) return;
+    shootingActive = true;
+    // lanzar varias estrellas fugaces en secuencia
+    const times = [200,700,1200,1700,2500,3200,4200];
+    times.forEach((t,i) => {
+      setTimeout(()=> spawnShooting(i%3), t);
+    });
+    // repetir un poco para sensación mágica
+    setTimeout(()=> {
+      times.forEach((t,i) => {
+        setTimeout(()=> spawnShooting((i+1)%4), t + 4800);
+      });
+    }, 1000);
+  }
+
+  function spawnShooting(variant){
+    // crear un div .shoot y animarlo con JS
+    const el = document.createElement('div');
+    el.className = 'shoot';
+    // posiciones iniciales en porcentaje para variar trayectoria
+    const startX = rand(5, 85);
+    const startY = rand(-10, 20);
+    const length = rand(60, 110);
+    const angle = rand(-20, 30);
+    el.style.left = startX + '%';
+    el.style.top = startY + '%';
+    el.style.transform = 'rotate(' + angle + 'deg)';
+    el.style.opacity = 0;
+    el.style.height = length + 'px';
+    document.querySelector('.stage').appendChild(el);
+
+    // animación con transiciones CSS via JS
+    const dur = rand(900, 1500);
+    el.animate([
+      { transform: 'translateY(0) rotate(' + angle + 'deg)', opacity:0 },
+      { transform: 'translateY(220px) rotate(' + (angle+6) + 'deg)', opacity:1 },
+      { transform: 'translateY(480px) rotate(' + (angle+12) + 'deg)', opacity:0 }
+    ], {
+      duration: dur,
+      easing: 'cubic-bezier(.2,.8,.2,.95)',
+      iterations: 1,
+      fill: 'forwards'
+    });
+
+    // brillo fugaz en corazón al pasar
+    setTimeout(()=> {
+      heartSVG.style.filter = 'url(#glow)';
+    }, dur*0.25);
+    setTimeout(()=> {
+      heartSVG.style.filter = 'none';
+    }, dur*0.8);
+
+    // eliminar al terminar
+    setTimeout(()=> {
+      if(el && el.parentNode) el.parentNode.removeChild(el);
+    }, dur + 80);
+  }
+
+  /* Mejora de accesibilidad: tecla Enter o Space en botón */
+  openBtn.addEventListener('keyup', (e) => {
+    if(e.key === 'Enter' || e.key === ' ') openBtn.click();
+  });
+
+  /* Movimiento sutil de estrellas al mover el ratón/device orientation */
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', (ev) => {
+    const rect = starsCanvas.getBoundingClientRect();
+    mx = (ev.clientX - rect.left) / rect.width - 0.5;
+    my = (ev.clientY - rect.top) / rect.height - 0.5;
+    // desplazar estrellas ligeramente
+    for(let i=0;i<stars.length;i++){
+      const s = stars[i];
+      s.x += mx*0.5*(i%3+1);
+      s.y += my*0.2*(i%3+1);
+      if(s.x < 0) s.x = w + (s.x%w);
+      if(s.x > w) s.x = s.x%w;
+      if(s.y < 0) s.y = h + (s.y%h);
+      if(s.y > h) s.y = s.y%h;
+    }
+  });
+
+  // Prevent multiple heavy animations before canvas sizing is correct
+  window.addEventListener('load', ()=> {
+    resizeCanvas();
+  });
+
+})();
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"90c1486e006444c6ae288749503960d4","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
