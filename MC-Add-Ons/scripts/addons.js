@@ -1,6 +1,6 @@
   
     const ADDONS = [
-      [
+      
   {
     "nombre": "Realism Weapons",
     "formato": ".mcaddon",
@@ -1093,7 +1093,7 @@
     "urlImg": "https://linkyshare.com/storage/posts/thumbnails/SEyNtY1NmcHHRHb1g8bJOlxdPgxVqeLGlINl2mzn.jpg",
     "descripcion": ""
   }
-]
+
     ];
 
     const grid = document.getElementById('addonsGrid');
@@ -1154,4 +1154,5 @@
     render(ADDONS);
     input.addEventListener('input', (e) => filterByPrefix(e.target.value));
   
+
 
