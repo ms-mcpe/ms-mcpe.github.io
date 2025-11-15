@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add-Ons — Mi App Oscura</title>
+  <meta name="color-scheme" content="dark light" />
+  <style>
+    :root {
+      --bg-image: url('https://copilot.microsoft.com/th/id/BCO.9eba4f35-ac92-426a-9e5f-3bd745649ed1.png');
+      --overlay-start: rgba(0, 0, 0, 0.65);
+      --overlay-end: rgba(0, 0, 0, 0.35);
+      --text: #e6e6e9;
+      --accent: #7aa2ff;
+      --surface: rgba(20, 20, 24, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      --radius: 12px;
+      --gap: 12px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, sans-serif;
+      color: var(--text);
+      background: #0f1115;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .app-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(180deg, var(--overlay-start), var(--overlay-end)),
+        var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05) contrast(1.05);
+      z-index: -1;
+    }
+
+    /* Barra superior con 5 secciones */
+    .topbar {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--gap);
+      padding: 8px 12px;
+      background: rgba(12, 14, 18, 0.6);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-logo {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: linear-gradient(135deg, #5e7cff, #2b4bff);
+      box-shadow: 0 3px 10px rgba(91, 123, 255, 0.35);
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-weight: 600; font-size: 14px; letter-spacing: 0.2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .nav { margin-left: auto; display: grid; grid-auto-flow: column; gap: 8px; }
+    .btn {
+      appearance: none; border: 1px solid var(--border); color: var(--text);
+      background: rgba(28, 30, 36, 0.55);
+      padding: 7px 12px; font-size: 13px; border-radius: 10px; cursor: pointer;
+      transition: transform 0.08s ease, background 0.2s ease, border-color 0.2s ease;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+    }
+    .btn:hover { border-color: rgba(255,255,255,0.15); background: rgba(36,38,44,0.65); }
+    .btn:active { transform: translateY(1px); }
+    .btn-current {
+      outline: 2px solid rgba(122,162,255,0.35);
+      background: linear-gradient(180deg, rgba(100,140,255,0.35), rgba(60,90,255,0.2));
+      border-color: rgba(120,160,255,0.35);
+      color: #eaf0ff;
+    }
+
+    /* Contenedor principal */
+    .container { max-width: 1100px; margin: 28px auto; padding: 0 16px 32px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* Controles: buscador por iniciales */
+    .controls {
+      display: flex; gap: 10px; padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 17, 23, 0.45);
+      align-items: center; flex-wrap: wrap;
+    }
+    .input {
+      flex: 1 1 260px; min-width: 220px;
+      padding: 8px 10px; border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(28, 30, 36, 0.55);
+      color: var(--text); font-size: 13px; outline: none;
+    }
+    .input::placeholder { color: #8f9097; }
+
+    /* Grid de addons (solo cajas con imagen, nombre y botón) */
+    .addons-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px; padding: 16px;
+      border-top: 1px solid var(--border);
+      background: rgba(15, 17, 23, 0.45);
+    }
+    .addon-box {
+      display: grid; grid-template-rows: auto auto auto;
+      gap: 10px; padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(24, 26, 32, 0.6);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.08s ease;
+    }
+    .addon-box:hover { background: rgba(32,34,42,0.65); border-color: rgba(255,255,255,0.12); }
+    .addon-img {
+      width: 100%; aspect-ratio: 16/9; border-radius: 10px;
+      object-fit: cover; border: 1px solid var(--border);
+      background: #0d0f13;
+    }
+    .addon-title {
+      font-size: 14px; font-weight: 600; margin: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .download-btn {
+      justify-self: start;
+      appearance: none; border: 1px solid var(--border); color: var(--text);
+      background: rgba(28, 30, 36, 0.55);
+      padding: 7px 12px; font-size: 13px; border-radius: 10px; cursor: pointer;
+      transition: transform 0.08s ease, background 0.2s ease, border-color 0.2s ease;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .download-btn:hover { border-color: rgba(255,255,255,0.15); background: rgba(36,38,44,0.65); }
+    .download-btn:active { transform: translateY(1px); }
+
+    /* Responsive */
+    @media (max-width: 1000px) { .addons-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 700px)  { .addons-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 420px)  { .brand-title { display: none; } .addons-grid { grid-template-columns: 1fr; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .download-btn, .addon-box { transition: none; }
+      .topbar { backdrop-filter: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-bg" aria-hidden="true"></div>
+
+  <!-- Barra superior con 5 secciones; Add-Ons marcada como actual -->
+  <header class="topbar" role="banner" aria-label="Barra superior">
+    <div class="brand" aria-label="Identidad">
+      <div class="brand-logo" aria-hidden="true"></div>
+      <div class="brand-title">Add-Ons App</div>
+    </div>
+    <nav class="nav" role="navigation" aria-label="Secciones">
+      <a class="btn" href="index.html">Inicio</a>
+      <a class="btn btn-current" href="#" aria-current="page">Add-Ons</a>
+      <a class="btn" href="minecraft.html">Minecraft</a>
+      <a class="btn" href="comunidades.html">Comunidades</a>
+ 
+    </nav>
+  </header>
+
+  <!-- Sección única: Add-Ons + buscador -->
+  <section id="addons" class="container" role="region" aria-label="Add-Ons">
+    <div class="card">
+      <div class="controls">
+        <input id="search" class="input" type="text" placeholder="Buscar por iniciales (ej.: R, Re, S, Sp)..." aria-label="Buscar por iniciales" />
+      </div>
+      <div id="addonsGrid" class="addons-grid" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Datos: addons en script -->
+  <script>
+    const ADDONS = [
+      {
+        "nombre": "Realism Weapons",
+        "formato": ".mcaddon",
+        "urlDws": "https://linkyshare.com/es/@MystStart/descarga-realism-weapons-para-minecraft",
+        "urlImg": "https://linkyshare.com/storage/posts/thumbnails/MGDr8AWhXeeB8Eif8TeJuvi4lm1EiJ5xPpvQMBdv.jpg",
+        "descripcion": ""
+      },
+      {
+        "nombre": "Supplementaries",
+        "formato": ".mcaddon",
+        "urlDws": "https://linkyshare.com/es/@MystStart/descarga-supplementaries-para-minecraft-pe",
+        "urlImg": "https://linkyshare.com/storage/posts/thumbnails/juxp82bC0zSLZkCoWc1noVbpUmbGkT2OkSWLkh9W.jpg",
+        "descripcion": ""
+      },
+      {
+        "nombre": "Spacecraft",
+        "formato": ".mcaddon",
+        "urlDws": "https://linkyshare.com/es/@MystStart/descarga-spacecraft-para-minecraft-pe",
+        "urlImg": "https://linkyshare.com/storage/posts/thumbnails/RD8ZWjLOIhzDROTwadRqN6CwEmtVvl949B9SwjNs.jpg",
+        "descripcion": ""
+      },
+      {
+        "nombre": "Secret Base++",
+        "formato": ".mcaddon",
+        "urlDws": "https://linkyshare.com/es/@MystStart/descarga-secret-base-para-minecrat",
+        "urlImg": "https://linkyshare.com/storage/posts/thumbnails/tVzWoDzD60XaB8fBrxFtSPlKGZ4MyT69ll2fkppV.jpg",
+        "descripcion": ""
+      },
+      {
+        "nombre": "Extreme Survival",
+        "formato": ".mcaddon",
+        "urlDws": "https://linkyshare.com/es/@MystStart/descarga-extreme-survival-para-minecraft",
+        "urlImg": "https://linkyshare.com/storage/posts/thumbnails/5bQCNjqqc0ilNhmvI35QGaqHgmqpyq3OW9uIPURA.jpg",
+        "descripcion": ""
+      },
+      {
+        "nombre": "Horrorcraft",
+        "formato": ".mcaddon",
+        "urlDws": "https://linkyshare.com/es/@MystStart/descarga-horrorcraft-para-minecraft-pe",
+        "urlImg": "https://linkyshare.com/storage/posts/thumbnails/hljzsbZh3o7ZChv9J8rnySF2p2tdhskFgtJFx2TT.jpg",
+        "descripcion": ""
+      }
+    ];
+
+    const grid = document.getElementById('addonsGrid');
+    const input = document.getElementById('search');
+
+    function createAddonBox(item) {
+      const box = document.createElement('div');
+      box.className = 'addon-box';
+      box.dataset.title = item.nombre;
+
+      const img = document.createElement('img');
+      img.className = 'addon-img';
+      img.loading = 'lazy';
+      img.src = item.urlImg;
+      img.alt = item.nombre;
+      img.onerror = () => {
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450">
+             <rect width="100%" height="100%" fill="#0d0f13"/>
+             <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                   fill="#889" font-size="20" font-family="Segoe UI, Roboto, Arial">
+               Imagen no disponible
+             </text>
+           </svg>`
+        );
+      };
+
+      const title = document.createElement('h3');
+      title.className = 'addon-title';
+      title.textContent = item.nombre;
+
+      const btn = document.createElement('a');
+      btn.className = 'download-btn';
+      btn.href = item.urlDws;
+      btn.target = '_blank';
+      btn.rel = 'noopener';
+      btn.textContent = 'Descargar';
+
+      box.appendChild(img);
+      box.appendChild(title);
+      box.appendChild(btn);
+      return box;
+    }
+
+    function render(list) {
+      grid.innerHTML = '';
+      list.forEach(item => grid.appendChild(createAddonBox(item)));
+    }
+
+    function filterByPrefix(raw) {
+      const prefix = (raw || '').trim().toLowerCase();
+      if (!prefix) { render(ADDONS); return; }
+      const filtered = ADDONS.filter(a => a.nombre.toLowerCase().startsWith(prefix));
+      render(filtered);
+    }
+
+    // Inicial
+    render(ADDONS);
+    input.addEventListener('input', (e) => filterByPrefix(e.target.value));
+  </script>
+</body>
+</html>

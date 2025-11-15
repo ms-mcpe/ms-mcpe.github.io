@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MC Add-Ons App — Inicio</title>
+  <meta name="color-scheme" content="dark light" />
+  <style>
+    :root{
+      --bg-image: url('https://copilot.microsoft.com/th/id/BCO.9eba4f35-ac92-426a-9e5f-3bd745649ed1.png');
+      --overlay-start: rgba(0,0,0,0.65);
+      --overlay-end: rgba(0,0,0,0.35);
+      --text:#e6e6e9;
+      --muted:#b8b8bf;
+      --accent:#7aa2ff;
+      --surface:rgba(20,20,24,0.7);
+      --border:rgba(255,255,255,0.08);
+      --shadow:0 8px 20px rgba(0,0,0,0.35);
+      --radius:12px;
+      --gap:12px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+      color:var(--text);
+      background:#0f1115;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+    }
+
+    /* fondo imagen + degradado sutil */
+    .app-bg{
+      position:fixed;inset:0;
+      background-image:linear-gradient(180deg,var(--overlay-start),var(--overlay-end)),var(--bg-image);
+      background-size:cover;background-position:center;
+      filter:saturate(1.05) contrast(1.05);z-index:-1;
+    }
+
+    /* topbar */
+    .topbar{
+      position:sticky;top:0;display:flex;align-items:center;gap:var(--gap);
+      padding:8px 12px;background:rgba(12,14,18,0.6);backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--border);z-index:10;
+    }
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .brand-logo{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#5e7cff,#2b4bff);box-shadow:0 3px 10px rgba(91,123,255,0.35);flex-shrink:0}
+    .brand-title{font-weight:600;font-size:14px;letter-spacing:0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav{margin-left:auto;display:grid;grid-auto-flow:column;gap:8px}
+    .btn{
+      appearance:none;border:1px solid var(--border);color:var(--text);
+      background:rgba(28,30,36,0.55);padding:7px 12px;font-size:13px;border-radius:10px;
+      cursor:pointer;transition:transform .08s ease,background .2s,border-color .2s;text-decoration:none;
+      display:inline-flex;align-items:center;gap:8px;box-shadow:0 1px 0 rgba(255,255,255,0.02) inset;
+    }
+    .btn:hover{border-color:rgba(255,255,255,0.15);background:rgba(36,38,44,0.65)}
+    .btn:active{transform:translateY(1px)}
+    .btn-current{
+      outline:2px solid rgba(122,162,255,0.35);
+      background:linear-gradient(180deg, rgba(100,140,255,0.35), rgba(60,90,255,0.2));
+      border-color:rgba(120,160,255,0.35);color:#eaf0ff;
+    }
+
+    .container{max-width:1000px;margin:28px auto;padding:0 16px 48px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .hero{padding:22px 18px;display:grid;gap:12px}
+    .hero h1{margin:0;font-size:clamp(20px,3.6vw,28px);font-weight:700}
+    .hero p{margin:0;color:var(--muted);font-size:15px;white-space:pre-wrap}
+
+    .links{
+      display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:16px;border-top:1px solid var(--border);
+      background:rgba(15,17,23,0.45);
+    }
+    .link-tile{
+      display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid var(--border);border-radius:10px;
+      background:rgba(24,26,32,0.55);text-decoration:none;color:var(--text);transition:background .18s ease,border-color .18s ease;
+    }
+    .tile-title{font-weight:600;font-size:13px}
+    .tile-desc{font-size:12px;color:var(--muted)}
+
+    @media (max-width:920px){.links{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media (max-width:620px){.nav{grid-auto-flow:row;grid-template-columns:1fr 1fr}.links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:420px){.brand-title{display:none}.links{grid-template-columns:1fr}}
+    @media (prefers-reduced-motion:reduce){.btn,.link-tile{transition:none}.topbar{backdrop-filter:none}}
+  </style>
+</head>
+<body>
+  <div class="app-bg" aria-hidden="true"></div>
+
+  <header class="topbar" role="banner" aria-label="Barra superior">
+    <div class="brand" aria-label="Identidad">
+      <div class="brand-logo" aria-hidden="true"></div>
+      <div class="brand-title">Add-Ons App</div>
+    </div>
+    <nav class="nav" role="navigation" aria-label="Secciones">
+      <a class="btn btn-current" href="#">Inicio</a>
+      <a class="btn" href="addons.html" aria-current="page">Add-Ons</a>
+      <a class="btn" href="minecraft.html">Minecraft</a>
+      <a class="btn" href="comunidades.html">Comunidades</a>
+    
+    </nav>
+  </header>
+
+  <main id="inicio" class="container" role="main">
+    <section class="card" aria-label="Inicio">
+      <div class="hero">
+        <h1>Bienvenido/a a MC Add-Ons App</h1>
+        <p>
+Cómo Bloquear Anuncios en MC Add-Ons y Otras Aplicaciones (Android)
+
+Eliminar los anuncios de la app MC Add-Ons y de muchas otras aplicaciones en tu móvil es más fácil de lo que crees. ¡Aquí te explico cómo!
+
+¿Por qué aparecen los anuncios? Muchas aplicaciones, incluida MC Add-Ons, muestran anuncios porque utilizan plataformas publicitarias como Google AdMob, que integran publicidad directamente en su interfaz.
+
+La Solución: Configurar un DNS Privado
+La clave está en configurar un DNS Privado en tu teléfono Android. Sigue estos pasos:
+1. Abre la aplicación "Ajustes" o "Configuración" en tu teléfono.
+2. Navega hasta la sección de "Redes e Internet" (o similar, como "Conexiones" o "Más ajustes de conexión").
+3. Busca la opción "DNS Privado". Al seleccionarla, verás tres modos:
+• Apagado
+• Automático
+• Nombre de host del proveedor de DNS privado
+4. Elige la tercera opción: "Nombre de host del proveedor de DNS privado" (la redacción puede variar ligeramente según tu modelo de teléfono).
+5. En el campo de texto que aparece, introduce exactamente esta dirección: dns.adguard.com
+6. Guarda los cambios.
+
+¡Listo! A partir de ahora, tanto en MC Add-Ons como en otras aplicaciones que utilicen publicidad de Google (e incluso en el propio navegador Chrome), los anuncios dejarán de mostrarse.
+
+¿Necesitas una guía visual? Si te surge alguna duda o prefieres un paso a paso más detallado, puedes consultar este video explicativo: 
+Tutorial DNS — https://youtube.com/shorts/wj6IXAY9wlA?si=_4nAGj_h79pmOAGR
+        </p>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const href=a.getAttribute('href'); if(href&&href.startsWith('#')){ e.preventDefault(); const t=document.querySelector(href); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }
+      });
+    });
+  </script>
+</body>
+</html>
