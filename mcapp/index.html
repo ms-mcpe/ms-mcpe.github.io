@@ -3,167 +3,76 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MC Addons · Redireccionando</title>
+  <title>Redireccionando a MC Addons App</title>
 
-  <!-- Carga la fuente de Minecraft (coloca el archivo en /fonts/Minecraft.ttf) -->
+  <!-- Fuente estilo Minecraft (coloca Minecraft.ttf en /fonts/) -->
   <link rel="preload" href="fonts/Minecraft.ttf" as="font" type="font/ttf" crossorigin>
   <style>
-    :root{
-      --bg:#0b0e12;
-      --bg-2:#0f141a;
-      --text:#e7f0ff;
-      --muted:#8aa1b1;
-      --accent:#77c96a; /* verde césped */
-      --shadow: 0 12px 28px rgba(0,0,0,.45);
-    }
-
-    /* Fuente Minecraft + fallback pixel */
-    @font-face{
-      font-family:"Minecraft";
+    @font-face {
+      font-family: "Minecraft";
       src: url("fonts/Minecraft.ttf") format("truetype");
       font-display: swap;
     }
-    @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      display:grid;
-      place-items:center;
-      background:
-        radial-gradient(1200px 800px at 50% 0%, var(--bg-2) 0%, var(--bg) 60%),
-        linear-gradient(180deg, #0b0e12 0%, #0a0d10 100%);
-      color:var(--text);
-      font-family:"Minecraft","Press Start 2P", system-ui, sans-serif;
-    }
-
-    .wrap{
-      width:min(520px, 90vw);
-      text-align:center;
-      padding:28px 24px 34px;
-      border-radius:16px;
-      background:linear-gradient(180deg, #0f141a 0%, #0b0e12 100%);
-      box-shadow: var(--shadow);
-      outline:1px solid #121820;
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #0b0e12;
+      color: #e7f0ff;
+      font-family: "Minecraft", monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
-    /* Marco cúbico minimalista */
-    .icon-frame{
-      display:inline-grid;
-      place-items:center;
-      width:min(220px, 60vw);
-      aspect-ratio:1/1;
-      border-radius:18px;
-      background:
-        linear-gradient(180deg, #1a1f25 0%, #12171d 100%);
-      box-shadow:
-        inset 0 0 0 2px #1f262d,
-        inset 0 0 0 6px #0c1116,
-        0 10px 30px rgba(0,0,0,.55);
-      position:relative;
-      overflow:hidden;
+    .icon {
+      width: 96px;
+      height: auto;
+      image-rendering: pixelated;
+      margin-bottom: 24px;
     }
 
-    /* Borde “pixel” sutil para look cúbico */
-    .icon-frame::before,
-    .icon-frame::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:18px;
-      pointer-events:none-frame::before{
-      outline:2px solid #0b1116;
-      mix-blend-mode:normal;
-    }
-    .icon-frame::after{
-      background:linear-gradient(180deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,0) 35%);
+    h1 {
+      font-size: 18px;
+      margin: 0;
+      color: #e7f0ff;
+      text-shadow: 0 1px 0 #000;
     }
 
-    .icon{
-      width:85%;
-      height:auto;
-      image-rendering: pixelated;      /* bien “dicelado” estilo pixel */
-      filter:
-        drop-shadow(0 6px 0 #0c1116)
-        drop-shadow(0 16px 22px rgba(0,0,0,.45));
+    .progress {
+      margin-top: 18px;
+      width: 160px;
+      height: 10px;
+      background: #1a222b;
+      border-radius: 6px;
+      overflow: hidden;
     }
 
-    .title{
-      margin:18px 0 8px;
-      font-size:clamp(18px, 4vw, 22px);
-      letter-spacing:.02em;
-      color:var(--text);
-      text-shadow:0 1px 0 #0b1116;
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #64b85a, #94d67f);
+      animation: load 2s ease-out forwards;
     }
 
-    .subtitle{
-      margin:0;
-      font-size:clamp(12px, 3.2vw, 14px);
-      color:var(--muted);
+    @keyframes load {
+      to { width: 100%; }
     }
-
-    /* Barra de progreso cúbica minimal */
-    .progress{
-      margin:18px auto 0;
-      width:min(280px, 80vw);
-      height:12px;
-      border-radius:8px;
-      background:#121820;
-      outline:1px solid #1a222b;
-      overflow:hidden;
-    }
-    .progress > span{
-      display:block;
-      height:100%;
-      width:0%;
-      background:
-        linear-gradient(90deg, #64b85a, #94d67f);
-      box-shadow:inset 0 0 0 2px rgba(12,17,22,.35);
-      animation:load 2.2s cubic-bezier(.2,.8,.2,1) infinite;
-    }
-    @keyframes load{
-      0%{width:0%}
-      50%{width:68%}
-      100%{width:100%}
-    }
-
-    /* Botón (opcional) con estilo cúbico */
-    .cta{
-      margin:18px auto 0;
-      display:inline-block;
-      padding:12px 16px;
-      border-radius:12px;
-      background:#131a20;
-      color:var(--text);
-      text-decoration:none;
-      font-size:13px;
-      box-shadow:inset 0 0 0 2px #1f262d;
-      transition:transform .12s ease, box-shadow .12s ease;
-    }
-    .cta:hover{transform:translateY(-1px); box-shadow:inset 0 0 0 2px #2a323b}
-    .cta:active{transform:translateY(0)}
   </style>
 </head>
 <body>
-  <main class="wrap" role="main" aria-label="Redireccionando a MC Addons App">
-    <div class="icon-frame" aria-hidden="true">
-      <!-- Reemplaza la ruta por tu icono con bordes transparentes -->
-      <img class="icon" src="assets/mc-addons-icon.png" alt="Icono MC Addons" />
-    </div>
+  <img src="img/copilot_image_1765739474378.jpeg
+" alt="MC Addons Icon" class="icon" />
+  <h1>Redireccionando a MC Addons App</h1>
+  <div class="progress"><span></span></div>
 
-    <h1 class="title">Redireccionando a MC Addons App</h1>
-    <p class="subtitle">Tema oscuro profesional, minimalista y cúbico — bien dicelado</p>
-
-    <div class="progress" aria-hidden="true"><span></span></div>
-
-    <!-- Botón opcional como fallback -->
-    <a class="cta" href="https://ms-mcpe.github.io/mcapp">Abrir MC Addons</a>
-  </main>
-
-  <!-- Redirección opcional (comenta si no quieres auto-redirect) -->
   <script>
-    // setTimeout(() => location.href = "https://tu-enlace-a-la-app.example", 1800);
+    setTimeout(() => {
+      window.location.href = "https://ms-mcpe.github.io/mcapp";
+    }, 2000);
   </script>
 </body>
 </html>
