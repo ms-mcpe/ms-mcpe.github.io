@@ -1,19 +1,66 @@
  // Datos de ejemplo
     const addons = [
-      {
-        "nombre": "Super Espadas",
-        "descripcion": "Este addon agrega espadas mágicas con poderes únicos que te permiten derrotar enemigos fácilmente. Cada espada tiene habilidades especiales como fuego, hielo, rayos y más. Además incluye un sistema de mejora para hacerlas aún más poderosas.",
-        "imagen": "addons-img/super-espadas.png",
-        "fecha": "2025-12-10",
-        "subidopor": "Myst"
-      },
-      {
-        "nombre": "Animales Extra",
-        "descripcion": "Añade nuevos animales al mundo de Minecraft, incluyendo tigres, osos y aves exóticas.",
-        "imagen": "addons-img/animales-extra.png",
-        "fecha": "2025-12-12",
-        "subidopor": "Myst"
-      }
+     {
+  "199922573914231@lid": [
+    {
+      "nombre": "Minecraft 1.21.130.03",
+      "descripcion": "*   *Monturas del Caos:* Una nueva entrega que trae desafÃ­os y estrategias renovadas.*   *Mejoras en Monturas:* Caballos, Caballos Zombis, Burros, Mulas y Camellos ya no se hunden en el agua mientras se les monta. Se ha aÃ±adido la *Armadura de Caballo de Netherita*.*   *Nautilus y Nautilus Zombi:* Nuevas criaturas acuÃ¡ticas neutrales que se pueden domesticar, montar con silla de montar y equipar con armadura. Tienen una habilidad de \"Embestida\" y otorgan el efecto \"Aliento del Nautilus\". El Nautilus Zombi aparece con un Jinete Ahogado.*   *Lanza (Spear):* Nueva arma escalonada con ataques de \"Estocada\" y \"Carga\", que ofrece mayor alcance y el encantamiento \"Estocada\" (Lunge).*   *Nuevos Mobs:*    *   *Parched (Sediento):* Una nueva variante de Esqueleto que aparece en desiertos, no se quema con la luz solar y dispara Flechas de Debilidad.    *   *Camel Husk (Momia de Camello):* Una variante no-muerta de Camello que aparece en desiertos con un jinete Momia (Husk) y un Parched.*   *Guardados de Realms (Realms Saves):* Nuevo sistema de copias de seguridad con opciones automÃ¡ticas y manuales, incluyendo almacenamiento en la nube para las guardadas manuales.*ðŸ› ï¸ Correcciones y Mejoras:*La actualizaciÃ³n incluye numerosas correcciones de errores y mejoras en categorÃ­as como Audio, Bloques, Creador de Personajes, Jugabilidad, GrÃ¡ficos, Entrada, Mobs, Estabilidad e Interfaz de Usuario.*âš™ï¸ Actualizaciones TÃ©cnicas:*Se detallan cambios extensos para desarrolladores, incluyendo nuevas metas de IA, lanzamientos y actualizaciones de API, adiciones de consultas Molang y modificaciones en protocolos y componentes de red.*link :* https://cuty.io/CxGI0Z1JG",
+      "imagen": "minecraft-1.21.130.03.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-10"
+    },
+    {
+      "nombre": "Storage++",
+      "descripcion": "link: https://linkyshare.com/es/@MystStart/complemento-de-minecraft-bedrock-storage",
+      "imagen": "storage.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    },
+    {
+      "nombre": "Pirate Era",
+      "descripcion": "link: https://linkyshare.com/es/@MystStart/complemento-para-minecraft-bedrock-pirates",
+      "imagen": "pirate-era.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    },
+    {
+      "nombre": "Trains Add",
+      "descripcion": "On-\nlink: https://linkyshare.com/es/@MystStart/complemento-para-minecraft-bedrock-trains-add-on",
+      "imagen": "trains-add.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    },
+    {
+      "nombre": "Builders Wands",
+      "descripcion": "link: https://linkyshare.com/es/@MystStart/complemento-para-minecraft-bedrock-builders-wands",
+      "imagen": "builders-wands.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    },
+    {
+      "nombre": "One Block The copper Age",
+      "descripcion": "link: https://linkyshare.com/es/@MystStart/complemento-para-minecraft-bedrock-one-block",
+      "imagen": "one-block-the-copper-age.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    },
+    {
+      "nombre": "World Minimap",
+      "descripcion": "link: https://linkyshare.com/es/@MystStart/complemento-para-minecraft-bedrock-minimap",
+      "imagen": "world-minimap.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    },
+    {
+      "nombre": "System Dynamic Light",
+      "descripcion": "link: https://linkyshare.com/es/@MystStart/complemento-para-minecraf-bedrock-dynamyc-light",
+      "imagen": "system-dynamic-light.jpg",
+      "subidoPor": "Myst Start",
+      "fecha": "2025-12-14"
+    }
+  ],
+  "113353397682421@lid": []
+}
     ];
 
     const container = document.getElementById('addons');
