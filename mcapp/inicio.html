@@ -1,1 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MC Addons · Inicio</title>
+  <style>
+    body {
+      margin:0;
+      font-family: "Minecraft", monospace;
+      background:#0b0e12;
+      color:#e7f0ff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      min-height:100vh;
+    }
+    header {
+      padding:20px;
+      text-align:center;
+    }
+    h1 {
+      margin:0;
+      font-size:24px;
+    }
+    .search-box {
+      margin:20px;
+      width:80%;
+      max-width:400px;
+    }
+    .search-box input {
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:none;
+      background:#1a1f25;
+      color:#e7f0ff;
+      font-size:14px;
+    }
+    .addons-container {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      width:90%;
+      max-width:1000px;
+      padding:20px;
+    }
+    .addon-card {
+      background:#12171d;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 6px 16px rgba(0,0,0,.45);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+    }
+    .addon-card img {
+      width:100%;
+      max-height:160px;
+      object-fit:cover;
+      border-radius:8px;
+      margin-bottom:12px;
+    }
+    .addon-card h2 {
+      font-size:18px;
+      margin:8px 0;
+    }
+    .addon-card p {
+      font-size:14px;
+      color:#cfd9e6;
+    }
+    .addon-card .meta {
+      font-size:12px;
+      color:#8aa1b1;
+      margin-top:8px;
+    }
+    .leer-mas {
+      color:#77c96a;
+      cursor:pointer;
+      font-size:13px;
+      display:inline-block;
+      margin-top:6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MC Addons</h1>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Buscar addons...">
+    </div>
+  </header>
 
+  <main class="addons-container" id="addons"></main>
+
+  <script>
+    // Datos de ejemplo
+    const addons = [
+      {
+        "nombre": "Super Espadas",
+        "descripcion": "Este addon agrega espadas mágicas con poderes únicos que te permiten derrotar enemigos fácilmente. Cada espada tiene habilidades especiales como fuego, hielo, rayos y más. Además incluye un sistema de mejora para hacerlas aún más poderosas.",
+        "imagen": "addons-img/super-espadas.png",
+        "fecha": "2025-12-10",
+        "subidopor": "Myst"
+      },
+      {
+        "nombre": "Animales Extra",
+        "descripcion": "Añade nuevos animales al mundo de Minecraft, incluyendo tigres, osos y aves exóticas.",
+        "imagen": "addons-img/animales-extra.png",
+        "fecha": "2025-12-12",
+        "subidopor": "Myst"
+      }
+    ];
+
+    const container = document.getElementById('addons');
+
+    function renderAddons(list){
+      container.innerHTML = "";
+      list.forEach(addon=>{
+        const card = document.createElement('div');
+        card.className = "addon-card";
+
+        const img = document.createElement('img');
+        img.src = addon.imagen;
+        img.alt = addon.nombre;
+
+        const title = document.createElement('h2');
+        title.textContent = addon.nombre;
+
+        const desc = document.createElement('p');
+        const fullText = addon.descripcion;
+        if(fullText.length > 120){
+          desc.textContent = fullText.substring(0,120)+"...";
+          const leerMas = document.createElement('span');
+          leerMas.className = "leer-mas";
+          leerMas.textContent = "Leer más";
+          leerMas.onclick = ()=>{
+            if(desc.textContent.endsWith("...")){
+              desc.textContent = fullText;
+              leerMas.textContent = "Leer menos";
+            } else {
+              desc.textContent = fullText.substring(0,120)+"...";
+              leerMas.textContent = "Leer más";
+            }
+          };
+          card.appendChild(desc);
+          card.appendChild(leerMas);
+        } else {
+          desc.textContent = fullText;
+          card.appendChild(desc);
+        }
+
+        const meta = document.createElement('div');
+        meta.className = "meta";
+        meta.textContent = `Subido por ${addon.subidopor} · ${addon.fecha}`;
+
+        card.appendChild(img);
+        card.appendChild(title);
+        card.appendChild(meta);
+
+        container.appendChild(card);
+      });
+    }
+
+    renderAddons(addons);
+
+    // Buscador
+    document.getElementById('search').addEventListener('input', e=>{
+      const term = e.target.value.toLowerCase();
+      const filtered = addons.filter(a=>a.nombre.toLowerCase().includes(term));
+      renderAddons(filtered);
+    });
+  </script>
+</body>
+</html>
