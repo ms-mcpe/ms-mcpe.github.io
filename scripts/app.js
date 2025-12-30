@@ -9,51 +9,44 @@ async function cargarAddons() {
         const response = await fetch(url);
         const data = await response.json();
 
-        // Limpiamos el grid
+        // 1. DEPUREMOS: Mira la consola de tu navegador (F12) para ver esto
+        console.log("Datos crudos recibidos:", data);
+
         addonGrid.innerHTML = '';
 
-        // Google Forms a veces envía la primera fila como basura
-        // Usamos Object.values para obtener los datos sin importar el nombre de la columna
-        data.forEach((row, index) => {
-            const columnas = Object.values(row);
+        data.forEach((item) => {
+            // Obtenemos todos los valores de la fila como un arreglo simple
+            const valores = Object.values(item);
+            
+            // Según tu imagen, el orden en el arreglo 'valores' debería ser:
+            // [0] Marca temporal, [1] name, [2] Urldws, [3] Urlimg, [4] category
+            
+            const nombre = valores[1] || "Sin nombre";
+            const descarga = valores[2] || "#";
+            const imagen = valores[3] || "";
+            const categoria = valores[4] || "General";
 
-            // SEGÚN TU IMAGEN:
-            // columnas[0] = Marca temporal
-            // columnas[1] = name
-            // columnas[2] = Urldws
-            // columnas[3] = Urlimg
-            // columnas[4] = category
+            // Saltamos la fila si es el encabezado o si el nombre está vacío
+            if (nombre.toLowerCase() === 'name' || nombre === "Sin nombre") return;
 
-            const nombre = columnas[1];
-            const descarga = columnas[2];
-            const imagen = columnas[3];
-            const categoria = columnas[4];
-
-            // Solo creamos la tarjeta si el nombre no es igual al encabezado
-            if (nombre && nombre !== 'name' && nombre !== 'Sin nombre') {
-                const card = document.createElement('div');
-                card.className = 'addon-card';
-                
-                card.innerHTML = `
-                    <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center;">
-                        <span class="category-tag">${categoria || 'Add-on'}</span>
-                    </div>
-                    <div class="card-info">
-                        <h3>${nombre}</h3>
-                        <a href="${descarga}" target="_blank" class="btn-download">DESCARGAR</a>
-                    </div>
-                `;
-                addonGrid.appendChild(card);
-            }
+            const card = document.createElement('div');
+            card.className = 'addon-card';
+            
+            card.innerHTML = `
+                <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center; background-color: #333;">
+                    <span class="category-tag">${categoria}</span>
+                </div>
+                <div class="card-info">
+                    <h3>${nombre}</h3>
+                    <a href="${descarga}" target="_blank" class="btn-download">DESCARGAR</a>
+                </div>
+            `;
+            addonGrid.appendChild(card);
         });
 
-        // Ordenar visualmente (opcional, ya que los forms suelen ir en orden)
-        // Si necesitas que el último sea el primero, podrías usar: 
-        // addonGrid.style.display = 'flex'; addonGrid.style.flexDirection = 'column-reverse';
-
     } catch (error) {
-        console.error("Error crítico:", error);
-        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error al procesar los datos de la hoja.</p>';
+        console.error("Error cargando la hoja:", error);
+        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error de conexión con la base de datos.</p>';
     }
 }
 
