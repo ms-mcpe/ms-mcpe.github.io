@@ -100,7 +100,7 @@ document.querySelectorAll('.nav-links a').forEach(link => {
                     <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
                     <h2>Comunidad</h2>
                     <p style="color:#bbb; margin-top:10px;">¡Únete a nuestro servidor para no perderte ninguna actualización!</p>
-                    <a href="TU_LINK_DISCORD" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Discord Oficial</a>
+                    <a href="https://whatsapp.com/channel/0029Vb6MoFQ0gcfCKJhYNU33/526" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Discord Oficial</a>
                 </div>`;
         } 
         else if (filtro === 'Politicas') {
