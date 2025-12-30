@@ -2,7 +2,7 @@ const sheetId = '1VVO_fKNZqPdeCDagWF8s7clq7uMZfCY3-HDTksAmNnw';
 const sheetName = 'FROM App MC Addons'; 
 const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
-let addonsData = []; // Memoria para las búsquedas
+let addonsData = []; // Guardamos los datos aquí para que el buscador funcione
 
 async function cargarAddons() {
     const addonGrid = document.getElementById('addon-grid');
@@ -11,25 +11,27 @@ async function cargarAddons() {
         const response = await fetch(url);
         const data = await response.json();
 
-        // Filtramos para obtener solo filas con datos reales
+        // Limpieza de datos: obtener solo filas válidas saltando encabezados raros
         addonsData = data.filter(item => {
             const v = Object.values(item);
             return v[1] && v[1].toLowerCase() !== 'name';
         });
 
-        // Ordenar: lo más nuevo primero
+        // Ordenar por fecha (Marca temporal en la columna 0)
         addonsData.sort((a, b) => new Date(Object.values(b)[0]) - new Date(Object.values(a)[0]));
 
         renderizarCards(addonsData);
 
     } catch (error) {
         console.error("Error:", error);
-        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error de conexión.</p>';
+        addonGrid.innerHTML = '<p style="color:white; text-align:center; padding:20px;">Error al conectar con la base de datos.</p>';
     }
 }
 
 function renderizarCards(lista) {
     const addonGrid = document.getElementById('addon-grid');
+    if (!addonGrid) return;
+    
     addonGrid.innerHTML = '';
 
     if (lista.length === 0) {
@@ -47,55 +49,68 @@ function renderizarCards(lista) {
         const card = document.createElement('div');
         card.className = 'addon-card';
         card.innerHTML = `
-            <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center; background-color: #222; height: 160px; border-radius: 8px 8px 0 0;">
-                <span class="category-tag" style="background: #2ecc71; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; position: absolute; top: 10px; left: 10px; font-weight: bold;">${categoria}</span>
+            <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center; height: 180px;">
+                <span class="category-tag" style="position:absolute; top:10px; left:10px; background:#2ecc71; color:#000; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:12px;">${categoria}</span>
             </div>
-            <div class="card-info" style="padding: 15px;">
-                <h3 style="font-size: 1rem; margin-bottom: 10px; color: #fff;">${nombre}</h3>
-                <a href="${descarga}" target="_blank" class="btn-download" style="display: block; background: #2ecc71; color: #000; text-align: center; padding: 8px; border-radius: 5px; text-decoration: none; font-weight: bold; font-size: 0.8rem;">DESCARGAR</a>
+            <div class="card-info" style="padding:15px;">
+                <h3 style="margin-bottom:10px; font-size:1.1rem;">${nombre}</h3>
+                <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold;">DESCARGAR</a>
             </div>
         `;
         addonGrid.appendChild(card);
     });
 }
 
-// --- ARREGLO DEL BUSCADOR ---
-const inputBusqueda = document.getElementById('addon-search');
-if (inputBusqueda) {
-    inputBusqueda.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
+// --- FUNCIONALIDAD DEL BUSCADOR ---
+const buscador = document.getElementById('addon-search');
+if (buscador) {
+    buscador.addEventListener('input', (e) => {
+        const termino = e.target.value.toLowerCase();
         const filtrados = addonsData.filter(item => {
             const v = Object.values(item);
-            return (v[1] || "").toLowerCase().includes(term) || (v[4] || "").toLowerCase().includes(term);
+            const nombre = (v[1] || "").toLowerCase();
+            const categoria = (v[4] || "").toLowerCase();
+            return nombre.includes(termino) || categoria.includes(termino);
         });
         renderizarCards(filtrados);
     });
 }
 
-// --- ARREGLO DE SECCIONES Y MENÚ ---
+// --- FUNCIONALIDAD DEL MENÚ LATERAL ---
 document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
         const filtro = link.getAttribute('data-filter');
-        const addonGrid = document.getElementById('addon-grid');
-        const titulo = document.getElementById('current-category');
+        if (!filtro) return;
 
-        // Actualizar título visualmente
-        if (titulo) titulo.innerText = link.innerText;
-
-        // Quitar y poner clase activa
+        // Quitamos "active" de todos y ponemos al seleccionado
         document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
         link.classList.add('active');
 
-        // Lógica de secciones especiales
-        if (filtro === 'Comunidad') {
-            addonGrid.innerHTML = '<div style="padding:20px;"><h2>Comunidad</h2><p>Únete a nuestro Discord para compartir tus addons.</p></div>';
-        } else if (filtro === 'Politicas') {
-            addonGrid.innerHTML = '<div style="padding:20px;"><h2>Políticas</h2><p>Respetamos los derechos de autor. No subas contenido robado.</p></div>';
-        } else if (filtro === 'all') {
+        const addonGrid = document.getElementById('addon-grid');
+
+        if (filtro === 'all') {
             renderizarCards(addonsData);
-        } else {
-            // Filtrado por categoría (Addon, Textura, etc)
+        } 
+        else if (filtro === 'Comunidad') {
+            addonGrid.innerHTML = `
+                <div style="padding:40px; text-align:center; width:100%;">
+                    <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
+                    <h2>Nuestra Comunidad</h2>
+                    <p style="color:#bbb; margin-top:10px;">Únete a nuestro servidor oficial para compartir tus creaciones.</p>
+                    <a href="#" class="btn-download" style="display:inline-block; margin-top:20px; width:200px;">Unirse al Discord</a>
+                </div>`;
+        } 
+        else if (filtro === 'Politicas') {
+            addonGrid.innerHTML = `
+                <div style="padding:40px; width:100%;">
+                    <h2>Políticas de Uso</h2>
+                    <p style="color:#bbb; margin-top:20px;">1. No se permite subir contenido robado.</p>
+                    <p style="color:#bbb; margin-top:10px;">2. Todos los créditos deben ir a sus respectivos creadores.</p>
+                    <p style="color:#bbb; margin-top:10px;">3. Los links deben ser directos o a través de acortadores permitidos.</p>
+                </div>`;
+        } 
+        else {
+            // Filtrar por la columna de categoría del Excel
             const filtrados = addonsData.filter(item => {
                 const cat = (Object.values(item)[4] || "").toLowerCase();
                 return cat.includes(filtro.toLowerCase());
@@ -105,4 +120,5 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     });
 });
 
+// Iniciar carga
 document.addEventListener('DOMContentLoaded', cargarAddons);
