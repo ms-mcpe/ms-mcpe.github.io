@@ -12,20 +12,14 @@ async function cargarAddons() {
         const data = await response.json();
 
         // 1. Limpieza de datos: Solo filas con nombre, saltando encabezados
+        // CAMBIO AQUÍ: Agregamos .reverse() al final del filtro para invertir el orden del Excel
         addonsData = data.filter(item => {
             const v = Object.values(item);
             return v[1] && v[1].toLowerCase() !== 'name';
-        });
+        }).reverse(); 
 
-        // 2. ORDENAMIENTO CORREGIDO: Los nuevos primero
-        addonsData.sort((a, b) => {
-            // Extraemos la Marca Temporal (columna 0) y la convertimos a tiempo numérico
-            const tiempoA = new Date(Object.values(a)[0]).getTime() || 0;
-            const tiempoB = new Date(Object.values(b)[0]).getTime() || 0;
-            
-            // Restamos B - A para que el número más grande (más reciente) quede arriba
-            return tiempoB - tiempoA;
-        });
+        // Se eliminó la función .sort() que no funcionaba y se reemplazó por el .reverse() de arriba
+        // que es mucho más fiable para el formato de Google Sheets.
 
         renderizarCards(addonsData);
 
