@@ -7,44 +7,53 @@ async function cargarAddons() {
     
     try {
         const response = await fetch(url);
-        let data = await response.json();
+        const data = await response.json();
 
-        // Si el formulario añade una fila extra de "Form_Responses", la API suele detectarla.
-        // Filtramos cualquier fila que no tenga un nombre real para evitar errores.
-        const itemsValidos = data.filter(item => item.name || item.Name);
-
-        // Ordenar por Marca temporal (Más reciente primero)
-        itemsValidos.sort((a, b) => {
-            return new Date(b["Marca temporal"]) - new Date(a["Marca temporal"]);
-        });
-
+        // Limpiamos el grid
         addonGrid.innerHTML = '';
 
-        itemsValidos.forEach(item => {
-            // Acceso directo según tus columnas de la imagen
-            const nombre = item.name;
-            const descarga = item.Urldws;
-            const imagen = item.Urlimg;
-            const categoria = item.category;
+        // Google Forms a veces envía la primera fila como basura
+        // Usamos Object.values para obtener los datos sin importar el nombre de la columna
+        data.forEach((row, index) => {
+            const columnas = Object.values(row);
 
-            const card = document.createElement('div');
-            card.className = 'addon-card';
-            
-            card.innerHTML = `
-                <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center;">
-                    <span class="category-tag">${categoria}</span>
-                </div>
-                <div class="card-info">
-                    <h3>${nombre}</h3>
-                    <a href="${descarga}" target="_blank" class="btn-download">DESCARGAR</a>
-                </div>
-            `;
-            addonGrid.appendChild(card);
+            // SEGÚN TU IMAGEN:
+            // columnas[0] = Marca temporal
+            // columnas[1] = name
+            // columnas[2] = Urldws
+            // columnas[3] = Urlimg
+            // columnas[4] = category
+
+            const nombre = columnas[1];
+            const descarga = columnas[2];
+            const imagen = columnas[3];
+            const categoria = columnas[4];
+
+            // Solo creamos la tarjeta si el nombre no es igual al encabezado
+            if (nombre && nombre !== 'name' && nombre !== 'Sin nombre') {
+                const card = document.createElement('div');
+                card.className = 'addon-card';
+                
+                card.innerHTML = `
+                    <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center;">
+                        <span class="category-tag">${categoria || 'Add-on'}</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>${nombre}</h3>
+                        <a href="${descarga}" target="_blank" class="btn-download">DESCARGAR</a>
+                    </div>
+                `;
+                addonGrid.appendChild(card);
+            }
         });
 
+        // Ordenar visualmente (opcional, ya que los forms suelen ir en orden)
+        // Si necesitas que el último sea el primero, podrías usar: 
+        // addonGrid.style.display = 'flex'; addonGrid.style.flexDirection = 'column-reverse';
+
     } catch (error) {
-        console.error("Error:", error);
-        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error al conectar con el formulario.</p>';
+        console.error("Error crítico:", error);
+        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error al procesar los datos de la hoja.</p>';
     }
 }
 
