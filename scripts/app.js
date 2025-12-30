@@ -2,7 +2,7 @@ const sheetId = '1VVO_fKNZqPdeCDagWF8s7clq7uMZfCY3-HDTksAmNnw';
 const sheetName = 'FROM App MC Addons'; 
 const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
-let addonsData = []; // Guardamos los datos aquí para que el buscador funcione
+let addonsData = []; // Memoria para filtros y búsqueda
 
 async function cargarAddons() {
     const addonGrid = document.getElementById('addon-grid');
@@ -11,13 +11,13 @@ async function cargarAddons() {
         const response = await fetch(url);
         const data = await response.json();
 
-        // Limpieza de datos: obtener solo filas válidas saltando encabezados raros
+        // Limpiar datos: solo filas con nombre real, saltando encabezados
         addonsData = data.filter(item => {
             const v = Object.values(item);
             return v[1] && v[1].toLowerCase() !== 'name';
         });
 
-        // Ordenar por fecha (Marca temporal en la columna 0)
+        // Ordenar: lo más reciente (Marca temporal) arriba
         addonsData.sort((a, b) => new Date(Object.values(b)[0]) - new Date(Object.values(a)[0]));
 
         renderizarCards(addonsData);
@@ -35,7 +35,7 @@ function renderizarCards(lista) {
     addonGrid.innerHTML = '';
 
     if (lista.length === 0) {
-        addonGrid.innerHTML = '<p style="color:#888; text-align:center; width:100%; margin-top:50px;">No se encontraron resultados.</p>';
+        addonGrid.innerHTML = '<p style="color:#888; text-align:center; width:100%; margin-top:50px;">No se encontraron resultados en esta categoría.</p>';
         return;
     }
 
@@ -49,19 +49,19 @@ function renderizarCards(lista) {
         const card = document.createElement('div');
         card.className = 'addon-card';
         card.innerHTML = `
-            <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center; height: 180px;">
+            <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center; height: 180px; position: relative;">
                 <span class="category-tag" style="position:absolute; top:10px; left:10px; background:#2ecc71; color:#000; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:12px;">${categoria}</span>
             </div>
             <div class="card-info" style="padding:15px;">
-                <h3 style="margin-bottom:10px; font-size:1.1rem;">${nombre}</h3>
-                <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold;">DESCARGAR</a>
+                <h3 style="margin-bottom:10px; font-size:1.1rem; color:#fff;">${nombre}</h3>
+                <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold; transition: 0.3s;">DESCARGAR</a>
             </div>
         `;
         addonGrid.appendChild(card);
     });
 }
 
-// --- FUNCIONALIDAD DEL BUSCADOR ---
+// --- BUSCADOR ---
 const buscador = document.getElementById('addon-search');
 if (buscador) {
     buscador.addEventListener('input', (e) => {
@@ -76,18 +76,21 @@ if (buscador) {
     });
 }
 
-// --- FUNCIONALIDAD DEL MENÚ LATERAL ---
+// --- NAVEGACIÓN Y FILTROS ---
 document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', (e) => {
         const filtro = link.getAttribute('data-filter');
         if (!filtro) return;
 
-        // Quitamos "active" de todos y ponemos al seleccionado
+        e.preventDefault();
+        
+        // Estética del menú
         document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
         link.classList.add('active');
 
         const addonGrid = document.getElementById('addon-grid');
 
+        // Lógica de filtrado
         if (filtro === 'all') {
             renderizarCards(addonsData);
         } 
@@ -95,22 +98,22 @@ document.querySelectorAll('.nav-links a').forEach(link => {
             addonGrid.innerHTML = `
                 <div style="padding:40px; text-align:center; width:100%;">
                     <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
-                    <h2>Nuestra Comunidad</h2>
-                    <p style="color:#bbb; margin-top:10px;">Únete a nuestro servidor oficial para compartir tus creaciones.</p>
-                    <a href="#" class="btn-download" style="display:inline-block; margin-top:20px; width:200px;">Unirse al Discord</a>
+                    <h2>Comunidad</h2>
+                    <p style="color:#bbb; margin-top:10px;">¡Únete a nuestro servidor para no perderte ninguna actualización!</p>
+                    <a href="TU_LINK_DISCORD" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Discord Oficial</a>
                 </div>`;
         } 
         else if (filtro === 'Politicas') {
             addonGrid.innerHTML = `
-                <div style="padding:40px; width:100%;">
-                    <h2>Políticas de Uso</h2>
-                    <p style="color:#bbb; margin-top:20px;">1. No se permite subir contenido robado.</p>
-                    <p style="color:#bbb; margin-top:10px;">2. Todos los créditos deben ir a sus respectivos creadores.</p>
-                    <p style="color:#bbb; margin-top:10px;">3. Los links deben ser directos o a través de acortadores permitidos.</p>
+                <div style="padding:40px; width:100%; color:#fff;">
+                    <h2 style="color:#2ecc71;">Políticas de Privacidad</h2>
+                    <p style="margin-top:20px; color:#bbb;">• Todo el contenido es propiedad de sus respectivos autores.</p>
+                    <p style="margin-top:10px; color:#bbb;">• No recolectamos datos personales de los usuarios.</p>
+                    <p style="margin-top:10px; color:#bbb;">• El uso de esta app es para fines informativos y de descarga.</p>
                 </div>`;
         } 
         else {
-            // Filtrar por la columna de categoría del Excel
+            // Filtra buscando la palabra en la columna "category" (Columna E / índice 4)
             const filtrados = addonsData.filter(item => {
                 const cat = (Object.values(item)[4] || "").toLowerCase();
                 return cat.includes(filtro.toLowerCase());
@@ -120,5 +123,4 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     });
 });
 
-// Iniciar carga
 document.addEventListener('DOMContentLoaded', cargarAddons);
