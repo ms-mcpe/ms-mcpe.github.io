@@ -1,6 +1,6 @@
 // Configuración de tu Google Sheets
-const sheetId = 'TU_ID_DE_GOOGLE_SHEETS_AQUI'; 
-const sheetName = 'Hoja1'; 
+const sheetId = '1VVO_fKNZqPdeCDagWF8s7clq7uMZfCY3-HDTksAmNnw'; 
+const sheetName = 'FROM App MC Addons'; 
 const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
 async function cargarAddons() {
