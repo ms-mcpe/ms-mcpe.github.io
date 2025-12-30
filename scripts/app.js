@@ -50,4 +50,48 @@ async function cargarAddons() {
     }
 }
 
+// --- LÓGICA DEL BUSCADOR ---
+document.getElementById('addon-search').addEventListener('input', (e) => {
+    const busqueda = e.target.value.toLowerCase();
+    
+    const filtrados = addonsData.filter(item => {
+        const valores = Object.values(item);
+        const nombre = (valores[1] || "").toLowerCase();
+        const categoria = (valores[4] || "").toLowerCase();
+        return nombre.includes(busqueda) || categoria.includes(busqueda);
+    });
+
+    renderizarCards(filtrados);
+});
+
+// --- LÓGICA DE FILTROS POR MENÚ LATERAL ---
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        // Solo aplicar si tiene el atributo data-filter
+        const filtro = link.getAttribute('data-filter');
+        if (!filtro) return;
+
+        e.preventDefault();
+        
+        // Quitar clase activa de todos y ponerla al actual
+        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+
+        // Actualizar título de sección
+        const tituloSeccion = document.getElementById('current-category');
+        if (tituloSeccion) tituloSeccion.innerText = link.innerText;
+
+        if (filtro === 'all') {
+            renderizarCards(addonsData);
+        } else {
+            const filtrados = addonsData.filter(item => {
+                const valores = Object.values(item);
+                const categoria = (valores[4] || "").toLowerCase();
+                return categoria.includes(filtro.toLowerCase());
+            });
+            renderizarCards(filtrados);
+        }
+    });
+});
+
 document.addEventListener('DOMContentLoaded', cargarAddons);
