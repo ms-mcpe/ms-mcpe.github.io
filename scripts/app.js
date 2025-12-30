@@ -11,14 +11,18 @@ async function cargarAddons() {
         const response = await fetch(url);
         const data = await response.json();
 
-        // Limpiar datos: solo filas con nombre real, saltando encabezados
+        // 1. Limpieza de datos: Solo filas con nombre, saltando encabezados
         addonsData = data.filter(item => {
             const v = Object.values(item);
             return v[1] && v[1].toLowerCase() !== 'name';
         });
 
-        // Ordenar: lo más reciente (Marca temporal) arriba
-        addonsData.sort((a, b) => new Date(Object.values(b)[0]) - new Date(Object.values(a)[0]));
+        // 2. ORDENAMIENTO: Los nuevos primero (usando la columna Marca temporal)
+        addonsData.sort((a, b) => {
+            const fechaA = new Date(Object.values(a)[0]);
+            const fechaB = new Date(Object.values(b)[0]);
+            return fechaB - fechaA; // El más reciente resta al más viejo para quedar arriba
+        });
 
         renderizarCards(addonsData);
 
@@ -84,44 +88,41 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 
         e.preventDefault();
         
-        // Estética del menú
         document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
         link.classList.add('active');
 
         const addonGrid = document.getElementById('addon-grid');
 
-        // Lógica de filtrado
         if (filtro === 'all') {
             renderizarCards(addonsData);
         } 
         else if (filtro === 'Comunidad') {
             addonGrid.innerHTML = `
                 <div style="padding:40px; text-align:center; width:100%;">
-                    <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
-                    <h2>Comunidad</h2>
-                    <p style="color:#bbb; margin-top:10px;">¡Únete a nuestro canal de Whatsapp para no perderte ninguna actualización!</p>
-                    <a href="https://whatsapp.com/channel/0029Vb6MoFQ0gcfCKJhYNU33/526" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Canal Oficial</a>
+                    <i class="fab fa-whatsapp" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
+                    <h2>Canal de WhatsApp</h2>
+                    <p style="color:#bbb; margin-top:10px;">¡Únete para recibir noticias al instante!</p>
+                    <a href="https://whatsapp.com/channel/0029Vb6MoFQ0gcfCKJhYNU33/526" target="_blank" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Unirse al Canal</a>
                 </div>
                 
                 <div style="padding:40px; text-align:center; width:100%;">
-                    <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
-                    <h2>Comunidad</h2>
-                    <p style="color:#bbb; margin-top:10px;">¡Únete a nuestro servidor para no perderte ninguna actualización!</p>
-                    <a href="https://discord.gg/Tp9hpGkMzz" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Discord Oficial</a>
+                    <i class="fab fa-discord" style="font-size:3rem; color:#5865F2; margin-bottom:20px;"></i>
+                    <h2>Servidor de Discord</h2>
+                    <p style="color:#bbb; margin-top:10px;">Comunidad activa, soporte y addons exclusivos.</p>
+                    <a href="https://discord.gg/Tp9hpGkMzz" target="_blank" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none; background:#5865F2;">Entrar al Discord</a>
                 </div>
                 `;
         } 
         else if (filtro === 'Politicas') {
             addonGrid.innerHTML = `
                 <div style="padding:40px; width:100%; color:#fff;">
-                    <h2 style="color:#2ecc71;">Políticas de Privacidad</h2>
-                    <p style="margin-top:20px; color:#bbb;">• Todo el contenido es propiedad de sus respectivos autores.</p>
-                    <p style="margin-top:10px; color:#bbb;">• No recolectamos datos personales de los usuarios.</p>
-                    <p style="margin-top:10px; color:#bbb;">• El uso de esta app es para fines informativos y de descarga.</p>
+                    <h2 style="color:#2ecc71; margin-bottom:20px;">Políticas de Privacidad</h2>
+                    <p style="margin-bottom:15px; color:#bbb;">• <b>Contenido:</b> Todo el material compartido es propiedad de sus creadores originales.</p>
+                    <p style="margin-bottom:15px; color:#bbb;">• <b>Datos:</b> MineAddon no recopila información personal de ningún tipo.</p>
+                    <p style="margin-bottom:15px; color:#bbb;">• <b>Uso:</b> Esta herramienta es exclusivamente para facilitar el acceso a contenido de Minecraft.</p>
                 </div>`;
         } 
         else {
-            // Filtra buscando la palabra en la columna "category" (Columna E / índice 4)
             const filtrados = addonsData.filter(item => {
                 const cat = (Object.values(item)[4] || "").toLowerCase();
                 return cat.includes(filtro.toLowerCase());
