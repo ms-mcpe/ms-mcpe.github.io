@@ -1,4 +1,3 @@
-// Base de datos de Addons
 const addons = [
     {
         name: "Dragon Mounts v3",
@@ -7,91 +6,77 @@ const addons = [
         category: "Addon"
     },
     {
-        name: "OSBES Shader",
+        name: "OSBES Shader HD",
         Urldws: "#",
         Urlimg: "https://mcpedl.com/wp-content/uploads/2020/02/osbes-shader_1.png",
         category: "Shaders"
     },
     {
-        name: "Medieval Texture Pack",
+        name: "Modern City Textures",
         Urldws: "#",
         Urlimg: "https://resourcepack.net/fl/conquest-resource-pack.jpg",
         category: "Textura"
-    },
-    {
-        name: "Hero Skins Pro",
-        Urldws: "#",
-        Urlimg: "https://mcpedl.com/wp-content/uploads/2023/04/skin-pack-thumbnail.png",
-        category: "Skins"
     }
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('addon-grid');
     const search = document.getElementById('addon-search');
-    const countBadge = id => document.getElementById(id);
     const sidebar = document.getElementById('sidebar');
-    const main = document.querySelector('.main-content');
+    const overlay = document.getElementById('overlay');
     const toggleBtn = document.getElementById('toggle-btn');
+    const countBadge = document.getElementById('addon-count');
 
-    // 1. Función para mostrar los addons
+    // Función para renderizar
     function displayAddons(data) {
-        grid.innerHTML = '';
-        data.forEach(item => {
-            const card = `
-                <div class="addon-card">
-                    <div class="card-image" style="background-image: url('${item.Urlimg}')">
-                        <span class="category-tag">${item.category}</span>
-                    </div>
-                    <div class="card-info">
-                        <h3>${item.name}</h3>
-                        <p>Mejora tu experiencia de juego con este contenido increíble.</p>
-                        <a href="${item.Urldws}" class="btn-download">DESCARGAR</a>
-                    </div>
+        grid.innerHTML = data.map(item => `
+            <div class="addon-card">
+                <div class="card-image" style="background-image: url('${item.Urlimg}')">
+                    <span class="category-tag">${item.category}</span>
                 </div>
-            `;
-            grid.innerHTML += card;
-        });
-        countBadge('addon-count').innerText = `${data.length} items encontrados`;
+                <div class="card-info">
+                    <h3>${item.name}</h3>
+                    <p>Contenido profesional para Minecraft Bedrock/Java.</p>
+                    <a href="${item.Urldws}" class="btn-download">DESCARGAR</a>
+                </div>
+            </div>
+        `).join('');
+        countBadge.innerText = `${data.length} items`;
     }
 
-    // Inicializar
     displayAddons(addons);
 
-    // 2. Buscador en tiempo real
+    // LÓGICA DEL MENÚ (Activar/Desactivar)
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        overlay.classList.add('show');
+    });
+
+    // Cerrar al hacer clic fuera del menú
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('show');
+    });
+
+    // Filtros y Buscador
     search.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
-        const filtered = addons.filter(a => 
-            a.name.toLowerCase().includes(query) || 
-            a.category.toLowerCase().includes(query)
-        );
+        const filtered = addons.filter(a => a.name.toLowerCase().includes(query));
         displayAddons(filtered);
     });
 
-    // 3. Filtros del menú lateral
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', (e) => {
-            e.preventDefault();
+            const cat = link.getAttribute('data-filter');
+            // Cerrar menú al elegir categoría (especialmente en móvil)
+            sidebar.classList.remove('active');
+            overlay.classList.remove('show');
             
-            // Estética de botones activos
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
             link.classList.add('active');
 
-            const category = link.getAttribute('data-filter');
-            document.getElementById('current-category').innerText = category === 'all' ? 'Todos los Addons' : category;
-
-            if(category === 'all') {
-                displayAddons(addons);
-            } else {
-                const filtered = addons.filter(a => a.category === category);
-                displayAddons(filtered);
-            }
+            if(cat === 'all') displayAddons(addons);
+            else displayAddons(addons.filter(a => a.category === cat));
         });
-    });
-
-    // 4. Toggle Sidebar (Colapsar)
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        main.classList.toggle('expanded');
     });
 });
