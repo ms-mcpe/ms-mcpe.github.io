@@ -7,26 +7,25 @@ async function cargarAddons() {
     
     try {
         const response = await fetch(url);
-        if (!response.ok) throw new Error("No se pudo obtener la información");
-        
-        const data = await response.json();
+        let data = await response.json();
 
-        // 1. Ordenar por Marca temporal (Más reciente primero)
-        data.sort((a, b) => {
-            const fechaA = new Date(a["Marca temporal"] || 0);
-            const fechaB = new Date(b["Marca temporal"] || 0);
-            return fechaB - fechaA;
+        // Si el formulario añade una fila extra de "Form_Responses", la API suele detectarla.
+        // Filtramos cualquier fila que no tenga un nombre real para evitar errores.
+        const itemsValidos = data.filter(item => item.name || item.Name);
+
+        // Ordenar por Marca temporal (Más reciente primero)
+        itemsValidos.sort((a, b) => {
+            return new Date(b["Marca temporal"]) - new Date(a["Marca temporal"]);
         });
 
         addonGrid.innerHTML = '';
 
-        // 2. Renderizar los datos
-        data.forEach(item => {
-            // Buscamos los datos incluso si hay variaciones en los nombres de columna
-            const nombre = item.name || item.Name || item.NOMBRE || "Sin nombre";
-            const descarga = item.Urldws || item.URLDWS || item.Descarga || "#";
-            const imagen = item.Urlimg || item.URLIMG || item.Imagen || "https://via.placeholder.com/300x160?text=No+Image";
-            const categoria = item.category || item.Category || item.Categoría || "General";
+        itemsValidos.forEach(item => {
+            // Acceso directo según tus columnas de la imagen
+            const nombre = item.name;
+            const descarga = item.Urldws;
+            const imagen = item.Urlimg;
+            const categoria = item.category;
 
             const card = document.createElement('div');
             card.className = 'addon-card';
@@ -44,11 +43,8 @@ async function cargarAddons() {
         });
 
     } catch (error) {
-        console.error("Error detallado:", error);
-        addonGrid.innerHTML = `<p style="color:white; text-align:center; padding: 20px;">
-            Error al conectar con la hoja: ${sheetName}. <br>
-            Asegúrate de que la hoja sea pública (Cualquier persona con el enlace).
-        </p>`;
+        console.error("Error:", error);
+        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error al conectar con el formulario.</p>';
     }
 }
 
