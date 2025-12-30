@@ -17,11 +17,14 @@ async function cargarAddons() {
             return v[1] && v[1].toLowerCase() !== 'name';
         });
 
-        // 2. ORDENAMIENTO: Los nuevos primero (usando la columna Marca temporal)
+        // 2. ORDENAMIENTO CORREGIDO: Los nuevos primero
         addonsData.sort((a, b) => {
-            const fechaA = new Date(Object.values(a)[0]);
-            const fechaB = new Date(Object.values(b)[0]);
-            return fechaB - fechaA; // El más reciente resta al más viejo para quedar arriba
+            // Extraemos la Marca Temporal (columna 0) y la convertimos a tiempo numérico
+            const tiempoA = new Date(Object.values(a)[0]).getTime() || 0;
+            const tiempoB = new Date(Object.values(b)[0]).getTime() || 0;
+            
+            // Restamos B - A para que el número más grande (más reciente) quede arriba
+            return tiempoB - tiempoA;
         });
 
         renderizarCards(addonsData);
