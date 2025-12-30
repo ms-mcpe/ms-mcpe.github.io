@@ -1,82 +1,50 @@
-const addons = [
-    {
-        name: "Dragon Mounts v3",
-        Urldws: "#",
-        Urlimg: "https://mcpedl.com/wp-content/uploads/2020/08/dragon-mounts-2-v1-0-0-1_1.png",
-        category: "Addon"
-    },
-    {
-        name: "OSBES Shader HD",
-        Urldws: "#",
-        Urlimg: "https://mcpedl.com/wp-content/uploads/2020/02/osbes-shader_1.png",
-        category: "Shaders"
-    },
-    {
-        name: "Modern City Textures",
-        Urldws: "#",
-        Urlimg: "https://resourcepack.net/fl/conquest-resource-pack.jpg",
-        category: "Textura"
-    }
-];
+// Configuración de tu Google Sheets
+const sheetId = 'TU_ID_DE_GOOGLE_SHEETS_AQUI'; 
+const sheetName = 'Hoja1'; 
+const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.getElementById('addon-grid');
-    const search = document.getElementById('addon-search');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const toggleBtn = document.getElementById('toggle-btn');
-    const countBadge = document.getElementById('addon-count');
+async function cargarAddons() {
+    const addonGrid = document.getElementById('addon-grid');
+    
+    try {
+        const response = await fetch(url);
+        let data = await response.json();
 
-    // Función para renderizar
-    function displayAddons(data) {
-        grid.innerHTML = data.map(item => `
-            <div class="addon-card">
-                <div class="card-image" style="background-image: url('${item.Urlimg}')">
+        // LÓGICA DE ORDENAMIENTO:
+        // Ordenamos los datos basándonos en la "Marca temporal"
+        // Convertimos la fecha a un objeto Date para comparar.
+        data.sort((a, b) => {
+            return new Date(b["Marca temporal"]) - new Date(a["Marca temporal"]);
+        });
+
+        // Limpiar el contenedor
+        addonGrid.innerHTML = '';
+
+        // Generar las tarjetas
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'addon-card';
+            
+            card.innerHTML = `
+                <div class="card-image" style="background-image: url('${item.Urlimg}'); background-size: cover; background-position: center;">
                     <span class="category-tag">${item.category}</span>
                 </div>
                 <div class="card-info">
                     <h3>${item.name}</h3>
-                    <p>Contenido profesional para Minecraft Bedrock/Java.</p>
-                    <a href="${item.Urldws}" class="btn-download">DESCARGAR</a>
+                    <p style="font-size: 0.7rem; color: #666; margin-bottom: 10px;">
+                        Publicado: ${item["Marca temporal"]}
+                    </p>
+                    <a href="${item.Urldws}" target="_blank" class="btn-download">DESCARGAR</a>
                 </div>
-            </div>
-        `).join('');
-        countBadge.innerText = `${data.length} items`;
-    }
-
-    displayAddons(addons);
-
-    // LÓGICA DEL MENÚ (Activar/Desactivar)
-    toggleBtn.addEventListener('click', () => {
-        sidebar.classList.add('active');
-        overlay.classList.add('show');
-    });
-
-    // Cerrar al hacer clic fuera del menú
-    overlay.addEventListener('click', () => {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('show');
-    });
-
-    // Filtros y Buscador
-    search.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const filtered = addons.filter(a => a.name.toLowerCase().includes(query));
-        displayAddons(filtered);
-    });
-
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            const cat = link.getAttribute('data-filter');
-            // Cerrar menú al elegir categoría (especialmente en móvil)
-            sidebar.classList.remove('active');
-            overlay.classList.remove('show');
-            
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            link.classList.add('active');
-
-            if(cat === 'all') displayAddons(addons);
-            else displayAddons(addons.filter(a => a.category === cat));
+            `;
+            addonGrid.appendChild(card);
         });
-    });
-});
+
+    } catch (error) {
+        console.error("Error al obtener datos:", error);
+        addonGrid.innerHTML = '<p style="color:white; text-align:center;">Error cargando addons...</p>';
+    }
+}
+
+// Ejecutar al cargar la web
+document.addEventListener('DOMContentLoaded', cargarAddons);
