@@ -3,247 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Addons Store</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Store | [MC BOT]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #060608;
+            --bg: #030712;
             --accent: #38bdf8;
-            --card-bg: #111114;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.07);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --card: #0f172a;
+            --border: rgba(255, 255, 255, 0.06);
+            --glass: rgba(255, 255, 255, 0.02);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg);
-            color: #fff;
+            color: #f8fafc;
             min-height: 100vh;
-            padding-top: 80px; /* Espacio para la barra fija */
+            padding-top: 90px;
         }
 
-        /* --- Barra Superior (Top Nav) --- */
-        .header {
+        /* --- NAVEGACIÓN SUPERIOR --- */
+        .navbar {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: 70px;
-            background: rgba(6, 6, 8, 0.8);
-            backdrop-filter: blur(15px);
+            height: 80px;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            display: flex;
+            display: grid;
+            grid-template-columns: 180px 1fr 180px; /* Secciones | Buscador | Logo */
             align-items: center;
-            justify-content: space-between;
-            padding: 0 5%;
+            padding: 0 40px;
             z-index: 1000;
         }
 
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .search-wrapper {
-            flex: 1;
-            max-width: 500px;
-            margin: 0 20px;
-            position: relative;
-        }
-
-        .search-wrapper input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
+        /* Botón Secciones */
+        .btn-sections {
             background: var(--glass);
             border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 16px;
             border-radius: 12px;
-            color: white;
+            cursor: pointer;
+            font-weight: 600;
             font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .search-wrapper input:focus {
-            border-color: var(--accent);
-            background: rgba(255,255,255,0.05);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.5;
-        }
-
-        /* --- Botón Menú Secciones --- */
-        .menu-toggle {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--accent);
-            color: #000;
-            padding: 8px 18px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
+            transition: 0.3s;
+            width: fit-content;
         }
 
-        .menu-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3);
+        .btn-sections:hover { background: var(--border); border-color: var(--accent); }
+
+        /* Buscador Central */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
 
-        /* --- Panel Desplegable (Dropdown) --- */
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: #111827;
+            border: 1px solid var(--border);
+            padding: 12px 20px 12px 45px;
+            border-radius: 14px;
+            color: white;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Logo Derecha */
+        .brand {
+            text-align: right;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        /* --- MENÚ DESPLEGABLE --- */
         .dropdown-menu {
             position: fixed;
-            top: -100%; /* Oculto arriba */
+            top: -300px;
             left: 0; right: 0;
-            background: var(--card-bg);
+            background: #0f172a;
             border-bottom: 1px solid var(--border);
-            padding: 40px 5%;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            padding: 30px 40px;
+            display: flex;
+            justify-content: center;
             gap: 20px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 999;
-            transition: var(--transition);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        .dropdown-menu.active { top: 70px; }
+        .dropdown-menu.active { top: 80px; }
 
-        .cat-item {
-            padding: 20px;
+        .cat-card {
             background: var(--glass);
-            border-radius: 15px;
-            text-align: center;
+            border: 1px solid var(--border);
+            padding: 20px 40px;
+            border-radius: 16px;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: var(--transition);
+            transition: 0.3s;
+            text-align: center;
+            min-width: 150px;
         }
 
-        .cat-item:hover {
-            background: rgba(56, 189, 248, 0.1);
-            border-color: var(--accent);
-            transform: translateY(-5px);
-        }
+        .cat-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
+        .cat-card h4 { margin-top: 10px; font-size: 0.9rem; }
 
-        .cat-item h3 { font-size: 1rem; margin-top: 10px; color: var(--accent); }
-
-        /* --- Grid de Contenido --- */
-        main { padding: 40px 5%; }
-
+        /* --- GRID DE CONTENIDO --- */
+        main { padding: 40px; max-width: 1400px; margin: 0 auto; }
+        
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
         }
 
         .card {
-            background: var(--card-bg);
+            background: var(--card);
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid var(--border);
-            transition: var(--transition);
+            transition: 0.3s;
         }
 
-        .card:hover { border-color: var(--accent); }
+        .card:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, 0.3); }
 
-        .card-img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border);
-        }
+        .card-img { width: 100%; height: 180px; object-fit: cover; }
+        
+        .card-content { padding: 20px; }
 
-        .card-body { padding: 20px; }
-
-        .tag {
-            font-size: 0.65rem;
-            font-weight: 800;
+        .card-tag {
+            background: rgba(56, 189, 248, 0.1);
             color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
+            margin-bottom: 12px;
+            display: inline-block;
         }
 
-        .dl-link {
+        .btn-download {
             display: block;
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            color: #000;
             text-align: center;
-            background: var(--glass);
-            color: #fff;
             text-decoration: none;
-            padding: 10px;
-            border-radius: 10px;
+            border-radius: 12px;
+            font-weight: 700;
             margin-top: 15px;
-            font-weight: 600;
-            border: 1px solid var(--border);
-            transition: var(--transition);
+            transition: 0.3s;
         }
 
-        .dl-link:hover { background: #fff; color: #000; }
+        .btn-download:hover { background: var(--accent); }
 
-        /* Mobile */
-        @media (max-width: 700px) {
-            .search-wrapper { display: none; }
-            .dropdown-menu { grid-template-columns: 1fr 1fr; }
+        @media (max-width: 850px) {
+            .navbar { grid-template-columns: 1fr 1fr; padding: 0 20px; }
+            .search-container { display: none; } /* En móvil se puede ocultar o mover */
+            .brand { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo-section">
-            <h2 style="font-weight: 800; letter-spacing: -1px;">MC <span>STORE</span></h2>
-        </div>
-
-        <div class="search-wrapper">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="search" placeholder="Buscar complementos...">
-        </div>
-
-        <button class="menu-toggle" onclick="toggleMenu()">
-            <span>Secciones</span>
-            <small>▼</small>
+    <nav class="navbar">
+        <button class="btn-sections" onclick="toggleMenu()">
+            <span>☰</span> Secciones
         </button>
-    </header>
 
-    <div class="dropdown-menu" id="navMenu">
-        <div class="cat-item" onclick="filterData('all')">
-            <span>🏠</span>
-            <h3>Todo</h3>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Buscar mods, texturas o mapas...">
+            </div>
         </div>
-        <div class="cat-item" onclick="filterData('mods')">
-            <span>📦</span>
-            <h3>Mods</h3>
+
+        <div class="brand">[MC BOT]</div>
+    </nav>
+
+    <div class="dropdown-menu" id="menu">
+        <div class="cat-card" onclick="selectCat('all')">
+            <span>🏠</span><h4>Todo</h4>
         </div>
-        <div class="cat-item" onclick="filterData('texturas')">
-            <span>🎨</span>
-            <h3>Texturas</h3>
+        <div class="cat-card" onclick="selectCat('mods')">
+            <span>📦</span><h4>Mods</h4>
         </div>
-        <div class="cat-item" onclick="filterData('mapas')">
-            <span>🗺️</span>
-            <h3>Mapas</h3>
+        <div class="cat-card" onclick="selectCat('texturas')">
+            <span>🎨</span><h4>Texturas</h4>
+        </div>
+        <div class="cat-card" onclick="selectCat('mapas')">
+            <span>🗺️</span><h4>Mapas</h4>
         </div>
     </div>
 
     <main>
+        <h2 id="view-title" style="margin-bottom: 30px; font-size: 1.8rem; font-weight: 800;">Todos los Addons</h2>
         <div id="grid" class="grid"></div>
+        <div id="empty" style="display:none; text-align:center; padding: 50px; opacity: 0.5;">No se encontraron resultados</div>
     </main>
 
     <script src="app.js"></script>
     <script>
-        function toggleMenu() {
-            document.getElementById('navMenu').classList.toggle('active');
-        }
-
-        // Cerramos el menú al hacer click en una categoría
-        function filterData(cat) {
+        function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
+        function selectCat(cat) {
             toggleMenu();
             if(window.filterBySection) window.filterBySection(cat);
         }
