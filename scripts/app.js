@@ -99,9 +99,17 @@ document.querySelectorAll('.nav-links a').forEach(link => {
                 <div style="padding:40px; text-align:center; width:100%;">
                     <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
                     <h2>Comunidad</h2>
+                    <p style="color:#bbb; margin-top:10px;">¡Únete a nuestro canal de Whatsapp para no perderte ninguna actualización!</p>
+                    <a href="https://whatsapp.com/channel/0029Vb6MoFQ0gcfCKJhYNU33/526" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Canal Oficial</a>
+                </div>
+                
+                <div style="padding:40px; text-align:center; width:100%;">
+                    <i class="fas fa-users" style="font-size:3rem; color:#2ecc71; margin-bottom:20px;"></i>
+                    <h2>Comunidad</h2>
                     <p style="color:#bbb; margin-top:10px;">¡Únete a nuestro servidor para no perderte ninguna actualización!</p>
-                    <a href="https://whatsapp.com/channel/0029Vb6MoFQ0gcfCKJhYNU33/526" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Discord Oficial</a>
-                </div>`;
+                    <a href="https://discord.gg/Tp9hpGkMzz" class="btn-download" style="display:inline-block; margin-top:20px; width:220px; text-decoration:none;">Discord Oficial</a>
+                </div>
+                `;
         } 
         else if (filtro === 'Politicas') {
             addonGrid.innerHTML = `
