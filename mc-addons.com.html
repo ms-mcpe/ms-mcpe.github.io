@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noarchive">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MC Addons web</title>
     
@@ -325,7 +326,15 @@ document.querySelectorAll('.nav-links a').forEach(link => {
   debugger;
 }, 100);
 
-        
+       const detectarConsola = () => {
+  const umbral = 160;
+  if (window.outerWidth - window.innerWidth > umbral || 
+      window.outerHeight - window.innerHeight > umbral) {
+    document.body.innerHTML = "<h1>Acceso no autorizado detectado.</h1>";
+    window.location.href = "https://ms-mcpe.github.io/mc-addons.com";
+  }
+};
+setInterval(detectarConsola, 1000); 
     </script>
 </body>
 </html>
