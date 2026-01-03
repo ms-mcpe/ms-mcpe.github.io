@@ -3,242 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store | [MC BOT]</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>MC Addons App - Premium Style</title>
+    
+    <link rel="stylesheet" href="https://ms-mcpe.github.io/styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         :root {
-            --bg: #030712;
-            --accent: #38bdf8;
-            --card: #0f172a;
-            --border: rgba(255, 255, 255, 0.06);
-            --glass: rgba(255, 255, 255, 0.02);
+            --primary-gold: #ffd700;
+            --glass-bg: rgba(0, 0, 0, 0.4);
+            --glass-border: rgba(255, 215, 0, 0.2);
+            --text-light: #ffffff;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            background-color: var(--bg);
-            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            /* CAMBIA LA URL POR TU IMAGEN PREFERIDA */
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://i.ibb.co/mCkSz50q/Gemini-Generated-Image-qinamrqinamrqina.png'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            padding-top: 90px;
         }
 
-        /* --- NAVEGACIÓN SUPERIOR --- */
-        .navbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 80px;
-            background: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            display: grid;
-            grid-template-columns: 180px 1fr 180px; /* Secciones | Buscador | Logo */
-            align-items: center;
-            padding: 0 40px;
-            z-index: 1000;
-        }
-
-        /* Botón Secciones */
-        .btn-sections {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
+        /* BARRA SUPERIOR SEMI-TRANSPARENTE (GLASS) */
+        .top-bar {
+            background: rgba(0, 0, 0, 0.3) !important; /* Transparencia base */
+            backdrop-filter: blur(15px); /* Efecto de desenfoque del fondo */
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 10px 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-            width: fit-content;
+            position: sticky;
+            top: 0;
+            z-index: 900;
         }
 
-        .btn-sections:hover { background: var(--border); border-color: var(--accent); }
-
-        /* Buscador Central */
+        /* Buscador estilizado sobre el fondo */
         .search-container {
+            flex: 1;
             display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .search-box {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .search-box input {
-            width: 100%;
-            background: #111827;
-            border: 1px solid var(--border);
-            padding: 12px 20px 12px 45px;
-            border-radius: 14px;
-            color: white;
-            font-size: 0.95rem;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            margin-left: 15px;
             transition: 0.3s;
         }
 
-        .search-box input:focus {
+        .search-container:focus-within {
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #addon-search {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+            font-size: 0.95rem;
         }
 
-        .search-box::before {
-            content: "🔍";
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1rem;
-            opacity: 0.5;
+        #addon-search::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Logo Derecha */
-        .brand {
-            text-align: right;
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: var(--accent);
-            letter-spacing: -0.5px;
+        #toggle-btn {
+            color: var(--primary-gold) !important;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
         }
 
-        /* --- MENÚ DESPLEGABLE --- */
-        .dropdown-menu {
+        /* Sidebar Glassmorphism */
+        .sidebar {
             position: fixed;
-            top: -300px;
-            left: 0; right: 0;
-            background: #0f172a;
-            border-bottom: 1px solid var(--border);
-            padding: 30px 40px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100vh;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar .logo {
+            color: var(--primary-gold);
+            padding: 30px 20px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-links a {
+            color: var(--text-light) !important;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-gold) !important;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Overlay del menú */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
             z-index: 999;
         }
 
-        .dropdown-menu.active { top: 80px; }
-
-        .cat-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 20px 40px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
-            min-width: 150px;
-        }
-
-        .cat-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
-        .cat-card h4 { margin-top: 10px; font-size: 0.9rem; }
-
-        /* --- GRID DE CONTENIDO --- */
-        main { padding: 40px; max-width: 1400px; margin: 0 auto; }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            transition: 0.3s;
-        }
-
-        .card:hover { transform: translateY(-5px); border-color: rgba(56, 189, 248, 0.3); }
-
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        
-        .card-content { padding: 20px; }
-
-        .card-tag {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: inline-block;
-        }
-
-        .btn-download {
+        .sidebar-overlay.show {
             display: block;
-            width: 100%;
-            padding: 12px;
-            background: #fff;
-            color: #000;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 700;
-            margin-top: 15px;
-            transition: 0.3s;
         }
 
-        .btn-download:hover { background: var(--accent); }
-
-        @media (max-width: 850px) {
-            .navbar { grid-template-columns: 1fr 1fr; padding: 0 20px; }
-            .search-container { display: none; } /* En móvil se puede ocultar o mover */
-            .brand { font-size: 1rem; }
+        .content-wrapper {
+            padding: 20px;
         }
+/* Ocultar el submenú por defecto */
+.submenu {
+    list-style: none;
+    background: rgba(0, 0, 0, 0.4); /* Fondo un poco más oscuro para diferenciar */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    padding-left: 10px; /* Sangría para que se vea que dependen de Complementos */
+}
+
+/* Cuando se añade la clase .open desde JS, se expande */
+.submenu.open {
+    max-height: 500px; /* Altura suficiente para mostrar todo */
+    margin-bottom: 10px;
+}
+
+/* Rotación de la flecha */
+.arrow-icon {
+    margin-left: auto; /* Empuja la flecha a la derecha */
+    transition: transform 0.3s;
+}
+
+.dropdown-container.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* Estilo para los links dentro del submenú */
+.submenu li a {
+    padding: 10px 15px !important;
+    font-size: 0.9rem !important;
+}
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <button class="btn-sections" onclick="toggleMenu()">
-            <span>☰</span> Secciones
-        </button>
+    <div class="sidebar-overlay" id="overlay"></div>
 
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="search" placeholder="Buscar mods, texturas o mapas...">
-            </div>
-        </div>
-
-        <div class="brand">[MC BOT]</div>
-    </nav>
-
-    <div class="dropdown-menu" id="menu">
-        <div class="cat-card" onclick="selectCat('all')">
-            <span>🏠</span><h4>Todo</h4>
-        </div>
-        <div class="cat-card" onclick="selectCat('mods')">
-            <span>📦</span><h4>Mods</h4>
-        </div>
-        <div class="cat-card" onclick="selectCat('texturas')">
-            <span>🎨</span><h4>Texturas</h4>
-        </div>
-        <div class="cat-card" onclick="selectCat('mapas')">
-            <span>🗺️</span><h4>Mapas</h4>
-        </div>
+    <nav class="sidebar" id="sidebar">
+    <div class="logo">
+        <i class="fas fa-cubes"></i>
+        <span>MC Addons</span>
     </div>
+    <ul class="nav-links">
+        <li><a href="#" class="active" data-filter="all"><i class="fas fa-home"></i> Inicio</a></li>
+        
+        <li class="dropdown">
+            <a href="#" id="drop-btn"><i class="fas fa-box-open"></i> Complementos <i class="fas fa-chevron-down" style="font-size: 0.8rem; float: right; margin-top: 5px;"></i></a>
+            <ul class="submenu" id="submenu">
+                <li><a href="#" data-filter="Add-On"><i class="fas fa-plus-circle"></i> Addons</a></li>
+                <li><a href="#" data-filter="Texture"><i class="fas fa-brush"></i> Texturas</a></li>
+                <li><a href="#" data-filter="Shader"><i class="fas fa-magic"></i> Shaders</a></li>
+                <li><a href="#" data-filter="Mapa"><i class="fas fa-map-marked-alt"></i> Mapas</a></li>
+                <li><a href="#" data-filter="Skin"><i class="fas fa-user-tag"></i> Skins</a></li>
+            </ul>
+        </li>
 
-    <main>
-        <h2 id="view-title" style="margin-bottom: 30px; font-size: 1.8rem; font-weight: 800;">Todos los Addons</h2>
-        <div id="grid" class="grid"></div>
-        <div id="empty" style="display:none; text-align:center; padding: 50px; opacity: 0.5;">No se encontraron resultados</div>
+       <li>
+        <a href="https://ms-mcpe.github.io/MC-Descarga" target="_blank" class="btn-app-download">
+            <i class="fas fa-mobile-alt"></i> <span>Descargar App</span>
+        </a>
+    </li>
+        <li><a href="#" data-filter="Comunidad"><i class="fas fa-users"></i> Comunidad</a></li>
+        <li><a href="#" data-filter="Politicas"><i class="fas fa-gavel"></i> Políticas</a></li>
+    </ul>
+</nav>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <button id="toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="search-container">
+                <i class="fas fa-search" style="margin-right: 10px; color: var(--primary-gold);"></i>
+                <input type="text" id="addon-search" placeholder="Buscar en MC Addons...">
+            </div>
+        </header>
+
+        <section class="content-wrapper">
+            <div class="addon-grid" id="addon-grid">
+                </div>
+        </section>
     </main>
 
-    <script src="app.js"></script>
+    <script src="https://ms-mcpe.github.io/scripts/app.js"></script>
+
     <script>
-        function toggleMenu() { document.getElementById('menu').classList.toggle('active'); }
-        function selectCat(cat) {
-            toggleMenu();
-            if(window.filterBySection) window.filterBySection(cat);
+       // --- LÓGICA DE INTERFAZ (MENÚS) ---
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const toggleBtn = document.getElementById('toggle-btn');
+const dropBtn = document.getElementById('drop-btn');
+const submenu = document.getElementById('submenu');
+const dropContainer = document.querySelector('.dropdown-container');
+
+// Abrir/Cerrar Sidebar principal
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.add('active');
+    overlay.classList.add('show');
+});
+
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('show');
+    // También cerramos el submenú si se cierra la barra
+    submenu.classList.remove('open');
+    dropContainer.classList.remove('active');
+});
+
+// DESPLEGAR COMPLEMENTOS (Solo abre/cierra el submenú)
+dropBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Evita que el clic afecte a otros elementos
+    submenu.classList.toggle('open');
+    dropContainer.classList.toggle('active');
+});
+
+// Filtros de Navegación (Solo para links que NO sean el botón de desplegar)
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        const filtro = link.getAttribute('data-filter');
+        
+        // Si el link tiene filtro, ejecutamos la lógica
+        if (filtro) {
+            e.preventDefault();
+            
+            // Marcar como activo
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            link.classList.add('active');
+
+            // CERRAR SIDEBAR (Solo si no es el botón de Complementos)
+            if (!link.classList.contains('dropdown-trigger')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('show');
+            }
+
+            // Aplicar el filtro de los datos
+            if (filtro === 'all') {
+                renderizarCards(addonsData);
+            } else if (filtro === 'Comunidad') {
+                document.getElementById('addon-grid').innerHTML = `<h2>Comunidad</h2>`; // Tu código de comunidad aquí
+            } else if (filtro === 'Politicas') {
+                document.getElementById('addon-grid').innerHTML = `<h2>Políticas</h2>`; // Tu código de políticas aquí
+            } else {
+                // Filtro por categoría (Addons, Texturas, etc.)
+                const filtrados = addonsData.filter(item => 
+                    (Object.values(item)[4] || "").toLowerCase().includes(filtro.toLowerCase())
+                );
+                renderizarCards(filtrados);
+            }
         }
+    });
+});
     </script>
 </body>
 </html>
