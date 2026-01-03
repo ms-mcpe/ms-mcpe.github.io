@@ -295,6 +295,37 @@ document.querySelectorAll('.nav-links a').forEach(link => {
         }
     });
 });
+
+        //proteccion web
+        document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  alert("El clic derecho está deshabilitado en esta página.");
+}, false);
+
+        document.onkeydown = function(e) {
+  // Deshabilitar F12
+  if (e.keyCode == 123) {
+    return false;
+  }
+  // Deshabilitar Ctrl+Shift+I (Inspeccionar)
+  if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+    return false;
+  }
+  // Deshabilitar Ctrl+Shift+J (Consola)
+  if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+    return false;
+  }
+  // Deshabilitar Ctrl+U (Ver código fuente)
+  if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+    return false;
+  }
+};
+
+        setInterval(function() {
+  debugger;
+}, 100);
+
+        
     </script>
 </body>
 </html>
