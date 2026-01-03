@@ -320,6 +320,10 @@ document.querySelectorAll('.nav-links a').forEach(link => {
   if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
     return false;
   }
+  // Deshabilitar Ctrl+s (guardar pagina)
+  if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) {
+    return false;
+  }
 };
 
         setInterval(function() {
@@ -331,7 +335,7 @@ document.querySelectorAll('.nav-links a').forEach(link => {
   if (window.outerWidth - window.innerWidth > umbral || 
       window.outerHeight - window.innerHeight > umbral) {
     document.body.innerHTML = "<h1>Acceso no autorizado detectado.</h1>";
-    window.location.href = "https://ms-mcpe.github.io/mc-addons.com";
+    window.location.href = "https://crea tu pagina propia copion";
   }
 };
 setInterval(detectarConsola, 1000); 
