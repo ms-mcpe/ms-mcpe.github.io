@@ -97,3 +97,14 @@ body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hi
     width: 100%; background: var(--primary-color); color: #000; border: none;
     padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; display: block; text-align: center; text-decoration: none;
 }
+
+//proteccion web
+body {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;     /* IE 10+ */
+  user-select: none;         /* Estándar */
+}
+
+img {
+  pointer-events: none;      /* Evita que arrastren o guarden imágenes */
+}
