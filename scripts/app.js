@@ -1,6 +1,7 @@
 const sheetId = '1VVO_fKNZqPdeCDagWF8s7clq7uMZfCY3-HDTksAmNnw'; 
 const sheetName = 'FROM App MC Addons'; 
 const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+const scriptURL = "https://script.google.com/macros/s/AKfycbyxezM7lhtD7lmpqg_ww8X3afZ_VEUTH56klo55skV9CJ-0XlW63hAUvyyTyYGWUr8mdQ/exec";
 
 let addonsData = []; // Memoria para filtros y búsqueda
 
@@ -46,7 +47,8 @@ function renderizarCards(lista) {
         const descarga = valores[2] || "#";
         const imagen = valores[3] || "";
         const categoria = valores[4] || "General";
-
+        const likes = valores[5] || 0;
+        
         const card = document.createElement('div');
         card.className = 'addon-card';
         card.innerHTML = `
@@ -56,6 +58,11 @@ function renderizarCards(lista) {
             <div class="card-info" style="padding:15px;">
                 <h3 style="margin-bottom:10px; font-size:1.1rem; color:#fff;">${nombre}</h3>
                 <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold; transition: 0.3s;">DESCARGAR</a>
+                  <div class="like-btn" onclick="enviarLike('${nombre}', this)" style="cursor:pointer; color: #ff4757;">
+                        <i class="fas fa-heart"></i>
+                        <span class="like-count">${likes}</span>
+                    </div>
+                </div>
             </div>
         `;
         addonGrid.appendChild(card);
