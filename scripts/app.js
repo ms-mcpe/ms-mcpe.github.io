@@ -58,9 +58,9 @@ function renderizarCards(lista) {
             <div class="card-info" style="padding:15px;">
                 <h3 style="margin-bottom:10px; font-size:1.1rem; color:#fff;">${nombre}</h3>
                 <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold; transition: 0.3s;">DESCARGAR</a>
-                  <div class="like-btn" onclick="enviarLike('${nombre}', this)" style="cursor:pointer; color: #ff4757;">
-                        <i class="fas fa-heart"></i>
-                        <span class="like-count">${likes}</span>
+               <div class="like-btn" onclick="enviarLike('${nombre}', this)" style="cursor:pointer; display: flex; flex-direction: column; align-items: center; min-width: 40px;">
+                        <i class="fas fa-heart" style="color: #ff4757; font-size: 1.2rem;"></i>
+                        <span class="like-count" style="font-size: 0.8rem; color: #bbb;">${likes}</span>
                     </div>
                 </div>
             </div>
