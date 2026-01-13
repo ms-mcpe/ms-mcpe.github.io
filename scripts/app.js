@@ -48,23 +48,28 @@ function renderizarCards(lista) {
         const imagen = valores[3] || "";
         const categoria = valores[4] || "General";
         const likes = valores[5] || 0;
+        // Se obtiene el usuario de la columna H (índice 7)
+        const usuario = valores[7] || "Usuario"; 
         
         const card = document.createElement('div');
         card.className = 'addon-card';
         card.innerHTML = `
             <div class="card-image" style="background-image: url('${imagen}'); background-size: cover; background-position: center; height: 180px; position: relative;">
-            <span class="category-tag" style="position:absolute; top:10px; left:10px; background:#2ecc71; color:#000; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:12px;">${categoria}</span>
-            
-            <div class="like-btn" onclick="enviarLike('${nombre}', this)" style="position:absolute; top:10px; right:10px; cursor:pointer; display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 8px;">
-                <i class="fas fa-heart" style="color: #ff4757; font-size: 1.1rem;"></i>
-                <span class="like-count" style="font-size: 0.8rem; color: #fff; font-weight: bold;">${likes}</span>
+                
+                <span class="user-tag" style="position:absolute; bottom:35px; left:10px; background:rgba(0,0,0,0.6); color:#fff; padding:2px 8px; border-radius:4px; font-size:11px;">Subido por: @${usuario}</span>
+                
+                <span class="category-tag" style="position:absolute; bottom:10px; left:10px; background:#2ecc71; color:#000; padding:3px 8px; border-radius:4px; font-weight:bold; font-size:12px;">${categoria}</span>
+                
+                <div class="like-btn" onclick="enviarLike('${nombre}', this)" style="position:absolute; top:10px; right:10px; cursor:pointer; display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 8px;">
+                    <i class="fas fa-heart" style="color: #ff4757; font-size: 1.1rem;"></i>
+                    <span class="like-count" style="font-size: 0.8rem; color: #fff; font-weight: bold;">${likes}</span>
+                </div>
             </div>
-        </div>
 
-        <div class="card-info" style="padding:15px;">
-            <h3 style="margin-bottom:10px; font-size:1.1rem; color:#fff;">${nombre}</h3>
-            <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold; transition: 0.3s;">DESCARGAR</a>
-        </div>
+            <div class="card-info" style="padding:15px;">
+                <h3 style="margin-bottom:10px; font-size:1.1rem; color:#fff;">${nombre}</h3>
+                <a href="${descarga}" target="_blank" class="btn-download" style="display:block; background:#2ecc71; color:#000; text-align:center; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold; transition: 0.3s;">DESCARGAR</a>
+            </div>
         `;
         addonGrid.appendChild(card);
     });
