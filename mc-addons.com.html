@@ -2,358 +2,249 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="robots" content="noarchive">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Addons web</title>
+    <title>MC Addons - Premium App</title>
     
-    <link rel="stylesheet" href="https://ms-mcpe.github.io/styles/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --primary-gold: #ffd700;
-            --glass-bg: rgba(0, 0, 0, 0.4);
+            --bg-body: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --sidebar-bg: rgba(0, 0, 0, 0.95);
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
             --glass-border: rgba(255, 215, 0, 0.2);
-            --text-light: #ffffff;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            /* CAMBIA LA URL POR TU IMAGEN PREFERIDA */
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://i.ibb.co/mCkSz50q/Gemini-Generated-Image-qinamrqinamrqina.png'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: var(--text-light);
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
+        [data-theme="light"] {
+            --bg-body: #f4f7f6;
+            --card-bg: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.98);
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --glass-border: rgba(0, 0, 0, 0.1);
         }
 
-        /* BARRA SUPERIOR SEMI-TRANSPARENTE (GLASS) */
-        .top-bar {
-            background: rgba(0, 0, 0, 0.3) !important; /* Transparencia base */
-            backdrop-filter: blur(15px); /* Efecto de desenfoque del fondo */
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 900;
-        }
+        body { margin: 0; background: var(--bg-body); color: var(--text-main); font-family: 'Poppins', sans-serif; transition: 0.3s; }
 
-        /* Buscador estilizado sobre el fondo */
-        .search-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            padding: 8px 18px;
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            margin-left: 15px;
-            transition: 0.3s;
-        }
+        /* --- SIDEBAR --- */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: var(--sidebar-bg); backdrop-filter: blur(20px); z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; }
+        .sidebar.active { left: 0; }
+        .nav-links { list-style: none; padding: 20px; flex-grow: 1; margin: 0; }
+        .nav-links a, .dropdown-btn { color: var(--text-main); text-decoration: none; padding: 12px 15px; display: flex; align-items: center; gap: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; box-sizing: border-box; background: transparent; border: none; font-size: 1rem; }
+        .nav-links a:hover, .dropdown-btn:hover { background: rgba(255, 215, 0, 0.15); color: var(--primary-gold); }
+        .submenu { list-style: none; padding-left: 25px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .submenu.open { max-height: 500px; padding-bottom: 10px; }
+        .arrow { margin-left: auto; transition: 0.3s; }
+        .arrow.rotate { transform: rotate(180deg); }
 
-        .search-container:focus-within {
-            border-color: var(--primary-gold);
-            background: rgba(255, 255, 255, 0.15);
-        }
+        /* --- BOTÓN SUBIR --- */
+        .floating-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--primary-gold); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); text-decoration: none; z-index: 998; transition: 0.3s; }
 
-        #addon-search {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            outline: none;
-            font-size: 0.95rem;
-        }
+        /* --- GRID Y CARDS --- */
+        .addon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+        .addon-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); transition: 0.3s; }
+        .card-image { height: 160px; background-size: cover; background-position: center; position: relative; background-color: #222; }
+        .stats-bar { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); padding: 8px; display: flex; gap: 15px; font-size: 0.85rem; color: white; box-sizing: border-box; }
+        .stat-item { cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .stat-item i { color: var(--primary-gold); }
+        .btn-dl { display: block; text-align: center; background: #2ecc71; color: white; text-decoration: none; padding: 10px; border-radius: 6px; font-weight: bold; margin-top: 10px; transition: 0.3s; border: none; width: 100%; cursor: pointer; }
 
-        #addon-search::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        #toggle-btn {
-            color: var(--primary-gold) !important;
-            font-size: 1.5rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        /* Sidebar Glassmorphism */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -260px;
-            width: 260px;
-            height: 100vh;
-            z-index: 1000;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(0, 0, 0, 0.6) !important;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border);
-        }
-
-        .sidebar.active {
-            left: 0;
-        }
-
-        .sidebar .logo {
-            color: var(--primary-gold);
-            padding: 30px 20px;
-            font-weight: bold;
-            font-size: 1.4rem;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-
-        .nav-links a {
-            color: var(--text-light) !important;
-            text-decoration: none;
-            padding: 15px 20px;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--primary-gold) !important;
-            background: rgba(255, 215, 0, 0.1);
-        }
-
-        /* Overlay del menú */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 999;
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-        }
-
-        .content-wrapper {
-            padding: 20px;
-        }
-/* Ocultar el submenú por defecto */
-.submenu {
-    list-style: none;
-    background: rgba(0, 0, 0, 0.4); /* Fondo un poco más oscuro para diferenciar */
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-in-out;
-    padding-left: 10px; /* Sangría para que se vea que dependen de Complementos */
-}
-
-/* Cuando se añade la clase .open desde JS, se expande */
-.submenu.open {
-    max-height: 500px; /* Altura suficiente para mostrar todo */
-    margin-bottom: 10px;
-}
-
-/* Rotación de la flecha */
-.arrow-icon {
-    margin-left: auto; /* Empuja la flecha a la derecha */
-    transition: transform 0.3s;
-}
-
-.dropdown-container.active .arrow-icon {
-    transform: rotate(180deg);
-}
-
-/* Estilo para los links dentro del submenú */
-.submenu li a {
-    padding: 10px 15px !important;
-    font-size: 0.9rem !important;
-}
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 999; }
+        .overlay.show { display: block; }
+        
+        /* Loading spinner */
+        #loader { text-align: center; padding: 50px; color: var(--primary-gold); font-size: 1.2rem; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
-    <div class="sidebar-overlay" id="overlay"></div>
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <nav class="sidebar" id="sidebar">
-    <div class="logo">
-        <i class="fas fa-cubes"></i>
-        <span>MC Addons</span>
-    </div>
-    <ul class="nav-links">
-        <li><a href="#" class="active" data-filter="all"><i class="fas fa-home"></i> Inicio</a></li>
-        
-        <li class="dropdown">
-            <a href="#" id="drop-btn"><i class="fas fa-box-open"></i> Complementos <i class="fas fa-chevron-down" style="font-size: 0.8rem; float: right; margin-top: 5px;"></i></a>
-            <ul class="submenu" id="submenu">
-                <li><a href="#" data-filter="Add-On"><i class="fas fa-plus-circle"></i> Addons</a></li>
-                <li><a href="#" data-filter="Texture"><i class="fas fa-brush"></i> Texturas</a></li>
-                <li><a href="#" data-filter="Shader"><i class="fas fa-magic"></i> Shaders</a></li>
-                <li><a href="#" data-filter="Mapa"><i class="fas fa-map-marked-alt"></i> Mapas</a></li>
-                <li><a href="#" data-filter="Skin"><i class="fas fa-user-tag"></i> Skins</a></li>
-            </ul>
-        </li>
-
-       <li>
-        <a href="https://ms-mcpe.github.io/MC-Descarga" target="_blank" class="btn-app-download">
-            <i class="fas fa-mobile-alt"></i> <span>Descargar App</span>
-        </a>
-    </li>
-        <li><a href="#" data-filter="Comunidad"><i class="fas fa-users"></i> Comunidad</a></li>
-        <li><a href="#" data-filter="Politicas"><i class="fas fa-gavel"></i> Políticas</a></li>
-    </ul>
-</nav>
-
-    <main class="main-content">
-        <header class="top-bar">
-            <button id="toggle-btn">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <div class="search-container">
-                <i class="fas fa-search" style="margin-right: 10px; color: var(--primary-gold);"></i>
-                <input type="text" id="addon-search" placeholder="Buscar en MC Addons...">
-            </div>
-        </header>
-
-        <section class="content-wrapper">
-            <div class="addon-grid" id="addon-grid">
+        <div style="padding: 25px; font-family: 'Orbitron'; color: var(--primary-gold); font-size: 1.4rem;">
+            <i class="fas fa-cubes"></i> MC Addons
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" onclick="cargarDatos()"><i class="fas fa-home"></i> Inicio</a></li>
+            <li>
+                <div class="dropdown-btn" onclick="toggleDropdown()">
+                    <i class="fas fa-box-open"></i> Complementos 
+                    <i class="fas fa-chevron-down arrow" id="arrow"></i>
                 </div>
-        </section>
+                <ul class="submenu" id="submenu">
+                    <li><a href="#" onclick="cerrarYFiltrar('Add-On')">Addons</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Mapa')">Mapas</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Skin')">Skins</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Texture')">Texturas</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Shader')">Shaders</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Semilla')">Semillas</a></li>
+                </ul>
+            </li>
+            <li><a href="go:chat" target="_blank" onclick="toggleSidebar()"><i class="fas fa-comments"></i> Chat Público</a></li>
+        </ul>
+        <div style="padding: 20px; border-top: 1px solid var(--glass-border);">
+            <button onclick="toggleTheme()" style="width:100%; background:transparent; border:1px solid var(--primary-gold); color:var(--primary-gold); padding:10px; border-radius:50px; cursor:pointer; font-weight:bold;">
+                <i class="fas fa-adjust"></i> Cambiar Tema
+            </button>
+        </div>
+    </nav>
+
+    <header style="padding: 15px; display: flex; align-items: center; gap: 15px; background: var(--sidebar-bg); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border);">
+        <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--primary-gold); font-size: 1.5rem; cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <input type="text" id="addon-search" oninput="buscar()" placeholder="Buscar en la colección..." style="flex-grow:1; padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border); background: var(--card-bg); color: var(--text-main);">
+    </header>
+
+    <main>
+        <div id="loader">Cargando complementos...</div>
+        <div id="addon-grid" class="addon-grid"></div>
     </main>
 
-    <script src="https://ms-mcpe.github.io/scripts/app.js"></script>
+    <a href="go:subir" class="floating-btn"><i class="fas fa-plus"></i></a>
 
     <script>
-       // --- LÓGICA DE INTERFAZ (MENÚS) ---
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const toggleBtn = document.getElementById('toggle-btn');
-const dropBtn = document.getElementById('drop-btn');
-const submenu = document.getElementById('submenu');
-const dropContainer = document.querySelector('.dropdown-container');
+    // URL de tu Apps Script (Asegúrate de haber publicado una "Nueva implementación")
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyxezM7lhtD7lmpqg_ww8X3afZ_VEUTH56klo55skV9CJ-0XlW63hAUvyyTyYGWUr8mdQ/exec";
+    let todosLosDatos = [];
 
-// Abrir/Cerrar Sidebar principal
-toggleBtn.addEventListener('click', () => {
-    sidebar.classList.add('active');
-    overlay.classList.add('show');
-});
+    // --- 1. CARGAR DATOS (Acción "read") ---
+    async function cargarDatos() {
+        const grid = document.getElementById('addon-grid');
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
+        grid.innerHTML = '';
 
-overlay.addEventListener('click', () => {
-    sidebar.classList.remove('active');
-    overlay.classList.remove('show');
-    // También cerramos el submenú si se cierra la barra
-    submenu.classList.remove('open');
-    dropContainer.classList.remove('active');
-});
-
-// DESPLEGAR COMPLEMENTOS (Solo abre/cierra el submenú)
-dropBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation(); // Evita que el clic afecte a otros elementos
-    submenu.classList.toggle('open');
-    dropContainer.classList.toggle('active');
-});
-
-// Filtros de Navegación (Solo para links que NO sean el botón de desplegar)
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-        const filtro = link.getAttribute('data-filter');
-        
-        // Si el link tiene filtro, ejecutamos la lógica
-        if (filtro) {
-            e.preventDefault();
+        try {
+            // Pedimos los datos a la hoja "publicado"
+            const response = await fetch(`${scriptURL}?action=read`);
+            const data = await response.json();
             
-            // Marcar como activo
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            link.classList.add('active');
+            if (data.error) throw new Error(data.error);
 
-            // CERRAR SIDEBAR (Solo si no es el botón de Complementos)
-            if (!link.classList.contains('dropdown-trigger')) {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('show');
-            }
-
-            // Aplicar el filtro de los datos
-            if (filtro === 'all') {
-                renderizarCards(addonsData);
-            } else if (filtro === 'Comunidad') {
-                document.getElementById('addon-grid').innerHTML = `<h2>Comunidad</h2>`; // Tu código de comunidad aquí
-            } else if (filtro === 'Politicas') {
-                document.getElementById('addon-grid').innerHTML = `<h2>Políticas</h2>`; // Tu código de políticas aquí
-            } else {
-                // Filtro por categoría (Addons, Texturas, etc.)
-                const filtrados = addonsData.filter(item => 
-                    (Object.values(item)[4] || "").toLowerCase().includes(filtro.toLowerCase())
-                );
-                renderizarCards(filtrados);
-            }
+            todosLosDatos = data; 
+            renderizarCards(data);
+            loader.style.display = 'none';
+        } catch (error) {
+            loader.innerHTML = "Error: Verifica la acción 'read' en tu Apps Script.";
+            console.error("Detalle del error:", error);
         }
+    }
+
+    // --- 2. RENDERIZAR TARJETAS (Mapeo por índices) ---
+   function renderizarCards(lista) {
+    const grid = document.getElementById('addon-grid');
+    grid.innerHTML = '';
+
+    if (!lista || lista.length === 0) {
+        grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No hay contenido disponible.</p>';
+        return;
+    }
+
+    lista.forEach(item => {
+        // Mapeo exacto por índice
+        const nombre = item[1];
+        const link   = item[2];
+        const img    = item[3]; 
+        const cat    = item[4];
+        const likes  = item[5] || 0;
+        const dls    = item[6] || 0;
+        const seed   = item[7] || "";
+        const autor  = item[8] || "Anónimo";
+
+        const card = document.createElement('div');
+        card.className = 'addon-card';
+        card.innerHTML = `
+            <div class="card-image-container" style="position:relative; height:160px; background:#222; overflow:hidden;">
+                <img src="${img}" 
+                     style="width:100%; height:100%; object-fit:cover; display:block;" 
+                     onerror="this.src='https://via.placeholder.com/300x160?text=Cargando...'"
+                     loading="lazy">
+                
+                <div class="stats-bar">
+                    <div class="stat-item" onclick="registrarAccion('like', '${nombre}', this)">
+                        <i class="fas fa-heart"></i> <span>${likes}</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-download"></i> <span>${dls}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding:15px;">
+                <small style="color:var(--primary-gold)">${cat} | @${autor}</small>
+                <h3 style="margin:5px 0; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${nombre}">${nombre}</h3>
+                ${cat === 'Semilla' || cat === 'Semillas'
+                    ? `<button class="btn-dl" style="background:var(--primary-gold); color:#000;" onclick="copySeed('${seed}')">COPIAR SEED</button>`
+                    : `<a href="${link}" target="_blank" class="btn-dl" onclick="registrarAccion('download', '${nombre}')">DESCARGAR</a>`
+                }
+            </div>
+        `;
+        grid.appendChild(card);
     });
-});
+}
 
-        //proteccion web
-      document.addEventListener('keydown', function(e) {
-    // Detectar si se presiona Ctrl (Windows/Linux) o Command (Mac)
-    const metaKey = e.ctrlKey || e.metaKey;
-    const shiftKey = e.shiftKey;
-
-    // 1. Bloquear F12 (Herramientas de Desarrollador)
-    if (e.keyCode === 123) {
-        e.preventDefault();
-        return false;
+    // --- 3. ACCIONES (Likes y Descargas) ---
+    async function registrarAccion(tipo, nombreAddon, elemento) {
+        // Actualización visual inmediata para Likes
+        if (tipo === 'like' && elemento) {
+            const span = elemento.querySelector('span');
+            span.innerText = parseInt(span.innerText) + 1;
+            elemento.style.pointerEvents = 'none';
+            elemento.querySelector('i').style.color = "#ff4757";
+        }
+        
+        try {
+            // Envía la petición al doGet del Apps Script
+            fetch(`${scriptURL}?action=${tipo}&nombre=${encodeURIComponent(nombreAddon)}`, { mode: 'no-cors' });
+        } catch (e) { 
+            console.error("Error al registrar acción:", e); 
+        }
     }
 
-    // 2. Bloquear Ctrl+U (Ver código fuente)
-    if (metaKey && e.keyCode === 85) {
-        e.preventDefault();
-        return false;
+    // --- 4. FUNCIONES DE INTERFAZ ---
+    function buscar() {
+        const query = document.getElementById('addon-search').value.toLowerCase();
+        const filtrados = todosLosDatos.filter(item => item[1].toString().toLowerCase().includes(query));
+        renderizarCards(filtrados);
     }
 
-    // 3. Bloquear Ctrl+S (Guardar página)
-    if (metaKey && e.keyCode === 83) {
-        e.preventDefault();
-        return false;
+    function cerrarYFiltrar(cat) {
+        const filtrados = (cat === 'all') ? todosLosDatos : todosLosDatos.filter(item => item[4] === cat);
+        renderizarCards(filtrados);
+        toggleSidebar();
     }
 
-    // 4. Bloquear Ctrl+Shift+I o Ctrl+Shift+J (Inspeccionar / Consola)
-    if (metaKey && shiftKey && (e.keyCode === 73 || e.keyCode === 74)) {
-        e.preventDefault();
-        return false;
+    function copySeed(text) {
+        if(!text) return alert("No hay semilla disponible.");
+        navigator.clipboard.writeText(text);
+        alert("¡Semilla copiada!");
     }
 
-    // 5. Bloquear Ctrl+Shift+C (Selector de elementos)
-    if (metaKey && shiftKey && e.keyCode === 67) {
-        e.preventDefault();
-        return false;
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('show');
     }
-}, true);
 
-// 6. Bloquear clic derecho (Menú contextual para inspeccionar)
-document.addEventListener('contextmenu', e => e.preventDefault());
+    function toggleDropdown() {
+        document.getElementById('submenu').classList.toggle('open');
+        document.getElementById('arrow').classList.toggle('rotate');
+    }
 
-        // Si logran abrir la consola, esto hará que el navegador se detenga 
-// y no puedan analizar el código fluidamente.
-(function() {
-    setInterval(function() {
-        debugger;
-    }, 50);
-})();
+    function toggleTheme() {
+        const body = document.body;
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
 
-       const detectarConsola = () => {
-  const umbral = 160;
-  if (window.outerWidth - window.innerWidth > umbral || 
-      window.outerHeight - window.innerHeight > umbral) {
-    document.body.innerHTML = "<h1>Acceso no autorizado detectado.</h1>";
-    window.location.href = "https://crea tu pagina propia copion";
-  }
-};
-setInterval(detectarConsola, 1000); 
-    </script>
+    // Inicio
+    window.onload = () => {
+        if(localStorage.getItem('theme') === 'light') toggleTheme();
+        cargarDatos();
+    };
+</script>
 </body>
 </html>
