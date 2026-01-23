@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Creadores - Minecraft Community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --mc-green: #388e3c;
+            --mc-green-hover: #4caf50;
+            --text-main: #e0e0e0;
+            --accent-gold: #ffca28;
+            --border-pixel: #373737;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            max-width: 600px;
+            width: 100%;
+            border: 4px solid var(--border-pixel);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.5);
+            padding: 40px;
+            text-align: center;
+        }
+
+        /* Avatar de Usuario */
+        .profile-container {
+            margin-bottom: 30px;
+        }
+
+        .profile-circle {
+            width: 120px;
+            height: 120px;
+            background: #333;
+            border-radius: 50%;
+            margin: 0 auto;
+            border: 4px solid var(--mc-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-image: url('https://api.dicebear.com/7.x/pixel-art/svg?seed=Steve'); /* Foto estilo Minecraft */
+            background-size: cover;
+        }
+
+        h1 {
+            font-family: 'VT323', monospace;
+            font-size: 2.5rem;
+            color: var(--mc-green);
+            text-transform: uppercase;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .section {
+            text-align: left;
+            margin-top: 30px;
+            border-top: 2px solid var(--border-pixel);
+            padding-top: 20px;
+        }
+
+        h2 {
+            font-family: 'VT323', monospace;
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+        }
+
+        p, li {
+            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #b0b0b0;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .rules-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-list li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .rules-list li::before {
+            content: '■';
+            position: absolute;
+            left: 0;
+            color: var(--mc-green);
+        }
+
+        /* Botón estilo Minecraft */
+        .btn-whatsapp {
+            display: inline-block;
+            margin-top: 40px;
+            background-color: var(--mc-green);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            border-bottom: 6px solid #1b5e20;
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+
+        .btn-whatsapp:active {
+            border-bottom: 2px solid #1b5e20;
+            transform: translateY(4px);
+        }
+
+        .btn-whatsapp:hover {
+            background-color: var(--mc-green-hover);
+        }
+
+        .example-box {
+            background: #252525;
+            padding: 10px;
+            border-left: 4px solid var(--mc-green);
+            margin: 10px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-container">
+        <div class="profile-circle"></div>
+        <h1>Portal de Creadores</h1>
+    </div>
+
+    <div class="section">
+        <h2>¿Cómo ser creador?</h2>
+        <p>Para unirte a nuestra comunidad de creadores, deberás cumplir con los requisitos solicitados tras contactar al propietario. El proceso consiste en:</p>
+        <ul class="rules-list">
+            <li>Iniciar sesión en nuestra plataforma exclusiva.</li>
+            <li>Subir los <span class="highlight">enlaces directos</span> de tu contenido y Addons.</li>
+            <li>Gestionar tus publicaciones: podrás editar o eliminar tus Addons en cualquier momento.</li>
+        </ul>
+        <p><em>Nota: Todos los complementos pasan por una revisión de seguridad para proteger a nuestra comunidad.</em></p>
+    </div>
+
+    <div class="section">
+        <h2>Reglas de Convivencia</h2>
+        <ul class="rules-list">
+            <li>Prohibido contenido <span class="highlight">+18 o para adultos</span>.</li>
+            <li>No se permiten groserías en los títulos ni archivos falsos (Fake Addons).</li>
+            <li><span class="highlight">Respeto a la autoría:</span> No puedes resubir contenido que ya haya sido compartido por otro usuario.</li>
+            <li><strong>Formato de Títulos:</strong> No incluyas la versión en el nombre.</li>
+        </ul>
+        <div class="example-box">
+            Incorrecto: Actions & Stuff 1.9 <br>
+            Correcto: Actions & Stuff
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Políticas de Privacidad</h2>
+        <p>Exigimos el máximo respeto hacia la privacidad de todos nuestros integrantes, especialmente hacia los <span class="highlight">menores de edad</span>. Nuestra plataforma es un lugar seguro para divertirse. Cualquier conducta inapropiada resultará en la expulsión inmediata.</p>
+        <p>Al hacer clic en el botón de abajo, confirmas que has leído y aceptas cada uno de estos puntos.</p>
+    </div>
+
+    <a href="https://wa.me/TU_NUMERO_AQUI?text=Hola%20estoy%20aquí%20para%20ser%20creador%20ya%20leí%20las%20políticas%20de%20privacidad%20y%20las%20reglas%20que%20se%20necesitan%20para%20ser%20creador%20y%20acepto%20todas%20las%20políticas%20qué%20tengo%20que%20hacer%20para%20ser%20creador%20en%20esta%20plataforma%20y%20cómo%20tengo%20que%20hacer%20para%20empezar%20a%20generar%20ingresos%20en%20esta%20plataforma" class="btn-whatsapp">
+        SOLICITAR RANGO CREADOR
+    </a>
+</div>
+
+</body>
+</html>
