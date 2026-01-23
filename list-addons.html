@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC Addons - Premium App</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-gold: #ffd700;
+            --bg-body: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --sidebar-bg: rgba(0, 0, 0, 0.95);
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 215, 0, 0.2);
+            --lime-green: #32CD32;
+            --fb-blue: #1877F2;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f4f7f6;
+            --card-bg: #ffffff;
+            --sidebar-bg: rgba(255, 255, 255, 0.98);
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        body { 
+            margin: 0; 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            font-family: 'Poppins', sans-serif; 
+            transition: 0.3s; 
+            user-select: none; 
+            -webkit-user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: var(--sidebar-bg); backdrop-filter: blur(20px); z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; }
+        .sidebar.active { left: 0; }
+        .nav-links { list-style: none; padding: 20px; flex-grow: 1; margin: 0; }
+        .nav-links a, .dropdown-btn { color: var(--text-main); text-decoration: none; padding: 12px 15px; display: flex; align-items: center; gap: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; box-sizing: border-box; background: transparent; border: none; font-size: 1rem; }
+        .nav-links a:hover, .dropdown-btn:hover { background: rgba(255, 215, 0, 0.15); color: var(--primary-gold); }
+        .submenu { list-style: none; padding-left: 25px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .submenu.open { max-height: 500px; padding-bottom: 10px; }
+        .arrow { margin-left: auto; transition: 0.3s; }
+        .arrow.rotate { transform: rotate(180deg); }
+
+        /* --- BOTONES --- */
+        .floating-btn { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--primary-gold); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); text-decoration: none; z-index: 998; transition: 0.3s; }
+
+        .btn-comando {
+            display: block; text-align: center; background: #000; color: var(--lime-green); text-decoration: none; padding: 12px; border-radius: 50px; font-weight: 600; margin-top: 10px; transition: 0.3s; border: 2px solid var(--lime-green); width: 100%; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 0.75rem;
+        }
+        .btn-comando:hover { background: var(--lime-green); color: #000; box-shadow: 0 0 15px rgba(50, 205, 50, 0.4); }
+
+        /* --- GRID Y CARDS --- */
+        .addon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+        .addon-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); transition: 0.3s; }
+        .card-image-container { position: relative; height: 160px; background: #222; }
+        .stats-bar { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); padding: 8px; display: flex; gap: 15px; font-size: 0.85rem; color: white; box-sizing: border-box; }
+        
+        /* --- SECCIÓN COMUNIDADES --- */
+        .comunidad-container { display: none; padding: 20px; animation: fadeIn 0.5s ease; }
+        .comunidad-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 25px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; cursor: pointer; transition: 0.3s; }
+        .comunidad-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+        .com-icon { font-size: 3rem; }
+        .com-info h3 { margin: 0; color: var(--primary-gold); font-family: 'Orbitron'; }
+        .com-info p { margin: 5px 0 0; font-size: 0.9rem; color: var(--text-muted); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 999; }
+        .overlay.show { display: block; }
+        #loader { text-align: center; padding: 50px; color: var(--primary-gold); font-size: 1.2rem; }
+    </style>
+</head>
+<body data-theme="dark" oncontextmenu="return false;">
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div style="padding: 25px; font-family: 'Orbitron'; color: var(--primary-gold); font-size: 1.4rem;">
+            <i class="fas fa-cubes"></i> MC Addons
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" onclick="verInicio()"><i class="fas fa-home"></i> Inicio</a></li>
+            <li>
+                <div class="dropdown-btn" onclick="toggleDropdown()">
+                    <i class="fas fa-box-open"></i> Complementos 
+                    <i class="fas fa-chevron-down arrow" id="arrow"></i>
+                </div>
+                <ul class="submenu" id="submenu">
+                    <li><a href="#" onclick="cerrarYFiltrar('Add-On')">Addons</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Mapa')">Mapas</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Skin')">Skins</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Texture')">Texturas</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Shader')">Shaders</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('Semilla')">Semillas</a></li>
+                    <li><a href="#" onclick="cerrarYFiltrar('version')">Minecraft</a></li>
+                </ul>
+            </li>
+            <li><a href="#" onclick="verComunidades()"><i class="fas fa-users"></i> Comunidades</a></li>
+            <li><a href="go:donacion" target="_blank"><i class="fas fa-hand-holding-usd"></i> Donaciones</a></li>
+        </ul>
+        <div style="padding: 20px; border-top: 1px solid var(--glass-border);">
+            <button onclick="toggleTheme()" style="width:100%; background:transparent; border:1px solid var(--primary-gold); color:var(--primary-gold); padding:10px; border-radius:50px; cursor:pointer; font-weight:bold;">
+                <i class="fas fa-adjust"></i> Cambiar Tema
+            </button>
+        </div>
+    </nav>
+
+    <header id="main-header" style="padding: 15px; display: flex; align-items: center; gap: 15px; background: var(--sidebar-bg); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass-border);">
+        <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--primary-gold); font-size: 1.5rem; cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <input type="text" id="addon-search" oninput="buscar()" placeholder="Buscar en la colección..." style="flex-grow:1; padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border); background: var(--card-bg); color: var(--text-main);">
+    </header>
+
+    <main>
+        <div id="loader">Cargando complementos...</div>
+        
+        <div id="addon-grid" class="addon-grid"></div>
+
+        <div id="comunidad-section" class="comunidad-container">
+            <h2 style="text-align: center; font-family: 'Orbitron'; color: var(--primary-gold);">Nuestras Comunidades</h2>
+            
+            <div class="comunidad-card" onclick="window.open('https://wa.me/573332527741', '_blank')">
+                <i class="fab fa-whatsapp com-icon" style="color: #25D366;"></i>
+                <div class="com-info">
+                    <h3>WhatsApp</h3>
+                    <p>Únete a nuestro grupo oficial y recibe addons diarios antes que nadie.</p>
+                </div>
+            </div>
+
+            <div class="comunidad-card" onclick="window.open('https://facebook.com/groups/mcaddons', '_blank')">
+                <i class="fab fa-facebook com-icon" style="color: #1877F2;"></i>
+                <div class="com-info">
+                    <h3>Facebook</h3>
+                    <p>Comparte tus creaciones y conoce a otros creadores en nuestra comunidad.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+
+    <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyxezM7lhtD7lmpqg_ww8X3afZ_VEUTH56klo55skV9CJ-0XlW63hAUvyyTyYGWUr8mdQ/exec";
+    let todosLosDatos = [];
+
+    // --- SEGURIDAD ---
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && (e.keyCode == 85 || e.keyCode == 83))) return false;
+    };
+    setInterval(() => {
+        if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) window.location.href = "https://www.google.com";
+    }, 1000);
+
+    // --- CAMBIO DE VISTAS ---
+    function verComunidades() {
+        document.getElementById('addon-grid').style.display = 'none';
+        document.getElementById('addon-search').style.display = 'none';
+        document.getElementById('comunidad-section').style.display = 'block';
+        toggleSidebar();
+    }
+
+    function verInicio() {
+        document.getElementById('addon-grid').style.display = 'grid';
+        document.getElementById('addon-search').style.display = 'block';
+        document.getElementById('comunidad-section').style.display = 'none';
+        if(todosLosDatos.length === 0) cargarDatos();
+        if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+    }
+
+    // --- LÓGICA DE DATOS ---
+    async function cargarDatos() {
+        const grid = document.getElementById('addon-grid');
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
+        try {
+            const response = await fetch(`${scriptURL}?action=read`);
+            const data = await response.json();
+            todosLosDatos = data.reverse(); 
+            renderizarCards(todosLosDatos);
+            loader.style.display = 'none';
+        } catch (error) {
+            loader.innerHTML = "Error al cargar datos.";
+        }
+    }
+
+    function renderizarCards(lista) {
+        const grid = document.getElementById('addon-grid');
+        grid.innerHTML = '';
+        lista.forEach(item => {
+            const nombre = item[1], img = item[3], cat = item[4], likes = item[5] || 0, autor = item[8] || "Anónimo";
+            const card = document.createElement('div');
+            card.className = 'addon-card';
+            card.innerHTML = `
+                <div class="card-image-container">
+                    <img src="${img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/300x160'">
+                    <div class="stats-bar"><div class="stat-item" onclick="registrarAccion('like', '${nombre}', this)"><i class="fas fa-heart"></i> <span>${likes}</span></div></div>
+                </div>
+                <div style="padding:15px;">
+                    <small style="color:var(--primary-gold)">${cat} | @${autor}</small>
+                    <h3 style="margin:5px 0; font-size:1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nombre}</h3>
+                    <button class="btn-comando" onclick="enviarWhatsApp('${nombre}')"><i class="fab fa-whatsapp"></i> ENVIAR PEDIDO</button>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    function enviarWhatsApp(nombre) {
+        const comando = `>addon-${nombre}`, numero = "573332527741";
+        navigator.clipboard.writeText(comando);
+        registrarAccion('download', nombre);
+        window.open(`https://wa.me/${numero}?text=${encodeURIComponent(comando)}`, '_blank');
+    }
+
+    async function registrarAccion(tipo, nombreAddon, elemento) {
+        if (tipo === 'like' && elemento) {
+            const span = elemento.querySelector('span');
+            span.innerText = parseInt(span.innerText) + 1;
+            elemento.style.pointerEvents = 'none';
+            elemento.querySelector('i').style.color = "#ff4757";
+        }
+        fetch(`${scriptURL}?action=${tipo}&nombre=${encodeURIComponent(nombreAddon)}`, { mode: 'no-cors' });
+    }
+
+    function buscar() {
+        const query = document.getElementById('addon-search').value.toLowerCase();
+        renderizarCards(todosLosDatos.filter(item => item[1].toString().toLowerCase().includes(query)));
+    }
+
+    function cerrarYFiltrar(cat) {
+        verInicio();
+        renderizarCards(todosLosDatos.filter(item => item[4] === cat));
+        toggleSidebar();
+    }
+
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('show');
+    }
+
+    function toggleDropdown() {
+        document.getElementById('submenu').classList.toggle('open');
+        document.getElementById('arrow').classList.toggle('rotate');
+    }
+
+    function toggleTheme() {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
+
+    window.onload = () => {
+        if(localStorage.getItem('theme') === 'light') toggleTheme();
+        cargarDatos();
+    };
+    </script>
+</body>
+</html>
