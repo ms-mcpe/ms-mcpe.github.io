@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar App Oficial | MC Addons</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #ffd700; /* Oro */
+            --accent: #00e676;  /* Verde Descarga */
+            --bg-dark: #050505;
+            --glass: rgba(20, 20, 20, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.15) 0%, transparent 50%),
+                linear-gradient(0deg, #000 0%, #111 100%);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Partículas de fondo (Efecto visual) */
+        .bg-particles {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        /* Tarjeta Principal */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255, 215, 0, 0.1);
+            z-index: 10;
+            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Icono de la App */
+        .app-icon-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+        }
+
+        .app-icon {
+            width: 100%;
+            height: 100%;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .badge-new {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        /* Textos */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        /* Lista de Mejoras */
+        .features {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .features ul { list-style: none; }
+        .features li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; color: #ccc; }
+        .features li i { color: var(--primary); font-size: 0.8rem; }
+
+        /* Botón de Descarga */
+        .btn-download {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, var(--primary), #ffb700);
+            color: #000;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .btn-download:active { transform: scale(0.96); }
+        
+        .btn-download span { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* Efecto de brillo en el botón */
+        .btn-download::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s; animation: shine 3s infinite;
+        }
+
+        /* Nota de Seguridad */
+        .security-note {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 230, 118, 0.05); /* Verde muy sutil */
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #aaa;
+            line-height: 1.4;
+            display: flex;
+            gap: 12px;
+            text-align: left;
+            align-items: start;
+        }
+        .security-note i { color: var(--accent); font-size: 1.2rem; margin-top: 2px; }
+
+        /* Animaciones */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); } 50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.6); } 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); } }
+
+        /* Footer */
+        .footer { margin-top: 20px; font-size: 0.7rem; color: #555; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="bg-particles"></div>
+
+    <div class="card">
+        
+        <div class="app-icon-container">
+            <img src="https://www.appcreator24.com/srv/imgs/gen/3919563_ico.png?v=3" alt="Icono App" class="app-icon">
+            <div class="badge-new">V1.3</div>
+        </div>
+
+        <h1>MC ADDONS</h1>
+        <p class="subtitle">La herramienta definitiva para Jugadores.</p>
+
+        <div class="features">
+            <ul>
+                <li><i class="fas fa-bolt"></i> Mejora en el chat</li>
+                <li><i class="fas fa-lock"></i> Sistema de seguridad reforzado.</li>
+                <li><i class="fas fa-magic"></i> mejora de diceño integrado</li>
+            </ul>
+        </div>
+
+        <a href="https://www.mediafire.com/file/mc6ewdoaevln9a1/MC+Addons_1.3.apk/file?dkey=hwnp33k7zc8&r=899" class="btn-download">
+            <span><i class="fas fa-download"></i> DESCARGAR APK</span>
+        </a>
+
+        <div class="security-note">
+            <i class="fas fa-shield-check"></i>
+            <div>
+                <strong style="color:var(--accent); display:block; margin-bottom:3px;">Nota de Instalación:</strong>
+                Por seguridad, es posible que el archivo se descargue con un nombre aleatorio (letras y números). <strong>Esto es normal.</strong> Instálelo con confianza para disfrutar de las nuevas funciones.
+Se recomienda eliminar la versión actual para instalar la nueva versión. 
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 JR-TechStudios. Myst.
+        </div>
+
+    </div>
+
+    <script>
+        // Pequeño script para evitar que arrastren la imagen (anti-copia básico)
+        document.querySelector('img').ondragstart = function() { return false; };
+    </script>
+
+</body>
+</html>
