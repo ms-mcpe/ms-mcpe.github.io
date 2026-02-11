@@ -2,19 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moderación Pro - Bedrock Hub</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Moderación Pro | Bedrock Hub</title>
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
     <script>
       window.OneSignal = window.OneSignal || [];
       OneSignal.push(function() {
         OneSignal.init({
-          appId: "TU_APP_ID_AQUI", // Debes crear una cuenta en onesignal.com
+          appId: "TU_APP_ID_AQUI",
           safari_web_id: "TU_SAFARI_ID",
-          notifyButton: { enable: false }, // Lo manejaremos con nuestro propio botón
+          notifyButton: { enable: false },
         });
       });
     </script>
@@ -22,117 +24,291 @@
     <style>
         :root { 
             --accent: #00d4ff; 
-            --bg: #05060a; 
-            --card: rgba(20, 22, 30, 0.8);
-            --approve: #00ff88;
-            --reject: #ff4d4d;
+            --accent-glow: rgba(0, 212, 255, 0.4);
+            --bg: #030508; 
+            --card: rgba(15, 18, 26, 0.95);
+            --approve: #00ffa3;
+            --reject: #ff3e3e;
             --glass: rgba(255, 255, 255, 0.03);
+            --text-main: #e0e0e0;
+        }
+
+        /* Bloqueo de selección y arrastre */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         body { 
-            background: radial-gradient(circle at top, #101420 0%, var(--bg) 100%);
-            color: #fff; 
+            background: radial-gradient(circle at 50% -20%, #1a2238 0%, var(--bg) 80%);
+            color: var(--text-main); 
             font-family: 'Poppins', sans-serif; 
             margin: 0;
             padding: 20px;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
-        h2 { font-family: 'Orbitron'; color: var(--accent); text-transform: uppercase; letter-spacing: 3px; font-size: 1.8rem; margin: 0; text-shadow: 0 0 15px rgba(0, 212, 255, 0.3); }
-        .subtitle { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 5px; text-transform: uppercase; }
+        /* Fondo Animado sutil */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            z-index: -1;
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; max-width: 1400px; margin: 0 auto; }
+        header { 
+            text-align: center; 
+            margin-bottom: 50px; 
+            animation: fadeInDown 1s;
+        }
 
-        .mod-card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 20px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
-        .mod-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { 
+            font-family: 'Orbitron'; 
+            color: var(--accent); 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin: 0; 
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
 
-        .img-container { position: relative; width: 100%; height: 180px; overflow: hidden; border-radius: 15px; }
-        .mod-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .subtitle { 
+            font-size: 0.85rem; 
+            color: var(--accent); 
+            opacity: 0.7;
+            margin-top: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-        .cat-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 20px; font-size: 0.65rem; font-family: 'Orbitron'; border: 1px solid var(--accent); }
+        /* Grid Optimizado */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; 
+            max-width: 1400px; 
+            margin: 0 auto;
+            padding: 10px;
+        }
 
-        .card-info { padding: 15px 5px; }
-        .card-info h3 { margin: 0; font-size: 1.1rem; color: #fff; font-weight: 600; }
-        .author-info { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--accent); font-size: 0.8rem; }
+        /* Cards Profesionales */
+        .mod-card { 
+            background: var(--card); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            padding: 15px; 
+            border-radius: 24px; 
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            position: relative;
+            animation: fadeInUp 0.8s ease backwards;
+        }
 
-        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; background: var(--glass); padding: 10px; border-radius: 12px; font-size: 0.75rem; }
-        .meta-item { color: rgba(255,255,255,0.6); }
-        .meta-item i { margin-right: 5px; color: var(--accent); }
+        .mod-card:hover { 
+            transform: translateY(-10px) scale(1.02); 
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(0, 212, 255, 0.1);
+        }
 
+        .img-container { 
+            position: relative; 
+            width: 100%; 
+            height: 190px; 
+            overflow: hidden; 
+            border-radius: 18px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .mod-card img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: 0.8s;
+            pointer-events: none; /* Evita descarga */
+        }
+
+        .mod-card:hover img { transform: scale(1.1); }
+
+        .cat-badge { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            background: rgba(0, 0, 0, 0.8); 
+            backdrop-filter: blur(5px);
+            color: var(--accent);
+            padding: 6px 14px; 
+            border-radius: 30px; 
+            font-size: 0.7rem; 
+            font-family: 'Orbitron'; 
+            border: 1px solid var(--accent);
+            z-index: 2;
+        }
+
+        .card-info { padding: 18px 5px 5px; }
+        .card-info h3 { 
+            margin: 0; 
+            font-size: 1.2rem; 
+            color: #fff; 
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .author-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-top: 10px; 
+            color: #aaa; 
+            font-size: 0.85rem; 
+        }
+        .author-info i { color: var(--accent); }
+
+        .meta-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-top: 18px; 
+            background: var(--glass); 
+            padding: 12px; 
+            border-radius: 15px; 
+            font-size: 0.75rem; 
+        }
+
+        /* Botones Estilizados */
         .actions { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { flex: 1; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.7rem; font-weight: 700; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn { 
+            flex: 1; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            font-family: 'Orbitron'; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            transition: 0.4s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            text-transform: uppercase;
+        }
 
-        .btn-approve { background: rgba(0, 255, 136, 0.1); color: var(--approve); border: 1px solid var(--approve); }
-        .btn-approve:hover { background: var(--approve); color: #000; box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
-        .btn-reject { background: rgba(255, 77, 77, 0.1); color: var(--reject); border: 1px solid var(--reject); }
-        .btn-reject:hover { background: var(--reject); color: #fff; box-shadow: 0 0 20px rgba(255, 77, 77, 0.4); }
+        .btn-approve { 
+            background: linear-gradient(135deg, rgba(0, 255, 163, 0.1), rgba(0, 255, 163, 0.05)); 
+            color: var(--approve); 
+            border: 1px solid rgba(0, 255, 163, 0.3); 
+        }
+        .btn-approve:hover { 
+            background: var(--approve); 
+            color: #000; 
+            box-shadow: 0 0 25px rgba(0, 255, 163, 0.4);
+        }
 
-        /* Botón de Notificaciones Moderno */
+        .btn-reject { 
+            background: linear-gradient(135deg, rgba(255, 62, 62, 0.1), rgba(255, 62, 62, 0.05)); 
+            color: var(--reject); 
+            border: 1px solid rgba(255, 62, 62, 0.3); 
+        }
+        .btn-reject:hover { 
+            background: var(--reject); 
+            color: #fff; 
+            box-shadow: 0 0 25px rgba(255, 62, 62, 0.4);
+        }
+
+        /* Botón Flotante Neón */
         .notif-float {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             background: var(--accent);
             color: #000;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-            z-index: 999;
-            transition: 0.3s;
+            box-shadow: 0 0 30px var(--accent-glow);
+            z-index: 1000;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: none;
         }
-        .notif-float:hover { transform: scale(1.1) rotate(15deg); }
-        .notif-float.active { background: var(--approve); }
+        .notif-float:hover { transform: scale(1.15) rotate(15deg); }
 
-        #empty-msg { text-align: center; grid-column: 1/-1; padding: 80px 20px; color: rgba(255,255,255,0.2); font-family: 'Orbitron'; font-size: 1.2rem; border: 2px dashed rgba(255,255,255,0.05); border-radius: 30px; }
+        #empty-msg { 
+            text-align: center; 
+            grid-column: 1/-1; 
+            padding: 100px 20px; 
+            color: rgba(255,255,255,0.15); 
+            font-family: 'Orbitron'; 
+            border: 2px dashed rgba(255,255,255,0.05); 
+            border-radius: 40px; 
+        }
 
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
-            .notif-float { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body>
-
-    <button class="notif-float" id="btnNotif" onclick="subscribeNotif()" title="Activar Notificaciones de Moderación">
-        <i class="fas fa-bell"></i>
-    </button>
+<body oncontextmenu="return false;">
 
     <header>
-        <h2><i class="fas fa-shield-alt"></i> Control Hub</h2>
-        <p class="subtitle">Moderación de contenido pendiente</p>
+        <div class="animate__animated animate__fadeIn">
+            <h2><i class="fas fa-shield-halved"></i> MC addons</h2>
+            <p class="subtitle">SISTEMA DE ELIMINACIÓN Y ACEPTACIÓN DE ADDONS</p>
+        </div>
     </header>
 
-    <div id="mod-grid" class="grid">Cargando base de datos...</div>
+    <div id="mod-grid" class="grid">
+        <p style="text-align:center; grid-column:1/-1; font-family:'Orbitron'; opacity:0.5;">Sincronizando con la red...</p>
+    </div>
 
     <script>
+        // --- PROTECCIÓN ANTI-INSPECCIÓN AVANZADA ---
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || 
+                (e.ctrlKey && e.key === 'u')
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Detectar si la consola se abre mediante el cambio de tamaño de ventana
+        let devtools = function() {};
+        devtools.toString = function() {
+            alert("Acceso restringido por protocolos de seguridad.");
+            return '';
+        }
+
         const sheetId = '1VVO_fKNZqPdeCDagWF8s7clq7uMZfCY3-HDTksAmNnw';
         const scriptURL = "https://script.google.com/macros/s/AKfycbyxezM7lhtD7lmpqg_ww8X3afZ_VEUTH56klo55skV9CJ-0XlW63hAUvyyTyYGWUr8mdQ/exec";
 
-        // --- LÓGICA DE NOTIFICACIONES ---
         function subscribeNotif() {
             OneSignal.push(function() {
                 OneSignal.showNativePrompt();
-                OneSignal.isPushNotificationsEnabled(function(isEnabled) {
-                    if (isEnabled) {
-                        alert("¡Notificaciones activadas! Recibirás alertas de nuevos addons.");
-                        document.getElementById('btnNotif').classList.add('active');
-                    }
-                });
             });
         }
 
-        // --- LÓGICA DE RANGOS ---
         function esVip(rango) {
             const rangosVip = ["Admin", "Owner", "Usuario ✅"];
-            return rangosVip.some(v => rango.includes(v));
+            return rangosVip.some(v => rango && rango.includes(v));
         }
 
         async function cargarPendientes() {
@@ -143,49 +319,58 @@
                 grid.innerHTML = '';
 
                 if (!data || data.length === 0) {
-                    grid.innerHTML = '<div id="empty-msg"><i class="fas fa-check-circle" style="display:block; font-size:3rem; margin-bottom:15px;"></i> LIMPIO - SIN PENDIENTES</div>';
+                    grid.innerHTML = '<div id="empty-msg" class="animate__animated animate__zoomIn"><i class="fas fa-shield-check" style="display:block; font-size:4rem; margin-bottom:20px; color:var(--approve);"></i>SISTEMA DESPEJADO<br><span style="font-size:0.8rem; opacity:0.5;">No hay elementos en cola</span></div>';
                     return;
                 }
 
-                data.forEach(item => {
+                data.forEach((item, index) => {
                     const v = Object.values(item);
-                    const fecha = v[0], nombre = v[1], link = v[2], imagen = v[3] || "https://via.placeholder.com/300x160", categoria = v[4], autor = v[8] || "Desconocido";
+                    const fecha = v[0], nombre = v[1], imagen = v[3] || "https://via.placeholder.com/400x225/101420/00d4ff?text=Bedrock+Hub", categoria = v[4], autor = v[8] || "User";
 
                     if (esVip(autor)) {
                         moderar(nombre, 'approve', true);
                         return;
                     }
 
-                    grid.innerHTML += `
-                        <div class="mod-card" id="card-${btoa(nombre).replace(/=/g, "")}">
+                    const cardHtml = `
+                        <div class="mod-card" style="animation-delay: ${index * 0.1}s" id="card-${btoa(nombre).substring(0,16)}">
                             <div class="img-container">
                                 <span class="cat-badge">${categoria}</span>
-                                <img src="${imagen}" onerror="this.src='https://via.placeholder.com/300x160'">
+                                <img src="${imagen}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x225/101420/00d4ff?text=Imagen+No+Disponible'">
                             </div>
                             <div class="card-info">
                                 <h3>${nombre}</h3>
                                 <div class="author-info">
-                                    <i class="fas fa-user-circle"></i> <span>${autor}</span>
+                                    <i class="fas fa-user-astronaut"></i> <span>${autor}</span>
                                 </div>
                                 <div class="meta-grid">
-                                    <div class="meta-item"><i class="fas fa-calendar-alt"></i> ${fecha.split(',')[0]}</div>
-                                    <div class="meta-item"><i class="fas fa-clock"></i> ${fecha.split(',')[1] || ''}</div>
+                                    <div class="meta-item"><i class="far fa-calendar"></i> ${fecha.split(',')[0]}</div>
+                                    <div class="meta-item"><i class="far fa-clock"></i> ${fecha.split(',')[1] || '--:--'}</div>
                                 </div>
                             </div>
                             <div class="actions">
-                                <button class="btn btn-approve" onclick="moderar('${nombre}', 'approve')"><i class="fas fa-check"></i> APROBAR</button>
-                                <button class="btn btn-reject" onclick="moderar('${nombre}', 'delete_revision')"><i class="fas fa-trash"></i> QUITAR</button>
+                                <button class="btn btn-approve" onclick="moderar('${nombre}', 'approve')"><i class="fas fa-check-double"></i></button>
+                                <button class="btn btn-reject" onclick="moderar('${nombre}', 'delete_revision')"><i class="fas fa-times"></i></button>
                             </div>
                         </div>`;
+                    grid.insertAdjacentHTML('beforeend', cardHtml);
                 });
-            } catch (error) { grid.innerHTML = '<p style="text-align:center; color:var(--reject);">Error de red</p>'; }
+            } catch (error) { 
+                grid.innerHTML = '<div id="empty-msg">ERROR DE CONEXIÓN DE RED</div>'; 
+            }
         }
 
         async function moderar(nombre, accion, silencioso = false) {
-            if(!silencioso && !confirm(`¿Confirmar ${accion}?`)) return;
-            const cardId = `card-${btoa(nombre).replace(/=/g, "")}`;
+            if(!silencioso && !confirm(`¿Deseas procesar "${nombre}"?`)) return;
+            
+            const cardId = `card-${btoa(nombre).substring(0,16)}`;
             const card = document.getElementById(cardId);
-            if(card) card.style.opacity = "0.3";
+            
+            if(card) {
+                card.style.pointerEvents = "none";
+                card.style.filter = "grayscale(1) blur(2px)";
+                card.style.opacity = "0.5";
+            }
 
             try {
                 await fetch(scriptURL, {
@@ -193,12 +378,21 @@
                     mode: 'no-cors',
                     body: JSON.stringify({ action: accion, nombre: nombre })
                 });
-                if(!silencioso) alert("Procesado con éxito");
-                cargarPendientes(); 
-            } catch (e) { if(card) card.style.opacity = "1"; }
+                if(!silencioso) {
+                    card.classList.add('animate__animated', 'animate__fadeOutScale');
+                    setTimeout(cargarPendientes, 500);
+                }
+            } catch (e) { 
+                if(card) {
+                    card.style.filter = "none";
+                    card.style.opacity = "1";
+                    card.style.pointerEvents = "all";
+                }
+            }
         }
 
-        cargarPendientes();
+        // Ejecutar al cargar
+        window.onload = cargarPendientes;
     </script>
 </body>
 </html>
