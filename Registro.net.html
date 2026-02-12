@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciando Sesión...</title>
+    <style>
+        /* --- Estilos CSS Minimalistas Tema Oscuro --- */
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-color: #3b82f6; /* Azul profesional */
+            --accent-hover: #2563eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .redirect-card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #333;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* Spinner de carga elegante */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            margin: 0 auto 25px auto;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Botón manual por si falla JS */
+        .manual-link {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            border: 1px solid #444;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .manual-link:hover {
+            background-color: #333;
+            border-color: #555;
+        }
+
+        /* Animaciones */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #timer {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="redirect-card">
+        <div class="spinner"></div>
+        <h1>Verificando credenciales</h1>
+        <p>Estamos preparando tu entorno seguro.<br>Serás redirigido en <span id="timer">3</span> segundos.</p>
+        
+        <a href="https://cuty.io/ref/myststart" class="manual-link">
+            Haz clic aquí si no eres redirigido
+        </a>
+    </div>
+
+    <script>
+        // Configuración
+        const targetUrl = "https://cuty.io/ref/myststart";
+        let secondsLeft = 3;
+        const timerElement = document.getElementById('timer');
+
+        // Función de cuenta regresiva
+        const countdown = setInterval(() => {
+            secondsLeft--;
+            timerElement.textContent = secondsLeft;
+
+            if (secondsLeft <= 0) {
+                clearInterval(countdown);
+                window.location.href = targetUrl;
+            }
+        }, 1000);
+
+        // Respaldo: Redirección forzada después de 3.5 segundos por seguridad
+        setTimeout(() => {
+            window.location.href = targetUrl;
+        }, 3500);
+    </script>
+
+</body>
+</html>
