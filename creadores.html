@@ -175,10 +175,10 @@
             width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
             border-radius: 10px; color: white; font-family: var(--font-main); transition: 0.3s;
         }
-        /* Estilo especial para inputs de solo lectura (como versión) */
+        /* Estilo especial para inputs de solo lectura */
         .input-box[readonly] {
             cursor: default;
-            background: rgba(255, 215, 0, 0.05); /* Toque dorado muy sutil */
+            background: rgba(255, 215, 0, 0.05); 
             border-color: rgba(255, 215, 0, 0.2);
             color: var(--text-sec);
             font-weight: 600;
@@ -188,6 +188,17 @@
         .input-box:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 215, 0, 0.1); }
         
         select.input-box { appearance: none; cursor: pointer; }
+
+        /* MENSAJE DE DUPLICADO */
+        .danger-text {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none; /* Oculto por defecto */
+            font-weight: 600;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .btn-primary {
             width: 100%; padding: 15px; background: var(--primary); color: #000;
@@ -262,6 +273,7 @@
             <div class="form-group">
                 <label class="form-label">Nombre del Addon</label>
                 <input type="text" id="edit-nombre" class="input-box">
+                <small id="edit-dupe-msg" class="danger-text"></small>
             </div>
             
             <div class="form-group">
@@ -338,6 +350,7 @@
                     <div class="form-group">
                         <label class="form-label">Título del Contenido</label>
                         <input type="text" id="up-nombre" class="input-box" required placeholder="Ej: Super Swords V2">
+                        <small id="up-dupe-msg" class="danger-text"></small>
                     </div>
                     
                     <div class="form-group">
@@ -397,7 +410,7 @@
     let currentUser = localStorage.getItem('mc_user') || null;
     let modoGestion = null;
     let isRegisterMode = false;
-    let datosLocales = []; // Para el buscador
+    let datosLocales = []; // Para el buscador y detector
 
     // --- SEGURIDAD PRO ---
     document.addEventListener('contextmenu', event => event.preventDefault());
@@ -605,6 +618,10 @@
         
         document.getElementById('edit-desc').value = desc;
         
+        // Limpiamos alertas previas
+        document.getElementById('edit-dupe-msg').style.display = 'none';
+        document.getElementById('btnSaveEdit').disabled = false;
+        
         document.getElementById('editModal').classList.add('show');
     }
 
@@ -662,6 +679,50 @@
         cargarAddons();
         // Reset buscador al cambiar modo
         document.getElementById('searchInput').value = ""; 
+    }
+
+    // --- NUEVA LÓGICA DE DETECCIÓN DE DUPLICADOS ---
+    // Agregamos listeners a los inputs de nombre
+    document.getElementById('up-nombre').addEventListener('input', function() {
+        verificarDuplicado(this, 'up-dupe-msg', 'btnSend', null);
+    });
+
+    document.getElementById('edit-nombre').addEventListener('input', function() {
+        const original = document.getElementById('edit-original-name').value;
+        verificarDuplicado(this, 'edit-dupe-msg', 'btnSaveEdit', original);
+    });
+
+    function verificarDuplicado(inputElement, msgId, btnId, originalName) {
+        const textoIngresado = inputElement.value.trim().toLowerCase();
+        const msgElement = document.getElementById(msgId);
+        const btnElement = document.getElementById(btnId);
+
+        // Reseteo inicial
+        msgElement.style.display = 'none';
+        msgElement.innerText = '';
+        btnElement.disabled = false;
+
+        if (textoIngresado.length < 3) return; // Muy corto para buscar
+
+        // Buscamos coincidencia exacta en datosLocales
+        // Estructura addon: [0:fecha, 1:nombre, ..., 8:autor, ...]
+        const encontrado = datosLocales.find(addon => {
+            const nombreExistente = String(addon[1]).toLowerCase();
+            
+            // Si estamos editando y el nombre es igual al original, no es duplicado, es el mismo.
+            if (originalName && nombreExistente === originalName.toLowerCase()) {
+                return false;
+            }
+
+            return nombreExistente === textoIngresado;
+        });
+
+        if (encontrado) {
+            const autor = encontrado[8]; // El autor está en la posición 8
+            msgElement.innerText = `⚠️ El usuario ${autor} ha publicado este contenido.`;
+            msgElement.style.display = 'block';
+            btnElement.disabled = true; // Bloqueamos el botón
+        }
     }
 </script>
 
