@@ -283,7 +283,7 @@
             </div>
             
             <div class="form-group">
-                <label class="form-label">Link Descarga (Cuty)</label>
+                <label class="form-label">Link Descarga (icut)</label>
                 <input type="text" id="edit-url" class="input-box">
             </div>
             <div class="form-group">
@@ -373,7 +373,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Enlace Directo (Cuty)</label>
+                        <label class="form-label">Enlace Directo (icut)</label>
                         <input type="url" id="up-url" class="input-box" required placeholder="https://cuty.io/...">
                         <small style="color:gray; font-size:0.7rem;">* Solo enlaces verificados permitidos.</small>
                     </div>
@@ -500,7 +500,7 @@
         try {
             if (isRegisterMode) {
                  if(confirm("INFORMACIÓN: Si da error, reintenta con el mismo correo.")) {
-                     window.open("https://cuty.io/ref/myststart", "_blank");
+                     window.open("http://icutlink.com/ref/MystStart", "_blank");
                  }
             }
             const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: isRegisterMode ? "register" : "login", user, pass }) });
@@ -580,7 +580,7 @@
     document.getElementById('uploadForm').onsubmit = async (e) => {
         e.preventDefault();
         const urlInput = document.getElementById('up-url').value;
-        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Error: Solo enlaces Cuty.io"); return; }
+        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Error: Solo enlaces Permitidos"); return; }
         
         const btn = document.getElementById('btnSend');
         btn.disabled = true; btn.innerHTML = 'SUBIENDO...';
@@ -627,7 +627,7 @@
 
     async function procesarEdicion() {
         const urlInput = document.getElementById('edit-url').value;
-        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Enlace inválido."); return; }
+        if (!urlInput.toLowerCase().includes("icutlink.com")) { alert("⚠️ Enlace inválido."); return; }
         
         const btn = document.getElementById('btnSaveEdit');
         btn.disabled = true; btn.innerText = "GUARDANDO...";
