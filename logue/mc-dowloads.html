@@ -3,218 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instalar App Oficial | MC Addons</title>
+    <title>MC Addons Oficial</title>
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffd700">
+    <meta name="description" content="Descarga los mejores complementos para Minecraft Bedrock gratis en Android y PC.">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #ffd700;
-            --accent: #00e676;
-            --danger: #ff4757;
-            --bg-dark: #050505;
-            --glass: rgba(20, 20, 20, 0.9);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #ffffff;
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --bg: #030303;
+            --card-bg: rgba(15, 15, 15, 0.85);
+            --accent: #00ff88;
+            --danger: #ff3e3e;
+            --text: #e0e0e0;
+        }
+
+        /* Bloqueo de selección y cursor */
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 40%);
             color: var(--text);
             font-family: 'Outfit', sans-serif;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
-        .card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
+        /* Partículas de Fondo */
+        #particles-js {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 450px;
+            perspective: 1000px;
+            padding: 20px;
+        }
+
+        /* Tarjeta Principal Estilo Cristal */
+        .app-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 20px var(--gold-glow);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
-        .app-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 22px;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
-            margin-bottom: 15px;
+        /* Brillo animado en el borde */
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--gold));
+            animation: rotate 6s linear infinite;
+            z-index: -1;
+            opacity: 0.3;
         }
 
-        h1 { font-family: 'Orbitron', sans-serif; margin-bottom: 5px; color: var(--primary); }
-        .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 20px; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
 
-        /* ESTADÍSTICAS */
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
+        .app-logo {
+            width: 110px;
+            height: 110px;
+            border-radius: 26px;
             margin-bottom: 20px;
-            background: rgba(255,255,255,0.05);
-            padding: 10px;
-            border-radius: 12px;
+            filter: drop-shadow(0 0 15px var(--gold-glow));
+            animation: float 4s ease-in-out infinite;
         }
-        .stat-item { display: flex; flex-direction: column; align-items: center; }
-        .stat-val { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 1rem; color: #fff; }
-        .stat-label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
 
-        /* BOTONES ACCIÓN */
-        .action-row {
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #fff 30%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .app-info {
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .platforms {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
             justify-content: center;
+            gap: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 25px;
+            color: var(--gold);
         }
-        .btn-vote {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn-vote:hover { background: rgba(255,255,255,0.2); }
-        .btn-vote.active-like { background: var(--accent); color: #000; border-color: var(--accent); }
-        .btn-vote.active-dislike { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-        .btn-download {
-            display: none;
-            width: 100%;
+        /* Estadísticas Profesionales */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
             padding: 15px;
-            background: linear-gradient(45deg, var(--primary), #ffb700);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 25px;
+        }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-num { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900; }
+        .stat-desc { font-size: 0.65rem; text-transform: uppercase; color: #777; margin-top: 4px; }
+
+        /* Botón de Instalación Maestro */
+        .btn-install-main {
+            display: none; /* Se activa vía JS */
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(90deg, #b8860b, var(--gold), #b8860b);
+            background-size: 200% auto;
             color: #000;
             border: none;
-            border-radius: 12px;
+            border-radius: 16px;
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
+            font-size: 1.1rem;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-            animation: pulse 2s infinite;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: 0.4s;
+            margin-bottom: 15px;
+            animation: shine 3s linear infinite;
         }
-        @keyframes pulse { 0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); } 50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); } 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); } }
 
-        .footer { font-size: 0.7rem; color: #555; margin-top: 15px; }
+        .btn-install-main:hover { transform: scale(1.03); filter: brightness(1.2); }
+
+        /* Botones de Voto */
+        .vote-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .btn-vote {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+        .btn-vote:hover { background: rgba(255,255,255,0.15); }
+        .active-like { background: var(--accent) !important; color: #000 !important; }
+        .active-dislike { background: var(--danger) !important; color: #fff !important; }
+
+        .security-badge {
+            margin-top: 25px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0.8;
+        }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shine { to { background-position: 200% center; } }
+
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="card">
-        <img src="https://www.appcreator24.com/srv/imgs/gen/3919563_ico.png?v=3" class="app-icon">
-        <h1>MC ADDONS</h1>
-        <p class="subtitle">Instala la App Oficial</p>
+    <div id="particles-js"></div>
 
-        <div class="stats-container">
-            <div class="stat-item">
-                <span id="stat-dls" class="stat-val">...</span>
-                <span class="stat-label"><i class="fas fa-download"></i> Installs</span>
+    <div class="container">
+        <div class="app-card" id="main-content">
+            <img src="https://www.appcreator24.com/srv/imgs/gen/3919563_ico.png?v=3" class="app-logo" alt="MC Addons">
+            
+            <h1>MC ADDONS</h1>
+            
+            <p class="app-info">
+                La herramienta definitiva para <b>Minecraft Bedrock</b>. 
+                Descarga addons, texturas y mapas premium totalmente gratis.
+            </p>
+
+            <div class="platforms">
+                <span><i class="fab fa-android"></i> Android</span>
+                <span><i class="fab fa-windows"></i> Windows PC</span>
+                <span><i class="fas fa-globe"></i> Web</span>
             </div>
-            <div class="stat-item">
-                <span id="stat-likes" class="stat-val" style="color:var(--accent)">...</span>
-                <span class="stat-label"><i class="fas fa-thumbs-up"></i> Likes</span>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span id="stat-dls" class="stat-num">...</span>
+                    <span class="stat-desc">Installs</span>
+                </div>
+                <div class="stat-box">
+                    <span id="stat-likes" class="stat-num" style="color:var(--accent)">...</span>
+                    <span class="stat-desc">Positive</span>
+                </div>
+                <div class="stat-box">
+                    <span id="stat-dislikes" class="stat-num" style="color:var(--danger)">...</span>
+                    <span class="stat-desc">Negative</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <span id="stat-dislikes" class="stat-val" style="color:var(--danger)">...</span>
-                <span class="stat-label"><i class="fas fa-thumbs-down"></i> Dislikes</span>
+
+            <button id="pwa-install-btn" class="btn-install-main">
+                <i class="fas fa-download"></i> INSTALAR APP
+            </button>
+
+            <div class="vote-row">
+                <button class="btn-vote" id="btn-like" onclick="votar('like')">
+                    <i class="fas fa-heart"></i> Me gusta
+                </button>
+                <button class="btn-vote" id="btn-dislike" onclick="votar('dislike')">
+                    <i class="fas fa-thumbs-down"></i> Disgusto
+                </button>
+            </div>
+
+            <div class="security-badge">
+                <i class="fas fa-shield-check"></i> Conexión Encriptada & Libre de Infecciones
+            </div>
+
+            <div style="margin-top:20px; font-size:0.6rem; color:#555;">
+                © 2026 JR-TechStudios. Myst. <br> Protección Anti-Copia Activa.
             </div>
         </div>
-
-        <div class="action-row">
-            <button class="btn-vote" onclick="votar('like', this)">
-                <i class="fas fa-heart"></i> Me gusta
-            </button>
-            <button class="btn-vote" onclick="votar('dislike', this)">
-                <i class="fas fa-thumbs-down"></i> No me gusta
-            </button>
-        </div>
-
-        <button id="pwa-install-btn" class="btn-download">
-            <i class="fas fa-download"></i> INSTALAR APP
-        </button>
-        <p id="msg-status" style="display:none; color:var(--accent); font-size:0.8rem; margin-top:10px;">¡App Instalada!</p>
-
-        <div class="footer">© 2026 JR-TechStudios. Myst.</div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // --- 1. CONFIGURACIÓN ---
-        // ¡PEGA AQUÍ TU URL DEL SCRIPT DE GOOGLE!
+        // --- CONFIGURACIÓN DE SEGURIDAD ---
+        // Bloquear teclas de desarrollador
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+                return false;
+            }
+        };
+
+        // --- LÓGICA DE DATOS (Google Sheets) ---
         const scriptURL = "https://script.google.com/macros/s/AKfycby3vNGr6QKFMIyl0TdReMuS3UCAEoMxbqO17SKz1OizRp6BgfOxdbqbMqPhBU0d8OQDYw/exec";
 
-        let deferredPrompt;
-        const installBtn = document.getElementById('pwa-install-btn');
-
-        // --- 2. FORMATO K / M (El código que pediste) ---
         function formatNumber(num) {
             if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
             if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
             return num;
         }
 
-        // --- 3. CONECTAR CON GOOGLE SHEETS ---
-        async function cargarEstadisticas() {
+        async function cargarStats() {
             try {
                 const res = await fetch(scriptURL + "?action=read");
                 const data = await res.json();
-                
-                // Actualizar HTML con formato K/M
                 document.getElementById('stat-dls').innerText = formatNumber(data.descargas);
                 document.getElementById('stat-likes').innerText = formatNumber(data.likes);
                 document.getElementById('stat-dislikes').innerText = formatNumber(data.dislikes);
-            } catch (error) {
-                console.error("Error cargando stats", error);
-            }
+            } catch (e) { console.log("Cargando..."); }
         }
 
-        function registrarAccion(tipo) {
-            // Mandar datos a Google Sheets sin esperar respuesta (modo 'no-cors' para evitar errores simples)
-            fetch(scriptURL + "?action=" + tipo, { mode: 'no-cors' })
-                .then(() => console.log(tipo + " registrado"))
-                .catch(e => console.error(e));
+        function registrar(tipo) {
+            fetch(scriptURL + "?action=" + tipo, { mode: 'no-cors' });
         }
 
-        // --- 4. SISTEMA DE VOTOS ---
-        function votar(tipo, btn) {
-            // Evitar votos infinitos guardando en memoria local
-            if(localStorage.getItem('voto_mcaddons')) {
-                alert("Ya has votado anteriormente.");
-                return;
-            }
-
-            // Animación visual
-            if(tipo === 'like') {
-                btn.classList.add('active-like');
-                // Sumar 1 visualmente al instante
-                let el = document.getElementById('stat-likes');
-                let val = parseFloat(el.innerText.replace('K','000').replace('M','000000')) || 0; 
-                el.innerText = formatNumber(val + 1);
-            } else {
-                btn.classList.add('active-dislike');
-            }
-
-            localStorage.setItem('voto_mcaddons', 'true');
-            registrarAccion(tipo);
+        // --- LÓGICA DE VOTOS ---
+        function votar(tipo) {
+            if(localStorage.getItem('mc_voted')) return alert("Ya has valorado esta aplicación.");
+            
+            const btn = tipo === 'like' ? document.getElementById('btn-like') : document.getElementById('btn-dislike');
+            btn.classList.add(tipo === 'like' ? 'active-like' : 'active-dislike');
+            
+            registrar(tipo);
+            localStorage.setItem('mc_voted', 'true');
+            
+            // Actualización visual rápida
+            let el = document.getElementById(tipo === 'like' ? 'stat-likes' : 'stat-dislikes');
+            let val = parseInt(el.innerText) || 0;
+            el.innerText = formatNumber(val + 1);
         }
 
-        // --- 5. SISTEMA PWA ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
-        }
+        // --- SISTEMA PWA (Instalación) ---
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -226,22 +318,30 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                
                 if (outcome === 'accepted') {
-                    console.log('Usuario aceptó instalar');
+                    registrar('descarga');
                     installBtn.style.display = 'none';
-                    document.getElementById('msg-status').style.display = 'block';
-                    
-                    // AQUI SE REGISTRA LA DESCARGA EN LA HOJA DE CÁLCULO
-                    registrarAccion('descarga');
                 }
                 deferredPrompt = null;
             }
         });
 
-        // Cargar números al iniciar
-        window.addEventListener('DOMContentLoaded', cargarEstadisticas);
+        // --- INICIALIZACIÓN ---
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarStats();
+            // Configuración estética de partículas
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": { "value": 40 },
+                    "color": { "value": "#ffd700" },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.2 },
+                    "size": { "value": 3 },
+                    "move": { "enable": true, "speed": 1 }
+                },
+                "interactivity": { "events": { "onhover": { "enable": true, "mode": "repulse" } } }
+            });
+        });
     </script>
 </body>
 </html>
-
