@@ -2,783 +2,246 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#ffd700">
-    <title>MC Addons Studio | Pro Editor</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instalar App Oficial | MC Addons</title>
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffd700">
-<link rel="apple-touch-icon" href="icon-192.png">
-
+    <meta name="theme-color" content="#ffd700">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CORE VARIABLES --- */
         :root {
             --primary: #ffd700;
-            --primary-glow: rgba(255, 215, 0, 0.4);
+            --accent: #00e676;
+            --danger: #ff4757;
             --bg-dark: #050505;
-            --bg-panel: rgba(20, 20, 20, 0.6);
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-sec: #a0a0a0;
-            --danger: #ff3b3b;
-            --success: #00e676;
-            --font-main: 'Outfit', sans-serif;
-            --font-tech: 'Orbitron', sans-serif;
-            --ease: cubic-bezier(0.23, 1, 0.32, 1);
+            --glass: rgba(20, 20, 20, 0.9);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
         }
 
-        /* --- RESET & BASE --- */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body {
-            margin: 0; padding: 0;
             background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(50, 50, 255, 0.05) 0%, transparent 20%);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            user-select: none;
-            -webkit-user-select: none;
+            background-image: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
             height: 100vh;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-        /* --- LOADER --- */
-        #app-loader {
-            position: fixed; inset: 0; background: #000; z-index: 99999;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
-            transition: opacity 0.5s ease;
-        }
-        .loader-spinner {
-            width: 50px; height: 50px; border: 3px solid transparent;
-            border-top-color: var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- UI COMPONENTS --- */
-        button { cursor: pointer; font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 1px; }
-        img { pointer-events: none; -webkit-user-drag: none; }
-
-        /* --- HEADER --- */
-        .app-header {
-            height: 60px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 100;
-        }
-        .header-title { font-family: var(--font-tech); color: var(--primary); font-size: 1.1rem; text-shadow: 0 0 10px var(--primary-glow); }
-        .menu-btn { background: none; border: none; color: white; font-size: 1.4rem; }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            position: fixed; top: 0; left: 0; width: 280px; height: 100%;
-            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px);
-            transform: translateX(-100%); transition: transform 0.4s var(--ease);
-            z-index: 1000; border-right: 1px solid var(--glass-border);
-            display: flex; flex-direction: column;
-        }
-        .sidebar.active { transform: translateX(0); }
-        .sidebar-header { padding: 30px 20px; border-bottom: 1px solid var(--glass-border); }
-        .sidebar-logo { font-family: var(--font-tech); color: var(--primary); font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
-        .nav-list { list-style: none; padding: 20px; margin: 0; }
-        .nav-item { margin-bottom: 10px; }
-        .nav-link {
-            display: flex; align-items: center; gap: 15px; padding: 12px 15px;
-            color: var(--text-sec); text-decoration: none; border-radius: 8px;
-            transition: 0.3s; font-weight: 500;
-        }
-        .nav-link:hover, .nav-link.active { background: rgba(255, 215, 0, 0.1); color: var(--primary); }
-        .nav-link i { width: 20px; text-align: center; }
-
-        /* --- MAIN CONTENT --- */
-        .main-container { flex: 1; overflow-y: auto; padding: 5px; position: relative; }
-        .page-section { display: none; animation: slideUp 0.5s var(--ease); max-width: 1200px; margin: 0 auto; }
-        .page-section.active { display: block; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- SEARCH & CONTROLS --- */
-        .controls-wrapper {
-            position: sticky; top: 0; background: var(--bg-dark); z-index: 50;
-            padding-bottom: 10px; border-bottom: 1px solid var(--glass-border); margin-bottom: 20px;
-        }
-        
-        .search-container {
-            position: relative; margin-bottom: 15px;
-        }
-        .search-container i {
-            position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sec);
-        }
-        .search-input {
-            width: 100%; padding: 12px 12px 12px 45px;
-            background: var(--bg-panel); border: 1px solid var(--glass-border);
-            border-radius: 50px; color: white; font-family: var(--font-main);
-            transition: 0.3s;
-        }
-        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,215,0,0.1); }
-
-        .filter-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .chip {
-            padding: 8px 16px; background: var(--glass); border: 1px solid var(--glass-border);
-            color: var(--text-sec); border-radius: 20px; font-size: 0.8rem; white-space: nowrap;
-            transition: 0.3s;
-        }
-        .chip:hover, .chip.active { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); border-color: var(--primary); }
-
-        /* --- GRID CARDS --- */
-        .grid-layout {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-        }
         .card {
-            background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 16px;
-            overflow: hidden; position: relative; transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-color: rgba(255,215,0,0.3); }
-        
-        .card-img-container { width: 100%; height: 160px; overflow: hidden; position: relative; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card:hover .card-img { transform: scale(1.1); }
-        
-        .card-body { padding: 15px; }
-        .card-title { margin: 0 0 5px 0; font-size: 1rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-sec); margin-top: 10px; }
-        .badge-cat { background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 4px; color: var(--primary); }
-        .badge-ver { color: #aaa; margin-left: 5px; font-size: 0.7rem; }
-        
-        .card-actions-float {
-            position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; z-index: 10;
-        }
-        .mini-btn {
-            width: 32px; height: 32px; border-radius: 50%; border: none; color: white;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            backdrop-filter: blur(5px); transition: 0.2s;
-        }
-        .btn-del { background: rgba(255, 59, 59, 0.8); }
-        .btn-edit { background: rgba(0, 140, 255, 0.8); }
-        .mini-btn:hover { transform: scale(1.1); }
-
-        /* --- FORMS --- */
-        .glass-panel {
-            background: var(--bg-panel); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-label { display: block; margin-bottom: 8px; color: var(--primary); font-size: 0.85rem; font-weight: 600; }
-        .input-box {
-            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
-            border-radius: 10px; color: white; font-family: var(--font-main); transition: 0.3s;
-        }
-        /* Estilo especial para inputs de solo lectura */
-        .input-box[readonly] {
-            cursor: default;
-            background: rgba(255, 215, 0, 0.05); 
-            border-color: rgba(255, 215, 0, 0.2);
-            color: var(--text-sec);
-            font-weight: 600;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
-        textarea.input-box { resize: vertical; min-height: 100px; }
-        .input-box:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 215, 0, 0.1); }
-        
-        select.input-box { appearance: none; cursor: pointer; }
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 22px;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+            margin-bottom: 15px;
+        }
 
-        /* MENSAJE DE DUPLICADO */
-        .danger-text {
-            color: var(--danger);
-            font-size: 0.8rem;
-            margin-top: 5px;
-            display: none; /* Oculto por defecto */
-            font-weight: 600;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        h1 { font-family: 'Orbitron', sans-serif; margin-bottom: 5px; color: var(--primary); }
+        .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 20px; }
 
-        .btn-primary {
-            width: 100%; padding: 15px; background: var(--primary); color: #000;
-            border: none; border-radius: 10px; font-weight: 800; font-size: 1rem;
-            transition: 0.3s; margin-top: 10px; position: relative; overflow: hidden;
+        /* ESTADÍSTICAS */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 12px;
         }
-        .btn-primary:hover:not(:disabled) {
-            background: #fff; box-shadow: 0 0 20px var(--primary); transform: translateY(-2px);
-        }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
-        .btn-secondary {
-            background: transparent; border: 1px solid var(--glass-border); color: var(--text-sec);
-        }
-        .btn-secondary:hover { border-color: white; color: white; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-val { font-family: 'Orbitron', sans-serif; font-weight: bold; font-size: 1rem; color: #fff; }
+        .stat-label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
 
-        /* --- FAB --- */
-        .fab {
-            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-            background: var(--primary); color: #000; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3); border: none; z-index: 900;
-            transition: 0.4s var(--ease);
+        /* BOTONES ACCIÓN */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
         }
-        .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 15px 30px rgba(255, 215, 0, 0.5); }
+        .btn-vote {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-vote:hover { background: rgba(255,255,255,0.2); }
+        .btn-vote.active-like { background: var(--accent); color: #000; border-color: var(--accent); }
+        .btn-vote.active-dislike { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-        /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-            z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s;
+        .btn-download {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--primary), #ffb700);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            animation: pulse 2s infinite;
         }
-        .modal-overlay.show { display: flex; opacity: 1; }
-        .modal-box {
-            background: #111; border: 1px solid var(--primary); width: 90%; max-width: 450px;
-            padding: 30px; border-radius: 20px; text-align: center; position: relative;
-            transform: scale(0.9); transition: 0.3s var(--ease); box-shadow: 0 0 40px rgba(255,215,0,0.1);
-            max-height: 90vh; overflow-y: auto;
-        }
-        .modal-overlay.show .modal-box { transform: scale(1); }
-        
-        .overlay-click { position: absolute; inset: 0; z-index: -1; }
-        .hidden { display: none !important; }
-        .text-link { color: var(--primary); cursor: pointer; text-decoration: underline; }
+        @keyframes pulse { 0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); } 50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); } 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); } }
+
+        .footer { font-size: 0.7rem; color: #555; margin-top: 15px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="app-loader">
-        <div class="loader-spinner"></div>
-        <p style="margin-top:20px; font-family:var(--font-tech); color:var(--text-sec); letter-spacing:2px;">CARGANDO SISTEMA...</p>
-    </div>
+    <div class="card">
+        <img src="https://www.appcreator24.com/srv/imgs/gen/3919563_ico.png?v=3" class="app-icon">
+        <h1>MC ADDONS</h1>
+        <p class="subtitle">Instala la App Oficial</p>
 
-    <div class="overlay-click" id="sidebar-overlay" onclick="toggleSidebar()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999;"></div>
-
-    <div id="authModal" class="modal-overlay">
-        <div class="modal-box">
-            <i class="fas fa-shield-alt" style="font-size:3rem; color:var(--primary); margin-bottom:20px;"></i>
-            <h2 id="authTitle" style="color:white; font-family:var(--font-tech); margin:0 0 20px 0;">ACCESO SEGURO</h2>
-            <div class="form-group"><input type="text" id="auth-user" class="input-box" placeholder="Usuario"></div>
-            <div class="form-group"><input type="password" id="auth-pass" class="input-box" placeholder="Contraseña"></div>
-            <button class="btn-primary" onclick="handleAuth()" id="btnAuth">INGRESAR</button>
-            <p id="authSwitchText" style="font-size:0.9rem; margin-top:20px; color:var(--text-sec);">
-                ¿Nuevo aquí? <span class="text-link" onclick="switchAuth(true)">Crear cuenta</span>
-            </p>
+        <div class="stats-container">
+            <div class="stat-item">
+                <span id="stat-dls" class="stat-val">...</span>
+                <span class="stat-label"><i class="fas fa-download"></i> Installs</span>
+            </div>
+            <div class="stat-item">
+                <span id="stat-likes" class="stat-val" style="color:var(--accent)">...</span>
+                <span class="stat-label"><i class="fas fa-thumbs-up"></i> Likes</span>
+            </div>
+            <div class="stat-item">
+                <span id="stat-dislikes" class="stat-val" style="color:var(--danger)">...</span>
+                <span class="stat-label"><i class="fas fa-thumbs-down"></i> Dislikes</span>
+            </div>
         </div>
-    </div>
 
-    <div id="editModal" class="modal-overlay">
-        <div class="modal-box" style="text-align:left;">
-            <h2 style="color:var(--primary); font-family:var(--font-tech); margin-top:0;">EDITAR CONTENIDO</h2>
-            <input type="hidden" id="edit-original-name">
-            
-            <div class="form-group">
-                <label class="form-label">Nombre del Addon</label>
-                <input type="text" id="edit-nombre" class="input-box">
-                <small id="edit-dupe-msg" class="danger-text"></small>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Versión Minecraft (Automática)</label>
-                <input type="text" id="edit-version" class="input-box" value="1.26.0" readonly>
-                <small style="color:gray; font-size:0.7rem;">* La versión se actualizará a la última disponible.</small>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Link Descarga (Cuty)</label>
-                <input type="text" id="edit-url" class="input-box">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Descripción</label>
-                <textarea id="edit-desc" class="input-box" rows="3" placeholder="Descripción del contenido..."></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Actualizar Imagen (Opcional)</label>
-                <input type="file" id="edit-img" accept="image/*" class="input-box" style="padding:10px;">
-            </div>
-            
-            <button class="btn-primary" onclick="procesarEdicion()" id="btnSaveEdit">GUARDAR CAMBIOS</button>
-            <button class="btn-primary btn-secondary" onclick="closeEditModal()" style="margin-top:10px;">CANCELAR</button>
+        <div class="action-row">
+            <button class="btn-vote" onclick="votar('like', this)">
+                <i class="fas fa-heart"></i> Me gusta
+            </button>
+            <button class="btn-vote" onclick="votar('dislike', this)">
+                <i class="fas fa-thumbs-down"></i> No me gusta
+            </button>
         </div>
+
+        <button id="pwa-install-btn" class="btn-download">
+            <i class="fas fa-download"></i> INSTALAR APP
+        </button>
+        <p id="msg-status" style="display:none; color:var(--accent); font-size:0.8rem; margin-top:10px;">¡App Instalada!</p>
+
+        <div class="footer">© 2026 JR-TechStudios. Myst.</div>
     </div>
 
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo"><i class="fas fa-cube"></i> MC STUDIO</div>
-            <p style="font-size:0.8rem; color:var(--text-sec); margin:5px 0 0 0;">Panel de Creador v2.1</p>
-        </div>
-        <ul class="nav-list">
-            <li class="nav-item"><a href="#" onclick="showPage('home'); toggleSidebar()" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>
-            <li class="nav-item"><a href="#" onclick="showPage('upload'); toggleSidebar()" class="nav-link"><i class="fas fa-cloud-upload-alt"></i> Subir</a></li>
-            
-            <li class="nav-item" id="install-btn-container" style="display:none;">
-    <a href="#" onclick="installApp()" class="nav-link" style="color:var(--success);">
-        <i class="fas fa-download"></i> Instalar App
-    </a>
-</li>
+    <script>
+        // --- 1. CONFIGURACIÓN ---
+        // ¡PEGA AQUÍ TU URL DEL SCRIPT DE GOOGLE!
+        const scriptURL = "https://script.google.com/macros/s/AKfycby3vNGr6QKFMIyl0TdReMuS3UCAEoMxbqO17SKz1OizRp6BgfOxdbqbMqPhBU0d8OQDYw/exec";
 
-            
-            <li class="nav-item" id="logout-item" style="display:none; border-top:1px solid var(--glass-border); margin-top:20px; padding-top:20px;">
-                <a href="#" onclick="logout()" class="nav-link" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Salir</a>
-            </li>
-        </ul>
-    </nav>
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
 
-    <header class="app-header">
-        <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <div class="header-title">DASHBOARD</div>
-        <div style="width:30px;"></div>
-    </header>
+        // --- 2. FORMATO K / M (El código que pediste) ---
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
 
-    <div class="main-container">
-        
-        <main id="home" class="page-section active">
-            
-            <div class="controls-wrapper">
-                <div class="search-container">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre, versión o categoría..." onkeyup="filtrarGrid()">
-                </div>
+        // --- 3. CONECTAR CON GOOGLE SHEETS ---
+        async function cargarEstadisticas() {
+            try {
+                const res = await fetch(scriptURL + "?action=read");
+                const data = await res.json();
+                
+                // Actualizar HTML con formato K/M
+                document.getElementById('stat-dls').innerText = formatNumber(data.descargas);
+                document.getElementById('stat-likes').innerText = formatNumber(data.likes);
+                document.getElementById('stat-dislikes').innerText = formatNumber(data.dislikes);
+            } catch (error) {
+                console.error("Error cargando stats", error);
+            }
+        }
 
-                <div class="filter-bar">
-                    <button class="chip active" id="btn-mode-all" onclick="setGestionMode(null)">Explorar Todo</button>
-                    <button class="chip" id="btn-mode-edit" onclick="setGestionMode('edit')"><i class="fas fa-pen"></i> Editar Mis Addons</button>
-                    <button class="chip" id="btn-mode-del" onclick="setGestionMode('delete')"><i class="fas fa-trash"></i> Borrar Mis Addons</button>
-                </div>
-            </div>
-            
-            <div id="addon-grid" class="grid-layout">
-                </div>
-        </main>
+        function registrarAccion(tipo) {
+            // Mandar datos a Google Sheets sin esperar respuesta (modo 'no-cors' para evitar errores simples)
+            fetch(scriptURL + "?action=" + tipo, { mode: 'no-cors' })
+                .then(() => console.log(tipo + " registrado"))
+                .catch(e => console.error(e));
+        }
 
-        <section id="upload" class="page-section">
-            <div class="glass-panel" style="max-width:600px; margin:0 auto;">
-                <h2 style="text-align:center; color:var(--primary); font-family:var(--font-tech); margin-bottom:30px;">
-                    <i class="fas fa-rocket"></i> PUBLICAR
-                </h2>
-                <form id="uploadForm">
-                    <div class="form-group">
-                        <label class="form-label">Título del Contenido</label>
-                        <input type="text" id="up-nombre" class="input-box" required placeholder="Ej: Super Swords V2">
-                        <small id="up-dupe-msg" class="danger-text"></small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Versión Minecraft (Sistema)</label>
-                        <input type="text" id="up-version" class="input-box" value="1.26.0" readonly>
-                        <small style="color:gray; font-size:0.7rem;">* Bloqueado en la versión más reciente.</small>
-                    </div>
+        // --- 4. SISTEMA DE VOTOS ---
+        function votar(tipo, btn) {
+            // Evitar votos infinitos guardando en memoria local
+            if(localStorage.getItem('voto_mcaddons')) {
+                alert("Ya has votado anteriormente.");
+                return;
+            }
 
-                    <div class="form-group">
-                        <label class="form-label">Categoría</label>
-                        <select id="up-categoria" class="input-box" required>
-                            <option value="Add-On">Add-On (Mod)</option>
-                            <option value="Mapa">Mapa / Mundo</option>
-                            <option value="Skin">Skin / Apariencia</option>
-                            <option value="Texture">Textura / Resource Pack</option>
-                            <option value="Shader">Shader / Gráficos</option>
-                            <option value="Semilla">Semilla (Seed)</option>
-                            <option value="version">Minecraft Version</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Enlace Directo (Cuty)</label>
-                        <input type="url" id="up-url" class="input-box" required placeholder="https://cuty.io/...">
-                        <small style="color:gray; font-size:0.7rem;">* Solo enlaces verificados permitidos.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Descripción Detallada</label>
-                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Escribe aquí de qué trata tu addon, características, cambios, etc."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Imagen de Portada</label>
-                        <div style="position:relative; overflow:hidden; border-radius:10px; border:1px dashed var(--glass-border);">
-                            <input type="file" id="up-img" accept="image/*" required style="width:100%; padding:20px; background:rgba(0,0,0,0.2); color:white;">
-                        </div>
-                    </div>
-
-                    <input type="hidden" id="up-autor">
-
-                    <button type="submit" class="btn-primary" id="btnSend">PUBLICAR AHORA</button>
-                    <button type="button" class="btn-primary btn-secondary" onclick="showPage('home')">CANCELAR</button>
-                </form>
-            </div>
-        </section>
-
-    </div>
-
-    <button class="fab" onclick="showPage('upload')">
-        <i class="fas fa-plus"></i>
-    </button>
-
-<script>
-    // --- VARIABLES GLOBALES ---
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyxezM7lhtD7lmpqg_ww8X3afZ_VEUTH56klo55skV9CJ-0XlW63hAUvyyTyYGWUr8mdQ/exec"; 
-    let currentUser = localStorage.getItem('mc_user') || null;
-    let modoGestion = null;
-    let isRegisterMode = false;
-    let datosLocales = []; // Para el buscador y detector
-
-    // --- SEGURIDAD PRO ---
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || (e.ctrlKey && (e.keyCode == 85 || e.keyCode == 83))) return false;
-    };
-    
-    // --- INTERFAZ ---
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('app-loader').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('app-loader').style.display = 'none';
-                checkSession();
-            }, 500);
-        }, 800);
-    });
-
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        const isActive = sidebar.classList.contains('active');
-        if (isActive) { sidebar.classList.remove('active'); overlay.style.display = 'none'; } 
-        else { sidebar.classList.add('active'); overlay.style.display = 'block'; }
-    }
-
-    function showPage(pageId) {
-        document.querySelectorAll('.page-section').forEach(sec => {
-            sec.classList.remove('active');
-            sec.style.display = 'none';
-        });
-        const target = document.getElementById(pageId);
-        target.style.display = 'block';
-        setTimeout(() => target.classList.add('active'), 10);
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-    }
-
-    // --- LOGICA BUSCADOR ---
-    function filtrarGrid() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const cards = document.querySelectorAll('.card');
-        
-        cards.forEach(card => {
-            // Buscamos en el título y en atributos data escondidos
-            const nombre = card.querySelector('.card-title').innerText.toLowerCase();
-            const cat = card.querySelector('.badge-cat').innerText.toLowerCase();
-            const ver = card.getAttribute('data-version') ? card.getAttribute('data-version').toLowerCase() : '';
-            
-            if (nombre.includes(query) || cat.includes(query) || ver.includes(query)) {
-                card.style.display = 'block';
+            // Animación visual
+            if(tipo === 'like') {
+                btn.classList.add('active-like');
+                // Sumar 1 visualmente al instante
+                let el = document.getElementById('stat-likes');
+                let val = parseFloat(el.innerText.replace('K','000').replace('M','000000')) || 0; 
+                el.innerText = formatNumber(val + 1);
             } else {
-                card.style.display = 'none';
+                btn.classList.add('active-dislike');
             }
-        });
-    }
 
-    // --- LOGICA DATOS ---
-    function checkSession() {
-        if (!currentUser) {
-            document.getElementById('authModal').classList.add('show');
-        } else {
-            document.getElementById('authModal').classList.remove('show');
-            document.getElementById('up-autor').value = currentUser;
-            document.getElementById('logout-item').style.display = 'block';
-            cargarAddons();
+            localStorage.setItem('voto_mcaddons', 'true');
+            registrarAccion(tipo);
         }
-    }
 
-    function switchAuth(mode) {
-        isRegisterMode = mode;
-        document.getElementById('authTitle').innerText = mode ? "CREAR CUENTA" : "ACCESO SEGURO";
-        document.getElementById('btnAuth').innerText = mode ? "REGISTRARME" : "INGRESAR";
-        document.getElementById('authSwitchText').innerHTML = mode ? 
-            `¿Ya tienes cuenta? <span class="text-link" onclick="switchAuth(false)">Ingresar</span>` :
-            `¿Nuevo aquí? <span class="text-link" onclick="switchAuth(true)">Crear cuenta</span>`;
-    }
+        // --- 5. SISTEMA PWA ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+        }
 
-    async function handleAuth() {
-        const user = document.getElementById('auth-user').value.trim();
-        const pass = document.getElementById('auth-pass').value.trim();
-        const btn = document.getElementById('btnAuth');
-        
-        if(!user || !pass) return alert("Por favor completa los campos.");
-        
-        btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> ...';
-        
-        try {
-            if (isRegisterMode) {
-                 if(confirm("INFORMACIÓN: Si da error, reintenta con el mismo correo.")) {
-                     window.open("https://cuty.io/ref/myststart", "_blank");
-                 }
-            }
-            const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: isRegisterMode ? "register" : "login", user, pass }) });
-            const text = await response.text();
-            
-            if (text.includes("OK") || text.includes("LOGIN_OK") || text.includes("REGISTER_OK")) {
-                localStorage.setItem('mc_user', user);
-                location.reload();
-            } else { alert("Error: " + text); }
-        } catch (e) { alert("Error de conexión."); }
-        finally { btn.disabled = false; btn.innerText = isRegisterMode ? "REGISTRARME" : "INGRESAR"; }
-    }
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
 
-    function logout() { localStorage.removeItem('mc_user'); location.reload(); }
-
-    async function cargarAddons() {
-        const grid = document.getElementById('addon-grid');
-        grid.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-sec); width:100%; grid-column:1/-1;">
-                            <div class="loader-spinner" style="margin:0 auto 20px auto; width:30px; height:30px; border-width:2px;"></div>
-                            Sincronizando...
-                          </div>`;
-        try {
-            const response = await fetch(scriptURL + "?action=read");
-            const data = await response.json();
-            grid.innerHTML = "";
-            datosLocales = data; // Guardamos copia para referencia
-            
-            if(data.length === 0) {
-                 grid.innerHTML = `<p style="text-align:center; width:100%; color:gray;">No hay contenido aún.</p>`;
-                 return;
-            }
-
-            data.reverse().forEach((addon, index) => {
-                const [fecha, nombre, link, img, cat, likes, dls, seed, autor, version, descripcion] = addon;
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
                 
-                if (modoGestion && autor !== currentUser) return;
-                
-                const delay = index * 0.05;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.style.animation = `slideUp 0.5s ease forwards ${delay}s`;
-                card.style.opacity = '0';
-                
-                // Guardamos datos en atributos para búsqueda
-                card.setAttribute('data-version', version || '');
-                card.setAttribute('data-desc', descripcion || '');
-
-                let actions = "";
-                // Botones flotantes según modo
-                if (modoGestion === 'delete' && autor === currentUser) {
-                    actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${nombre}')"><i class="fas fa-trash"></i></button></div>`;
+                if (outcome === 'accepted') {
+                    console.log('Usuario aceptó instalar');
+                    installBtn.style.display = 'none';
+                    document.getElementById('msg-status').style.display = 'block';
+                    
+                    // AQUI SE REGISTRA LA DESCARGA EN LA HOJA DE CÁLCULO
+                    registrarAccion('descarga');
                 }
-                if (modoGestion === 'edit' && autor === currentUser) {
-                    // Pasamos todos los datos a la función de editar
-                    actions = `<div class="card-actions-float"><button class="mini-btn btn-edit" onclick="openEditModal('${nombre}', '${link}', '${version || ''}', '${(descripcion || '').replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i></button></div>`;
-                }
-
-                card.innerHTML = `
-                    ${actions}
-                    <div class="card-img-container">
-                        <img src="${img}" class="card-img" alt="${nombre}" loading="lazy">
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">${nombre}</h3>
-                        <div class="card-meta">
-                            <span class="badge-cat">${cat}</span>
-                            <span class="badge-ver">${version ? 'v'+version : ''}</span>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        } catch (e) { grid.innerHTML = "<p style='color:var(--danger); text-align:center;'>Error al cargar los datos.</p>"; console.error(e); }
-    }
-
-    // --- UPLOAD CON CAMPO VERSIÓN FIJO ---
-    document.getElementById('uploadForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const urlInput = document.getElementById('up-url').value;
-        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Error: Solo enlaces Cuty.io"); return; }
-        
-        const btn = document.getElementById('btnSend');
-        btn.disabled = true; btn.innerHTML = 'SUBIENDO...';
-        
-        // Obtiene el valor fijo de versión (1.26.0)
-        const fixedVersion = document.getElementById('up-version').value;
-
-        const payload = {
-            action: "add",
-            nombre: document.getElementById('up-nombre').value,
-            category: document.getElementById('up-categoria').value,
-            link: urlInput,
-            subidoPor: currentUser,
-            img: await toBase64(document.getElementById('up-img').files[0]),
-            version: fixedVersion, // Se envía 1.26.0
-            descripcion: document.getElementById('up-desc').value
-        };
-        
-        try {
-            await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-            alert("✅ Publicado con éxito!");
-            location.reload();
-        } catch (e) { alert("❌ Error al subir."); btn.disabled = false; btn.innerText = "PUBLICAR AHORA"; }
-    };
-
-    // --- EDICIÓN CON CAMPO VERSIÓN FIJO ---
-    function openEditModal(nombre, link, version, desc) {
-        document.getElementById('edit-original-name').value = nombre;
-        document.getElementById('edit-nombre').value = nombre;
-        document.getElementById('edit-url').value = link;
-        
-        // NOTA: Ignoramos la versión vieja que llega como parámetro.
-        // Forzamos que la versión en el modal sea la fija (1.26.0).
-        document.getElementById('edit-version').value = "1.26.0";
-        
-        document.getElementById('edit-desc').value = desc;
-        
-        // Limpiamos alertas previas
-        document.getElementById('edit-dupe-msg').style.display = 'none';
-        document.getElementById('btnSaveEdit').disabled = false;
-        
-        document.getElementById('editModal').classList.add('show');
-    }
-
-    async function procesarEdicion() {
-        const urlInput = document.getElementById('edit-url').value;
-        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Enlace inválido."); return; }
-        
-        const btn = document.getElementById('btnSaveEdit');
-        btn.disabled = true; btn.innerText = "GUARDANDO...";
-        
-        // Obtiene el valor fijo (1.26.0)
-        const fixedVersion = document.getElementById('edit-version').value;
-
-        const payload = {
-            action: "edit",
-            nombreOriginal: document.getElementById('edit-original-name').value,
-            nuevoNombre: document.getElementById('edit-nombre').value,
-            nuevaUrl: urlInput,
-            usuario: currentUser,
-            nuevaVersion: fixedVersion, // Se actualiza/fuerza a 1.26.0
-            nuevaDescripcion: document.getElementById('edit-desc').value
-        };
-        
-        const nuevaImg = document.getElementById('edit-img').files[0];
-        if(nuevaImg) payload.nuevaImg = await toBase64(nuevaImg);
-        
-        try {
-            await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-            alert("✅ Actualizado!");
-            location.reload();
-        } catch (e) { alert("Error al editar"); btn.disabled = false; btn.innerText = "GUARDAR CAMBIOS"; }
-    }
-
-    function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
-
-    async function eliminarAddon(nombre) {
-        if(!confirm("¿Eliminar definitivamente?")) return;
-        await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "delete", nombre, usuario: currentUser }) });
-        cargarAddons();
-    }
-
-    const toBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = e => reject(e);
-    });
-
-    function setGestionMode(mode) {
-        modoGestion = mode;
-        document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-        if(!mode) document.getElementById('btn-mode-all').classList.add('active');
-        else if(mode === 'edit') document.getElementById('btn-mode-edit').classList.add('active');
-        else document.getElementById('btn-mode-del').classList.add('active');
-        cargarAddons();
-        // Reset buscador al cambiar modo
-        document.getElementById('searchInput').value = ""; 
-    }
-
-    // --- NUEVA LÓGICA DE DETECCIÓN DE DUPLICADOS ---
-    // Agregamos listeners a los inputs de nombre
-    document.getElementById('up-nombre').addEventListener('input', function() {
-        verificarDuplicado(this, 'up-dupe-msg', 'btnSend', null);
-    });
-
-    document.getElementById('edit-nombre').addEventListener('input', function() {
-        const original = document.getElementById('edit-original-name').value;
-        verificarDuplicado(this, 'edit-dupe-msg', 'btnSaveEdit', original);
-    });
-
-    function verificarDuplicado(inputElement, msgId, btnId, originalName) {
-        const textoIngresado = inputElement.value.trim().toLowerCase();
-        const msgElement = document.getElementById(msgId);
-        const btnElement = document.getElementById(btnId);
-
-        // Reseteo inicial
-        msgElement.style.display = 'none';
-        msgElement.innerText = '';
-        btnElement.disabled = false;
-
-        if (textoIngresado.length < 3) return; // Muy corto para buscar
-
-        // Buscamos coincidencia exacta en datosLocales
-        // Estructura addon: [0:fecha, 1:nombre, ..., 8:autor, ...]
-        const encontrado = datosLocales.find(addon => {
-            const nombreExistente = String(addon[1]).toLowerCase();
-            
-            // Si estamos editando y el nombre es igual al original, no es duplicado, es el mismo.
-            if (originalName && nombreExistente === originalName.toLowerCase()) {
-                return false;
+                deferredPrompt = null;
             }
-
-            return nombreExistente === textoIngresado;
         });
 
-        if (encontrado) {
-            const autor = encontrado[8]; // El autor está en la posición 8
-            msgElement.innerText = `⚠️ El usuario ${autor} ha publicado este contenido.`;
-            msgElement.style.display = 'block';
-            btnElement.disabled = true; // Bloqueamos el botón
-        }
-    }
-    
-        // --- PWA LOGIC ---
-    let deferredPrompt;
-    
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW registrado: ', reg.scope))
-                .catch(err => console.log('SW falló: ', err));
-        });
-    }
-
-    // Detectar si se puede instalar
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevenir que Chrome muestre el aviso automático inmediatamente si prefieres controlarlo
-        e.preventDefault();
-        deferredPrompt = e;
-        // Mostrar botón de instalar en el menú
-        document.getElementById('install-btn-container').style.display = 'block';
-    });
-
-    async function installApp() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response: ${outcome}`);
-            deferredPrompt = null;
-            // Ocultar botón tras instalar
-            if(outcome === 'accepted'){
-                document.getElementById('install-btn-container').style.display = 'none';
-            }
-        }
-    }
-
-    // Si ya está instalada, ocultar botón
-    window.addEventListener('appinstalled', () => {
-        document.getElementById('install-btn-container').style.display = 'none';
-        console.log('App instalada');
-    });
-
-</script>
-
+        // Cargar números al iniciar
+        window.addEventListener('DOMContentLoaded', cargarEstadisticas);
+    </script>
 </body>
 </html>
+
