@@ -1,7 +1,7 @@
 {
   "name": "MC Add-Ons App",
   "short_name": "MC Add-Ons",
-  "start_url": "./index1.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
