@@ -818,6 +818,59 @@
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
+
+function showPage(pageId) {
+    // Esto es lo nuevo: guarda la página en el historial
+    if (pageId !== 'home') {
+        history.pushState({ page: pageId }, "");
+    }
+
+    document.querySelectorAll('.page-section').forEach(sec => {
+        sec.classList.remove('active');
+        sec.style.display = 'none';
+    });
+    
+    const target = document.getElementById(pageId);
+    if(target) {
+        target.style.display = 'block';
+        setTimeout(() => target.classList.add('active'), 10);
+    }
+}
+
+// Al cargar la web, marcamos que estamos en el inicio
+window.addEventListener('load', () => {
+    history.replaceState({ page: 'home' }, "");
+});
+
+// Esta función se activa cuando presionas el botón "atrás" del móvil
+window.addEventListener('popstate', (event) => {
+    const modalDetalles = document.getElementById('modal-detalles');
+    const exitModal = document.getElementById('exit-modal');
+
+    // 1. Si el modal de detalles está abierto, solo lo cerramos
+    if (modalDetalles.classList.contains('active')) {
+        cerrarDetalles();
+        history.pushState({ page: 'home' }, ""); // Mantenemos al usuario dentro
+    } 
+    // 2. Si estamos en el inicio (home), mostramos el aviso de salida
+    else {
+        exitModal.style.display = 'flex';
+        history.pushState({ page: 'home' }, ""); // Evitamos que se salga hasta que confirme
+    }
+});
+
     </script>
+
+<div id="exit-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:9999; display:none; justify-content:center; align-items:center;">
+    <div style="background:#121212; border:2px solid #FFD700; padding:25px; border-radius:15px; text-align:center; width:80%; max-width:320px; font-family:'Outfit', sans-serif;">
+        <h3 style="color:#FFD700; margin-top:0;">¿SALIR DE LA APP?</h3>
+        <p style="color:#fff; font-size:0.9rem;">¿Estás seguro de que quieres cerrar MC Addons?</p>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="window.close()" style="flex:1; padding:10px; background:#FFD700; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">SÍ, SALIR</button>
+            <button onclick="document.getElementById('exit-modal').style.display='none'" style="flex:1; padding:10px; background:transparent; border:1px solid #555; color:#fff; border-radius:8px; cursor:pointer;">NO</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
