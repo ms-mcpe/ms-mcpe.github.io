@@ -554,17 +554,6 @@
 
     <div id="toast">Acción completada</div>
 
-    <div id="exit-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:9999; display:none; justify-content:center; align-items:center;">
-        <div style="background:#121212; border:2px solid #FFD700; padding:25px; border-radius:15px; text-align:center; width:80%; max-width:320px; font-family:'Outfit', sans-serif;">
-            <h3 style="color:#FFD700; margin-top:0;">¿SALIR DE LA APP?</h3>
-            <p style="color:#fff; font-size:0.9rem;">¿Estás seguro de que quieres cerrar MC Addons?</p>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="window.close()" style="flex:1; padding:10px; background:#FFD700; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">SÍ, SALIR</button>
-                <button onclick="document.getElementById('exit-modal').style.display='none'" style="flex:1; padding:10px; background:transparent; border:1px solid #555; color:#fff; border-radius:8px; cursor:pointer;">NO</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         // --- SEGURIDAD AVANZADA ---
         (function() {
@@ -587,8 +576,6 @@
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.body.setAttribute('data-theme', savedTheme);
             cargarDatos();
-            // Iniciar historial para controlar botón atrás
-            history.pushState({view: 'main'}, "");
         });
 
         async function cargarDatos() {
@@ -705,16 +692,19 @@
 
         // --- GENERADOR DE CARDS ---
         function getCardHTML(item, styleOverride = '') {
+            // j (9) = version, k (10) = descripcion
             const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = item;
             
             const isSeed = cat.toLowerCase().includes('semilla');
             const displayVersion = version ? version : 'V1.0';
             const displayDesc = desc ? desc : 'Sin descripción disponible.';
 
+            // CAMBIO: Si es semilla copia, si no, es botón "DETALLES"
             let btnAction;
             if(isSeed) {
                 btnAction = `<button class="btn-action" onclick="copiar('${seed}')"><i class="fas fa-copy"></i> COPIAR SEED</button>`;
             } else {
+                // El ID es item[0], nos aseguramos de pasarlo como string
                 btnAction = `<button class="btn-action" onclick="abrirDetalles('${id}')">DETALLES</button>`;
             }
 
@@ -746,67 +736,49 @@
 
         // --- NUEVA FUNCIÓN: ABRIR DETALLES ---
         function abrirDetalles(id) {
+            // Buscar el addon en la DB usando el ID (posición 0)
+            // Se usa '==' para coincidir aunque sea string/number
             const item = db.find(x => x[0] == id);
             if(!item) return;
 
-            // AGREGADO: Guardar estado en historial para el botón atrás
-            history.pushState({view: 'modal'}, "");
-
+            // Mapeo de datos: [0]ID, [1]Nombre, [2]Link, [3]Img, ... [9]Version(J), [10]Desc(K)
             const nombre = item[1];
             const link = item[2];
             const img = item[3];
             const version = item[9] || '1.0';
             const descripcion = item[10] || 'No hay descripción detallada disponible para este complemento.';
 
+            // Rellenar el modal
             document.getElementById('md-img').src = img;
             document.getElementById('md-nombre').innerText = nombre;
             document.getElementById('md-version').innerText = 'Versión: ' + version;
             document.getElementById('md-desc').innerText = descripcion;
             
+            // Configurar botón final de descarga
             const btnDown = document.getElementById('md-btn-download');
             btnDown.href = link;
             btnDown.onclick = function() {
                 registrar('download', nombre);
             };
 
+            // Mostrar modal
             document.getElementById('modal-detalles').classList.add('active');
         }
 
         function cerrarDetalles() {
-            const modal = document.getElementById('modal-detalles');
-            if(modal.classList.contains('active')) {
-                modal.classList.remove('active');
-                // Solo volvemos atrás si el cierre fue manual (clic en X), 
-                // para limpiar el estado del historial.
-                if(window.history.state && window.history.state.view === 'modal') {
-                    history.back();
-                }
-            }
+            document.getElementById('modal-detalles').classList.remove('active');
         }
 
         // --- INTERACCIONES ---
         function toggleSidebar(forceState) {
             const sb = document.getElementById('sidebar');
             const ov = document.getElementById('overlay');
-            
-            const isOpening = (forceState === true) || (forceState === undefined && !sb.classList.contains('active'));
-
             if (forceState !== undefined) {
                 if (forceState) { sb.classList.add('active'); ov.classList.add('active'); }
                 else { sb.classList.remove('active'); ov.classList.remove('active'); }
             } else {
                 sb.classList.toggle('active');
                 ov.classList.toggle('active');
-            }
-
-            // AGREGADO: Si se abre, añadir estado al historial
-            if(isOpening) {
-                history.pushState({view: 'sidebar'}, "");
-            } else {
-                // Si se cierra manualmente y hay un estado de sidebar, limpiar historial
-                if(window.history.state && window.history.state.view === 'sidebar') {
-                    history.back();
-                }
             }
         }
 
@@ -846,30 +818,6 @@
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
-
-        // --- LÓGICA DE BOTÓN ATRÁS (MÓVIL) ---
-        window.addEventListener('popstate', function(event) {
-            const modalDetalles = document.getElementById('modal-detalles');
-            const sidebar = document.getElementById('sidebar');
-            const exitModal = document.getElementById('exit-modal');
-
-            // 1. Si el modal de detalles está abierto, cerrarlo
-            if (modalDetalles.classList.contains('active')) {
-                modalDetalles.classList.remove('active');
-            } 
-            // 2. Si el sidebar está abierto, cerrarlo
-            else if (sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-                document.getElementById('overlay').classList.remove('active');
-            } 
-            // 3. Si no hay nada abierto, mostrar aviso de salida
-            else {
-                exitModal.style.display = 'flex';
-                // Volver a empujar el estado para que el próximo "atrás" no cierre la web de golpe
-                history.pushState({view: 'main'}, "");
-            }
-        });
     </script>
-
 </body>
 </html>
