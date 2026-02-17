@@ -1,11 +1,11 @@
 {
-  "name": "MC Addons Studio",
-  "short_name": "MC Studio",
-  "start_url": "./index.html",
+  "name": "MC Addons (app)",
+  "short_name": "MC Add-Ons",
+  "start_url": "./index1.html",
   "display": "standalone",
   "background_color": "#050505",
-  "theme_color": "#ffd700",
-  "description": "Editor profesional de Addons para Minecraft Bedrock.",
+  "theme_color": "#050505",
+  "description": "Plataforma de Addons para Minecraft Bedrock.",
   "orientation": "portrait",
   "icons": [
     {
