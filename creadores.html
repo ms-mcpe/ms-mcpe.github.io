@@ -580,7 +580,7 @@
     document.getElementById('uploadForm').onsubmit = async (e) => {
         e.preventDefault();
         const urlInput = document.getElementById('up-url').value;
-        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Error: Solo enlaces Permitidos"); return; }
+        if (!urlInput.toLowerCase().includes("icutlink")) { alert("⚠️ Error: Solo enlaces Permitidos"); return; }
         
         const btn = document.getElementById('btnSend');
         btn.disabled = true; btn.innerHTML = 'SUBIENDO...';
