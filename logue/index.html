@@ -700,7 +700,7 @@
         // --- GENERADOR DE CARDS ---
         function getCardHTML(item, styleOverride = '') {
             // j (9) = version, k (10) = descripcion
-            const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = item;
+            const [id, nombre, link, img, cat, likes, dls, seed, version, desc] = item;
             
             const isSeed = cat.toLowerCase().includes('semilla');
             const displayVersion = version ? version : 'V1.0';
@@ -731,7 +731,7 @@
                     <h3 class="card-title">${nombre}</h3>
                   
                     <div class="card-footer">
-                        <span>By ${autor || 'Admin'}</span>
+                        <span>By MC Addons</span>
                         <div class="stat" onclick="like(this, '${nombre}')">
                             <i class="fas fa-heart"></i> <span>${likes || 0}</span>
                         </div>
