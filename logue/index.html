@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MC Addons Socials</title>
+    <title>MC Addons Web</title>
     <style>
         /* Estilos base */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* Anti-selección de texto */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
         }
         
         body, html {
@@ -27,7 +33,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* Oculto inicialmente hasta que pase la prueba */
+            display: none; 
         }
 
         iframe {
@@ -91,7 +97,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <div id="status-overlay">
         <div id="loader" class="loader"></div>
@@ -110,6 +116,58 @@
     </div>
 
     <script>
+        (function() {
+            // URL a la que se redirigirá si intentan inspeccionar
+            const redirectUrl = "https://www.google.com";
+
+            // 1. Bloqueo de teclas de atajo (F12, Ctrl+Shift+I, Ctrl+U, etc.)
+            document.addEventListener('keydown', function(e) {
+                if (
+                    e.keyCode === 123 || // F12
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || // Ctrl+Shift+I/J/C
+                    (e.ctrlKey && e.keyCode === 85) || // Ctrl+U (Ver código fuente)
+                    (e.ctrlKey && e.keyCode === 83)    // Ctrl+S (Guardar página)
+                ) {
+                    e.preventDefault();
+                    window.location.href = redirectUrl;
+                    return false;
+                }
+            });
+
+            // 2. Detección de apertura de consola por cambio de dimensiones
+            // Si la diferencia entre el ancho/alto externo e interno es grande, la consola está abierta.
+            setInterval(function() {
+                const threshold = 160;
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                
+                if (widthThreshold || heightThreshold) {
+                    window.location.href = redirectUrl;
+                }
+            }, 1000);
+
+            // 3. Protección mediante 'debugger' infinito
+            // Esto congela la pestaña si la consola se llega a abrir de alguna forma.
+            (function() {
+                (function recursive() {
+                    try {
+                        (function check(i) {
+                            if (("" + i / i).length !== 1 || i % 20 === 0) {
+                                (function() {}).constructor("debugger")();
+                            } else {
+                                debugger;
+                            }
+                            check(++i);
+                        })(0);
+                    } catch (e) {
+                        setTimeout(recursive, 5);
+                    }
+                })();
+            })();
+        })();
+    </script>
+
+    <script>
         async function checkAdBlocker() {
             const statusText = document.getElementById('status-text');
             const policyText = document.getElementById('policy-text');
@@ -118,25 +176,19 @@
             const appContainer = document.getElementById('main-app');
             const overlay = document.getElementById('status-overlay');
 
-            // Intentamos cargar un script común de publicidad
             const googleAdsUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
             
             try {
-                // Realizamos una petición fetch al dominio de Google Ads
-                // mode: 'no-cors' evita problemas de permisos, solo nos importa si llega o falla
                 const response = await fetch(new Request(googleAdsUrl), {
                     method: 'HEAD',
                     mode: 'no-cors',
                     cache: 'no-store'
                 });
 
-                // Si llegamos aquí, el DNS y el navegador permitieron la conexión
-                // Ocultamos el cargador y mostramos la app
                 overlay.style.display = 'none';
                 appContainer.style.display = 'block';
 
             } catch (error) {
-                // Si entra al catch, es muy probable que la conexión fuera rechazada por un AdBlocker/DNS
                 loader.style.display = 'none';
                 errorIcon.style.display = 'block';
                 statusText.style.display = 'none';
@@ -145,7 +197,6 @@
             }
         }
 
-        // Ejecutar la comprobación al cargar la página
         window.onload = checkAdBlocker;
     </script>
 
