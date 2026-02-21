@@ -4,111 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MC Addons Web</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
     <style>
-        /* Estilos base */
+        :root {
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --accent: #00ff88;
+            --danger: #ff3e3e;
+        }
+
+        /* Estilos base (Mantenidos) */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            /* Anti-selección de texto */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-user-drag: none;
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-user-select: none; user-select: none; -webkit-user-drag: none;
         }
         
         body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-            font-family: sans-serif;
+            width: 100%; height: 100%; overflow: hidden;
+            background-color: #000; font-family: 'Outfit', sans-serif;
+        }
+
+        #particles-js {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
 
         /* Contenedor del Iframe */
         .chat-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none; 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; z-index: 5;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
 
-        /* Pantalla de Carga y Bloqueo */
+        /* Pantalla de Carga Estilo Constelación */
         #status-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            text-align: center;
-            padding: 20px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+            color: #fff; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            text-align: center; padding: 20px;
         }
 
         .loader {
-            border: 4px solid #333;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            border: 3px solid rgba(255, 215, 0, 0.1);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px var(--gold));
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .error-icon {
+        /* Alerta/Modal de Instalación Profesional */
+        #install-modal {
             display: none;
-            font-size: 50px;
-            color: #ff4d4d;
-            margin-bottom: 20px;
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            width: 90%; max-width: 400px;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 24px; padding: 25px;
+            z-index: 10000; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
 
-        #status-text {
-            font-size: 18px;
-            max-width: 500px;
-            line-height: 1.5;
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; margin: 15px 0; background: rgba(255,255,255,0.05);
+            padding: 10px; border-radius: 15px;
         }
 
-        .policy-desc {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #aaa;
-            display: none;
+        .stat-num { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; display: block; }
+        .stat-desc { font-size: 0.6rem; color: #888; text-transform: uppercase; }
+
+        .btn-install-main {
+            width: 100%; padding: 15px;
+            background: linear-gradient(90deg, #b8860b, var(--gold));
+            border: none; border-radius: 12px; color: #000;
+            font-family: 'Orbitron', sans-serif; font-weight: 900;
+            cursor: pointer; margin-top: 10px;
         }
+
+        .policy-desc { margin-top: 15px; font-size: 14px; color: #aaa; display: none; }
+        .error-icon { display: none; font-size: 50px; color: #ff4d4d; margin-bottom: 20px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
+    <div id="particles-js"></div>
+
     <div id="status-overlay">
-        <div id="loader" class="loader"></div>
-        <div id="error-icon" class="error-icon">🚫</div>
-        <div id="status-text">Cargando app...</div>
+        <div id="loader" class="loader" style="z-index: 2;"></div>
+        <div id="error-icon" class="error-icon"></div>
+        <div id="status-text" style="z-index: 2; font-family: 'Orbitron'; letter-spacing: 2px;">CARGANDO MC ADDONS...</div>
+        
         <div id="policy-text" class="policy-desc">
             <strong>Acceso restringido: Bloqueador detectado.</strong><br><br>
-            Los bloqueadores de anuncios no están permitidos por razones de plataforma. 
-            Al tenerlo activo, puede afectar a la aplicación; aunque ella misma no contenga anuncios, 
-            los DNS, bloqueadores de anuncios, VPN y demás pueden afectar el correcto funcionamiento de la plataforma.
+            Los DNS, bloqueadores de anuncios o VPN afectan el correcto funcionamiento. Desactívalos para continuar.
         </div>
+    </div>
+
+    <div id="install-modal">
+        <h3 style="color: var(--gold); font-family: 'Orbitron'; font-size: 1rem;">DESCARGA NUESTRA APP</h3>
+        <p style="font-size: 0.8rem; margin-top: 5px; color: #ccc;">Disfruta de un acceso directo y optimizado en tu Android.</p>
+        
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span id="stat-dls" class="stat-num">...</span>
+                <span class="stat-desc">Installs</span>
+            </div>
+            <div class="stat-box">
+                <span id="stat-likes" class="stat-num" style="color:var(--accent)">...</span>
+                <span class="stat-desc">Likes</span>
+            </div>
+            <div class="stat-box">
+                <span id="stat-dislikes" class="stat-num" style="color:var(--danger)">...</span>
+                <span class="stat-desc">Disgustos</span>
+            </div>
+        </div>
+
+        <button id="pwa-install-btn" class="btn-install-main">
+            <i class="fas fa-download"></i> INSTALAR AHORA
+        </button>
+        <button onclick="this.parentElement.style.display='none'" style="background:none; border:none; color:#555; margin-top:10px; font-size:0.7rem; cursor:pointer;">Continuar en la web</button>
     </div>
 
     <div id="main-app" class="chat-container">
@@ -117,88 +140,92 @@
 
     <script>
         (function() {
-            // URL a la que se redirigirá si intentan inspeccionar
             const redirectUrl = "https://www.google.com";
-
-            // 1. Bloqueo de teclas de atajo (F12, Ctrl+Shift+I, Ctrl+U, etc.)
             document.addEventListener('keydown', function(e) {
-                if (
-                    e.keyCode === 123 || // F12
-                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || // Ctrl+Shift+I/J/C
-                    (e.ctrlKey && e.keyCode === 85) || // Ctrl+U (Ver código fuente)
-                    (e.ctrlKey && e.keyCode === 83)    // Ctrl+S (Guardar página)
-                ) {
-                    e.preventDefault();
-                    window.location.href = redirectUrl;
-                    return false;
+                if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault(); window.location.href = redirectUrl;
                 }
             });
-
-            // 2. Detección de apertura de consola por cambio de dimensiones
-            // Si la diferencia entre el ancho/alto externo e interno es grande, la consola está abierta.
             setInterval(function() {
-                const threshold = 160;
-                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-                
-                if (widthThreshold || heightThreshold) {
+                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
                     window.location.href = redirectUrl;
                 }
             }, 1000);
-
-            // 3. Protección mediante 'debugger' infinito
-            // Esto congela la pestaña si la consola se llega a abrir de alguna forma.
-            (function() {
-                (function recursive() {
-                    try {
-                        (function check(i) {
-                            if (("" + i / i).length !== 1 || i % 20 === 0) {
-                                (function() {}).constructor("debugger")();
-                            } else {
-                                debugger;
-                            }
-                            check(++i);
-                        })(0);
-                    } catch (e) {
-                        setTimeout(recursive, 5);
-                    }
-                })();
-            })();
         })();
     </script>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        async function checkAdBlocker() {
-            const statusText = document.getElementById('status-text');
-            const policyText = document.getElementById('policy-text');
-            const loader = document.getElementById('loader');
-            const errorIcon = document.getElementById('error-icon');
-            const appContainer = document.getElementById('main-app');
-            const overlay = document.getElementById('status-overlay');
+        const scriptURL = "https://script.google.com/macros/s/AKfycby3vNGr6QKFMIyl0TdReMuS3UCAEoMxbqO17SKz1OizRp6BgfOxdbqbMqPhBU0d8OQDYw/exec";
+        let deferredPrompt;
 
-            const googleAdsUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-            
+        function formatNumber(num) {
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        async function cargarStats() {
             try {
-                const response = await fetch(new Request(googleAdsUrl), {
-                    method: 'HEAD',
-                    mode: 'no-cors',
-                    cache: 'no-store'
-                });
+                const res = await fetch(scriptURL + "?action=read");
+                const data = await res.json();
+                document.getElementById('stat-dls').innerText = formatNumber(data.descargas);
+                document.getElementById('stat-likes').innerText = formatNumber(data.likes);
+                document.getElementById('stat-dislikes').innerText = formatNumber(data.dislikes);
+            } catch (e) { console.log("Cargando..."); }
+        }
 
-                overlay.style.display = 'none';
-                appContainer.style.display = 'block';
+        // Sistema de Instalación
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Solo mostrar si no está en modo "standalone" (ya instalada)
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                document.getElementById('install-modal').style.display = 'block';
+            }
+        });
 
+        document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    fetch(scriptURL + "?action=descarga", { mode: 'no-cors' });
+                    document.getElementById('install-modal').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // AdBlocker y Fondo
+        async function checkAdBlocker() {
+            const googleAdsUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+            try {
+                await fetch(new Request(googleAdsUrl), { method: 'HEAD', mode: 'no-cors' });
+                document.getElementById('status-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
             } catch (error) {
-                loader.style.display = 'none';
-                errorIcon.style.display = 'block';
-                statusText.style.display = 'none';
-                policyText.style.display = 'block';
-                console.log("AdBlock detectado o error de conexión:", error);
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('error-icon').style.display = 'block';
+                document.getElementById('status-text').style.display = 'none';
+                document.getElementById('policy-text').style.display = 'block';
             }
         }
 
-        window.onload = checkAdBlocker;
+        window.onload = () => {
+            checkAdBlocker();
+            cargarStats();
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": { "value": 60 },
+                    "color": { "value": "#ffd700" },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.3 },
+                    "size": { "value": 2 },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#ffd700", "opacity": 0.1, "width": 1 },
+                    "move": { "enable": true, "speed": 1.5 }
+                }
+            });
+        };
     </script>
-
 </body>
 </html>
