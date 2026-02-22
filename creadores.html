@@ -175,14 +175,6 @@
             width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
             border-radius: 10px; color: white; font-family: var(--font-main); transition: 0.3s;
         }
-        /* Estilo especial para inputs de solo lectura */
-        .input-box[readonly] {
-            cursor: default;
-            background: rgba(255, 215, 0, 0.05); 
-            border-color: rgba(255, 215, 0, 0.2);
-            color: var(--text-sec);
-            font-weight: 600;
-        }
 
         textarea.input-box { resize: vertical; min-height: 100px; }
         .input-box:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 215, 0, 0.1); }
@@ -239,7 +231,6 @@
         .modal-overlay.show .modal-box { transform: scale(1); }
         
         .overlay-click { position: absolute; inset: 0; z-index: -1; }
-        .hidden { display: none !important; }
         .text-link { color: var(--primary); cursor: pointer; text-decoration: underline; }
     </style>
 </head>
@@ -269,27 +260,40 @@
         <div class="modal-box" style="text-align:left;">
             <h2 style="color:var(--primary); font-family:var(--font-tech); margin-top:0;">EDITAR CONTENIDO</h2>
             <input type="hidden" id="edit-original-name">
+            <input type="hidden" id="edit-cat">
             
             <div class="form-group">
-                <label class="form-label">Nombre del Addon</label>
+                <label class="form-label">Nombre del Contenido</label>
                 <input type="text" id="edit-nombre" class="input-box">
                 <small id="edit-dupe-msg" class="danger-text"></small>
             </div>
             
             <div class="form-group">
-                <label class="form-label">Versión Minecraft (Automática)</label>
-                <input type="text" id="edit-version" class="input-box" value="1.26.0" readonly>
-                <small style="color:gray; font-size:0.7rem;">* La versión se actualizará a la última disponible.</small>
+                <label class="form-label">Versión Minecraft</label>
+                <select id="edit-version" class="input-box">
+                    <option value="26.0">26.0</option>
+                    <option value="1.26+">1.26+</option>
+                </select>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label">Link Descarga (cuty)</label>
-                <input type="text" id="edit-url" class="input-box">
+
+            <div id="edit-group-general">
+                <div class="form-group">
+                    <label class="form-label">Link Descarga (cuty)</label>
+                    <input type="text" id="edit-url" class="input-box">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea id="edit-desc" class="input-box" rows="3" placeholder="Descripción del contenido..."></textarea>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Descripción</label>
-                <textarea id="edit-desc" class="input-box" rows="3" placeholder="Descripción del contenido..."></textarea>
+
+            <div id="edit-group-seed" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">Código de la Semilla</label>
+                    <input type="text" id="edit-seed-code" class="input-box" placeholder="Ej: -8293749281">
+                </div>
             </div>
+
             <div class="form-group">
                 <label class="form-label">Actualizar Imagen (Opcional)</label>
                 <input type="file" id="edit-img" accept="image/*" class="input-box" style="padding:10px;">
@@ -354,14 +358,16 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Versión Minecraft (Sistema)</label>
-                        <input type="text" id="up-version" class="input-box" value="1.26.0" readonly>
-                        <small style="color:gray; font-size:0.7rem;">* Bloqueado en la versión más reciente.</small>
+                        <label class="form-label">Versión Minecraft</label>
+                        <select id="up-version" class="input-box" required>
+                            <option value="26.0">26.0</option>
+                            <option value="1.26+">1.26+</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Categoría</label>
-                        <select id="up-categoria" class="input-box" required>
+                        <select id="up-categoria" class="input-box" required onchange="toggleFormFields('up')">
                             <option value="Add-On">Add-On (Mod)</option>
                             <option value="Mapa">Mapa / Mundo</option>
                             <option value="Skin">Skin / Apariencia</option>
@@ -372,15 +378,23 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Enlace Directo (cuty)</label>
-                        <input type="url" id="up-url" class="input-box" required placeholder="https://cuty.io/...">
-                        <small style="color:gray; font-size:0.7rem;">* Solo enlaces verificados permitidos.</small>
+                    <div id="up-group-general">
+                        <div class="form-group">
+                            <label class="form-label">Enlace Directo (cuty)</label>
+                            <input type="url" id="up-url" class="input-box" required placeholder="https://cuty.io/...">
+                            <small style="color:gray; font-size:0.7rem;">* Solo enlaces verificados permitidos.</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción Detallada</label>
+                            <textarea id="up-desc" class="input-box" required rows="4" placeholder="Escribe aquí de qué trata tu addon, características, cambios, etc."></textarea>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Descripción Detallada</label>
-                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Escribe aquí de qué trata tu addon, características, cambios, etc."></textarea>
+                    <div id="up-group-seed" style="display:none;">
+                        <div class="form-group">
+                            <label class="form-label">Código de la Semilla</label>
+                            <input type="text" id="up-seed-code" class="input-box" placeholder="Ej: -8293749281">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -448,13 +462,37 @@
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
     }
 
+    // --- NUEVA LÓGICA DE FORMULARIOS (SEMILLA VS GENERAL) ---
+    function toggleFormFields(prefix, forceCat = null) {
+        const cat = forceCat || document.getElementById(`${prefix}-categoria`)?.value || document.getElementById('edit-cat').value;
+        const generalGrp = document.getElementById(`${prefix}-group-general`);
+        const seedGrp = document.getElementById(`${prefix}-group-seed`);
+        
+        if (cat === "Semilla") {
+            generalGrp.style.display = 'none';
+            seedGrp.style.display = 'block';
+            if (prefix === 'up') {
+                document.getElementById('up-url').required = false;
+                document.getElementById('up-desc').required = false;
+                document.getElementById('up-seed-code').required = true;
+            }
+        } else {
+            generalGrp.style.display = 'block';
+            seedGrp.style.display = 'none';
+            if (prefix === 'up') {
+                document.getElementById('up-url').required = true;
+                document.getElementById('up-desc').required = true;
+                document.getElementById('up-seed-code').required = false;
+            }
+        }
+    }
+
     // --- LOGICA BUSCADOR ---
     function filtrarGrid() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.card');
         
         cards.forEach(card => {
-            // Buscamos en el título y en atributos data escondidos
             const nombre = card.querySelector('.card-title').innerText.toLowerCase();
             const cat = card.querySelector('.badge-cat').innerText.toLowerCase();
             const ver = card.getAttribute('data-version') ? card.getAttribute('data-version').toLowerCase() : '';
@@ -526,7 +564,7 @@
             const response = await fetch(scriptURL + "?action=read");
             const data = await response.json();
             grid.innerHTML = "";
-            datosLocales = data; // Guardamos copia para referencia
+            datosLocales = data; 
             
             if(data.length === 0) {
                  grid.innerHTML = `<p style="text-align:center; width:100%; color:gray;">No hay contenido aún.</p>`;
@@ -544,18 +582,15 @@
                 card.style.animation = `slideUp 0.5s ease forwards ${delay}s`;
                 card.style.opacity = '0';
                 
-                // Guardamos datos en atributos para búsqueda
                 card.setAttribute('data-version', version || '');
                 card.setAttribute('data-desc', descripcion || '');
 
                 let actions = "";
-                // Botones flotantes según modo
                 if (modoGestion === 'delete' && autor === currentUser) {
                     actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${nombre}')"><i class="fas fa-trash"></i></button></div>`;
                 }
                 if (modoGestion === 'edit' && autor === currentUser) {
-                    // Pasamos todos los datos a la función de editar
-                    actions = `<div class="card-actions-float"><button class="mini-btn btn-edit" onclick="openEditModal('${nombre}', '${link}', '${version || ''}', '${(descripcion || '').replace(/'/g, "\\'")}')"><i class="fas fa-pen"></i></button></div>`;
+                    actions = `<div class="card-actions-float"><button class="mini-btn btn-edit" onclick="openEditModal('${nombre}', '${link}', '${version || ''}', '${(descripcion || '').replace(/'/g, "\\'")}', '${cat}', '${seed || ''}')"><i class="fas fa-pen"></i></button></div>`;
                 }
 
                 card.innerHTML = `
@@ -576,27 +611,34 @@
         } catch (e) { grid.innerHTML = "<p style='color:var(--danger); text-align:center;'>Error al cargar los datos.</p>"; console.error(e); }
     }
 
-    // --- UPLOAD CON CAMPO VERSIÓN FIJO ---
+    // --- UPLOAD ---
     document.getElementById('uploadForm').onsubmit = async (e) => {
         e.preventDefault();
+        
+        const cat = document.getElementById('up-categoria').value;
         const urlInput = document.getElementById('up-url').value;
-        if (!urlInput.toLowerCase().includes("cuty")) { alert("⚠️ Error: Solo enlaces Permitidos"); return; }
+        
+        // Excluimos la validación de URL si es semilla
+        if (cat !== "Semilla" && !urlInput.toLowerCase().includes("cuty")) { 
+            alert("⚠️ Error: Solo enlaces Permitidos"); 
+            return; 
+        }
         
         const btn = document.getElementById('btnSend');
         btn.disabled = true; btn.innerHTML = 'SUBIENDO...';
         
-        // Obtiene el valor fijo de versión (1.26.0)
-        const fixedVersion = document.getElementById('up-version').value;
+        const versionSeleccionada = document.getElementById('up-version').value;
 
         const payload = {
             action: "add",
             nombre: document.getElementById('up-nombre').value,
-            category: document.getElementById('up-categoria').value,
-            link: urlInput,
+            category: cat,
+            link: cat === "Semilla" ? "SEMILLA" : urlInput,
             subidoPor: currentUser,
             img: await toBase64(document.getElementById('up-img').files[0]),
-            version: fixedVersion, // Se envía 1.26.0
-            descripcion: document.getElementById('up-desc').value
+            version: versionSeleccionada,
+            descripcion: cat === "Semilla" ? "Semilla" : document.getElementById('up-desc').value,
+            seed: cat === "Semilla" ? document.getElementById('up-seed-code').value : ""
         };
         
         try {
@@ -606,19 +648,29 @@
         } catch (e) { alert("❌ Error al subir."); btn.disabled = false; btn.innerText = "PUBLICAR AHORA"; }
     };
 
-    // --- EDICIÓN CON CAMPO VERSIÓN FIJO ---
-    function openEditModal(nombre, link, version, desc) {
+    // --- EDICIÓN ---
+    function openEditModal(nombre, link, version, desc, cat, seed) {
         document.getElementById('edit-original-name').value = nombre;
         document.getElementById('edit-nombre').value = nombre;
-        document.getElementById('edit-url').value = link;
+        document.getElementById('edit-cat').value = cat; // Guardar categoría internamente
         
-        // NOTA: Ignoramos la versión vieja que llega como parámetro.
-        // Forzamos que la versión en el modal sea la fija (1.26.0).
-        document.getElementById('edit-version').value = "1.26.0";
+        // Asignar la versión en el select. Si es una versión antigua, forzará 26.0
+        const verSelect = document.getElementById('edit-version');
+        if([...verSelect.options].some(o => o.value === version)) {
+            verSelect.value = version;
+        } else {
+            verSelect.value = "26.0";
+        }
         
-        document.getElementById('edit-desc').value = desc;
+        toggleFormFields('edit', cat);
+
+        if (cat === "Semilla") {
+            document.getElementById('edit-seed-code').value = seed || "";
+        } else {
+            document.getElementById('edit-url').value = link;
+            document.getElementById('edit-desc').value = desc;
+        }
         
-        // Limpiamos alertas previas
         document.getElementById('edit-dupe-msg').style.display = 'none';
         document.getElementById('btnSaveEdit').disabled = false;
         
@@ -626,23 +678,28 @@
     }
 
     async function procesarEdicion() {
+        const cat = document.getElementById('edit-cat').value;
         const urlInput = document.getElementById('edit-url').value;
-        if (!urlInput.toLowerCase().includes("cuty.io")) { alert("⚠️ Enlace inválido."); return; }
+        
+        if (cat !== "Semilla" && !urlInput.toLowerCase().includes("cuty.io")) { 
+            alert("⚠️ Enlace inválido."); 
+            return; 
+        }
         
         const btn = document.getElementById('btnSaveEdit');
         btn.disabled = true; btn.innerText = "GUARDANDO...";
         
-        // Obtiene el valor fijo (1.26.0)
-        const fixedVersion = document.getElementById('edit-version').value;
+        const versionSeleccionada = document.getElementById('edit-version').value;
 
         const payload = {
             action: "edit",
             nombreOriginal: document.getElementById('edit-original-name').value,
             nuevoNombre: document.getElementById('edit-nombre').value,
-            nuevaUrl: urlInput,
+            nuevaUrl: cat === "Semilla" ? "SEMILLA" : urlInput,
             usuario: currentUser,
-            nuevaVersion: fixedVersion, // Se actualiza/fuerza a 1.26.0
-            nuevaDescripcion: document.getElementById('edit-desc').value
+            nuevaVersion: versionSeleccionada,
+            nuevaDescripcion: cat === "Semilla" ? "Semilla" : document.getElementById('edit-desc').value,
+            nuevaSeed: cat === "Semilla" ? document.getElementById('edit-seed-code').value : ""
         };
         
         const nuevaImg = document.getElementById('edit-img').files[0];
@@ -677,12 +734,10 @@
         else if(mode === 'edit') document.getElementById('btn-mode-edit').classList.add('active');
         else document.getElementById('btn-mode-del').classList.add('active');
         cargarAddons();
-        // Reset buscador al cambiar modo
         document.getElementById('searchInput').value = ""; 
     }
 
-    // --- NUEVA LÓGICA DE DETECCIÓN DE DUPLICADOS ---
-    // Agregamos listeners a los inputs de nombre
+    // --- LÓGICA DE DETECCIÓN DE DUPLICADOS ---
     document.getElementById('up-nombre').addEventListener('input', function() {
         verificarDuplicado(this, 'up-dupe-msg', 'btnSend', null);
     });
@@ -697,34 +752,28 @@
         const msgElement = document.getElementById(msgId);
         const btnElement = document.getElementById(btnId);
 
-        // Reseteo inicial
         msgElement.style.display = 'none';
         msgElement.innerText = '';
         btnElement.disabled = false;
 
-        if (textoIngresado.length < 3) return; // Muy corto para buscar
+        if (textoIngresado.length < 3) return; 
 
-        // Buscamos coincidencia exacta en datosLocales
-        // Estructura addon: [0:fecha, 1:nombre, ..., 8:autor, ...]
         const encontrado = datosLocales.find(addon => {
             const nombreExistente = String(addon[1]).toLowerCase();
-            
-            // Si estamos editando y el nombre es igual al original, no es duplicado, es el mismo.
             if (originalName && nombreExistente === originalName.toLowerCase()) {
                 return false;
             }
-
             return nombreExistente === textoIngresado;
         });
 
         if (encontrado) {
-            const autor = encontrado[8]; // El autor está en la posición 8
+            const autor = encontrado[8]; 
             msgElement.innerText = `⚠️ El usuario ${autor} ha publicado este contenido.`;
             msgElement.style.display = 'block';
-            btnElement.disabled = true; // Bloqueamos el botón
+            btnElement.disabled = true; 
         }
     }
 </script>
 
 </body>
-    </html>
+</html>
