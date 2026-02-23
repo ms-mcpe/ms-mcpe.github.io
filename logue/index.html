@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MC Addons Web</title>
+    <title>MC Addons app | Download</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -60,81 +60,127 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Alerta/Modal de Instalación Profesional */
+        /* --- NUEVO ESTILO MODAL PANTALLA COMPLETA --- */
         #install-modal {
-            display: none;
-            position: fixed; bottom: 20px; left: 50%;
-            transform: translateX(-50%);
-            width: 90%; max-width: 400px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-radius: 24px; padding: 25px;
-            z-index: 10000; text-align: center;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(255, 215, 0, 0.05);
-            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: none; /* Se activa con JS */
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Fondo oscuro transparente */
+            backdrop-filter: blur(8px); /* Efecto borroso detrás */
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center; justify-content: center;
+            padding: 20px;
+            /* Flexbox para centrar la tarjeta */
+            display: none; 
         }
 
-        @keyframes slideUp {
-            from { transform: translate(-50%, 100%); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
+        /* La tarjeta interna */
+        .modal-card {
+            width: 100%; max-width: 400px;
+            background: linear-gradient(160deg, rgba(20,20,20,1) 0%, rgba(10,10,10,0.95) 100%);
+            border: 1px solid var(--gold);
+            border-radius: 24px; padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.15), inset 0 0 20px rgba(255, 215, 0, 0.05);
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .stats-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 10px; margin: 15px 0 20px 0; background: rgba(255,255,255,0.03);
-            padding: 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);
+            gap: 10px; margin: 20px 0 25px 0; 
+            background: rgba(255,255,255,0.03);
+            padding: 15px; border-radius: 18px; 
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
-        .stat-num { font-family: 'Orbitron', sans-serif; font-size: 1rem; display: block; font-weight: 700; transition: 0.3s ease; }
-        .stat-desc { font-size: 0.65rem; color: #888; text-transform: uppercase; font-weight: 600; letter-spacing: 1px;}
+        /* CAMBIO: Color blanco forzado para los números */
+        .stat-num { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 1.1rem; 
+            display: block; 
+            font-weight: 700; 
+            color: #ffffff !important; /* Texto blanco */
+            transition: 0.3s ease; 
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+        
+        .stat-desc { 
+            font-size: 0.65rem; color: #888; 
+            text-transform: uppercase; font-weight: 600; 
+            letter-spacing: 1px; margin-top: 5px;
+        }
 
-        /* --- NUEVOS BOTONES DE LIKE / DISLIKE --- */
+        /* --- BOTONES DE LIKE / DISLIKE --- */
         .vote-container {
-            display: flex; gap: 10px; margin-bottom: 15px;
+            display: flex; gap: 12px; margin-bottom: 20px;
         }
 
         .btn-vote {
-            flex: 1; padding: 12px 10px; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; background: rgba(255,255,255,0.03);
-            color: #ccc; font-family: 'Outfit', sans-serif; font-size: 0.85rem;
+            flex: 1; padding: 14px 10px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; background: rgba(255,255,255,0.05);
+            color: #ccc; font-family: 'Outfit', sans-serif; font-size: 0.9rem;
             font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
-        .btn-vote i { font-size: 1rem; transition: transform 0.3s ease; }
+        .btn-vote i { font-size: 1.1rem; transition: transform 0.3s ease; }
 
         .btn-vote.like:hover, .btn-vote.like.active { 
             background: rgba(0, 255, 136, 0.15); border-color: var(--accent); color: var(--accent); 
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
         }
         .btn-vote.like:hover i { transform: translateY(-3px) scale(1.1); }
 
         .btn-vote.dislike:hover, .btn-vote.dislike.active { 
             background: rgba(255, 62, 62, 0.15); border-color: var(--danger); color: var(--danger); 
+            box-shadow: 0 0 15px rgba(255, 62, 62, 0.2);
         }
         .btn-vote.dislike:hover i { transform: translateY(3px) scale(1.1); }
 
         .btn-vote:active { transform: scale(0.95); }
-        .btn-vote:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-vote:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         /* -------------------------------------- */
 
         .btn-install-main {
-            width: 100%; padding: 16px;
+            width: 100%; padding: 18px;
             background: linear-gradient(135deg, #b8860b, var(--gold));
-            border: none; border-radius: 14px; color: #000;
-            font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 1px;
+            border: none; border-radius: 16px; color: #000;
+            font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 1.5px;
+            font-size: 1rem;
             cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 4px 15px var(--gold-glow);
+            box-shadow: 0 0 20px var(--gold-glow);
+            position: relative; overflow: hidden;
         }
 
-        .btn-install-main:active { transform: scale(0.97); box-shadow: 0 2px 10px var(--gold-glow); }
+        .btn-install-main::after {
+            content: ''; position: absolute; top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg) translate(-100%, -100%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            100% { transform: rotate(45deg) translate(100%, 100%); }
+        }
+
+        .btn-install-main:active { transform: scale(0.97); box-shadow: 0 0 10px var(--gold-glow); }
 
         .btn-skip {
-            background: none; border: none; color: #666; margin-top: 15px;
-            font-size: 0.75rem; cursor: pointer; text-decoration: underline;
-            font-family: 'Outfit', sans-serif; transition: color 0.3s ease;
+            background: none; border: none; color: #666; margin-top: 20px;
+            font-size: 0.8rem; cursor: pointer; text-decoration: none;
+            border-bottom: 1px solid transparent;
+            font-family: 'Outfit', sans-serif; transition: all 0.3s ease;
         }
-        .btn-skip:hover { color: #aaa; }
+        .btn-skip:hover { color: #fff; border-bottom-color: #fff; }
 
         .policy-desc { margin-top: 15px; font-size: 14px; color: #aaa; display: none; line-height: 1.5; }
         .error-icon { display: none; font-size: 50px; color: #ff4d4d; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(255,77,77,0.5)); }
@@ -156,39 +202,47 @@
     </div>
 
     <div id="install-modal">
-        <h3 style="color: var(--gold); font-family: 'Orbitron'; font-size: 1.1rem; letter-spacing: 1px;">DESCARGA LA APP</h3>
-        <p style="font-size: 0.8rem; margin-top: 8px; color: #999;">Disfruta de un acceso directo y optimizado.</p>
-        
-        <div class="stats-grid">
-            <div class="stat-box">
-                <span id="stat-dls" class="stat-num">...</span>
-                <span class="stat-desc">Installs</span>
+        <div class="modal-card">
+            <h3 style="color: var(--gold); font-family: 'Orbitron'; font-size: 1.3rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
+                DESCARGA LA APP
+            </h3>
+            <p style="font-size: 0.85rem; margin-top: 8px; color: #bbb;">
+                Disfruta de un acceso directo y optimizado.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span id="stat-dls" class="stat-num">...</span>
+                    <span class="stat-desc">Installs</span>
+                </div>
+                <div class="stat-box">
+                    <span id="stat-likes" class="stat-num">...</span>
+                    <span class="stat-desc">Likes</span>
+                </div>
+                <div class="stat-box">
+                    <span id="stat-dislikes" class="stat-num">...</span>
+                    <span class="stat-desc">Dislikes</span>
+                </div>
             </div>
-            <div class="stat-box">
-                <span id="stat-likes" class="stat-num" style="color:var(--accent)">...</span>
-                <span class="stat-desc">Likes</span>
-            </div>
-            <div class="stat-box">
-                <span id="stat-dislikes" class="stat-num" style="color:var(--danger)">...</span>
-                <span class="stat-desc">Dislikes</span>
-            </div>
-        </div>
 
-        <div class="vote-container">
-            <button id="btn-like" class="btn-vote like" onclick="registrarVoto('like')">
-                <i class="fas fa-thumbs-up"></i> Genial
+            <div class="vote-container">
+                <button id="btn-like" class="btn-vote like" onclick="registrarVoto('like')">
+                    <i class="fas fa-thumbs-up"></i> Genial
+                </button>
+                <button id="btn-dislike" class="btn-vote dislike" onclick="registrarVoto('dislike')">
+                    <i class="fas fa-thumbs-down"></i> Malo
+                </button>
+            </div>
+
+            <button id="pwa-install-btn" class="btn-install-main">
+                <i class="fas fa-download" style="margin-right: 8px;"></i> INSTALAR AHORA
             </button>
-            <button id="btn-dislike" class="btn-vote dislike" onclick="registrarVoto('dislike')">
-                <i class="fas fa-thumbs-down"></i> Malo
+            
+            <br>
+            <button class="btn-skip" onclick="document.getElementById('install-modal').style.display='none'">
+                Continuar en la versión web
             </button>
         </div>
-
-        <button id="pwa-install-btn" class="btn-install-main">
-            <i class="fas fa-download"></i> INSTALAR AHORA
-        </button>
-        <button class="btn-skip" onclick="document.getElementById('install-modal').style.display='none'">
-            Continuar en la versión web
-        </button>
     </div>
 
     <div id="main-app" class="chat-container">
@@ -229,6 +283,11 @@
                 document.getElementById('stat-dls').innerText = formatNumber(data.descargas);
                 document.getElementById('stat-likes').innerText = formatNumber(data.likes);
                 document.getElementById('stat-dislikes').innerText = formatNumber(data.dislikes);
+                
+                // Asegurar colores dinámicos (aunque forzamos blanco en CSS, esto mantiene lógica de colores de acento si se desea)
+                document.getElementById('stat-likes').style.color = 'var(--accent)';
+                document.getElementById('stat-dislikes').style.color = 'var(--danger)';
+                // El de installs se queda blanco por CSS
             } catch (e) { console.log("Cargando métricas..."); }
         }
 
@@ -258,25 +317,26 @@
             bloquearBotonesVoto(tipo);
             localStorage.setItem('mc_addons_voto', tipo);
 
-            // Efecto visual fluido: sumar 1 al instante en pantalla (si no está formateado en K)
+            // Efecto visual fluido
             const statElement = document.getElementById(tipo === 'like' ? 'stat-likes' : 'stat-dislikes');
             let currentText = statElement.innerText;
             if(!currentText.includes('K') && currentText !== '...') {
                 statElement.innerText = parseInt(currentText) + 1;
             }
 
-            // Enviar petición a Google Apps Script en segundo plano
+            // Enviar petición
             fetch(scriptURL + "?action=" + tipo, { mode: 'no-cors' })
                 .catch(err => console.error("Error al registrar voto:", err));
         }
         // ---------------------------------------
 
-        // Sistema de Instalación PWA (Intacto)
+        // Sistema de Instalación PWA
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             if (!window.matchMedia('(display-mode: standalone)').matches) {
-                document.getElementById('install-modal').style.display = 'block';
+                // NOTA: Usamos display flex para centrar
+                document.getElementById('install-modal').style.display = 'flex';
             }
         });
 
@@ -311,7 +371,7 @@
         window.onload = () => {
             checkAdBlocker();
             cargarStats();
-            verificarVotoPrevio(); // Verificar si ya votó antes
+            verificarVotoPrevio(); 
             particlesJS('particles-js', {
                 "particles": {
                     "number": { "value": 60 },
