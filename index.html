@@ -2,250 +2,332 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-  <meta name="google-adsense-account" content="ca-pub-3345712294617095">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comunidades Oficiales</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MS-MCPE Official - JR TechStudios</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --wa-color: #25D366;
-            --fb-color: #1877F2;
-            --bg-dark: #050505;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --mc-bg: #0f0f0f;
+            --mc-panel: #C6C6C6;
+            --mc-inner: #212121;
+            --mc-green: #388E3C;
+            --mc-blue: #1976D2;
+            --mc-red: #D32F2F;
+            --font: 'VT323', monospace;
         }
 
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            cursor: default;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: white;
-            overflow-x: hidden;
+            margin: 0;
+            background: var(--mc-bg);
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Fondo de Constelaciones */
-        #constellation-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #111 0%, #050505 100%);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            text-align: center;
-            padding: 40px 20px;
-            z-index: 1;
-        }
-
-        h2.section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 40px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        .communities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            justify-content: center;
-        }
-
-        .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 40px 30px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
             overflow: hidden;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-            transition: 0.5s;
-            pointer-events: none;
+        /* Contenedor Minecraft Profesional */
+        .window {
+            width: 95%;
+            max-width: 450px;
+            background: var(--mc-panel);
+            border: 4px solid #000;
+            padding: 4px;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            image-rendering: pixelated;
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        .inner {
+            background: var(--mc-inner);
+            border: 2px solid #555;
+            border-top-color: #000;
+            border-left-color: #000;
+            padding: 35px 20px;
+            text-align: center;
+            position: relative;
         }
 
-        .card i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            transition: 0.3s;
+        .logo-container {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 20px;
+            position: relative;
         }
 
-        /* Estilos específicos por marca */
-        .whatsapp:hover i { color: var(--wa-color); text-shadow: 0 0 20px var(--wa-color); }
-        .facebook:hover i { color: var(--fb-color); text-shadow: 0 0 20px var(--fb-color); }
-
-        .card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
+        .logo {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 10px 0 rgba(0,0,0,0.5));
         }
 
-        .card p {
+        h1 {
+            margin: 0;
+            font-size: 2.8rem;
+            text-shadow: 4px 4px 0 #000;
+            letter-spacing: 2px;
+            color: #FFF;
+        }
+
+        .tagline {
+            color: #00FF00;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        /* Grid de Estadísticas Reales */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            background: #000;
+            border: 2px solid #555;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #111;
+            padding: 15px 0;
+            border: 1px solid #222;
+        }
+
+        .stat-num {
+            display: block;
+            font-size: 2rem;
+            color: #FFD700;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .stat-label {
             font-size: 0.9rem;
-            color: #aaa;
-            line-height: 1.6;
-        }
-
-        .btn-join {
-            margin-top: 25px;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
+            color: #666;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border: none;
-            transition: 0.3s;
-            cursor: pointer;
         }
 
-        .wa-btn { background: var(--wa-color); color: #fff; }
-        .fb-btn { background: var(--fb-color); color: #fff; }
+        /* Botonera Estilo Bedrock UI */
+        .btn {
+            width: 100%;
+            font-family: var(--font);
+            font-size: 1.8rem;
+            color: white;
+            border: 4px solid;
+            padding: 14px;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 0 #000;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s, filter 0.2s;
+        }
 
-        .btn-join:hover {
-            filter: brightness(1.2);
-            transform: scale(1.05);
+        .btn:hover { filter: brightness(1.2); }
+        .btn:active { transform: scale(0.97) translateY(2px); }
+
+        .btn-dl { 
+            background: var(--mc-green); 
+            border-color: #81C784 #1B5E20 #1B5E20 #81C784; 
+        }
+
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-like { background: var(--mc-blue); border-color: #64B5F6 #0D47A1 #0D47A1 #64B5F6; }
+        .btn-dis { background: var(--mc-red); border-color: #E57373 #8B0000 #8B0000 #E57373; }
+
+        /* Footer con Marca de Agua */
+        .footer {
+            margin-top: 30px;
+            font-size: 1.1rem;
+            color: #444;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* Pantalla de Carga Automática */
+        #dl-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10000;
+        }
+
+        .loader-bar {
+            width: 280px;
+            height: 20px;
+            border: 4px solid #FFF;
+            padding: 2px;
+            margin-top: 20px;
+        }
+
+        .loader-fill {
+            width: 0%;
+            height: 100%;
+            background: #00FF00;
+            transition: width 0.1s;
         }
 
         /* Animaciones */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* Responsive */
-        @media (max-width: 600px) {
-            h2.section-title { font-size: 1.8rem; }
-            .card { padding: 30px 20px; }
-        }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <canvas id="constellation-canvas"></canvas>
+    <div id="dl-overlay">
+        <img src="https://ms-mcpe.github.io/logue/icon-192.png" width="80" style="image-rendering: pixelated;">
+        <h2 style="color: #00FF00; font-size: 2.2rem; margin-top: 15px;">DESCARGANDO APK...</h2>
+        <div class="loader-bar"><div class="loader-fill" id="p-bar"></div></div>
+    </div>
 
-    <div class="container">
-        <h2 class="section-title">Comunidades Oficiales</h2>
-        
-        <div class="communities-grid">
-            <a href="https://chat.whatsapp.com/CdzpxFWzphyA9UDXgrpFZD" class="card whatsapp" target="_blank">
-                <i class="fab fa-whatsapp"></i>
-                <h3>WhatsApp</h3>
-                <p>Únete a nuestro grupo exclusivo para recibir noticias y actualizaciones al instante en tu móvil.</p>
-                <button class="btn-join wa-btn">Unirme ahora</button>
-            </a>
+    <div class="window">
+        <div class="inner">
+            <div class="logo-container">
+                <img src="https://ms-mcpe.github.io/logue/icon-192.png" alt="Logo" class="logo">
+            </div>
+            
+            <h1>MC Addons</h1>
+            <div class="tagline"><h5>Una aplicasion de addons para <a href="https://ms-mcpe.github.io/comunidades">Minecraft Bedrock</a></h5></div>
 
-            <a href="https://www.facebook.com/share/g/17n1nU1jpC/" class="card facebook" target="_blank">
-                <i class="fab fa-facebook"></i>
-                <h3>Facebook</h3>
-                <p>Forma parte de nuestra comunidad en Facebook. Comparte, debate y conecta con otros miembros.</p>
-                <button class="btn-join fb-btn">Ir al Grupo</button>
-            </a>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-num" id="s-down">...</span>
+                    <span class="stat-label">DOWNS</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num" id="s-like">...</span>
+                    <span class="stat-label">LIKES</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-num" id="s-dis">...</span>
+                    <span class="stat-label">HATES</span>
+                </div>
+            </div>
+
+            <button class="btn btn-dl" onclick="handleAction('descarga')">DESCARGAR APP</button>
+            
+            <div class="btn-row">
+                <button class="btn btn-like" onclick="handleAction('like')">LIKE</button>
+                <button class="btn btn-dis" onclick="handleAction('dislike')">DISLIKE</button>
+            </div>
+
+            <div class="footer">
+                JR-TECHSTUDIOS 2025 - 2026<br>
+                <span style="font-size: 0.8rem;">MC Addons 1.5</span>
+            </div>
         </div>
     </div>
 
     <script>
-        // Animación de Constelaciones (Canvas)
-        const canvas = document.getElementById('constellation-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        const particleCount = 80;
-        const maxDistance = 150;
+        // ==========================================
+        // CONFIGURACIÓN DIRECTA
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3vNGr6QKFMIyl0TdReMuS3UCAEoMxbqO17SKz1OizRp6BgfOxdbqbMqPhBU0d8OQDYw/exec";
+        const APK_FILE = "https://ms-mcpe.github.io/MC Add-Ons_1.5.apk"; // <--- PON TU LINK AQUÍ
 
-        function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    size: Math.random() * 2 + 1
-                });
+        // ==========================================
+        // SEGURIDAD ANTI-ROBO (REDIRECCIÓN)
+        // ==========================================
+        setInterval(() => {
+            const start = Date.now();
+            debugger; // Si la consola se abre, el tiempo de ejecución se dispara
+            if (Date.now() - start > 100) {
+                window.location.replace("https://www.google.com");
+            }
+        }, 1000);
+
+        document.onkeydown = (e) => {
+            // Bloquea F12, Ctrl+U, Ctrl+Shift+I, etc.
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
+                window.location.replace("https://www.google.com");
+                return false;
+            }
+        };
+
+        // ==========================================
+        // LÓGICA DE COMUNICACIÓN CON APP SCRIPT
+        // ==========================================
+
+        // 1. Lectura de Datos al Abrir la Página
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=read`);
+                const data = await response.json();
+                document.getElementById('s-down').innerText = data.descargas;
+                document.getElementById('s-like').innerText = data.likes;
+                document.getElementById('s-dis').innerText = data.dislikes;
+            } catch (error) {
+                console.error("Error de lectura");
+                // Fallback manual si el script falla
+                document.getElementById('s-down').innerText = "119";
+                document.getElementById('s-like').innerText = "110";
+                document.getElementById('s-dis').innerText = "8";
             }
         }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        // 2. Ejecución de Acciones (Descarga/Like/Dislike)
+        function handleAction(type) {
+            if ((type === 'like' || type === 'dislike') && localStorage.getItem('voted_mc')) {
+                alert("Ya has votado anteriormente.");
+                return;
+            }
 
-            for (let i = 0; i < particles.length; i++) {
-                let p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
+            // ENVIAR ACCIÓN (Técnica de imagen para bypass de CORS)
+            // Esto asegura que el App Script reciba la señal incluso si el navegador bloquea el JSON
+            const sender = new Image();
+            sender.src = `${SCRIPT_URL}?action=${type}&t=${Date.now()}`;
 
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            // Actualizar visualmente al instante
+            const elId = type === 'descarga' ? 's-down' : (type === 'like' ? 's-like' : 's-dis');
+            const el = document.getElementById(elId);
+            el.innerText = parseInt(el.innerText) + 1;
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
+            if (type === 'descarga') {
+                startDownloadSequence();
+            } else {
+                localStorage.setItem('voted_mc', 'true');
+            }
+        }
 
-                for (let j = i + 1; j < particles.length; j++) {
-                    let p2 = particles[j];
-                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-                    if (dist < maxDistance) {
-                        ctx.lineWidth = 1 - dist / maxDistance;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
+        // 3. Animación de Descarga Automática
+        function startDownloadSequence() {
+            const overlay = document.getElementById('dl-overlay');
+            const fill = document.getElementById('p-bar');
+            overlay.style.display = 'flex';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                fill.style.width = progress + "%";
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    // DISPARAR DESCARGA AUTOMÁTICA
+                    window.location.href = APK_FILE;
+                    setTimeout(() => { overlay.style.display = 'none'; }, 2000);
                 }
-            }
-            requestAnimationFrame(draw);
+            }, 40);
         }
 
-        window.addEventListener('resize', init);
-        init();
-        draw();
+        // Iniciar
+        fetchStats();
     </script>
 </body>
 </html>
-
