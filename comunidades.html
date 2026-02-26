@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-  <meta name="google-adsense-account" content="ca-pub-3345712294617095">
+    <meta name="google-adsense-account" content="ca-pub-3345712294617095">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comunidades Oficiales</title>
+    <title>Comunidades Minecraft Bedrock</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     
@@ -22,6 +22,11 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
+            /* Bloqueo de selección de texto para evitar copias rápidas */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -113,7 +118,6 @@
             transition: 0.3s;
         }
 
-        /* Estilos específicos por marca */
         .whatsapp:hover i { color: var(--wa-color); text-shadow: 0 0 20px var(--wa-color); }
         .facebook:hover i { color: var(--fb-color); text-shadow: 0 0 20px var(--fb-color); }
 
@@ -150,26 +154,22 @@
             transform: scale(1.05);
         }
 
-        /* Animaciones */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             h2.section-title { font-size: 1.8rem; }
             .card { padding: 30px 20px; }
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <canvas id="constellation-canvas"></canvas>
 
     <div class="container">
-        <h2 class="section-title">Comunidades Oficiales</h2>
-        
         <div class="communities-grid">
             <a href="https://chat.whatsapp.com/CdzpxFWzphyA9UDXgrpFZD" class="card whatsapp" target="_blank">
                 <i class="fab fa-whatsapp"></i>
@@ -188,7 +188,30 @@
     </div>
 
     <script>
-        // Animación de Constelaciones (Canvas)
+        // --- SEGURIDAD ANTI-ROBO (JR-TECH) ---
+        (function() {
+            // 1. Bloqueo de teclas de inspección
+            document.onkeydown = function(e) {
+                if (e.keyCode == 123 || 
+                    (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || 
+                    (e.ctrlKey && e.keyCode == 85)) {
+                    window.location.replace("https://www.google.com");
+                    return false;
+                }
+            };
+
+            // 2. Trampa de DevTools (Detección de consola abierta)
+            setInterval(function() {
+                const antes = Date.now();
+                debugger; // El script se pausa aquí si la consola está abierta
+                const despues = Date.now();
+                if (despues - antes > 100) {
+                    window.location.replace("https://www.google.com");
+                }
+            }, 1000);
+        })();
+
+        // --- ANIMACIÓN DE CONSTELACIONES ---
         const canvas = document.getElementById('constellation-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -247,4 +270,5 @@
         draw();
     </script>
 </body>
-  </html>
+</html>
+ 
