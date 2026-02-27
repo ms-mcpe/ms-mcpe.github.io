@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página no encontrada</title>
+    <style>
+        /* --- RESET Y BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Evita barras de desplazamiento */
+            background: linear-gradient(to bottom, #000000 0%, #050A14 60%, #0B1E3B 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- FONDO DE NEBULOSA Y CONSTELACIONES --- */
+        /* Efecto de luz azul/celeste en el fondo */
+        .nebula {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: radial-gradient(circle at 50% 120%, rgba(56, 189, 248, 0.15), transparent 70%),
+                        linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Contenedor de estrellas generado por JS */
+        .star-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle var(--duration) ease-in-out infinite;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .content {
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(2px); /* Pequeño desenfoque para legibilidad */
+        }
+
+        /* Texto 404 Grande */
+        h1 {
+            font-size: clamp(6rem, 20vw, 12rem); /* Se adapta al tamaño de pantalla */
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #bef264 0%, #38bdf8 100%); /* Verde Lima a Celeste */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+
+        p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #94a3b8;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* --- BOTÓN DE SOPORTE --- */
+        .btn-support {
+            display: inline-block;
+            text-decoration: none;
+            background-color: transparent;
+            color: #bef264; /* Verde Lima */
+            border: 2px solid #bef264;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(190, 242, 100, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-support:hover {
+            background-color: #bef264;
+            color: #050A14; /* Texto oscuro al hacer hover */
+            box-shadow: 0 0 30px rgba(190, 242, 100, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn-support:active {
+            transform: translateY(1px);
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="star-container" id="starContainer"></div>
+    
+    <div class="nebula"></div>
+
+    <div class="content">
+        <h1>404</h1>
+        <h2>¡Te has perdido en el espacio!</h2>
+        <p>Parece que la página que buscas se ha desvanecido en un agujero negro. No te preocupes, podemos ayudarte a volver a la órbita correcta.</p>
+        
+        <a href="https://www.facebook.com/share/1Agi6vSxzc/" class="btn-support">
+            Contactar a Soporte
+        </a>
+    </div>
+
+    <script>
+        // Script para generar estrellas aleatorias sin sobrecargar el navegador
+        document.addEventListener('DOMContentLoaded', () => {
+            const starContainer = document.getElementById('starContainer');
+            const starCount = 150; // Cantidad de estrellas
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Posición aleatoria
+                const x = Math.random() * 100;
+                const y = Math.random() * 100; // Distribuidas en toda la pantalla
+                
+                // Tamaño aleatorio (pequeñas para dar sensación de lejanía)
+                const size = Math.random() * 3;
+                
+                // Duración de parpadeo aleatoria
+                const duration = Math.random() * 3 + 2; 
+
+                // Aplicar estilos
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.setProperty('--duration', `${duration}s`);
+                
+                // Color: Variación entre blanco y ligeros toques de celeste/verde
+                if (Math.random() > 0.8) {
+                    star.style.background = '#bef264'; // Algunas estrellas verde lima
+                    star.style.boxShadow = '0 0 4px #bef264';
+                } else if (Math.random() > 0.9) {
+                     star.style.background = '#38bdf8'; // Algunas estrellas celestes
+                }
+
+                starContainer.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>
