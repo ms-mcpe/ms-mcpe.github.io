@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0c">
+    <title>MC Addons - (Web)</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES Y RESET (TEMA OSCURO / BLANCO PROFESIONAL) --- */
+        :root {
+            --primary: #ffffff;
+            --primary-glow: rgba(255, 255, 255, 0.2);
+            --bg-dark: #0a0a0c;
+            --bg-panel: #121215;
+            --surface: #18181c;
+            --text-main: #f5f5f5;
+            --text-sec: #a0a0a0;
+            --success: #32cd32; 
+            --glass: rgba(10, 10, 12, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* LOGO COLORS */
+            --logo-cyan: #00e5ff;
+            --logo-lime-shadow: rgba(50, 205, 50, 0.6);
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f0f2f5;
+            --bg-panel: #ffffff;
+            --surface: #ffffff;
+            --text-main: #121212;
+            --text-sec: #666666;
+            --glass: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --primary: #000000;
+            --primary-glow: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-sec); }
+
+        /* --- HEADER --- */
+        .app-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 70px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.05);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { background: none; border: none; color: var(--text-main); font-size: 1.4rem; cursor: pointer; }
+        
+        /* DISEÑO DE LOGO CELESTE Y LIMA */
+        .app-logo { 
+            font-family: 'Rajdhani', sans-serif; 
+            font-weight: 800; 
+            font-size: 1.6rem; 
+            color: var(--logo-cyan); 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            text-shadow: 0 0 8px var(--logo-lime-shadow), 0 0 16px var(--logo-lime-shadow);
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        #addon-search {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            padding: 10px 45px 10px 20px;
+            border-radius: 50px;
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        #addon-search:focus {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sec); pointer-events: none; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-panel);
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 2000;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active { transform: translateX(0); }
+
+        .sidebar-header {
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .sidebar-close { background: none; border: none; color: var(--text-sec); font-size: 1.2rem; cursor: pointer; }
+
+        .nav-list { list-style: none; padding: 20px 10px; margin: 0; flex-grow: 1; overflow-y: auto; }
+        .nav-item { margin-bottom: 5px; }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: var(--transition);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active { background: rgba(255, 255, 255, 0.05); color: var(--primary); }
+        .nav-link i { margin-right: 15px; width: 20px; text-align: center; }
+
+        .submenu { 
+            max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding-left: 15px;
+        }
+        .submenu.open { max-height: 400px; }
+        .dropdown-arrow { margin-left: auto; transition: 0.3s; font-size: 0.8rem; }
+        .dropdown-arrow.rotate { transform: rotate(180deg); }
+
+        /* --- HERO SECTION --- */
+        .hero-container {
+            margin-top: 70px;
+            position: relative;
+            height: 240px;
+            width: 100%;
+            overflow: hidden;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .hero-slide {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            opacity: 0; transition: opacity 1s ease;
+            filter: brightness(0.5);
+        }
+        .hero-slide.active { opacity: 1; transform: scale(1.05); transition: opacity 1s ease, transform 6s linear; }
+
+        .hero-content {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            padding: 30px 20px;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            font-weight: 800;
+        }
+
+        .hero-subtitle { color: var(--primary); font-size: 0.9rem; margin-top: 5px; font-weight: 600; letter-spacing: 1px; }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content {
+            padding: 20px;
+            min-height: calc(100vh - 350px);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex; align-items: center; margin: 30px 0 15px;
+            font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; color: var(--text-main); font-weight: 700;
+        }
+        .section-header i { margin-right: 10px; color: var(--primary); }
+        .section-line { flex-grow: 1; height: 1px; background: var(--glass-border); margin-left: 15px; }
+
+        /* --- SCROLL HORIZONTAL --- */
+        .h-scroll-wrapper {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+        .h-scroll-wrapper::-webkit-scrollbar { height: 4px; }
+
+        /* --- GRID LAYOUT --- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+            .hero-container { height: 350px; }
+        }
+
+        /* --- CARDS ESTÁNDAR --- */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border-color: var(--primary-glow);
+        }
+
+        .card-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .card-body { padding: 14px; flex-grow: 1; display: flex; flex-direction: column; }
+        
+        .card-meta {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+        }
+
+        .card-tag {
+            font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .card-version {
+            font-size: 0.65rem; background: rgba(255, 255, 255, 0.1); color: var(--text-main);
+            padding: 3px 8px; border-radius: 6px; font-weight: 600;
+        }
+
+        .card-title {
+            font-size: 1rem; margin: 0 0 6px; line-height: 1.4; font-weight: 600;
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .card-desc {
+            font-size: 0.8rem; color: var(--text-sec); margin-bottom: 15px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            line-height: 1.4; height: 2.2rem;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.75rem; color: var(--text-sec); padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat { display: flex; align-items: center; gap: 5px; }
+        .stat i { color: var(--text-sec); transition: 0.2s; }
+        .stat.liked i { color: #ff4757; }
+
+        .btn-action {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-action:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* --- CARDS ESTILO APLICACIONES (APPS / JUEGOS) --- */
+        .card[data-cat="Apps"], .card[data-cat="Juegos"] {
+            flex-direction: row;
+            align-items: center;
+            padding: 3px;
+            gap: 8px;
+            border-radius: 20px;
+            background: var(--surface);
+        }
+
+        .card[data-cat="Apps"] .card-img, .card[data-cat="Juegos"] .card-img {
+            width: 65px;
+            height: 65px;
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Contenedor relativo de la imagen */
+        .card[data-cat="Apps"] > div:first-child, .card[data-cat="Juegos"] > div:first-child {
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            border-radius: 14px;
+        }
+
+        /* Ocultar el badge de descargas en la miniatura para un look más limpio */
+        .card[data-cat="Apps"] > div:first-child > div, .card[data-cat="Juegos"] > div:first-child > div {
+            display: none; 
+        }
+
+        .card[data-cat="Apps"] .card-body, .card[data-cat="Juegos"] .card-body {
+            display: block;
+            padding: 0;
+        }
+
+        .card[data-cat="Apps"] .card-title, .card[data-cat="Juegos"] .card-title {
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        .card[data-cat="Apps"] .card-meta, .card[data-cat="Juegos"] .card-meta {
+            justify-content: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .card[data-cat="Apps"] .card-tag, .card[data-cat="Juegos"] .card-tag {
+            background: rgba(255,255,255,0.08);
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: var(--text-sec);
+            font-size: 0.65rem;
+        }
+
+        .card[data-cat="Apps"] .card-version, .card[data-cat="Juegos"] .card-version {
+            background: transparent;
+            color: var(--text-sec);
+            padding: 0;
+        }
+
+        .card[data-cat="Apps"] .card-desc, .card[data-cat="Juegos"] .card-desc,
+        .card[data-cat="Apps"] .card-footer, .card[data-cat="Juegos"] .card-footer {
+            display: none; /* Look limpio de tienda de aplicaciones */
+        }
+
+        .card[data-cat="Apps"] .btn-action, .card[data-cat="Juegos"] .btn-action {
+            display: inline-block;
+            width: auto;
+            padding: 6px 18px;
+            border-radius: 20px;
+            background: var(--text-main);
+            color: var(--bg-dark);
+            border: none;
+            margin-top: 0;
+            font-size: 0.75rem;
+            box-shadow: 0 4px 10px rgba(255,255,255,0.1);
+        }
+
+        .card[data-cat="Apps"] .btn-action:hover, .card[data-cat="Juegos"] .btn-action:hover {
+            background: var(--text-sec);
+            box-shadow: none;
+        }
+
+        /* --- LOADER & OVERLAY --- */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px); z-index: 1500; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .overlay.active { opacity: 1; pointer-events: all; }
+
+        .loader-container {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 200; text-align: center;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #toast {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: rgba(30,30,35,0.95); color: #fff;
+            padding: 12px 24px; border-radius: 30px;
+            font-size: 0.9rem; font-weight: 600; opacity: 0; pointer-events: none; transition: 0.3s;
+            border: 1px solid var(--glass-border);
+            z-index: 2000;
+            white-space: nowrap;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* --- MODAL DETALLES --- */
+        .modal-overlay {
+            position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: var(--bg-panel);
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 24px;
+            
+            /* Borde elegante con los colores del logo */
+            border: 1px solid var(--logo-cyan);
+            box-shadow: 0 0 30px var(--logo-lime-shadow);
+            border-radius: 24px;
+            
+            transform: scale(0.9);
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.05); border: none;
+            color: #fff; width: 34px; height: 34px; border-radius: 50%;
+            cursor: pointer; z-index: 10; transition: 0.2s;
+        }
+        .modal-close-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .detalles-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 20px;
+        }
+
+        .detalles-nombre {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            color: var(--text-main);
+            text-align: center;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .detalles-version {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .detalles-desc {
+            width: 100%;
+            text-align: center;
+            color: var(--text-sec);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: rgba(0,0,0,0.2);
+            padding: 18px;
+            border-radius: 14px;
+        }
+
+        .btn-descarga-final {
+            width: 100%;
+            background: var(--primary);
+            color: var(--bg-dark);
+            font-weight: 800;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px var(--primary-glow);
+            transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .btn-descarga-final:hover {
+            transform: scale(1.02);
+            background: var(--logo-cyan);
+            box-shadow: 0 8px 25px var(--logo-lime-shadow);
+        }
+
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;display:none;" id="security-shield"></div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="app-logo"><i class="fas fa-cube"></i> Pand-addon</div>
+            <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item"><a class="nav-link" onclick="mostrarInicio()"><i class="fas fa-home"></i> Inicio</a></li>
+            
+            <li class="nav-item">
+                <div class="nav-link" onclick="toggleDropdown()">
+                    <i class="fas fa-layer-group"></i> Categorías 
+                    <i class="fas fa-chevron-down dropdown-arrow" id="dd-arrow"></i>
+                </div>
+                <ul class="submenu" id="submenu">
+                    <li><a class="nav-link" onclick="filtrar('Add-On')" style="padding-left: 50px;">Addons</a></li>
+                    <li><a class="nav-link" onclick="filtrar('Mapa')" style="padding-left: 50px;">Mapas</a></li>
+                    <li><a class="nav-link" onclick="filtrar('Texture')" style="padding-left: 50px;">Texturas</a></li>
+                    <li><a class="nav-link" onclick="filtrar('Apps')" style="padding-left: 50px;">Apps</a></li>
+                    <li><a class="nav-link" onclick="filtrar('Juegos')" style="padding-left: 50px;">Juegos</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item"><a class="nav-link" href="go:subir"><i class="fas fa-cloud-upload-alt"></i> subir addons</a></li>
+
+        </ul>
+        <div style="padding: 20px;">
+            <button class="btn-action" onclick="toggleTheme()" style="background:transparent; border:1px solid var(--text-sec); color:var(--text-sec);">
+                <i class="fas fa-moon"></i> Cambiar Tema
+            </button>
+        </div>
+    </nav>
+
+    <header class="app-header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div class="app-logo" style="display:none;" id="header-logo">MC Add-Ons </div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="addon-search" placeholder="Buscar por nombre o versión..." oninput="buscar()">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div style="width: 30px;"></div>
+    </header>
+
+    <main>
+        <div id="loader" class="loader-container">
+            <div class="spinner"></div>
+            <div style="font-size:0.8rem; letter-spacing:1px; color:var(--text-sec); font-weight:600;">CARGANDO RECURSOS...</div>
+        </div>
+
+        <div id="dynamic-content" style="opacity: 0; transition: opacity 0.5s;"></div>
+    </main>
+
+    <div class="modal-overlay" id="modal-detalles">
+        <div class="modal-card">
+            <button class="modal-close-btn" onclick="cerrarDetalles()"><i class="fas fa-times"></i></button>
+            
+            <img id="md-img" src="" class="detalles-img">
+            <h2 id="md-nombre" class="detalles-nombre">Nombre del Addon</h2>
+            <div id="md-version" class="detalles-version">v1.0.0</div>
+            <div id="md-desc" class="detalles-desc">Descripción del addon...</div>
+            
+            <a id="md-btn-download" href="#" target="_blank" class="btn-descarga-final">
+                <i class="fas fa-download"></i> DESCARGAR AHORA
+            </a>
+        </div>
+    </div>
+
+    <div id="toast">Acción completada</div>
+
+    <script>
+        // --- SEGURIDAD AVANZADA ---
+        (function() {
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.onkeydown = function(e) {
+                if(e.keyCode == 123) return false;
+                if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+                if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+                if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+                if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            };
+        })();
+
+        // --- LÓGICA DE LA APP ---
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxkM0a9FHTHZkq0S6xX1DPwT3qpQUrK2K29NflNnnpKXXK4hJ-TakSoWw7LiBPAYatkUw/exec";
+        let db = [];
+        let heroTimer;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            cargarDatos();
+        });
+
+        async function cargarDatos() {
+            try {
+                const res = await fetch(`${scriptURL}?action=read`);
+                const data = await res.json();
+                if(data.error) throw new Error(data.error);
+                db = data;
+                
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('dynamic-content').style.opacity = '1';
+                mostrarInicio();
+            } catch (e) {
+                document.getElementById('loader').innerHTML = `<p style="color:#ff4757">Error de conexión.<br>Intenta recargar.</p>`;
+            }
+        }
+
+        function mostrarInicio() {
+            if(window.innerWidth < 1000) toggleSidebar(false);
+            const container = document.getElementById('dynamic-content');
+            container.innerHTML = '';
+
+            const imagenes = db.map(i => i[3]).filter(url => url && url.startsWith('http'));
+            renderHero(imagenes, container);
+
+            renderHorizontalSection("Novedades", [...db].reverse().slice(0, 10), container);
+            renderHorizontalSection("Populares", [...db].sort((a,b)=>b[6]-a[6]).slice(0, 10), container);
+        }
+
+        function renderHero(imgs, container) {
+            if(!imgs.length) return;
+            const hero = document.createElement('div');
+            hero.className = 'hero-container';
+            hero.innerHTML = `
+                <div id="hero-bg-1" class="hero-slide active"></div>
+                <div id="hero-bg-2" class="hero-slide"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Explora. Crea. Juega.</h1>
+                    <p class="hero-subtitle">LA MEJOR COLECCIÓN PARA MINECRAFT PE/BE</p>
+                </div>
+            `;
+            container.appendChild(hero);
+
+            let idx = 0;
+            let activeDiv = 1;
+            const s1 = hero.querySelector('#hero-bg-1');
+            const s2 = hero.querySelector('#hero-bg-2');
+            s1.style.backgroundImage = `url('${imgs[Math.floor(Math.random()*imgs.length)]}')`;
+
+            if(heroTimer) clearInterval(heroTimer);
+            heroTimer = setInterval(() => {
+                idx = Math.floor(Math.random() * imgs.length);
+                const nextImg = imgs[idx];
+                if(activeDiv === 1) {
+                    s2.style.backgroundImage = `url('${nextImg}')`;
+                    s2.classList.add('active');
+                    s1.classList.remove('active');
+                    activeDiv = 2;
+                } else {
+                    s1.style.backgroundImage = `url('${nextImg}')`;
+                    s1.classList.add('active');
+                    s2.classList.remove('active');
+                    activeDiv = 1;
+                }
+            }, 5000);
+        }
+
+        function renderHorizontalSection(titulo, items, container) {
+            const section = document.createElement('div');
+            section.innerHTML = `
+                <div class="section-header"><i class="fas fa-fire"></i> ${titulo} <div class="section-line"></div></div>
+                <div class="h-scroll-wrapper">
+                    ${items.map(item => getCardHTML(item, 'min-width:180px; width:180px;')).join('')}
+                </div>
+            `;
+            container.appendChild(section);
+        }
+
+        function filtrar(categoria) {
+            toggleSidebar(false);
+            clearInterval(heroTimer);
+            const container = document.getElementById('dynamic-content');
+            const filtrados = db.filter(item => item[4] === categoria).reverse();
+            
+            container.innerHTML = `
+                <div class="section-header" style="margin-top:80px;">
+                    <i class="fas fa-layer-group"></i> ${categoria}s 
+                    <span style="font-size:0.8rem; margin-left:10px; color:var(--text-sec)">(${filtrados.length})</span>
+                </div>
+                <div class="grid-layout">
+                    ${filtrados.length ? filtrados.map(item => getCardHTML(item)).join('') : '<p>No hay resultados.</p>'}
+                </div>
+            `;
+        }
+
+        function buscar() {
+            clearInterval(heroTimer);
+            const q = document.getElementById('addon-search').value.toLowerCase();
+            if(!q) { mostrarInicio(); return; }
+
+            const container = document.getElementById('dynamic-content');
+            const res = db.filter(item => 
+                item[1].toString().toLowerCase().includes(q) || 
+                (item[9] && item[9].toString().toLowerCase().includes(q))
+            );
+            
+            container.innerHTML = `
+                <div class="section-header" style="margin-top:80px;">Resultados de búsqueda</div>
+                <div class="grid-layout">
+                    ${res.length ? res.map(item => getCardHTML(item)).join('') : '<p style="padding:20px;">No se encontraron coincidencias.</p>'}
+                </div>
+            `;
+        }
+
+        // --- GENERADOR DE CARDS ---
+        function getCardHTML(item, styleOverride = '') {
+            // j (9) = version, k (10) = descripcion
+            const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = item;
+            
+            const isSeed = cat.toLowerCase().includes('semilla');
+            const displayVersion = version ? version : 'V1.0';
+            const displayDesc = desc ? desc : 'Sin descripción disponible.';
+
+            // CAMBIO: Si es semilla copia, si no, es botón "DETALLES"
+            let btnAction;
+            if(isSeed) {
+                btnAction = `<button class="btn-action" onclick="copiar('${seed}')"><i class="fas fa-copy"></i> COPIAR SEED</button>`;
+            } else {
+                // El ID es item[0], nos aseguramos de pasarlo como string
+                btnAction = `<button class="btn-action" onclick="abrirDetalles('${id}')">DETALLES</button>`;
+            }
+
+            return `
+            <div class="card" data-cat="${cat}" style="${styleOverride}">
+                <div style="position:relative; overflow:hidden;">
+                    <img src="${img}" class="card-img" onerror="this.src='https://via.placeholder.com/300x170?text=MC+Addons'" loading="lazy">
+                    <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); padding:2px 8px; border-radius:4px; font-size:0.7rem; color:#fff;">
+                        <i class="fas fa-download"></i> ${dls || 0}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <div class="card-tag">${cat}</div>
+                        <div class="card-version">v${displayVersion}</div>
+                    </div>
+                    <h3 class="card-title">${nombre}</h3>
+                  
+                    <div class="card-footer">
+                        <span>By ${autor || 'Admin'}</span>
+                        <div class="stat" onclick="like(this, '${nombre}')">
+                            <i class="fas fa-heart"></i> <span>${likes || 0}</span>
+                        </div>
+                    </div>
+                    ${btnAction}
+                </div>
+            </div>`;
+        }
+
+        // --- NUEVA FUNCIÓN: ABRIR DETALLES ---
+        function abrirDetalles(id) {
+            // Buscar el addon en la DB usando el ID (posición 0)
+            // Se usa '==' para coincidir aunque sea string/number
+            const item = db.find(x => x[0] == id);
+            if(!item) return;
+
+            // Mapeo de datos: [0]ID, [1]Nombre, [2]Link, [3]Img, ... [9]Version(J), [10]Desc(K)
+            const nombre = item[1];
+            const link = item[2];
+            const img = item[3];
+            const version = item[9] || '1.0';
+            const descripcion = item[10] || 'No hay descripción detallada disponible para este complemento.';
+
+            // Rellenar el modal
+            document.getElementById('md-img').src = img;
+            document.getElementById('md-nombre').innerText = nombre;
+            document.getElementById('md-version').innerText = 'Versión: ' + version;
+            document.getElementById('md-desc').innerText = descripcion;
+            
+            // Configurar botón final de descarga
+            const btnDown = document.getElementById('md-btn-download');
+            btnDown.href = link;
+            btnDown.onclick = function() {
+                registrar('download', nombre);
+            };
+
+            // Mostrar modal
+            document.getElementById('modal-detalles').classList.add('active');
+        }
+
+        function cerrarDetalles() {
+            document.getElementById('modal-detalles').classList.remove('active');
+        }
+
+        // --- INTERACCIONES ---
+        function toggleSidebar(forceState) {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('overlay');
+            if (forceState !== undefined) {
+                if (forceState) { sb.classList.add('active'); ov.classList.add('active'); }
+                else { sb.classList.remove('active'); ov.classList.remove('active'); }
+            } else {
+                sb.classList.toggle('active');
+                ov.classList.toggle('active');
+            }
+        }
+
+        function toggleDropdown() {
+            document.getElementById('submenu').classList.toggle('open');
+            document.getElementById('dd-arrow').classList.toggle('rotate');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function copiar(texto) {
+            navigator.clipboard.writeText(texto);
+            showToast("¡Semilla copiada al portapapeles!");
+        }
+
+        function like(el, nombre) {
+            if(el.classList.contains('liked')) return;
+            el.classList.add('liked');
+            const span = el.querySelector('span');
+            span.innerText = parseInt(span.innerText) + 1;
+            registrar('like', nombre);
+        }
+
+        function registrar(accion, nombre) {
+            fetch(`${scriptURL}?action=${accion}&nombre=${encodeURIComponent(nombre)}`, {mode:'no-cors'});
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
