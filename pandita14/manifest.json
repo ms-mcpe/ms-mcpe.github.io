@@ -1,6 +1,6 @@
 {
-  "name": "MC Add-Ons App",
-  "short_name": "MC Add-Ons",
+  "name": "Pand-addon",
+  "short_name": "Pand-addon",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050505",
