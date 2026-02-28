@@ -175,13 +175,10 @@
 
         .btn-install-main:active { transform: scale(0.97); box-shadow: 0 0 10px var(--gold-glow); }
 
+        /* CAMBIO: Botón de saltar oculto permanentemente para forzar instalación */
         .btn-skip {
-            background: none; border: none; color: #666; margin-top: 20px;
-            font-size: 0.8rem; cursor: pointer; text-decoration: none;
-            border-bottom: 1px solid transparent;
-            font-family: 'Outfit', sans-serif; transition: all 0.3s ease;
+            display: none !important;
         }
-        .btn-skip:hover { color: #fff; border-bottom-color: #fff; }
 
         .policy-desc { margin-top: 15px; font-size: 14px; color: #aaa; display: none; line-height: 1.5; }
         .error-icon { display: none; font-size: 50px; color: #ff4d4d; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(255,77,77,0.5)); }
@@ -240,7 +237,7 @@
             </button>
             
             <br>
-            <button class="btn-skip" onclick="document.getElementById('install-modal').style.display='none'">
+            <button class="btn-skip">
                 Continuar en la versión web
             </button>
         </div>
@@ -285,14 +282,11 @@
                 document.getElementById('stat-likes').innerText = formatNumber(data.likes);
                 document.getElementById('stat-dislikes').innerText = formatNumber(data.dislikes);
                 
-                // Asegurar colores dinámicos (aunque forzamos blanco en CSS, esto mantiene lógica de colores de acento si se desea)
                 document.getElementById('stat-likes').style.color = 'var(--accent)';
                 document.getElementById('stat-dislikes').style.color = 'var(--danger)';
-                // El de installs se queda blanco por CSS
             } catch (e) { console.log("Cargando métricas..."); }
         }
 
-        // --- SISTEMA DE VOTACIÓN OPTIMIZADO ---
         function verificarVotoPrevio() {
             if(localStorage.getItem('mc_addons_voto')) {
                 bloquearBotonesVoto(localStorage.getItem('mc_addons_voto'));
@@ -311,32 +305,24 @@
         }
 
         function registrarVoto(tipo) {
-            // Prevenir spam
             if(localStorage.getItem('mc_addons_voto')) return;
-
-            // Bloquear botones visualmente de inmediato
             bloquearBotonesVoto(tipo);
             localStorage.setItem('mc_addons_voto', tipo);
-
-            // Efecto visual fluido
             const statElement = document.getElementById(tipo === 'like' ? 'stat-likes' : 'stat-dislikes');
             let currentText = statElement.innerText;
             if(!currentText.includes('K') && currentText !== '...') {
                 statElement.innerText = parseInt(currentText) + 1;
             }
-
-            // Enviar petición
             fetch(scriptURL + "?action=" + tipo, { mode: 'no-cors' })
                 .catch(err => console.error("Error al registrar voto:", err));
         }
-        // ---------------------------------------
 
         // Sistema de Instalación PWA
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
+            // Solo mostramos el modal si NO es la versión instalada
             if (!window.matchMedia('(display-mode: standalone)').matches) {
-                // NOTA: Usamos display flex para centrar
                 document.getElementById('install-modal').style.display = 'flex';
             }
         });
@@ -346,7 +332,6 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    // Sumar descarga silenciosamente
                     fetch(scriptURL + "?action=descarga", { mode: 'no-cors' });
                     document.getElementById('install-modal').style.display = 'none';
                 }
@@ -354,13 +339,25 @@
             }
         });
 
-        // AdBlocker y Fondo (Intacto)
+        // AdBlocker y Validación de App Instalada
         async function checkAdBlocker() {
             const googleAdsUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
             try {
+                // Mantenemos tu lógica de AdBlock
                 await fetch(new Request(googleAdsUrl), { method: 'HEAD', mode: 'no-cors' });
-                document.getElementById('status-overlay').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
+                
+                // AGREGADO: Solo mostramos la App si está instalada (Standalone)
+                if (isStandalone) {
+                    document.getElementById('status-overlay').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'block';
+                } else {
+                    // Si es navegador, ocultamos la carga pero forzamos el Modal de Instalación
+                    document.getElementById('status-overlay').style.display = 'none';
+                    document.getElementById('install-modal').style.display = 'flex';
+                }
+
             } catch (error) {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('error-icon').style.display = 'block';
@@ -384,7 +381,13 @@
                     "move": { "enable": true, "speed": 1.5 }
                 }
             });
+            
+            // Refuerzo: Si intenta entrar desde navegador, forzar el modal
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                 document.getElementById('install-modal').style.display = 'flex';
+            }
         };
     </script>
 </body>
 </html>
+ 
