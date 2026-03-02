@@ -278,10 +278,9 @@
             </div>
 
             <div class="form-group">
-    <label class="form-label">Versión / Modelo</label>
-    <input type="text" id="edit-version" class="input-box" value="1.0" placeholder="Ej: 1.0 o 2.0">
-</div>
-
+                <label class="form-label">Versión / Modelo</label>
+                <input type="text" id="edit-version" class="input-box" value="1.0" placeholder="Ej: 1.0 o 2.0">
+            </div>
 
             <div class="form-group">
                 <label class="form-label">Link Descarga (cuty)</label>
@@ -355,10 +354,10 @@
                     <div class="form-group">
                         <label class="form-label">Categoría</label>
                         <select id="up-categoria" class="input-box" required>
-                    <option value="plugins">Plugins</option>
-                    <option value="Maps">Mapas</option>
-                    <option value="server">Servers</option>
-                    <option value="host">Host</option>
+                            <option value="plugins">Plugins</option>
+                            <option value="Maps">Mapas</option>
+                            <option value="server">Servers</option>
+                            <option value="host">Host</option>
                         </select>
                     </div>
 
@@ -476,8 +475,10 @@
             const response = await fetch(scriptURL + "?action=read");
             datosLocales = await response.json();
             grid.innerHTML = "";
-            datosLocales.slice().reverse().forEach((addon, index) => {
+            datosLocales.slice().reverse().forEach((addon) => {
                 const [fecha, nombre, link, img, cat, likes, dls, seed, autor, version, descripcion] = addon;
+                
+                // Si estamos en modo gestión y no somos el autor, ignoramos esta tarjeta
                 if (modoGestion && autor !== currentUser) return;
                 
                 const card = document.createElement('div');
@@ -486,10 +487,22 @@
                 
                 let actions = "";
                 if (modoGestion === 'delete' && autor === currentUser) {
-                    actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${nombre}')"><i class="fas fa-trash"></i></button></div>`;
+                    actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${nombre.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button></div>`;
                 }
+                
                 if (modoGestion === 'edit' && autor === currentUser) {
-                    actions = `<div class="card-actions-float"><button class="mini-btn btn-edit" onclick="openEditModal('${nombre}', '${link}', '${version}', '${descripcion}', '${cat}')"><i class="fas fa-pen"></i></button></div>`;
+                    // Preparamos los textos para que sean seguros dentro de la función onclick del HTML
+                    const safeNombre = nombre ? nombre.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+                    const safeLink = link ? link.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+                    const safeVer = version ? version.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+                    const safeDesc = descripcion ? descripcion.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n') : '';
+                    const safeCat = cat ? cat.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+
+                    actions = `<div class="card-actions-float">
+                        <button class="mini-btn btn-edit" onclick="openEditModal('${safeNombre}', '${safeLink}', '${safeVer}', '${safeDesc}', '${safeCat}')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>`;
                 }
 
                 card.innerHTML = `
@@ -505,7 +518,10 @@
                 `;
                 grid.appendChild(card);
             });
-        } catch (e) { grid.innerHTML = "Error al cargar."; }
+        } catch (e) { 
+            console.error(e);
+            grid.innerHTML = "Error al cargar."; 
+        }
     }
 
     document.getElementById('uploadForm').onsubmit = async (e) => {
@@ -521,7 +537,7 @@
             subidoPor: currentUser,
             img: await toBase64(document.getElementById('up-img').files[0]),
             version: document.getElementById('up-version').value,
-            descripcion: document.getElementById('up-desc').value
+            descripcion: document.getElementById('up-desc').value.replace(/\n/g, '\\n')
         };
         
         try {
@@ -536,14 +552,19 @@
         document.getElementById('edit-nombre').value = nombre;
         document.getElementById('edit-url').value = link;
         document.getElementById('edit-version').value = version;
-        document.getElementById('edit-desc').value = desc;
         document.getElementById('edit-cat').value = cat;
+        
+        // Convertimos el texto literal \n de vuelta a saltos de línea reales para el textarea
+        const decorado = desc.split('\\n').join('\n');
+        document.getElementById('edit-desc').value = decorado;
+        
         document.getElementById('editModal').classList.add('show');
     }
 
     async function procesarEdicion() {
         const btn = document.getElementById('btnSaveEdit');
         btn.disabled = true;
+        
         const payload = {
             action: "edit",
             nombreOriginal: document.getElementById('edit-original-name').value,
@@ -551,22 +572,34 @@
             nuevaUrl: document.getElementById('edit-url').value,
             usuario: currentUser,
             nuevaVersion: document.getElementById('edit-version').value,
-            nuevaDescripcion: document.getElementById('edit-desc').value,
+            nuevaDescripcion: document.getElementById('edit-desc').value.replace(/\n/g, '\\n'),
             nuevaCat: document.getElementById('edit-cat').value
         };
+        
         const file = document.getElementById('edit-img').files[0];
         if(file) payload.nuevaImg = await toBase64(file);
         
         try {
-            await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-            location.reload();
-        } catch (e) { alert("Error"); btn.disabled = false; }
+            const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await response.text();
+            if(result.includes("OK")) {
+                location.reload();
+            } else {
+                alert("Error del servidor: " + result);
+                btn.disabled = false;
+            }
+        } catch (e) { 
+            alert("Error de conexión"); 
+            btn.disabled = false; 
+        }
     }
 
     async function eliminarAddon(nombre) {
-        if(!confirm("¿Eliminar?")) return;
-        await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "delete", nombre, usuario: currentUser }) });
-        cargarAddons();
+        if(!confirm("¿Eliminar este contenido?")) return;
+        try {
+            await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "delete", nombre, usuario: currentUser }) });
+            cargarAddons();
+        } catch (e) { alert("Error al eliminar"); }
     }
 
     function filtrarGrid() {
@@ -598,7 +631,7 @@
     // Detección de duplicados
     document.getElementById('up-nombre').addEventListener('input', function() {
         const val = this.value.trim().toLowerCase();
-        const found = datosLocales.find(a => a[1].toLowerCase() === val);
+        const found = datosLocales.find(a => a[1] && a[1].toLowerCase() === val);
         const btn = document.getElementById('btnSend');
         const msg = document.getElementById('up-dupe-msg');
         if(found) {
