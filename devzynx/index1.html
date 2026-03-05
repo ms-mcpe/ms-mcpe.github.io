@@ -7,7 +7,7 @@
     <title>DevZynx - (Web)</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;700;800&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 
     <style>
         /* --- VARIABLES Y RESET (TEMA ACTUALIZADO: NEGRO, AZUL, DORADO, BLANCO) --- */
@@ -29,6 +29,10 @@
             /* LOGO COLORS */
             --logo-blue: #5dade2;
             --logo-gold-shadow: rgba(212, 175, 55, 0.5);
+
+            /* FUENTES PIXEL */
+            --font-pixel: 'VT323', monospace;
+            --font-pixel-bold: 'Press Start 2P', cursive;
         }
 
         [data-theme="light"] {
@@ -84,9 +88,9 @@
         .menu-btn { background: none; border: none; color: var(--primary); font-size: 1.4rem; cursor: pointer; }
         
         .app-logo { 
-            font-family: 'Rajdhani', sans-serif; 
+            font-family: var(--font-pixel-bold); 
             font-weight: 800; 
-            font-size: 1.6rem; 
+            font-size: 1rem; /* Ajustado por la fuente pixel */
             color: var(--text-main); 
             letter-spacing: 1px; 
             text-transform: uppercase; 
@@ -107,7 +111,8 @@
             padding: 10px 45px 10px 20px;
             border-radius: 50px;
             color: var(--text-main);
-            font-family: inherit;
+            font-family: var(--font-pixel);
+            font-size: 1.4rem;
             outline: none;
             transition: var(--transition);
         }
@@ -158,6 +163,8 @@
             transition: var(--transition);
             font-weight: 600;
             cursor: pointer;
+            font-family: var(--font-pixel);
+            font-size: 1.5rem;
         }
 
         .nav-link:hover, .nav-link.active { background: var(--primary-glow); color: var(--primary); }
@@ -195,8 +202,8 @@
         }
 
         .hero-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 2.2rem;
+            font-family: var(--font-pixel-bold);
+            font-size: 1.5rem;
             text-transform: uppercase;
             margin: 0;
             color: var(--text-main);
@@ -204,7 +211,14 @@
             font-weight: 800;
         }
 
-        .hero-subtitle { color: var(--accent-gold); font-size: 0.9rem; margin-top: 5px; font-weight: 600; letter-spacing: 2px; }
+        .hero-subtitle { 
+            font-family: var(--font-pixel);
+            color: var(--accent-gold); 
+            font-size: 1.4rem; 
+            margin-top: 5px; 
+            font-weight: 600; 
+            letter-spacing: 2px; 
+        }
 
         /* --- CONTENIDO PRINCIPAL --- */
         .main-content {
@@ -216,7 +230,7 @@
 
         .section-header {
             display: flex; align-items: center; margin: 30px 0 15px;
-            font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; color: var(--primary); font-weight: 700;
+            font-family: var(--font-pixel-bold); font-size: 0.9rem; color: var(--primary); font-weight: 700;
             text-transform: uppercase;
         }
         .section-header i { margin-right: 10px; color: var(--accent-gold); }
@@ -260,13 +274,14 @@
         .card-body { padding: 14px; flex-grow: 1; display: flex; flex-direction: column; }
         
         .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .card-tag { font-size: 0.7rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 800; }
-        .card-version { font-size: 0.65rem; border: 1px solid var(--primary); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+        .card-tag { font-family: var(--font-pixel); font-size: 1.1rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 800; }
+        .card-version { font-family: var(--font-pixel); font-size: 1rem; border: 1px solid var(--primary); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-weight: 600; }
 
-        .card-title { font-size: 1rem; margin: 0 0 6px; line-height: 0.5; font-weight: 600; color: var(--text-main); }
+        .card-title { font-family: var(--font-pixel); font-size: 1.4rem; margin: 0 0 6px; line-height: 1; font-weight: 600; color: var(--text-main); }
         .card-footer {
             margin-top: auto; display: flex; align-items: center; justify-content: space-between;
-            font-size: 0.75rem; color: var(--text-sec); padding-top: 10px; border-top: 1px solid rgba(212,175,55,0.1);
+            font-size: 0.9rem; color: var(--text-sec); padding-top: 10px; border-top: 1px solid rgba(212,175,55,0.1);
+            font-family: var(--font-pixel);
         }
 
         .stat i { color: var(--accent-gold); }
@@ -274,8 +289,9 @@
 
         .btn-action {
             width: 100%; margin-top: 10px; background: transparent; border: 1px solid var(--primary);
-            color: var(--primary); padding: 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 700;
+            color: var(--primary); padding: 10px; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
             cursor: pointer; transition: 0.3s; text-align: center; text-decoration: none;
+            font-family: var(--font-pixel);
         }
 
         .btn-action:hover {
@@ -306,22 +322,15 @@
             color: var(--accent-gold); width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
         }
 
-        .detalles-nombre { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; color: var(--primary); text-align: center; text-transform: uppercase; font-weight: 800; }
-        .detalles-version { color: var(--accent-gold); font-weight: bold; margin-bottom: 20px; }
-        .detalles-desc { width: 100%; text-align: center; color: var(--text-sec); background: rgba(255,255,255,0.03); padding: 18px; border-radius: 14px; margin-bottom: 25px; border: 1px solid rgba(212,175,55,0.1); }
-
-        .btn-descarga-final {
-            width: 100%; background: var(--accent-gold); color: #000; font-weight: 800; padding: 16px;
-            border: none; border-radius: 14px; font-size: 1.05rem; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4); transition: 0.2s; text-align: center; text-decoration: none;
-        }
-        
-        .btn-descarga-final:hover { transform: scale(1.02); background: #fff; box-shadow: 0 0 30px var(--primary); }
+        .detalles-nombre { font-family: var(--font-pixel-bold); font-size: 1rem; color: var(--primary); text-align: center; text-transform: uppercase; font-weight: 800; }
+        .detalles-version { font-family: var(--font-pixel); font-size: 1.2rem; color: var(--accent-gold); font-weight: bold; margin-bottom: 20px; }
+        .detalles-desc { font-family: var(--font-pixel); font-size: 1.3rem; width: 100%; text-align: center; color: var(--text-sec); background: rgba(255,255,255,0.03); padding: 18px; border-radius: 14px; margin-bottom: 25px; border: 1px solid rgba(212,175,55,0.1); }
 
         #toast {
             position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
             background: var(--surface); color: var(--accent-gold); border: 1px solid var(--accent-gold);
             padding: 12px 24px; border-radius: 30px; opacity: 0; transition: 0.3s; z-index: 2000;
+            font-family: var(--font-pixel); font-size: 1.2rem;
         }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -378,7 +387,7 @@
     <main>
         <div id="loader" class="loader-container">
             <div class="spinner"></div>
-            <div style="font-size:0.8rem; letter-spacing:1px; color:var(--accent-gold); font-weight:600;">CARGANDO RECURSOS...</div>
+            <div style="font-size:1.1rem; letter-spacing:1px; color:var(--accent-gold); font-weight:600; font-family: var(--font-pixel);">CARGANDO RECURSOS...</div>
         </div>
         <div id="dynamic-content" style="opacity: 0; transition: opacity 0.5s;"></div>
     </main>
@@ -390,10 +399,7 @@
             <h2 id="md-nombre" class="detalles-nombre">Nombre del Addon</h2>
             <div id="md-version" class="detalles-version">v1.0.0</div>
             <div id="md-desc" class="detalles-desc">Descripción del addon...</div>
-            <a id="md-btn-download" href="#" target="_blank" class="btn-descarga-final">
-                <i class="fas fa-download"></i> DESCARGAR AHORA
-            </a>
-        </div>
+            </div>
     </div>
 
     <div id="toast">Acción completada</div>
@@ -466,7 +472,7 @@
         function filtrar(categoria) {
             toggleSidebar(false); clearInterval(heroTimer);
             const container = document.getElementById('dynamic-content');
-            const filtrados = db.filter(item => item[4] === categoria).reverse();
+            const filtrados = db.filter(item => item[4].toLowerCase() === categoria.toLowerCase()).reverse();
             container.innerHTML = `<div class="section-header" style="margin-top:80px;"><i class="fas fa-layer-group"></i> ${categoria}s <span style="font-size:0.8rem; margin-left:10px; color:var(--text-sec)">(${filtrados.length})</span></div><div class="grid-layout">${filtrados.length ? filtrados.map(item => getCardHTML(item)).join('') : '<p>No hay resultados.</p>'}</div>`;
         }
 
@@ -481,9 +487,11 @@
 
         function getCardHTML(item, styleOverride = '') {
             const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = item;
-            const isSeed = cat.toLowerCase().includes('semilla');
             const displayVersion = version ? version : 'V1.0';
-            let btnAction = isSeed ? `<button class="btn-action" onclick="copiar('${seed}')"><i class="fas fa-copy"></i> COPIAR SEED</button>` : `<button class="btn-action" onclick="abrirDetalles('${id}')">DETALLES</button>`;
+            
+            // TODOS LOS BOTONES AHORA DICEN "DETALLES"
+            let btnAction = `<button class="btn-action" onclick="abrirDetalles('${id}')">DETALLES</button>`;
+
             return `<div class="card" style="${styleOverride}"><div style="position:relative; overflow:hidden;"><img src="${img}" class="card-img" onerror="this.src='https://via.placeholder.com/300?text=MC'" loading="lazy"><div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.8); padding:2px 8px; border-radius:4px; font-size:0.7rem; color:var(--accent-gold); border:1px solid var(--accent-gold);"><i class="fas fa-download"></i> ${dls || 0}</div></div><div class="card-body"><div class="card-meta"><div class="card-tag">${cat}</div><div class="card-version">v${displayVersion}</div></div><h3 class="card-title">${nombre}</h3><div class="card-footer"><span>By ${autor || 'Admin'}</span><div class="stat" onclick="like(this, '${nombre}')"><i class="fas fa-heart"></i> <span>${likes || 0}</span></div></div>${btnAction}</div></div>`;
         }
 
@@ -494,9 +502,6 @@
             document.getElementById('md-nombre').innerText = item[1];
             document.getElementById('md-version').innerText = 'Versión: ' + (item[9] || '1.0');
             document.getElementById('md-desc').innerText = item[10] || 'Sin descripción detallada.';
-            const btnDown = document.getElementById('md-btn-download');
-            btnDown.href = item[2];
-            btnDown.onclick = () => registrar('download', item[1]);
             document.getElementById('modal-detalles').classList.add('active');
         }
 
@@ -512,7 +517,7 @@
             const next = current === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next); localStorage.setItem('theme', next);
         }
-        function copiar(texto) { navigator.clipboard.writeText(texto); showToast("¡Semilla copiada!"); }
+        function copiar(texto) { navigator.clipboard.writeText(texto); showToast("¡Copiado al portapapeles!"); }
         function like(el, nombre) { if(el.classList.contains('liked')) return; el.classList.add('liked'); const span = el.querySelector('span'); span.innerText = parseInt(span.innerText) + 1; registrar('like', nombre); }
         function registrar(accion, nombre) { fetch(`${scriptURL}?action=${accion}&nombre=${encodeURIComponent(nombre)}`, {mode:'no-cors'}); }
         function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
