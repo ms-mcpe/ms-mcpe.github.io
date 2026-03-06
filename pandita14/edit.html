@@ -496,7 +496,10 @@
             
             <div class="form-group">
                 <label class="form-label">Nombre del Contenido</label>
-                <input type="text" id="edit-nombre" class="input-box" oninput="validarEspeciales(this, 'edit-nombre-msg', 'btnSaveEdit')">
+                <!-- CAMBIO: onkeydown bloquea Enter, oninput llama limpiarSaltos + validarEspeciales -->
+                <input type="text" id="edit-nombre" class="input-box"
+                    onkeydown="if(event.key==='Enter') event.preventDefault()"
+                    oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-nombre-msg', 'btnSaveEdit')">
                 <small id="edit-nombre-msg" class="danger-text"></small>
                 <small id="edit-dupe-msg" class="danger-text"></small>
             </div>
@@ -504,7 +507,7 @@
             <div class="form-group">
                 <label class="form-label">Categoría</label>
                 <select id="edit-cat" class="input-box">
-                   <option value="Apps">Apps</option>
+<option value="Apps">Apps</option>
                     <option value="Juegos">Juegos</option>
                     <option value="Mapas">Mapas</option>
                     <option value="Texturas">Texturas</option>
@@ -524,7 +527,7 @@
 
             <div class="form-group">
                 <label class="form-label">Descripción</label>
-                <textarea id="edit-desc" class="input-box" rows="3" oninput="validarEspeciales(this, 'edit-desc-msg', 'btnSaveEdit')"></textarea>
+                <textarea id="edit-desc" class="input-box" rows="3" onkeydown="if(event.key==='Enter') event.preventDefault()" oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-desc-msg', 'btnSaveEdit')"></textarea>
                 <small id="edit-desc-msg" class="danger-text"></small>
             </div>
 
@@ -541,7 +544,7 @@
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo"><i class="fas fa-cube"></i> MC STUDIO</div>
-            <p class="sidebar-subtitle">Panel de Creador v3.0</p>
+            <p class="sidebar-subtitle">Panel de Creador v3.1</p>
         </div>
         <ul class="nav-list">
             <li class="nav-item"><a href="#" onclick="showPage('home'); toggleSidebar()" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>
@@ -583,7 +586,10 @@
                 <form id="uploadForm">
                     <div class="form-group">
                         <label class="form-label">Título</label>
-                        <input type="text" id="up-nombre" class="input-box" required placeholder="Nombre del archivo" oninput="validarEspeciales(this, 'up-nombre-msg', 'btnSend')">
+                        <!-- CAMBIO: onkeydown bloquea Enter, oninput llama limpiarSaltos + validarEspeciales -->
+                        <input type="text" id="up-nombre" class="input-box" required placeholder="Nombre del archivo"
+                            onkeydown="if(event.key==='Enter') event.preventDefault()"
+                            oninput="limpiarSaltos(this); validarEspeciales(this, 'up-nombre-msg', 'btnSend')">
                         <small id="up-nombre-msg" class="danger-text"></small>
                         <small id="up-dupe-msg" class="danger-text"></small>
                     </div>
@@ -591,7 +597,7 @@
                     <div class="form-group">
                         <label class="form-label">Categoría</label>
                         <select id="up-categoria" class="input-box" required>
-                            <option value="Apps">Apps</option>
+<option value="Apps">Apps</option>
                     <option value="Juegos">Juegos</option>
                     <option value="Mapas">Mapas</option>
                     <option value="Texturas">Texturas</option>
@@ -611,7 +617,7 @@
 
                     <div class="form-group">
                         <label class="form-label">Descripción</label>
-                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Detalles del contenido..." oninput="validarEspeciales(this, 'up-desc-msg', 'btnSend')"></textarea>
+                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Detalles del contenido..." onkeydown="if(event.key==='Enter') event.preventDefault()" oninput="limpiarSaltos(this); validarEspeciales(this, 'up-desc-msg', 'btnSend')"></textarea>
                         <small id="up-desc-msg" class="danger-text"></small>
                     </div>
 
@@ -639,6 +645,18 @@
 
     // Caracteres especiales no permitidos
     const SPECIAL_CHARS_REGEX = /["\*'`<>\\|^~{}\[\]#@$%&!?=+]/;
+
+    // ── NUEVO ── Elimina saltos de línea y retornos de carro en campos de texto (nombre/título).
+    // Cubre tanto el Enter directo como texto pegado con saltos.
+    function limpiarSaltos(input) {
+        const pos = input.selectionStart;
+        const nueva = input.value.replace(/[\r\n]+/g, ' ').replace(/  +/g, ' ');
+        if (input.value !== nueva) {
+            input.value = nueva;
+            // Restauramos la posición del cursor
+            input.setSelectionRange(pos, pos);
+        }
+    }
 
     /**
      * Valida que un campo no tenga signos especiales.
@@ -813,7 +831,8 @@
             subidoPor: currentUser,
             img: await toBase64(document.getElementById('up-img').files[0]),
             version: document.getElementById('up-version').value,
-            descripcion: document.getElementById('up-desc').value.replace(/\n/g, '\\n')
+            // CAMBIO: los saltos de línea se guardan como <br> en vez de \\n
+            descripcion: document.getElementById('up-desc').value.replace(/\n/g, '<br>')
         };
         
         try {
@@ -864,7 +883,8 @@
             nuevaUrl: document.getElementById('edit-url').value,
             usuario: currentUser,
             nuevaVersion: document.getElementById('edit-version').value,
-            nuevaDescripcion: document.getElementById('edit-desc').value.replace(/\n/g, '\\n'),
+            // CAMBIO: los saltos de línea se guardan como <br> en vez de \\n
+            nuevaDescripcion: document.getElementById('edit-desc').value.replace(/\n/g, '<br>'),
             nuevaCat: document.getElementById('edit-cat').value
         };
         
