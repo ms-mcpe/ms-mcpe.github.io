@@ -1,6 +1,6 @@
 {
-  "name": "AlanMarcket",
-  "short_name": "AlanMarcket",
+  "name": "AlanMarket",
+  "short_name": "AlanMarket",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050505",
