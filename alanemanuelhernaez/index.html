@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Verification Security</title>
+    <title>Download App</title>
 
     <link rel="icon" href="icon-192.ico">
     <link rel="manifest" href="manifest.json">
@@ -186,13 +186,31 @@
 
         /* Encabezado del modal */
         .modal-icon-wrap {
-            width: 72px; height: 72px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 70%);
-            border: 1px solid rgba(255,215,0,0.25);
+            width: 88px; height: 88px; border-radius: 22px;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            border: 1.5px solid rgba(255,215,0,0.3);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 18px;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 4px rgba(255,215,0,0.07),
+                0 0 24px rgba(255,215,0,0.15),
+                0 8px 24px rgba(0,0,0,0.5);
+            position: relative;
         }
-        .modal-icon-wrap i { font-size: 1.9rem; color: var(--gold); }
+        /* Brillo sutil en el borde superior del icono */
+        .modal-icon-wrap::after {
+            content: '';
+            position: absolute; top: 0; left: 10%; width: 80%; height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .modal-icon-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+        }
 
         .modal-title {
             font-family: 'Orbitron', sans-serif;
@@ -323,12 +341,12 @@
         <div class="modal-card">
 
             <div class="modal-icon-wrap">
-                <i class="fas fa-mobile-alt"></i>
+                <img src="icon-192.png" alt="App Icon" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=&quot;fas fa-mobile-alt&quot; style=&quot;font-size:2rem;color:var(--gold);&quot;></i>'">
             </div>
 
-            <h3 class="modal-title">INSTALACIÓN NECESARIA</h3>
+            <h3 class="modal-title">AlanMarket</h3>
             <p class="modal-subtitle">
-                Esta herramienta solo está disponible en su versión de aplicación oficial instalada.
+                Esta herramienta solo está disponible con google chrome.
             </p>
 
             <div class="divider"></div>
@@ -388,7 +406,7 @@
     /* ═══════════════════════════════════════════════
        CONFIGURACIÓN
     ═══════════════════════════════════════════════ */
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4hwo0p_fSm-UP5kHrvMYT7vJDYJFeEQk_T6S5uSMtrAxngffkD9ROcPa0wZ3BXQ1CEg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjgqDLo6y3px2y7YBaeeyOZA_4RxDAueWxnlEs9SMJIm6CKSrlv0o37wr6uhBvSMVNGQ/exec";
 
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
                       || window.navigator.standalone === true;
