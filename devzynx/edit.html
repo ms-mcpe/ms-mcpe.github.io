@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CORE VARIABLES --- */
         :root {
             --primary: #ffd700;
             --primary-glow: rgba(255, 215, 0, 0.4);
@@ -36,8 +35,6 @@
             --shadow-card: 0 8px 32px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
             --shadow-gold: 0 0 30px rgba(255,215,0,0.18), 0 0 8px rgba(255,215,0,0.08);
         }
-
-        /* --- RESET & BASE --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body {
             margin: 0; padding: 0;
@@ -55,24 +52,17 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* Subtle noise overlay */
         body::before {
             content: '';
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.4;
+            pointer-events: none; z-index: 0; opacity: 0.4;
         }
-
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* --- LOADER --- */
         #app-loader {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #000 0%, #0a0a0a 100%);
@@ -80,22 +70,13 @@
             display: flex; justify-content: center; align-items: center; flex-direction: column;
             transition: opacity 0.5s ease;
         }
-        .loader-ring {
-            position: relative; width: 64px; height: 64px;
-        }
+        .loader-ring { position: relative; width: 64px; height: 64px; }
         .loader-ring::before, .loader-ring::after {
             content: ''; position: absolute; inset: 0; border-radius: 50%;
             border: 2px solid transparent;
         }
-        .loader-ring::before {
-            border-top-color: var(--primary);
-            animation: spin 1s linear infinite;
-        }
-        .loader-ring::after {
-            border-bottom-color: rgba(255,215,0,0.2);
-            animation: spin 1.5s linear infinite reverse;
-            inset: 8px;
-        }
+        .loader-ring::before { border-top-color: var(--primary); animation: spin 1s linear infinite; }
+        .loader-ring::after { border-bottom-color: rgba(255,215,0,0.2); animation: spin 1.5s linear infinite reverse; inset: 8px; }
         .loader-dot {
             position: absolute; top: 50%; left: 50%;
             width: 8px; height: 8px; background: var(--primary);
@@ -104,11 +85,9 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- UI COMPONENTS --- */
         button { cursor: pointer; font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 1px; }
         img { pointer-events: none; -webkit-user-drag: none; }
 
-        /* --- HEADER --- */
         .app-header {
             height: 64px; display: flex; align-items: center; justify-content: space-between;
             padding: 0 24px;
@@ -120,16 +99,11 @@
             box-shadow: 0 1px 0 rgba(255,215,0,0.04), 0 4px 20px rgba(0,0,0,0.4);
         }
         .header-title {
-            font-family: var(--font-tech);
-            color: var(--primary);
-            font-size: 0.95rem;
-            letter-spacing: 4px;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-            position: relative;
+            font-family: var(--font-tech); color: var(--primary); font-size: 0.95rem;
+            letter-spacing: 4px; text-shadow: 0 0 20px rgba(255,215,0,0.5); position: relative;
         }
         .header-title::after {
-            content: '';
-            position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+            content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
             width: 30px; height: 1px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
         }
@@ -137,12 +111,10 @@
             background: var(--glass); border: 1px solid var(--glass-border);
             color: var(--text-sec); font-size: 1.1rem;
             width: 38px; height: 38px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
         .menu-btn:hover { background: var(--primary-soft); color: var(--primary); border-color: rgba(255,215,0,0.2); }
 
-        /* --- SIDEBAR --- */
         .sidebar {
             position: fixed; top: 0; left: 0; width: 290px; height: 100%;
             background: rgba(6, 6, 8, 0.97);
@@ -155,8 +127,7 @@
         }
         .sidebar.active { transform: translateX(0); }
         .sidebar-header {
-            padding: 32px 24px 24px;
-            border-bottom: 1px solid var(--glass-border);
+            padding: 32px 24px 24px; border-bottom: 1px solid var(--glass-border);
             background: linear-gradient(180deg, rgba(255,215,0,0.03) 0%, transparent 100%);
         }
         .sidebar-logo {
@@ -167,304 +138,113 @@
         .sidebar-logo i {
             width: 36px; height: 36px; background: var(--primary-soft);
             border: 1px solid rgba(255,215,0,0.2);
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
         }
-        .sidebar-subtitle {
-            font-size: 0.72rem; color: var(--text-sec); margin: 8px 0 0 48px;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
+        .sidebar-subtitle { font-size: 0.72rem; color: var(--text-sec); margin: 8px 0 0 48px; letter-spacing: 2px; text-transform: uppercase; }
         .nav-list { list-style: none; padding: 20px 16px; margin: 0; }
         .nav-item { margin-bottom: 6px; }
         .nav-link {
             display: flex; align-items: center; gap: 14px; padding: 11px 16px;
             color: var(--text-sec); text-decoration: none; border-radius: 10px;
-            transition: 0.25s; font-weight: 500; font-size: 0.9rem;
-            border: 1px solid transparent;
+            transition: 0.25s; font-weight: 500; font-size: 0.9rem; border: 1px solid transparent;
         }
-        .nav-link:hover, .nav-link.active {
-            background: var(--primary-soft);
-            color: var(--primary);
-            border-color: rgba(255,215,0,0.12);
-        }
+        .nav-link:hover, .nav-link.active { background: var(--primary-soft); color: var(--primary); border-color: rgba(255,215,0,0.12); }
         .nav-link i { width: 18px; text-align: center; font-size: 0.9rem; }
 
-        /* --- MAIN CONTENT --- */
         .main-container { flex: 1; overflow-y: auto; padding: 6px; position: relative; z-index: 1; }
         .page-section { display: none; animation: slideUp 0.45s var(--ease); max-width: 1200px; margin: 0 auto; }
         .page-section.active { display: block; }
-
         @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- SEARCH & CONTROLS --- */
         .controls-wrapper {
             position: sticky; top: 0;
             background: linear-gradient(180deg, var(--bg-dark) 70%, transparent 100%);
             z-index: 50; padding-bottom: 16px;
             border-bottom: 1px solid var(--glass-border); margin-bottom: 24px;
         }
-        
         .search-container { position: relative; margin-bottom: 14px; }
-        .search-container i {
-            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-            color: var(--text-sec); font-size: 0.85rem;
-        }
+        .search-container i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-sec); font-size: 0.85rem; }
         .search-input {
             width: 100%; padding: 13px 16px 13px 48px;
-            background: rgba(14,14,18,0.9);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px; color: white; font-family: var(--font-main);
-            font-size: 0.92rem;
-            transition: 0.3s;
+            background: rgba(14,14,18,0.9); border: 1px solid var(--glass-border);
+            border-radius: 50px; color: white; font-family: var(--font-main); font-size: 0.92rem; transition: 0.3s;
         }
         .search-input::placeholder { color: var(--text-sec); }
-        .search-input:focus {
-            border-color: rgba(255,215,0,0.3);
-            background: rgba(18,18,24,0.95);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.06), 0 0 20px rgba(255,215,0,0.05);
-        }
+        .search-input:focus { border-color: rgba(255,215,0,0.3); background: rgba(18,18,24,0.95); box-shadow: 0 0 0 3px rgba(255,215,0,0.06), 0 0 20px rgba(255,215,0,0.05); }
 
         .filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
         .chip {
-            padding: 8px 18px;
-            background: rgba(14,14,18,0.8);
-            border: 1px solid var(--glass-border);
+            padding: 8px 18px; background: rgba(14,14,18,0.8); border: 1px solid var(--glass-border);
             color: var(--text-sec); border-radius: 50px; font-size: 0.78rem;
             white-space: nowrap; transition: 0.25s; letter-spacing: 0.5px;
             display: flex; align-items: center; gap: 7px;
         }
         .chip:hover { background: var(--primary-soft); color: var(--text-main); border-color: rgba(255,215,0,0.15); }
-        .chip.active {
-            background: var(--primary); color: #000;
-            border-color: var(--primary);
-            box-shadow: var(--shadow-gold);
-            font-weight: 600;
-        }
+        .chip.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--shadow-gold); font-weight: 600; }
 
-        /* --- GRID CARDS --- */
-        .grid-layout {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-        }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
         .card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-card);
-            overflow: hidden; position: relative;
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-card); overflow: hidden; position: relative;
             transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s;
             box-shadow: var(--shadow-card);
         }
         .card::before {
-            content: '';
-            position: absolute; inset: 0;
+            content: ''; position: absolute; inset: 0;
             background: linear-gradient(135deg, rgba(255,215,0,0.02) 0%, transparent 60%);
             pointer-events: none; z-index: 1;
         }
-        .card:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,215,0,0.12) inset, var(--shadow-gold);
-            border-color: rgba(255,215,0,0.2);
-        }
-        
+        .card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,215,0,0.12) inset, var(--shadow-gold); border-color: rgba(255,215,0,0.2); }
         .card-img-container { width: 100%; height: 165px; overflow: hidden; position: relative; }
-        .card-img-container::after {
-            content: '';
-            position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
-            background: linear-gradient(transparent, var(--bg-card));
-            z-index: 2;
-        }
+        .card-img-container::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(transparent, var(--bg-card)); z-index: 2; }
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s var(--ease); }
         .card:hover .card-img { transform: scale(1.08); filter: brightness(1.05); }
-        
         .card-body { padding: 14px 16px 16px; }
-        .card-title {
-            margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            color: var(--text-main);
-        }
-        .card-meta {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 0.74rem; color: var(--text-sec);
-        }
-        .badge-cat {
-            background: var(--primary-soft);
-            border: 1px solid rgba(255,215,0,0.15);
-            padding: 3px 10px; border-radius: 6px;
-            color: var(--primary); font-weight: 600; letter-spacing: 0.5px;
-            font-size: 0.72rem;
-        }
+        .card-title { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; color: var(--text-sec); }
+        .badge-cat { background: var(--primary-soft); border: 1px solid rgba(255,215,0,0.15); padding: 3px 10px; border-radius: 6px; color: var(--primary); font-weight: 600; letter-spacing: 0.5px; font-size: 0.72rem; }
         .badge-ver { color: var(--text-sec); font-size: 0.7rem; opacity: 0.7; }
-        
-        .card-actions-float {
-            position: absolute; top: 10px; right: 10px;
-            display: flex; gap: 8px; z-index: 10;
-        }
-        .mini-btn {
-            width: 34px; height: 34px; border-radius: 10px; border: none; color: white;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            backdrop-filter: blur(10px); transition: 0.2s var(--ease);
-            font-size: 0.8rem;
-        }
+        .card-actions-float { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; z-index: 10; }
+        .mini-btn { width: 34px; height: 34px; border-radius: 10px; border: none; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); transition: 0.2s var(--ease); font-size: 0.8rem; }
         .btn-del { background: rgba(255, 64, 96, 0.85); box-shadow: 0 4px 12px rgba(255,64,96,0.3); }
         .btn-edit { background: rgba(30, 130, 255, 0.85); box-shadow: 0 4px 12px rgba(30,130,255,0.3); }
         .mini-btn:hover { transform: scale(1.12) translateY(-1px); filter: brightness(1.1); }
 
-        /* --- FORMS --- */
-        .glass-panel {
-            background: rgba(10,10,14,0.85);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px; padding: 36px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
-        }
+        .glass-panel { background: rgba(10,10,14,0.85); border: 1px solid var(--glass-border); border-radius: 24px; padding: 36px; box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset; }
         .form-group { margin-bottom: 22px; position: relative; }
-        .form-label {
-            display: flex; align-items: center; gap: 6px;
-            margin-bottom: 9px; color: var(--primary);
-            font-size: 0.78rem; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase;
-        }
-        .form-label::before {
-            content: '';
-            width: 3px; height: 12px;
-            background: linear-gradient(180deg, var(--primary), rgba(255,215,0,0.3));
-            border-radius: 2px;
-        }
-        .input-box {
-            width: 100%; padding: 13px 16px;
-            background: rgba(8,8,12,0.8);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-input);
-            color: var(--text-main); font-family: var(--font-main);
-            font-size: 0.92rem;
-            transition: 0.3s;
-        }
+        .form-label { display: flex; align-items: center; gap: 6px; margin-bottom: 9px; color: var(--primary); font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+        .form-label::before { content: ''; width: 3px; height: 12px; background: linear-gradient(180deg, var(--primary), rgba(255,215,0,0.3)); border-radius: 2px; }
+        .input-box { width: 100%; padding: 13px 16px; background: rgba(8,8,12,0.8); border: 1px solid var(--glass-border); border-radius: var(--radius-input); color: var(--text-main); font-family: var(--font-main); font-size: 0.92rem; transition: 0.3s; }
         .input-box::placeholder { color: var(--text-sec); }
-        .input-box:focus {
-            border-color: rgba(255,215,0,0.3);
-            background: rgba(12,12,18,0.95);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.06);
-        }
-        .input-box.error {
-            border-color: rgba(255,64,96,0.5);
-            box-shadow: 0 0 0 3px rgba(255,64,96,0.06);
-        }
+        .input-box:focus { border-color: rgba(255,215,0,0.3); background: rgba(12,12,18,0.95); box-shadow: 0 0 0 3px rgba(255,215,0,0.06); }
+        .input-box.error { border-color: rgba(255,64,96,0.5); box-shadow: 0 0 0 3px rgba(255,64,96,0.06); }
         textarea.input-box { resize: vertical; min-height: 100px; line-height: 1.6; }
         select.input-box { appearance: none; cursor: pointer; }
 
-        /* MENSAJE DE DUPLICADO / ERROR */
-        .danger-text {
-            color: var(--danger);
-            font-size: 0.78rem;
-            margin-top: 7px;
-            display: none;
-            font-weight: 600;
-            animation: fadeIn 0.3s ease;
-            padding: 7px 12px;
-            background: var(--danger-bg);
-            border-radius: 8px;
-            border: 1px solid rgba(255,64,96,0.2);
-            display: none;
-        }
+        .danger-text { color: var(--danger); font-size: 0.78rem; margin-top: 7px; font-weight: 600; animation: fadeIn 0.3s ease; padding: 7px 12px; background: var(--danger-bg); border-radius: 8px; border: 1px solid rgba(255,64,96,0.2); display: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn-primary {
-            width: 100%; padding: 15px; background: var(--primary); color: #000;
-            border: none; border-radius: var(--radius-input);
-            font-weight: 800; font-size: 0.9rem; letter-spacing: 2px;
-            transition: 0.3s var(--ease); margin-top: 10px;
-            position: relative; overflow: hidden;
-        }
-        .btn-primary::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        .btn-primary:hover:not(:disabled) {
-            background: #fff;
-            box-shadow: 0 8px 30px rgba(255,215,0,0.4), 0 0 0 2px rgba(255,215,0,0.3);
-            transform: translateY(-2px);
-        }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: var(--radius-input); font-weight: 800; font-size: 0.9rem; letter-spacing: 2px; transition: 0.3s var(--ease); margin-top: 10px; position: relative; overflow: hidden; }
+        .btn-primary::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events: none; }
+        .btn-primary:hover:not(:disabled) { background: #fff; box-shadow: 0 8px 30px rgba(255,215,0,0.4), 0 0 0 2px rgba(255,215,0,0.3); transform: translateY(-2px); }
         .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.6); transform: none; }
-        .btn-secondary {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
-            color: var(--text-sec);
-        }
+        .btn-secondary { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--text-sec); }
         .btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: white; background: rgba(255,255,255,0.05); }
 
-        /* --- FAB --- */
-        .fab {
-            position: fixed; bottom: 32px; right: 32px; width: 58px; height: 58px;
-            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
-            color: #000; border-radius: 18px;
-            display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
-            box-shadow: 0 12px 28px rgba(255, 215, 0, 0.35), 0 0 0 1px rgba(255,215,0,0.2);
-            border: none; z-index: 900; transition: 0.4s var(--ease);
-        }
-        .fab:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 18px 40px rgba(255, 215, 0, 0.5), 0 0 0 2px rgba(255,215,0,0.3);
-            border-radius: 50%;
-        }
+        .fab { position: fixed; bottom: 32px; right: 32px; width: 58px; height: 58px; background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); color: #000; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 12px 28px rgba(255, 215, 0, 0.35), 0 0 0 1px rgba(255,215,0,0.2); border: none; z-index: 900; transition: 0.4s var(--ease); }
+        .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 18px 40px rgba(255, 215, 0, 0.5), 0 0 0 2px rgba(255,215,0,0.3); border-radius: 50%; }
 
-        /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px) saturate(0.8);
-            -webkit-backdrop-filter: blur(12px) saturate(0.8);
-            z-index: 10000; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px) saturate(0.8); -webkit-backdrop-filter: blur(12px) saturate(0.8); z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
         .modal-overlay.show { display: flex; opacity: 1; }
-        .modal-box {
-            background: rgba(10,10,14,0.98);
-            border: 1px solid rgba(255,215,0,0.15);
-            width: 90%; max-width: 460px;
-            padding: 36px; border-radius: 24px;
-            text-align: center; position: relative;
-            transform: scale(0.93) translateY(10px);
-            transition: 0.4s var(--ease);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(255,215,0,0.06), 0 1px 0 rgba(255,255,255,0.05) inset;
-            max-height: 90vh; overflow-y: auto;
-        }
-        .modal-overlay.show .modal-box {
-            transform: scale(1) translateY(0);
-        }
-        
+        .modal-box { background: rgba(10,10,14,0.98); border: 1px solid rgba(255,215,0,0.15); width: 90%; max-width: 460px; padding: 36px; border-radius: 24px; text-align: center; position: relative; transform: scale(0.93) translateY(10px); transition: 0.4s var(--ease); box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(255,215,0,0.06), 0 1px 0 rgba(255,255,255,0.05) inset; max-height: 90vh; overflow-y: auto; }
+        .modal-overlay.show .modal-box { transform: scale(1) translateY(0); }
         .overlay-click { position: absolute; inset: 0; z-index: -1; }
-        .text-link {
-            color: var(--primary); cursor: pointer;
-            text-decoration: none;
-            border-bottom: 1px solid rgba(255,215,0,0.3);
-            padding-bottom: 1px;
-            transition: 0.2s;
-        }
+        .text-link { color: var(--primary); cursor: pointer; text-decoration: none; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 1px; transition: 0.2s; }
         .text-link:hover { color: #fff; border-color: transparent; }
-
-        /* Auth icon ring */
-        .auth-icon-wrap {
-            width: 72px; height: 72px; margin: 0 auto 24px;
-            border-radius: 22px;
-            background: var(--primary-soft);
-            border: 1px solid rgba(255,215,0,0.2);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 30px rgba(255,215,0,0.12);
-        }
+        .auth-icon-wrap { width: 72px; height: 72px; margin: 0 auto 24px; border-radius: 22px; background: var(--primary-soft); border: 1px solid rgba(255,215,0,0.2); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(255,215,0,0.12); }
         .auth-icon-wrap i { font-size: 2rem; color: var(--primary); }
-
-        /* Section heading */
-        .section-heading {
-            text-align: center; font-family: var(--font-tech);
-            color: var(--primary); margin-bottom: 32px;
-            font-size: 1rem; letter-spacing: 3px;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-        }
-        .section-heading::before, .section-heading::after {
-            content: '';
-            flex: 1; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
-            max-width: 80px;
-        }
+        .section-heading { text-align: center; font-family: var(--font-tech); color: var(--primary); margin-bottom: 32px; font-size: 1rem; letter-spacing: 3px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .section-heading::before, .section-heading::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent); max-width: 80px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -493,48 +273,42 @@
         <div class="modal-box" style="text-align:left;">
             <h2 style="color:var(--primary); font-family:var(--font-tech); margin-top:0; letter-spacing:3px; font-size:1rem;">EDITAR CONTENIDO</h2>
             <input type="hidden" id="edit-original-name">
-            
             <div class="form-group">
                 <label class="form-label">Nombre del Contenido</label>
-                <!-- CAMBIO: onkeydown bloquea Enter, oninput llama limpiarSaltos + validarEspeciales -->
                 <input type="text" id="edit-nombre" class="input-box"
                     onkeydown="if(event.key==='Enter') event.preventDefault()"
                     oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-nombre-msg', 'btnSaveEdit')">
                 <small id="edit-nombre-msg" class="danger-text"></small>
                 <small id="edit-dupe-msg" class="danger-text"></small>
             </div>
-            
             <div class="form-group">
                 <label class="form-label">Categoría</label>
                 <select id="edit-cat" class="input-box">
-<option value="plugins">Plugins</option>
+                   <option value="plugins">Plugins</option>
                             <option value="Maps">Mapas</option>
                             <option value="server">Servers</option>
                             <option value="host">Host</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Versión / Modelo</label>
                 <input type="text" id="edit-version" class="input-box" value="1.0" placeholder="Ej: 1.0 o 2.0">
             </div>
-
             <div class="form-group">
                 <label class="form-label">Link Descarga (cuty)</label>
                 <input type="text" id="edit-url" class="input-box">
             </div>
-
             <div class="form-group">
                 <label class="form-label">Descripción</label>
-                <textarea id="edit-desc" class="input-box" rows="3" onkeydown="if(event.key==='Enter') event.preventDefault()" oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-desc-msg', 'btnSaveEdit')"></textarea>
+                <textarea id="edit-desc" class="input-box" rows="3"
+                    onkeydown="if(event.key==='Enter') event.preventDefault()"
+                    oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-desc-msg', 'btnSaveEdit')"></textarea>
                 <small id="edit-desc-msg" class="danger-text"></small>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Actualizar Imagen (Opcional)</label>
                 <input type="file" id="edit-img" accept="image/*" class="input-box" style="padding:10px;">
             </div>
-            
             <button class="btn-primary" onclick="procesarEdicion()" id="btnSaveEdit">GUARDAR CAMBIOS</button>
             <button class="btn-primary btn-secondary" onclick="closeEditModal()" style="margin-top:10px;">CANCELAR</button>
         </div>
@@ -567,7 +341,6 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" class="search-input" placeholder="Buscar apps, juegos, mapas..." onkeyup="filtrarGrid()">
                 </div>
-
                 <div class="filter-bar">
                     <button class="chip active" id="btn-mode-all" onclick="setGestionMode(null)">Explorar Todo</button>
                     <button class="chip" id="btn-mode-edit" onclick="setGestionMode('edit')"><i class="fas fa-pen"></i> Mis Publicaciones</button>
@@ -579,51 +352,44 @@
 
         <section id="upload" class="page-section">
             <div class="glass-panel" style="max-width:600px; margin:0 auto;">
-                <h2 class="section-heading">
-                    <i class="fas fa-rocket"></i> PUBLICAR CONTENIDO
-                </h2>
+                <h2 class="section-heading"><i class="fas fa-rocket"></i> PUBLICAR CONTENIDO</h2>
                 <form id="uploadForm">
                     <div class="form-group">
                         <label class="form-label">Título</label>
-                        <!-- CAMBIO: onkeydown bloquea Enter, oninput llama limpiarSaltos + validarEspeciales -->
                         <input type="text" id="up-nombre" class="input-box" required placeholder="Nombre del archivo"
                             onkeydown="if(event.key==='Enter') event.preventDefault()"
                             oninput="limpiarSaltos(this); validarEspeciales(this, 'up-nombre-msg', 'btnSend')">
                         <small id="up-nombre-msg" class="danger-text"></small>
                         <small id="up-dupe-msg" class="danger-text"></small>
                     </div>
-                    
                     <div class="form-group">
                         <label class="form-label">Categoría</label>
                         <select id="up-categoria" class="input-box" required>
-<option value="plugins">Plugins</option>
+                           <option value="plugins">Plugins</option>
                             <option value="Maps">Mapas</option>
                             <option value="server">Servers</option>
                             <option value="host">Host</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label class="form-label">Versión / Modelo</label>
                         <input type="text" id="up-version" class="input-box" required placeholder="Ej: v1.0.2">
                     </div>
-
                     <div class="form-group">
                         <label class="form-label">Enlace Directo (cuty)</label>
                         <input type="url" id="up-url" class="input-box" required placeholder="https://cuty.io/...">
                     </div>
-
                     <div class="form-group">
                         <label class="form-label">Descripción</label>
-                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Detalles del contenido..." onkeydown="if(event.key==='Enter') event.preventDefault()" oninput="limpiarSaltos(this); validarEspeciales(this, 'up-desc-msg', 'btnSend')"></textarea>
+                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Detalles del contenido..."
+                            onkeydown="if(event.key==='Enter') event.preventDefault()"
+                            oninput="limpiarSaltos(this); validarEspeciales(this, 'up-desc-msg', 'btnSend')"></textarea>
                         <small id="up-desc-msg" class="danger-text"></small>
                     </div>
-
                     <div class="form-group">
                         <label class="form-label">Imagen de Portada</label>
                         <input type="file" id="up-img" accept="image/*" required class="input-box" style="padding:10px;">
                     </div>
-
                     <input type="hidden" id="up-autor">
                     <button type="submit" class="btn-primary" id="btnSend">PUBLICAR AHORA</button>
                     <button type="button" class="btn-primary btn-secondary" onclick="showPage('home')">CANCELAR</button>
@@ -641,26 +407,20 @@
     let isRegisterMode = false;
     let datosLocales = [];
 
-    // Caracteres especiales no permitidos
-    const SPECIAL_CHARS_REGEX = /["\*'`<>\\|^~{}\[\]#@$%&!?=+]/;
 
-    // ── NUEVO ── Elimina saltos de línea y retornos de carro en campos de texto (nombre/título).
-    // Cubre tanto el Enter directo como texto pegado con saltos.
+    //   "  '  `  <  >  \  &
+    // Quedan PERMITIDOS todos los demás: . , { } + ? ¿ ¡ ! [ ] ( ) / - _ : ; * # @ $ % ^ ~ = | etc.
+    const SPECIAL_CHARS_REGEX = /["'`<>\\&]/;
+
     function limpiarSaltos(input) {
         const pos = input.selectionStart;
         const nueva = input.value.replace(/[\r\n]+/g, ' ').replace(/  +/g, ' ');
         if (input.value !== nueva) {
             input.value = nueva;
-            // Restauramos la posición del cursor
             input.setSelectionRange(pos, pos);
         }
     }
 
-    /**
-     * Valida que un campo no tenga signos especiales.
-     * Si los tiene: muestra mensaje, pone borde rojo y deshabilita el botón.
-     * Devuelve true si el campo es válido.
-     */
     function validarEspeciales(input, msgId, btnId) {
         const val = input.value;
         const msgEl = document.getElementById(msgId);
@@ -668,14 +428,13 @@
 
         if (SPECIAL_CHARS_REGEX.test(val)) {
             input.classList.add('error');
-            msgEl.innerText = '⚠️ No se permiten signos especiales ( " * \' ` < > \\ | ^ ~ { } [ ] )';
+            msgEl.innerText = '⚠️ No se permiten: " \' ` < > \\ &';
             msgEl.style.display = 'block';
             if (btn) btn.disabled = true;
             return false;
         } else {
             input.classList.remove('error');
             msgEl.style.display = 'none';
-            // Solo rehabilitamos si no hay otro error activo (duplicado, etc.)
             const otherErrors = document.querySelectorAll(`#${input.closest('.page-section, .modal-box').id || 'editModal'} .danger-text`);
             let anyVisible = false;
             otherErrors.forEach(el => { if (el.id !== msgId && el.style.display !== 'none' && el.innerText) anyVisible = true; });
@@ -684,7 +443,6 @@
         }
     }
 
-    // Protecciones
     document.addEventListener('contextmenu', e => e.preventDefault());
     
     window.addEventListener('load', () => {
@@ -763,34 +521,26 @@
             grid.innerHTML = "";
             datosLocales.slice().reverse().forEach((addon) => {
                 const [fecha, nombre, link, img, cat, likes, dls, seed, autor, version, descripcion] = addon;
-                
-                // Si estamos en modo gestión y no somos el autor, ignoramos esta tarjeta
                 if (modoGestion && autor !== currentUser) return;
-                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.setAttribute('data-version', version || '');
-                
                 let actions = "";
                 if (modoGestion === 'delete' && autor === currentUser) {
-                    actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${nombre.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button></div>`;
+                    actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${String(nombre).replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button></div>`;
                 }
-                
                 if (modoGestion === 'edit' && autor === currentUser) {
-                    // Preparamos los textos para que sean seguros dentro de la función onclick del HTML
-                    const safeNombre = nombre ? nombre.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
-                    const safeLink = link ? link.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
-                    const safeVer = version ? version.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
-                    const safeDesc = descripcion ? descripcion.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n') : '';
-                    const safeCat = cat ? cat.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
-
+                    const safeNombre = nombre ? String(nombre).replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+                    const safeLink = link ? String(link).replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+                    const safeVer = version ? String(version).replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+                    const safeDesc = descripcion ? String(descripcion).replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n') : '';
+                    const safeCat = cat ? String(cat).replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
                     actions = `<div class="card-actions-float">
                         <button class="mini-btn btn-edit" onclick="openEditModal('${safeNombre}', '${safeLink}', '${safeVer}', '${safeDesc}', '${safeCat}')">
                             <i class="fas fa-pen"></i>
                         </button>
                     </div>`;
                 }
-
                 card.innerHTML = `
                     ${actions}
                     <div class="card-img-container"><img src="${img}" class="card-img" loading="lazy"></div>
@@ -812,15 +562,11 @@
 
     document.getElementById('uploadForm').onsubmit = async (e) => {
         e.preventDefault();
-
-        // Validación anti-especiales antes de enviar
         const nombreOk = validarEspeciales(document.getElementById('up-nombre'), 'up-nombre-msg', 'btnSend');
         const descOk = validarEspeciales(document.getElementById('up-desc'), 'up-desc-msg', 'btnSend');
         if (!nombreOk || !descOk) return;
-
         const btn = document.getElementById('btnSend');
         btn.disabled = true; btn.innerText = 'SUBIENDO...';
-        
         const payload = {
             action: "add",
             nombre: document.getElementById('up-nombre').value,
@@ -829,10 +575,8 @@
             subidoPor: currentUser,
             img: await toBase64(document.getElementById('up-img').files[0]),
             version: document.getElementById('up-version').value,
-            // CAMBIO: los saltos de línea se guardan como <br> en vez de \\n
             descripcion: document.getElementById('up-desc').value.replace(/\n/g, '<br>')
         };
-        
         try {
             await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
             alert("¡Publicado!");
@@ -846,12 +590,8 @@
         document.getElementById('edit-url').value = link;
         document.getElementById('edit-version').value = version;
         document.getElementById('edit-cat').value = cat;
-        
-        // Convertimos el texto literal \n de vuelta a saltos de línea reales para el textarea
         const decorado = desc.split('\\n').join('\n');
         document.getElementById('edit-desc').value = decorado;
-
-        // Limpiamos mensajes de error al abrir
         ['edit-nombre-msg','edit-desc-msg','edit-dupe-msg'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.style.display = 'none';
@@ -861,19 +601,15 @@
             if(el) el.classList.remove('error');
         });
         document.getElementById('btnSaveEdit').disabled = false;
-        
         document.getElementById('editModal').classList.add('show');
     }
 
     async function procesarEdicion() {
-        // Validación anti-especiales antes de enviar
         const nombreOk = validarEspeciales(document.getElementById('edit-nombre'), 'edit-nombre-msg', 'btnSaveEdit');
         const descOk = validarEspeciales(document.getElementById('edit-desc'), 'edit-desc-msg', 'btnSaveEdit');
         if (!nombreOk || !descOk) return;
-
         const btn = document.getElementById('btnSaveEdit');
         btn.disabled = true;
-        
         const payload = {
             action: "edit",
             nombreOriginal: document.getElementById('edit-original-name').value,
@@ -881,14 +617,11 @@
             nuevaUrl: document.getElementById('edit-url').value,
             usuario: currentUser,
             nuevaVersion: document.getElementById('edit-version').value,
-            // CAMBIO: los saltos de línea se guardan como <br> en vez de \\n
             nuevaDescripcion: document.getElementById('edit-desc').value.replace(/\n/g, '<br>'),
             nuevaCat: document.getElementById('edit-cat').value
         };
-        
         const file = document.getElementById('edit-img').files[0];
         if(file) payload.nuevaImg = await toBase64(file);
-        
         try {
             const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
             const result = await response.text();
@@ -940,7 +673,6 @@
         document.getElementById('editModal').classList.remove('show');
     }
 
-    // Detección de duplicados
     document.getElementById('up-nombre').addEventListener('input', function() {
         const val = this.value.trim().toLowerCase();
         const found = datosLocales.find(a => a[1] && a[1].toLowerCase() === val);
@@ -952,7 +684,6 @@
             btn.disabled = true;
         } else {
             msg.style.display = "none";
-            // Solo rehabilita si no hay error de especiales activo
             const especilaesMsg = document.getElementById('up-nombre-msg');
             const descMsg = document.getElementById('up-desc-msg');
             if(especilaesMsg.style.display === 'none' && descMsg.style.display === 'none') {
