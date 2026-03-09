@@ -789,8 +789,8 @@
             const imagenes = db.map(i => i[3]).filter(url => url && url.startsWith('http'));
             renderHero(imagenes, container);
 
-            renderHorizontalSection("Novedades", [...db].reverse().slice(0, 10), container);
-            renderHorizontalSection("Populares", [...db].sort((a,b)=>b[6]-a[6]).slice(0, 10), container);
+            renderHorizontalSection("Novedades", [...db].reverse().slice(0, 1000), container);
+            renderHorizontalSection("Populares", [...db].sort((a,b)=>b[6]-a[6]).slice(0, 500), container);
         }
 
         function renderHero(imgs, container) {
