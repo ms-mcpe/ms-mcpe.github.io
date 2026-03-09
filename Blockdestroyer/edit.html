@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffd700">
+    <title>Panel MC Studios | </title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #ffd700;
+            --primary-glow: rgba(255, 215, 0, 0.4);
+            --primary-soft: rgba(255, 215, 0, 0.12);
+            --bg-dark: #050505;
+            --bg-panel: rgba(18, 18, 22, 0.75);
+            --bg-card: rgba(16, 16, 20, 0.9);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --glass-border-hover: rgba(255, 215, 0, 0.25);
+            --text-main: #f0f0f0;
+            --text-sec: #7a7a8c;
+            --text-muted: #3a3a4a;
+            --danger: #ff4060;
+            --danger-bg: rgba(255, 64, 96, 0.12);
+            --success: #00e676;
+            --blue-accent: rgba(80, 120, 255, 0.08);
+            --font-main: 'Outfit', sans-serif;
+            --font-tech: 'Orbitron', sans-serif;
+            --ease: cubic-bezier(0.23, 1, 0.32, 1);
+            --radius-card: 18px;
+            --radius-input: 12px;
+            --shadow-card: 0 8px 32px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
+            --shadow-gold: 0 0 30px rgba(255,215,0,0.18), 0 0 8px rgba(255,215,0,0.08);
+
+            /* Novedades accent */
+            --news-purple:      #9B5FFF;
+            --news-purple-dim:  rgba(155,95,255,0.14);
+            --news-purple-glow: rgba(155,95,255,0.35);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(ellipse 80% 50% at 5% 10%, rgba(255, 215, 0, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 95% 85%, rgba(60, 70, 255, 0.07) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 60% at 50% 50%, rgba(255,215,0,0.02) 0%, transparent 70%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 0; opacity: 0.4;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        #app-loader {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #000 0%, #0a0a0a 100%);
+            z-index: 99999;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+        .loader-ring { position: relative; width: 64px; height: 64px; }
+        .loader-ring::before, .loader-ring::after {
+            content: ''; position: absolute; inset: 0; border-radius: 50%;
+            border: 2px solid transparent;
+        }
+        .loader-ring::before { border-top-color: var(--primary); animation: spin 1s linear infinite; }
+        .loader-ring::after { border-bottom-color: rgba(255,215,0,0.2); animation: spin 1.5s linear infinite reverse; inset: 8px; }
+        .loader-dot {
+            position: absolute; top: 50%; left: 50%;
+            width: 8px; height: 8px; background: var(--primary);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 12px var(--primary);
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        button { cursor: pointer; font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 1px; }
+        img { pointer-events: none; -webkit-user-drag: none; }
+
+        .app-header {
+            height: 64px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px;
+            background: rgba(5,5,5,0.9);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 1px 0 rgba(255,215,0,0.04), 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .header-title {
+            font-family: var(--font-tech); color: var(--primary); font-size: 0.95rem;
+            letter-spacing: 4px; text-shadow: 0 0 20px rgba(255,215,0,0.5); position: relative;
+        }
+        .header-title::after {
+            content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+        .menu-btn {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            color: var(--text-sec); font-size: 1.1rem;
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .menu-btn:hover { background: var(--primary-soft); color: var(--primary); border-color: rgba(255,215,0,0.2); }
+
+        .sidebar {
+            position: fixed; top: 0; left: 0; width: 290px; height: 100%;
+            background: rgba(6, 6, 8, 0.97);
+            backdrop-filter: blur(30px) saturate(1.8);
+            -webkit-backdrop-filter: blur(30px) saturate(1.8);
+            transform: translateX(-100%); transition: transform 0.45s var(--ease);
+            z-index: 1000; border-right: 1px solid var(--glass-border);
+            display: flex; flex-direction: column;
+            box-shadow: 4px 0 40px rgba(0,0,0,0.8);
+        }
+        .sidebar.active { transform: translateX(0); }
+        .sidebar-header {
+            padding: 32px 24px 24px; border-bottom: 1px solid var(--glass-border);
+            background: linear-gradient(180deg, rgba(255,215,0,0.03) 0%, transparent 100%);
+        }
+        .sidebar-logo {
+            font-family: var(--font-tech); color: var(--primary); font-size: 1.3rem;
+            display: flex; align-items: center; gap: 12px;
+            text-shadow: 0 0 15px rgba(255,215,0,0.4);
+        }
+        .sidebar-logo i {
+            width: 36px; height: 36px; background: var(--primary-soft);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem;
+        }
+        .sidebar-subtitle { font-size: 0.72rem; color: var(--text-sec); margin: 8px 0 0 48px; letter-spacing: 2px; text-transform: uppercase; }
+        .nav-list { list-style: none; padding: 20px 16px; margin: 0; }
+        .nav-item { margin-bottom: 6px; }
+        .nav-link {
+            display: flex; align-items: center; gap: 14px; padding: 11px 16px;
+            color: var(--text-sec); text-decoration: none; border-radius: 10px;
+            transition: 0.25s; font-weight: 500; font-size: 0.9rem; border: 1px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active { background: var(--primary-soft); color: var(--primary); border-color: rgba(255,215,0,0.12); }
+        .nav-link i { width: 18px; text-align: center; font-size: 0.9rem; }
+
+        .main-container { flex: 1; overflow-y: auto; padding: 6px; position: relative; z-index: 1; }
+        .page-section { display: none; animation: slideUp 0.45s var(--ease); max-width: 1200px; margin: 0 auto; }
+        .page-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        .controls-wrapper {
+            position: sticky; top: 0;
+            background: linear-gradient(180deg, var(--bg-dark) 70%, transparent 100%);
+            z-index: 50; padding-bottom: 16px;
+            border-bottom: 1px solid var(--glass-border); margin-bottom: 24px;
+        }
+        .search-container { position: relative; margin-bottom: 14px; }
+        .search-container i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-sec); font-size: 0.85rem; }
+        .search-input {
+            width: 100%; padding: 13px 16px 13px 48px;
+            background: rgba(14,14,18,0.9); border: 1px solid var(--glass-border);
+            border-radius: 50px; color: white; font-family: var(--font-main); font-size: 0.92rem; transition: 0.3s;
+        }
+        .search-input::placeholder { color: var(--text-sec); }
+        .search-input:focus { border-color: rgba(255,215,0,0.3); background: rgba(18,18,24,0.95); box-shadow: 0 0 0 3px rgba(255,215,0,0.06), 0 0 20px rgba(255,215,0,0.05); }
+
+        .filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .chip {
+            padding: 8px 18px; background: rgba(14,14,18,0.8); border: 1px solid var(--glass-border);
+            color: var(--text-sec); border-radius: 50px; font-size: 0.78rem;
+            white-space: nowrap; transition: 0.25s; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .chip:hover { background: var(--primary-soft); color: var(--text-main); border-color: rgba(255,215,0,0.15); }
+        .chip.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: var(--shadow-gold); font-weight: 600; }
+        /* Chip novedades activo con color morado */
+        .chip.active-news {
+            background: var(--news-purple);
+            color: #fff;
+            border-color: var(--news-purple);
+            box-shadow: 0 0 24px var(--news-purple-glow);
+            font-weight: 600;
+        }
+
+        /* ─── ADDON GRID ─── */
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-card); overflow: hidden; position: relative;
+            transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s;
+            box-shadow: var(--shadow-card);
+        }
+        .card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,215,0,0.02) 0%, transparent 60%);
+            pointer-events: none; z-index: 1;
+        }
+        .card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,215,0,0.12) inset, var(--shadow-gold); border-color: rgba(255,215,0,0.2); }
+        .card-img-container { width: 100%; height: 165px; overflow: hidden; position: relative; }
+        .card-img-container::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(transparent, var(--bg-card)); z-index: 2; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s var(--ease); }
+        .card:hover .card-img { transform: scale(1.08); filter: brightness(1.05); }
+        .card-body { padding: 14px 16px 16px; }
+        .card-title { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; color: var(--text-sec); }
+        .badge-cat { background: var(--primary-soft); border: 1px solid rgba(255,215,0,0.15); padding: 3px 10px; border-radius: 6px; color: var(--primary); font-weight: 600; letter-spacing: 0.5px; font-size: 0.72rem; }
+        .badge-ver { color: var(--text-sec); font-size: 0.7rem; opacity: 0.7; }
+        .card-actions-float { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; z-index: 10; }
+        .mini-btn { width: 34px; height: 34px; border-radius: 10px; border: none; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); transition: 0.2s var(--ease); font-size: 0.8rem; }
+        .btn-del { background: rgba(255, 64, 96, 0.85); box-shadow: 0 4px 12px rgba(255,64,96,0.3); }
+        .btn-edit { background: rgba(30, 130, 255, 0.85); box-shadow: 0 4px 12px rgba(30,130,255,0.3); }
+        .mini-btn:hover { transform: scale(1.12) translateY(-1px); filter: brightness(1.1); }
+
+        /* ─── NEWS GRID ─── */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
+            animation: slideUp 0.45s var(--ease);
+        }
+
+        .news-card {
+            background: rgba(14,10,24,0.92);
+            border: 1px solid rgba(155,95,255,0.18);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+        }
+        .news-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--news-purple), rgba(155,95,255,0.3), transparent);
+            z-index: 2;
+        }
+        .news-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(155,95,255,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px var(--news-purple-dim);
+        }
+
+        /* Featured: first card full width */
+        .news-card.news-featured {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            max-height: 260px;
+        }
+        @media(max-width: 600px) {
+            .news-card.news-featured { flex-direction: column; max-height: none; }
+        }
+
+        .news-img-wrap { position: relative; overflow: hidden; flex-shrink: 0; }
+        .news-card:not(.news-featured) .news-img-wrap { width: 100%; aspect-ratio: 16/9; }
+        .news-card.news-featured .news-img-wrap { width: 40%; min-height: 100%; }
+        @media(max-width: 600px) { .news-card.news-featured .news-img-wrap { width: 100%; min-height: auto; aspect-ratio: 16/9; } }
+
+        .news-img-wrap img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform 0.6s var(--ease), filter 0.4s;
+            filter: brightness(0.8) saturate(0.8);
+        }
+        .news-card:hover .news-img-wrap img { transform: scale(1.07); filter: brightness(0.95) saturate(1); }
+
+        /* Gradient overlay on image */
+        .news-img-wrap::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+            background: linear-gradient(to top, rgba(14,10,24,0.95), transparent);
+            pointer-events: none; z-index: 1;
+        }
+        .news-card.news-featured .news-img-wrap::after { display: none; }
+
+        /* Purple tint overlay */
+        .news-img-wrap::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(140deg, rgba(155,95,255,0.18) 0%, transparent 55%);
+            z-index: 1; pointer-events: none;
+        }
+
+        .news-badge {
+            position: absolute; top: 10px; left: 10px; z-index: 3;
+            background: linear-gradient(135deg, var(--news-purple), #C080FF);
+            color: #fff; font-family: var(--font-tech); font-size: 0.42rem;
+            font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 4px 12px; border-radius: 50px;
+            box-shadow: 0 0 16px var(--news-purple-glow);
+        }
+
+        .news-body {
+            padding: 18px 20px 20px;
+            display: flex; flex-direction: column; flex-grow: 1;
+        }
+
+        .news-author-row {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+        }
+        .news-author-avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--news-purple), #5040C0);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; color: #fff; flex-shrink: 0;
+            border: 1px solid rgba(155,95,255,0.3);
+            font-family: var(--font-tech);
+        }
+        .news-author-name {
+            font-size: 0.78rem; color: rgba(155,95,255,0.9); font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .news-author-label {
+            font-size: 0.68rem; color: var(--text-sec); margin-left: auto;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .news-author-label i { font-size: 0.62rem; color: var(--news-purple); }
+
+        .news-title {
+            font-family: var(--font-tech); font-size: 0.78rem; font-weight: 700;
+            color: var(--text-main); line-height: 1.55; margin: 0 0 12px;
+            letter-spacing: 0.5px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .news-card.news-featured .news-title {
+            font-size: 0.92rem; -webkit-line-clamp: 3;
+        }
+
+        .news-desc {
+            font-size: 0.86rem; color: var(--text-sec); line-height: 1.65;
+            flex-grow: 1; font-weight: 400;
+            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .news-card.news-featured .news-desc { -webkit-line-clamp: 5; }
+
+        /* ─── admin action buttons on news cards ─── */
+        .news-card .card-actions-float { z-index: 10; }
+
+        /* ─── FORMS ─── */
+        .glass-panel { background: rgba(10,10,14,0.85); border: 1px solid var(--glass-border); border-radius: 24px; padding: 36px; box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset; }
+        .form-group { margin-bottom: 22px; position: relative; }
+        .form-label { display: flex; align-items: center; gap: 6px; margin-bottom: 9px; color: var(--primary); font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+        .form-label::before { content: ''; width: 3px; height: 12px; background: linear-gradient(180deg, var(--primary), rgba(255,215,0,0.3)); border-radius: 2px; }
+        .input-box { width: 100%; padding: 13px 16px; background: rgba(8,8,12,0.8); border: 1px solid var(--glass-border); border-radius: var(--radius-input); color: var(--text-main); font-family: var(--font-main); font-size: 0.92rem; transition: 0.3s; }
+        .input-box::placeholder { color: var(--text-sec); }
+        .input-box:focus { border-color: rgba(255,215,0,0.3); background: rgba(12,12,18,0.95); box-shadow: 0 0 0 3px rgba(255,215,0,0.06); }
+        .input-box.error { border-color: rgba(255,64,96,0.5); box-shadow: 0 0 0 3px rgba(255,64,96,0.06); }
+        textarea.input-box { resize: vertical; min-height: 100px; line-height: 1.6; }
+        select.input-box { appearance: none; cursor: pointer; }
+
+        .danger-text { color: var(--danger); font-size: 0.78rem; margin-top: 7px; font-weight: 600; animation: fadeIn 0.3s ease; padding: 7px 12px; background: var(--danger-bg); border-radius: 8px; border: 1px solid rgba(255,64,96,0.2); display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary); color: #000; border: none; border-radius: var(--radius-input); font-weight: 800; font-size: 0.9rem; letter-spacing: 2px; transition: 0.3s var(--ease); margin-top: 10px; position: relative; overflow: hidden; }
+        .btn-primary::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%); pointer-events: none; }
+        .btn-primary:hover:not(:disabled) { background: #fff; box-shadow: 0 8px 30px rgba(255,215,0,0.4), 0 0 0 2px rgba(255,215,0,0.3); transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.6); transform: none; }
+        .btn-secondary { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: var(--text-sec); }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: white; background: rgba(255,255,255,0.05); }
+
+        /* ─── CATEGORY-AWARE FORM FIELDS ─── */
+        /* Fields only shown for Novedades category */
+        .field-news { display: none; }
+        .field-news.visible { display: block; }
+        /* Fields hidden when Novedades is selected */
+        .field-addon { display: block; }
+        .field-addon.hidden { display: none; }
+
+        .fab { position: fixed; bottom: 32px; right: 32px; width: 58px; height: 58px; background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); color: #000; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 12px 28px rgba(255, 215, 0, 0.35), 0 0 0 1px rgba(255,215,0,0.2); border: none; z-index: 900; transition: 0.4s var(--ease); }
+        .fab:hover { transform: scale(1.1) rotate(90deg); box-shadow: 0 18px 40px rgba(255, 215, 0, 0.5), 0 0 0 2px rgba(255,215,0,0.3); border-radius: 50%; }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px) saturate(0.8); -webkit-backdrop-filter: blur(12px) saturate(0.8); z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-box { background: rgba(10,10,14,0.98); border: 1px solid rgba(255,215,0,0.15); width: 90%; max-width: 460px; padding: 36px; border-radius: 24px; text-align: center; position: relative; transform: scale(0.93) translateY(10px); transition: 0.4s var(--ease); box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(255,215,0,0.06), 0 1px 0 rgba(255,255,255,0.05) inset; max-height: 90vh; overflow-y: auto; }
+        .modal-overlay.show .modal-box { transform: scale(1) translateY(0); }
+        .overlay-click { position: absolute; inset: 0; z-index: -1; }
+        .text-link { color: var(--primary); cursor: pointer; text-decoration: none; border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 1px; transition: 0.2s; }
+        .text-link:hover { color: #fff; border-color: transparent; }
+        .auth-icon-wrap { width: 72px; height: 72px; margin: 0 auto 24px; border-radius: 22px; background: var(--primary-soft); border: 1px solid rgba(255,215,0,0.2); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(255,215,0,0.12); }
+        .auth-icon-wrap i { font-size: 2rem; color: var(--primary); }
+        .section-heading { text-align: center; font-family: var(--font-tech); color: var(--primary); margin-bottom: 32px; font-size: 1rem; letter-spacing: 3px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .section-heading::before, .section-heading::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent); max-width: 80px; }
+
+        /* Empty state */
+        .empty-state {
+            grid-column: 1/-1; text-align: center; padding: 70px 20px; color: var(--text-sec);
+        }
+        .empty-state i { font-size: 2.8rem; display: block; margin-bottom: 16px; opacity: .35; }
+        .empty-state p { font-family: var(--font-tech); font-size: 0.6rem; letter-spacing: 2px; line-height: 2.2; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div id="app-loader">
+        <div class="loader-ring"><div class="loader-dot"></div></div>
+        <p style="margin-top:24px; font-family:var(--font-tech); color:var(--text-sec); letter-spacing:3px; font-size:0.75rem;">CARGANDO SISTEMA...</p>
+    </div>
+
+    <div class="overlay-click" id="sidebar-overlay" onclick="toggleSidebar()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:999; backdrop-filter: blur(2px);"></div>
+
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="auth-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+            <h2 id="authTitle" style="color:white; font-family:var(--font-tech); margin:0 0 28px 0; letter-spacing:3px; font-size:1.1rem;">ACCESO SEGURO</h2>
+            <div class="form-group"><input type="text" id="auth-user" class="input-box" placeholder="Usuario"></div>
+            <div class="form-group"><input type="password" id="auth-pass" class="input-box" placeholder="Contraseña"></div>
+            <button class="btn-primary" onclick="handleAuth()" id="btnAuth">INGRESAR</button>
+            <p id="authSwitchText" style="font-size:0.85rem; margin-top:20px; color:var(--text-sec);">
+                ¿Nuevo aquí? <span class="text-link" onclick="switchAuth(true)">Crear cuenta</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-box" style="text-align:left;">
+            <h2 style="color:var(--primary); font-family:var(--font-tech); margin-top:0; letter-spacing:3px; font-size:1rem;">EDITAR CONTENIDO</h2>
+            <input type="hidden" id="edit-original-name">
+            <input type="hidden" id="edit-is-news">
+
+            <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" id="edit-nombre" class="input-box"
+                    onkeydown="if(event.key==='Enter') event.preventDefault()"
+                    oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-nombre-msg', 'btnSaveEdit')">
+                <small id="edit-nombre-msg" class="danger-text"></small>
+                <small id="edit-dupe-msg" class="danger-text"></small>
+            </div>
+
+            <!-- Categoría — solo para addons -->
+            <div class="form-group field-addon" id="edit-cat-group">
+                <label class="form-label">Categoría</label>
+                <select id="edit-cat" class="input-box">
+                    <option value="Addons">Addons</option>
+                    <option value="Texturas">Texturas</option>
+                    <option value="Mapas">Mapas</option>
+                </select>
+            </div>
+
+            <!-- Versión — solo para addons -->
+            <div class="form-group field-addon" id="edit-ver-group">
+                <label class="form-label">Versión / Modelo</label>
+                <input type="text" id="edit-version" class="input-box" value="1.0" placeholder="Ej: 1.0 o 2.0">
+            </div>
+
+            <!-- Link — para addons -->
+            <div class="form-group field-addon" id="edit-link-group">
+                <label class="form-label">Link Descarga</label>
+                <input type="text" id="edit-url" class="input-box">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea id="edit-desc" class="input-box" rows="3"
+                    onkeydown="if(event.key==='Enter') event.preventDefault()"
+                    oninput="limpiarSaltos(this); validarEspeciales(this, 'edit-desc-msg', 'btnSaveEdit')"></textarea>
+                <small id="edit-desc-msg" class="danger-text"></small>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Actualizar Imagen (Opcional)</label>
+                <input type="file" id="edit-img" accept="image/*" class="input-box" style="padding:10px;">
+            </div>
+            <button class="btn-primary" onclick="procesarEdicion()" id="btnSaveEdit">GUARDAR CAMBIOS</button>
+            <button class="btn-primary btn-secondary" onclick="closeEditModal()" style="margin-top:10px;">CANCELAR</button>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-cube"></i> MC STUDIO</div>
+            <p class="sidebar-subtitle">Panel de Creador v3.1</p>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="#" onclick="showPage('home'); toggleSidebar()" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>
+            <li class="nav-item"><a href="#" onclick="showPage('upload'); toggleSidebar()" class="nav-link"><i class="fas fa-cloud-upload-alt"></i> Subir</a></li>
+            <li class="nav-item" id="logout-item" style="display:none; border-top:1px solid var(--glass-border); margin-top:20px; padding-top:20px;">
+                <a href="#" onclick="logout()" class="nav-link" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Salir</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="header-title">DASHBOARD</div>
+        <div style="width:38px;"></div>
+    </header>
+
+    <div class="main-container">
+        <main id="home" class="page-section active">
+            <div class="controls-wrapper">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar contenido..." onkeyup="filtrarGrid()">
+                </div>
+                <!-- FILTER CHIPS -->
+                <div class="filter-bar">
+                    <!-- Gestión -->
+                    <button class="chip active" id="btn-mode-all"  onclick="setGestionMode(null)">Todo</button>
+                    <button class="chip"         id="btn-mode-edit" onclick="setGestionMode('edit')"><i class="fas fa-pen"></i> Mis posts</button>
+                    <button class="chip"         id="btn-mode-del"  onclick="setGestionMode('delete')"><i class="fas fa-trash"></i> Borrar</button>
+                    <!-- Separador visual -->
+                    <span style="width:1px;background:var(--glass-border);margin:4px 4px;flex-shrink:0;border-radius:2px;"></span>
+
+                    
+                </div>
+            </div>
+
+            <!-- Contenedor dinámico: grid addons o grid noticias -->
+            <div id="addon-grid"  class="grid-layout"></div>
+            <div id="news-grid"   class="news-grid"   style="display:none;"></div>
+        </main>
+
+        <!-- UPLOAD FORM -->
+        <section id="upload" class="page-section">
+            <div class="glass-panel" style="max-width:600px; margin:0 auto;">
+                <h2 class="section-heading"><i class="fas fa-rocket"></i> PUBLICAR CONTENIDO</h2>
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label class="form-label">Título</label>
+                        <input type="text" id="up-nombre" class="input-box" required placeholder="Nombre del contenido"
+                            onkeydown="if(event.key==='Enter') event.preventDefault()"
+                            oninput="limpiarSaltos(this); validarEspeciales(this, 'up-nombre-msg', 'btnSend')">
+                        <small id="up-nombre-msg" class="danger-text"></small>
+                        <small id="up-dupe-msg"   class="danger-text"></small>
+                    </div>
+
+                    <!-- Categoría -->
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select id="up-categoria" class="input-box" required onchange="onCatChange()">
+                            <option value="Addons">Addons</option>
+                            <option value="Texturas">Texturas</option>
+                            <option value="Mapas">Mapas</option>
+                            <option value="Novedades">Novedades</option>
+                        </select>
+                    </div>
+
+                    <!-- Versión — solo addons/texturas/mapas -->
+                    <div class="form-group field-addon" id="up-ver-group">
+                        <label class="form-label">Versión / Modelo</label>
+                        <input type="text" id="up-version" class="input-box" placeholder="Ej: v1.0.2">
+                    </div>
+
+                    <!-- Link — solo addons/texturas/mapas -->
+                    <div class="form-group field-addon" id="up-link-group">
+                        <label class="form-label">Enlace de Descarga</label>
+                        <input type="url" id="up-url" class="input-box" placeholder="https://...">
+                    </div>
+
+                    <!-- Descripción — siempre visible -->
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea id="up-desc" class="input-box" required rows="4" placeholder="Detalles del contenido..."
+                            onkeydown="if(event.key==='Enter') event.preventDefault()"
+                            oninput="limpiarSaltos(this); validarEspeciales(this, 'up-desc-msg', 'btnSend')"></textarea>
+                        <small id="up-desc-msg" class="danger-text"></small>
+                    </div>
+
+                    <!-- Imagen — siempre -->
+                    <div class="form-group">
+                        <label class="form-label">Imagen de Portada</label>
+                        <input type="file" id="up-img" accept="image/*" required class="input-box" style="padding:10px;">
+                    </div>
+
+                    <input type="hidden" id="up-autor">
+                    <button type="submit" class="btn-primary" id="btnSend">PUBLICAR AHORA</button>
+                    <button type="button" class="btn-primary btn-secondary" onclick="showPage('home')">CANCELAR</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <button class="fab" onclick="showPage('upload')"><i class="fas fa-plus"></i></button>
+
+<script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwv0PKRkQPxfVEpmv1RlBw2sZacvTXqhO6x_AkopDNX3mhYQt-61IOKRjQqlXjx8Q-voQ/exec"; 
+    let currentUser = localStorage.getItem('mc_user') || null;
+    let modoGestion = null;
+    let catFilter   = null;   // null = todas, 'Addons' | 'Texturas' | 'Mapas' | 'Novedades'
+    let isRegisterMode = false;
+    let datosLocales = [];
+
+    const SPECIAL_CHARS_REGEX = /["'`<>\\&]/;
+
+    function limpiarSaltos(input) {
+        const pos = input.selectionStart;
+        const nueva = input.value.replace(/[\r\n]+/g, ' ').replace(/  +/g, ' ');
+        if (input.value !== nueva) { input.value = nueva; input.setSelectionRange(pos, pos); }
+    }
+
+    function validarEspeciales(input, msgId, btnId) {
+        const val = input.value;
+        const msgEl = document.getElementById(msgId);
+        const btn   = document.getElementById(btnId);
+        if (SPECIAL_CHARS_REGEX.test(val)) {
+            input.classList.add('error');
+            msgEl.innerText = '⚠️ No se permiten: " \' ` < > \\ &';
+            msgEl.style.display = 'block';
+            if (btn) btn.disabled = true;
+            return false;
+        } else {
+            input.classList.remove('error');
+            msgEl.style.display = 'none';
+            const scope = input.closest('.page-section, .modal-box');
+            if (scope) {
+                const others = scope.querySelectorAll('.danger-text');
+                let anyVisible = false;
+                others.forEach(el => { if (el.id !== msgId && el.style.display !== 'none' && el.innerText) anyVisible = true; });
+                if (btn && !anyVisible) btn.disabled = false;
+            }
+            return true;
+        }
+    }
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('app-loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('app-loader').style.display = 'none';
+                checkSession();
+            }, 500);
+        }, 800);
+    });
+
+    // ─── FORM CATEGORY SWITCHER ───
+    function onCatChange() {
+        const cat = document.getElementById('up-categoria').value;
+        const isNews = cat === 'Novedades';
+        ['up-ver-group','up-link-group'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { isNews ? el.classList.add('hidden') : el.classList.remove('hidden'); }
+        });
+        // version & link not required for news
+        document.getElementById('up-version').required = !isNews;
+        document.getElementById('up-url').required     = !isNews;
+    }
+
+    // ─── SESSION ───
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('sidebar-overlay');
+        sb.classList.toggle('active');
+        ov.style.display = sb.classList.contains('active') ? 'block' : 'none';
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page-section').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+        const t = document.getElementById(pageId);
+        t.style.display = 'block';
+        setTimeout(() => t.classList.add('active'), 10);
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    }
+
+    function checkSession() {
+        if (!currentUser) {
+            document.getElementById('authModal').classList.add('show');
+        } else {
+            document.getElementById('authModal').classList.remove('show');
+            document.getElementById('up-autor').value = currentUser;
+            document.getElementById('logout-item').style.display = 'block';
+            cargarAddons();
+        }
+    }
+
+    function switchAuth(mode) {
+        isRegisterMode = mode;
+        document.getElementById('authTitle').innerText = mode ? "CREAR CUENTA" : "ACCESO SEGURO";
+        document.getElementById('btnAuth').innerText   = mode ? "REGISTRARME"  : "INGRESAR";
+        document.getElementById('authSwitchText').innerHTML = mode
+            ? `¿Ya tienes cuenta? <span class="text-link" onclick="switchAuth(false)">Ingresar</span>`
+            : `¿Nuevo aquí? <span class="text-link" onclick="switchAuth(true)">Crear cuenta</span>`;
+    }
+
+    async function handleAuth() {
+        const user = document.getElementById('auth-user').value.trim();
+        const pass = document.getElementById('auth-pass').value.trim();
+        const btn  = document.getElementById('btnAuth');
+        if (!user || !pass) return alert("Completa los campos.");
+        btn.disabled = true; btn.innerHTML = '...';
+        try {
+            const r    = await fetch(scriptURL, { method:'POST', body: JSON.stringify({ action: isRegisterMode ? "register" : "login", user, pass }) });
+            const text = await r.text();
+            if (text.includes("OK")) { localStorage.setItem('mc_user', user); location.reload(); }
+            else alert("Error: " + text);
+        } catch (e) { alert("Error de conexión."); }
+        finally { btn.disabled = false; btn.innerText = isRegisterMode ? "REGISTRARME" : "INGRESAR"; }
+    }
+
+    function logout() { localStorage.removeItem('mc_user'); location.reload(); }
+
+    // ─── LOAD DATA ───
+    async function cargarAddons() {
+        const grid = document.getElementById('addon-grid');
+        const ngrid = document.getElementById('news-grid');
+        grid.innerHTML  = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-sec);font-size:.85rem;letter-spacing:2px;">CARGANDO...</div>';
+        ngrid.innerHTML = '';
+        try {
+            const r = await fetch(scriptURL + "?action=read");
+            datosLocales = await r.json();
+            renderContent();
+        } catch (e) {
+            grid.innerHTML = "<div style='grid-column:1/-1;text-align:center;padding:60px;color:var(--danger);'>Error al cargar.</div>";
+        }
+    }
+
+    function renderContent() {
+        const grid  = document.getElementById('addon-grid');
+        const ngrid = document.getElementById('news-grid');
+        const showNews = catFilter === 'Novedades';
+
+        // Toggle visibility
+        grid.style.display  = showNews ? 'none'  : 'grid';
+        ngrid.style.display = showNews ? 'grid'  : 'none';
+
+        if (showNews) {
+            renderNoticias(ngrid);
+        } else {
+            renderAddons(grid);
+        }
+    }
+
+    // ─── RENDER ADDONS ───
+    function renderAddons(grid) {
+        grid.innerHTML = '';
+        let items = datosLocales.slice().reverse().filter(a => a[4] !== 'Novedades');
+        if (catFilter && catFilter !== 'Novedades') items = items.filter(a => a[4] === catFilter);
+        if (modoGestion) items = items.filter(a => a[8] === currentUser);
+
+        if (!items.length) {
+            grid.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>SIN RESULTADOS</p></div>`;
+            return;
+        }
+
+        items.forEach(addon => {
+            const [fecha, nombre, link, img, cat, likes, dls, seed, autor, version, descripcion] = addon;
+            let actions = '';
+            if (modoGestion === 'delete' && autor === currentUser) {
+                actions = `<div class="card-actions-float"><button class="mini-btn btn-del" onclick="eliminarAddon('${String(nombre).replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button></div>`;
+            }
+            if (modoGestion === 'edit' && autor === currentUser) {
+                const sn = nombre   ? String(nombre).replace(/'/g,"\\'").replace(/"/g,'\\"') : '';
+                const sl = link     ? String(link).replace(/'/g,"\\'").replace(/"/g,'\\"') : '';
+                const sv = version  ? String(version).replace(/'/g,"\\'").replace(/"/g,'\\"') : '';
+                const sd = descripcion ? String(descripcion).replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/\n/g,'\\n') : '';
+                const sc = cat      ? String(cat).replace(/'/g,"\\'").replace(/"/g,'\\"') : '';
+                actions = `<div class="card-actions-float"><button class="mini-btn btn-edit" onclick="openEditModal('${sn}','${sl}','${sv}','${sd}','${sc}',false)"><i class="fas fa-pen"></i></button></div>`;
+            }
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                ${actions}
+                <div class="card-img-container"><img src="${img}" class="card-img" loading="lazy"></div>
+                <div class="card-body">
+                    <h3 class="card-title">${nombre}</h3>
+                    <div class="card-meta">
+                        <span class="badge-cat">${cat}</span>
+                        <span class="badge-ver">${version || ''}</span>
+                    </div>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
+
+    // ─── RENDER NOVEDADES ───
+    function renderNoticias(ngrid) {
+        ngrid.innerHTML = '';
+        let items = datosLocales.slice().reverse().filter(a => a[4] === 'Novedades');
+        if (modoGestion) items = items.filter(a => a[8] === currentUser);
+
+        if (!items.length) {
+            ngrid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-newspaper"></i><p>SIN NOVEDADES PUBLICADAS</p></div>`;
+            return;
+        }
+
+        items.forEach((novedad, idx) => {
+            const [fecha, nombre, link, img, cat, likes, dls, seed, autor, version, descripcion] = novedad;
+            const isFeatured = idx === 0;
+            const initial = autor ? autor.charAt(0).toUpperCase() : '?';
+
+            // Admin action buttons
+            let actions = '';
+            if (modoGestion === 'delete' && autor === currentUser) {
+                actions = `<div class="card-actions-float" style="top:12px;right:12px;"><button class="mini-btn btn-del" onclick="eliminarAddon('${String(nombre).replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button></div>`;
+            }
+            if (modoGestion === 'edit' && autor === currentUser) {
+                const sn = String(nombre||'').replace(/'/g,"\\'").replace(/"/g,'\\"');
+                const sd = String(descripcion||'').replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/\n/g,'\\n');
+                actions = `<div class="card-actions-float" style="top:12px;right:12px;"><button class="mini-btn btn-edit" onclick="openEditModal('${sn}','','','${sd}','Novedades',true)"><i class="fas fa-pen"></i></button></div>`;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'news-card' + (isFeatured ? ' news-featured' : '');
+            card.innerHTML = `
+                ${actions}
+                <div class="news-img-wrap">
+                    ${isFeatured ? '<div class="news-badge">⚡ DESTACADO</div>' : ''}
+                    <img src="${img || 'https://via.placeholder.com/600x340/14101e/9B5FFF?text=Novedad'}"
+                         onerror="this.src='https://via.placeholder.com/600x340/14101e/9B5FFF?text=Novedad'"
+                         loading="lazy" alt="${nombre}">
+                </div>
+                <div class="news-body">
+                    <div class="news-author-row">
+                        <div class="news-author-avatar">${initial}</div>
+                        <span class="news-author-name">${autor || 'Admin'}</span>
+                        <span class="news-author-label"><i class="fas fa-newspaper"></i> Novedad</span>
+                    </div>
+                    <h3 class="news-title">${nombre}</h3>
+                    <p class="news-desc">${descripcion || 'Sin descripción.'}</p>
+                </div>`;
+            ngrid.appendChild(card);
+        });
+    }
+
+    // ─── FILTER CHIPS ───
+    function setGestionMode(mode) {
+        modoGestion = mode;
+        ['btn-mode-all','btn-mode-edit','btn-mode-del'].forEach(id => document.getElementById(id).classList.remove('active'));
+        if (!mode)          document.getElementById('btn-mode-all').classList.add('active');
+        else if (mode==='edit')   document.getElementById('btn-mode-edit').classList.add('active');
+        else                      document.getElementById('btn-mode-del').classList.add('active');
+        renderContent();
+    }
+
+    function setCatFilter(cat) {
+        // Toggle: click mismo => quitar filtro
+        catFilter = catFilter === cat ? null : cat;
+
+        // Reset cat chip styles
+        ['btn-cat-addons','btn-cat-texturas','btn-cat-mapas','btn-cat-novedades'].forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.remove('active','active-news');
+        });
+
+        if (catFilter) {
+            const map = { Addons:'btn-cat-addons', Texturas:'btn-cat-texturas', Mapas:'btn-cat-mapas', Novedades:'btn-cat-novedades' };
+            const el  = document.getElementById(map[catFilter]);
+            if (el) el.classList.add(catFilter === 'Novedades' ? 'active-news' : 'active');
+        }
+        renderContent();
+    }
+
+    // ─── SEARCH ───
+    function filtrarGrid() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const showNews = catFilter === 'Novedades';
+        const items = showNews
+            ? document.querySelectorAll('#news-grid .news-card')
+            : document.querySelectorAll('#addon-grid .card');
+        items.forEach(c => {
+            c.style.display = c.innerText.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+
+    // ─── UPLOAD ───
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if (!validarEspeciales(document.getElementById('up-nombre'), 'up-nombre-msg', 'btnSend')) return;
+        if (!validarEspeciales(document.getElementById('up-desc'),   'up-desc-msg',   'btnSend')) return;
+        const btn = document.getElementById('btnSend');
+        btn.disabled = true; btn.innerText = 'SUBIENDO...';
+        const cat = document.getElementById('up-categoria').value;
+        const payload = {
+            action: "add",
+            nombre:      document.getElementById('up-nombre').value,
+            category:    cat,
+            link:        cat !== 'Novedades' ? document.getElementById('up-url').value : '',
+            subidoPor:   currentUser,
+            img:         await toBase64(document.getElementById('up-img').files[0]),
+            version:     cat !== 'Novedades' ? document.getElementById('up-version').value : '',
+            descripcion: document.getElementById('up-desc').value.replace(/\n/g, '<br>')
+        };
+        try {
+            await fetch(scriptURL, { method:'POST', body: JSON.stringify(payload) });
+            alert("¡Publicado!");
+            location.reload();
+        } catch (e) { alert("Error al subir."); btn.disabled = false; btn.innerText = 'PUBLICAR AHORA'; }
+    };
+
+    // ─── EDIT MODAL ───
+    function openEditModal(nombre, link, version, desc, cat, isNews) {
+        document.getElementById('edit-original-name').value = nombre;
+        document.getElementById('edit-is-news').value       = isNews ? '1' : '0';
+        document.getElementById('edit-nombre').value        = nombre;
+        document.getElementById('edit-url').value           = link;
+        document.getElementById('edit-version').value       = version;
+        document.getElementById('edit-desc').value          = desc.split('\\n').join('\n');
+        if (document.getElementById('edit-cat')) document.getElementById('edit-cat').value = cat;
+
+        // Show/hide addon-only fields
+        ['edit-cat-group','edit-ver-group','edit-link-group'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) isNews ? el.classList.add('hidden') : el.classList.remove('hidden');
+        });
+
+        ['edit-nombre-msg','edit-desc-msg','edit-dupe-msg'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        ['edit-nombre','edit-desc'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('error');
+        });
+        document.getElementById('btnSaveEdit').disabled = false;
+        document.getElementById('editModal').classList.add('show');
+    }
+
+    async function procesarEdicion() {
+        if (!validarEspeciales(document.getElementById('edit-nombre'), 'edit-nombre-msg', 'btnSaveEdit')) return;
+        if (!validarEspeciales(document.getElementById('edit-desc'),   'edit-desc-msg',   'btnSaveEdit')) return;
+        const btn    = document.getElementById('btnSaveEdit');
+        const isNews = document.getElementById('edit-is-news').value === '1';
+        btn.disabled = true;
+        const payload = {
+            action:          "edit",
+            nombreOriginal:  document.getElementById('edit-original-name').value,
+            nuevoNombre:     document.getElementById('edit-nombre').value,
+            nuevaUrl:        isNews ? '' : document.getElementById('edit-url').value,
+            usuario:         currentUser,
+            nuevaVersion:    isNews ? '' : document.getElementById('edit-version').value,
+            nuevaDescripcion:document.getElementById('edit-desc').value.replace(/\n/g, '<br>'),
+            nuevaCat:        isNews ? 'Novedades' : document.getElementById('edit-cat').value
+        };
+        const file = document.getElementById('edit-img').files[0];
+        if (file) payload.nuevaImg = await toBase64(file);
+        try {
+            const r = await fetch(scriptURL, { method:'POST', body: JSON.stringify(payload) });
+            const result = await r.text();
+            if (result.includes("OK")) { location.reload(); }
+            else { alert("Error: " + result); btn.disabled = false; }
+        } catch (e) { alert("Error de conexión"); btn.disabled = false; }
+    }
+
+    function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
+
+    // ─── DELETE ───
+    async function eliminarAddon(nombre) {
+        if (!confirm("¿Eliminar este contenido?")) return;
+        try {
+            await fetch(scriptURL, { method:'POST', body: JSON.stringify({ action:"delete", nombre, usuario:currentUser }) });
+            cargarAddons();
+        } catch (e) { alert("Error al eliminar"); }
+    }
+
+    // ─── HELPERS ───
+    const toBase64 = file => new Promise((res, rej) => {
+        const r = new FileReader();
+        r.readAsDataURL(file);
+        r.onload  = () => res(r.result);
+        r.onerror = e  => rej(e);
+    });
+
+    document.getElementById('up-nombre').addEventListener('input', function() {
+        const val  = this.value.trim().toLowerCase();
+        const found = datosLocales.find(a => a[1] && a[1].toLowerCase() === val);
+        const btn  = document.getElementById('btnSend');
+        const msg  = document.getElementById('up-dupe-msg');
+        if (found) {
+            msg.innerText = "⚠️ Ya publicado por " + found[8];
+            msg.style.display = "block"; btn.disabled = true;
+        } else {
+            msg.style.display = "none";
+            const n = document.getElementById('up-nombre-msg');
+            const d = document.getElementById('up-desc-msg');
+            if (n.style.display==='none' && d.style.display==='none') btn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
