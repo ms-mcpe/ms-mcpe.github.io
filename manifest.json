@@ -1,6 +1,6 @@
 {
-  "name": "BlockVault",
-  "short_name": "Vault",
+  "name": "BlockVault (APP) ",
+  "short_name": "BlockVault",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050505",
