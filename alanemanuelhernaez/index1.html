@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VARIABLES Y RESET (TEMA ROJO OSCURO / NEGRO PROFESIONAL) --- */
         :root {
             --primary: #FF2A2A;
             --primary-glow: rgba(255, 42, 42, 0.35);
@@ -24,12 +23,8 @@
             --glass-border: rgba(139, 0, 0, 0.18);
             --radius: 20px;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            
-            /* LOGO COLORS */
             --logo-cyan: #FF2A2A;
             --logo-lime-shadow: rgba(139, 0, 0, 0.65);
-            
-            /* ACCENT COLORS */
             --accent-red: #8B0000;
             --accent-bright: #FF2A2A;
             --accent-gold: #FFA500;
@@ -88,7 +83,6 @@
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-btn { background: none; border: none; color: var(--text-main); font-size: 1.4rem; cursor: pointer; }
         
-        /* LOGO ROJO INTENSO */
         .app-logo { 
             font-family: 'Rajdhani', sans-serif; 
             font-weight: 800; 
@@ -175,7 +169,6 @@
         }
         .nav-link i { margin-right: 15px; width: 20px; text-align: center; }
 
-        /* Separador de sección en sidebar */
         .nav-section-label {
             padding: 16px 15px 6px;
             font-size: 0.65rem;
@@ -393,123 +386,53 @@
             box-shadow: 0 0 15px var(--primary-glow);
         }
 
-        /* --- CARDS ESTILO APLICACIONES (APPS / JUEGOS) --- */
+        /* --- CARDS APPS/JUEGOS --- */
         .card[data-cat="Apps"], .card[data-cat="Juegos"] {
             flex-direction: row;
             align-items: center;
             padding: 3px;
             gap: 8px;
             border-radius: 20px;
-            background: var(--surface);
         }
 
         .card[data-cat="Apps"] .card-img, .card[data-cat="Juegos"] .card-img {
-            width: 65px;
-            height: 65px;
-            aspect-ratio: 1/1;
-            border-radius: 14px;
-            object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 65px; height: 65px; aspect-ratio: 1/1;
+            border-radius: 14px; object-fit: cover;
         }
 
-        /* Contenedor relativo de la imagen */
         .card[data-cat="Apps"] > div:first-child, .card[data-cat="Juegos"] > div:first-child {
-            width: 65px;
-            height: 65px;
-            flex-shrink: 0;
-            border-radius: 14px;
+            width: 65px; height: 65px; flex-shrink: 0; border-radius: 14px;
         }
 
-        /* Ocultar el badge de descargas en la miniatura para un look más limpio */
-        .card[data-cat="Apps"] > div:first-child > div, .card[data-cat="Juegos"] > div:first-child > div {
-            display: none; 
-        }
+        .card[data-cat="Apps"] > div:first-child > div, .card[data-cat="Juegos"] > div:first-child > div { display: none; }
 
-        .card[data-cat="Apps"] .card-body, .card[data-cat="Juegos"] .card-body {
-            display: block;
-            padding: 0;
-        }
-
-        .card[data-cat="Apps"] .card-title, .card[data-cat="Juegos"] .card-title {
-            font-size: 1.05rem;
-            margin-bottom: 2px;
-            font-weight: 700;
-        }
-
-        .card[data-cat="Apps"] .card-meta, .card[data-cat="Juegos"] .card-meta {
-            justify-content: flex-start;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .card[data-cat="Apps"] .card-tag, .card[data-cat="Juegos"] .card-tag {
-            background: rgba(139,0,0,0.15);
-            padding: 2px 6px;
-            border-radius: 6px;
-            color: var(--text-sec);
-            font-size: 0.65rem;
-        }
-
-        .card[data-cat="Apps"] .card-version, .card[data-cat="Juegos"] .card-version {
-            background: transparent;
-            color: var(--text-sec);
-            padding: 0;
-        }
-
+        .card[data-cat="Apps"] .card-body, .card[data-cat="Juegos"] .card-body { display: block; padding: 0; }
+        .card[data-cat="Apps"] .card-title, .card[data-cat="Juegos"] .card-title { font-size: 1.05rem; margin-bottom: 2px; font-weight: 700; }
+        .card[data-cat="Apps"] .card-meta, .card[data-cat="Juegos"] .card-meta { justify-content: flex-start; gap: 8px; margin-bottom: 6px; }
+        .card[data-cat="Apps"] .card-tag, .card[data-cat="Juegos"] .card-tag { background: rgba(139,0,0,0.15); padding: 2px 6px; border-radius: 6px; color: var(--text-sec); font-size: 0.65rem; }
+        .card[data-cat="Apps"] .card-version, .card[data-cat="Juegos"] .card-version { background: transparent; color: var(--text-sec); padding: 0; }
         .card[data-cat="Apps"] .card-desc, .card[data-cat="Juegos"] .card-desc,
-        .card[data-cat="Apps"] .card-footer, .card[data-cat="Juegos"] .card-footer {
-            display: none; /* Look limpio de tienda de aplicaciones */
-        }
-
+        .card[data-cat="Apps"] .card-footer, .card[data-cat="Juegos"] .card-footer { display: none; }
         .card[data-cat="Apps"] .btn-action, .card[data-cat="Juegos"] .btn-action {
-            display: inline-block;
-            width: auto;
-            padding: 6px 18px;
-            border-radius: 20px;
-            background: var(--accent-bright);
-            color: #fff;
-            border: none;
-            margin-top: 0;
-            font-size: 0.75rem;
-            box-shadow: 0 4px 10px rgba(255,42,42,0.2);
+            display: inline-block; width: auto; padding: 6px 18px; border-radius: 20px;
+            background: var(--accent-bright); color: #fff; border: none; margin-top: 0; font-size: 0.75rem;
         }
 
-        .card[data-cat="Apps"] .btn-action:hover, .card[data-cat="Juegos"] .btn-action:hover {
-            background: var(--accent-red);
-            box-shadow: none;
-        }
-
-        /* --- BADGE ESPECIALES --- */
+        /* --- BADGES --- */
         .badge-new {
-            position: absolute;
-            top: 8px;
-            left: 8px;
+            position: absolute; top: 8px; left: 8px;
             background: linear-gradient(135deg, #FF2A2A, #8B0000);
-            color: #fff;
-            font-size: 0.6rem;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(255,42,42,0.4);
-            z-index: 2;
+            color: #fff; font-size: 0.6rem; font-weight: 800; padding: 3px 8px;
+            border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255,42,42,0.4); z-index: 2;
         }
 
         .badge-dlc {
-            position: absolute;
-            top: 8px;
-            left: 8px;
+            position: absolute; top: 8px; left: 8px;
             background: linear-gradient(135deg, #FFA500, #cc7a00);
-            color: #fff;
-            font-size: 0.6rem;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(255,165,0,0.4);
-            z-index: 2;
+            color: #fff; font-size: 0.6rem; font-weight: 800; padding: 3px 8px;
+            border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255,165,0,0.4); z-index: 2;
         }
 
         /* --- LOADER & OVERLAY --- */
@@ -535,55 +458,31 @@
             background: rgba(20,5,5,0.97); color: #fff;
             padding: 12px 24px; border-radius: 30px;
             font-size: 0.9rem; font-weight: 600; opacity: 0; pointer-events: none; transition: 0.3s;
-            border: 1px solid rgba(255,42,42,0.3);
-            z-index: 2000;
-            white-space: nowrap;
+            border: 1px solid rgba(255,42,42,0.3); z-index: 2000; white-space: nowrap;
         }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         /* --- MODAL DETALLES --- */
         .modal-overlay {
-            position: fixed; inset: 0; 
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(8px);
-            z-index: 3000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.3s;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(8px); z-index: 3000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
         }
-        
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
 
         .modal-card {
             background: var(--bg-panel);
-            width: 90%;
-            max-width: 450px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            padding: 24px;
-            
-            /* Borde elegante rojo */
+            width: 90%; max-width: 450px; max-height: 90vh;
+            overflow-y: auto; position: relative; padding: 24px;
             border: 1px solid var(--accent-bright);
             box-shadow: 0 0 40px var(--logo-lime-shadow), 0 0 80px rgba(255,42,42,0.1);
             border-radius: 24px;
-            
             transform: scale(0.9);
             transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
         }
-        
-        .modal-overlay.active .modal-card {
-            transform: scale(1);
-        }
+        .modal-overlay.active .modal-card { transform: scale(1); }
 
         .modal-close-btn {
             position: absolute; top: 15px; right: 15px;
@@ -593,75 +492,289 @@
         }
         .modal-close-btn:hover { background: rgba(255,42,42,0.4); }
 
-        .detalles-img {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            border-radius: 14px;
-            border: 1px solid rgba(139,0,0,0.25);
-            margin-bottom: 20px;
+        .detalles-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 14px; border: 1px solid rgba(139,0,0,0.25); margin-bottom: 20px; }
+        .detalles-nombre { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; color: var(--text-main); text-align: center; margin: 0 0 10px 0; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+        .detalles-version { display: inline-block; background: rgba(139, 0, 0, 0.2); color: var(--accent-gold); padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; margin-bottom: 20px; border: 1px solid rgba(255,165,0,0.2); }
+        .detalles-desc { width: 100%; text-align: center; color: var(--text-sec); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; background: rgba(139,0,0,0.06); padding: 18px; border-radius: 14px; border: 1px solid var(--glass-border); }
+
+        .btn-descarga-final {
+            width: 100%; background: linear-gradient(135deg, var(--accent-bright), var(--accent-red));
+            color: #fff; font-weight: 800; padding: 16px; border: none; border-radius: 14px;
+            font-size: 1.05rem; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 5px 20px var(--primary-glow); transition: 0.2s; text-align: center; text-decoration: none; display: block;
+        }
+        .btn-descarga-final:hover { transform: scale(1.02); box-shadow: 0 8px 28px rgba(255,42,42,0.5); }
+
+        /* ============================================
+           SECCIÓN REDES SOCIALES
+        ============================================ */
+        .redes-page {
+            padding: 90px 20px 40px;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .detalles-nombre {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.6rem;
-            color: var(--text-main);
+        .redes-hero {
             text-align: center;
-            margin: 0 0 10px 0;
-            text-transform: uppercase;
+            margin-bottom: 35px;
+        }
+
+        .redes-hero-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(139,0,0,0.4), rgba(255,42,42,0.15));
+            border: 1px solid rgba(255,42,42,0.35);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: var(--accent-bright);
+            box-shadow: 0 0 30px rgba(255,42,42,0.2);
+        }
+
+        .redes-hero h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
             font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin: 0 0 8px;
+            letter-spacing: 1px;
+        }
+
+        .redes-hero p {
+            color: var(--text-sec);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Cards de redes sociales */
+        .social-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .social-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 18px 20px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .social-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: inherit;
+        }
+
+        .social-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            border-color: transparent;
+        }
+
+        /* TikTok */
+        .social-card.tiktok::before {
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(32,214,210,0.08), rgba(254,44,85,0.08));
+        }
+        .social-card.tiktok:hover {
+            box-shadow: 0 12px 35px rgba(254,44,85,0.3);
+            border-color: rgba(254,44,85,0.4);
+        }
+        .social-card.tiktok:hover::before { opacity: 1; }
+
+        /* WhatsApp Canal */
+        .social-card.wsp-canal::before {
+            background: linear-gradient(135deg, rgba(37,211,102,0.08), transparent);
+        }
+        .social-card.wsp-canal:hover {
+            box-shadow: 0 12px 35px rgba(37,211,102,0.25);
+            border-color: rgba(37,211,102,0.35);
+        }
+        .social-card.wsp-canal:hover::before { opacity: 1; }
+
+        /* WhatsApp Comunidad */
+        .social-card.wsp-comunidad::before {
+            background: linear-gradient(135deg, rgba(37,211,102,0.08), transparent);
+        }
+        .social-card.wsp-comunidad:hover {
+            box-shadow: 0 12px 35px rgba(37,211,102,0.25);
+            border-color: rgba(37,211,102,0.35);
+        }
+        .social-card.wsp-comunidad:hover::before { opacity: 1; }
+
+        /* Ícono de la red social */
+        .social-icon-wrap {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-icon-wrap.tiktok-icon {
+            background: linear-gradient(135deg, #010101, #1a1a2e);
+            border: 1px solid rgba(254,44,85,0.3);
+            box-shadow: 0 4px 15px rgba(254,44,85,0.2);
+        }
+
+        /* Ícono TikTok personalizado con efecto de doble color */
+        .tiktok-logo {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: 900;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: -1px;
+        }
+        .tiktok-logo::before {
+            content: '♪';
+            display: block;
+            font-size: 1.7rem;
+            line-height: 1;
+            background: linear-gradient(135deg, #20D5CA, #FE2C55);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 6px rgba(254,44,85,0.5));
+        }
+
+        .social-icon-wrap.wsp-icon {
+            background: linear-gradient(135deg, #075e54, #128c7e);
+            border: 1px solid rgba(37,211,102,0.3);
+            box-shadow: 0 4px 15px rgba(37,211,102,0.2);
+        }
+
+        .social-info {
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin-bottom: 3px;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .detalles-version {
-            display: inline-block;
-            background: rgba(139, 0, 0, 0.2);
-            color: var(--accent-gold);
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,165,0,0.2);
-        }
-
-        .detalles-desc {
-            width: 100%;
-            text-align: center;
+        .social-desc {
+            font-size: 0.78rem;
             color: var(--text-sec);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            background: rgba(139,0,0,0.06);
-            padding: 18px;
-            border-radius: 14px;
-            border: 1px solid var(--glass-border);
+            line-height: 1.4;
         }
 
-        .btn-descarga-final {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent-bright), var(--accent-red));
-            color: #fff;
+        .social-badge {
+            font-size: 0.6rem;
             font-weight: 800;
-            padding: 16px;
-            border: none;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            cursor: pointer;
+            padding: 3px 9px;
+            border-radius: 20px;
             text-transform: uppercase;
-            box-shadow: 0 5px 20px var(--primary-glow);
-            transition: 0.2s;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-        }
-        
-        .btn-descarga-final:hover {
-            transform: scale(1.02);
-            background: linear-gradient(135deg, #ff4444, #aa0000);
-            box-shadow: 0 8px 28px rgba(255,42,42,0.5);
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
         }
 
+        .social-badge.badge-tiktok {
+            background: linear-gradient(135deg, rgba(254,44,85,0.2), rgba(32,214,210,0.1));
+            color: #FE2C55;
+            border: 1px solid rgba(254,44,85,0.3);
+        }
+
+        .social-badge.badge-wsp {
+            background: rgba(37,211,102,0.12);
+            color: #25D366;
+            border: 1px solid rgba(37,211,102,0.3);
+        }
+
+        .social-arrow {
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+            transition: 0.3s;
+        }
+
+        .social-card:hover .social-arrow {
+            transform: translateX(4px);
+            color: var(--text-main);
+        }
+
+        /* Línea divisora decorativa */
+        .redes-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 25px 0;
+        }
+        .redes-divider span {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-sec);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .redes-divider::before, .redes-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        /* Footer de la página de redes */
+        .redes-footer-note {
+            text-align: center;
+            margin-top: 30px;
+            padding: 18px;
+            background: rgba(139,0,0,0.06);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+        .redes-footer-note p {
+            margin: 0;
+            color: var(--text-sec);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+        .redes-footer-note strong {
+            color: var(--accent-bright);
+        }
+
+        /* Animaciones de entrada */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .social-card {
+            animation: slideInUp 0.4s ease both;
+        }
+        .social-card:nth-child(1) { animation-delay: 0.05s; }
+        .social-card:nth-child(2) { animation-delay: 0.12s; }
+        .social-card:nth-child(3) { animation-delay: 0.19s; }
     </style>
 </head>
 <body data-theme="dark">
@@ -690,10 +803,19 @@
                     <li><a class="nav-link" onclick="filtrar('Mapas')" style="padding-left:50px;"><i class="fas fa-map" style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Mapas</a></li>
                     <li><a class="nav-link" onclick="filtrar('Skins')" style="padding-left:50px;"><i class="fas fa-user" style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Skins</a></li>
                     <li><a class="nav-link" onclick="filtrar('Vibrants Visuals')" style="padding-left:50px;"><i class="fas fa-star" style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Vibrants Visuals</a></li>
-                                <li class="nav-item"><a class="nav-link" onclick="filtrar('Nueva Version')"><i class="fas fa-rocket" style="color:var(--accent-bright)"></i> Nueva Versión</a></li>
-            <li class="nav-item"><a class="nav-link" onclick="filtrar('Nuevo DLC')"><i class="fas fa-gem" style="color:var(--accent-gold)"></i> Nuevo DLC</a></li>  
+                    <li class="nav-item"><a class="nav-link" onclick="filtrar('Nueva Version')"><i class="fas fa-rocket" style="color:var(--accent-bright)"></i> Nueva Versión</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="filtrar('Nuevo DLC')"><i class="fas fa-gem" style="color:var(--accent-gold)"></i> Nuevo DLC</a></li>  
                 </ul>
+            </li>
 
+            <!-- REDES SOCIALES -->
+            <li><div class="nav-divider"></div></li>
+            <li><div class="nav-section-label"><i class="fas fa-share-alt" style="margin-right:6px;"></i> Comunidad</div></li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="mostrarRedes()">
+                    <i class="fas fa-hashtag" style="color:var(--accent-bright)"></i> Redes Sociales
+                </a>
+            </li>
         </ul>
         <div style="padding: 20px;">
             <button class="btn-action" onclick="toggleTheme()" style="background:transparent; border:1px solid rgba(139,0,0,0.4); color:var(--text-sec);">
@@ -728,12 +850,10 @@
     <div class="modal-overlay" id="modal-detalles">
         <div class="modal-card">
             <button class="modal-close-btn" onclick="cerrarDetalles()"><i class="fas fa-times"></i></button>
-            
             <img id="md-img" src="" class="detalles-img">
             <h2 id="md-nombre" class="detalles-nombre">Nombre del Addon</h2>
             <div id="md-version" class="detalles-version">v1.0.0</div>
             <div id="md-desc" class="detalles-desc">Descripción del addon...</div>
-            
             <a id="md-btn-download" href="#" target="_blank" class="btn-descarga-final">
                 <i class="fas fa-download"></i> DESCARGAR AHORA
             </a>
@@ -743,7 +863,7 @@
     <div id="toast">Acción completada</div>
 
     <script>
-        // --- SEGURIDAD AVANZADA ---
+        // --- SEGURIDAD ---
         (function() {
             document.addEventListener('contextmenu', event => event.preventDefault());
             document.onkeydown = function(e) {
@@ -755,10 +875,50 @@
             };
         })();
 
-        // --- LÓGICA DE LA APP ---
+        // --- LÓGICA ---
         const scriptURL = "https://script.google.com/macros/s/AKfycbwZQbhUNHkIQmAjrPVL6tVRrCy-FIEfHNJKqPCKkce5fFpumXt97qj3GZPvjnFGYcVEvg/exec";
         let db = [];
         let heroTimer;
+
+        const REDES = [
+            {
+                clase: 'tiktok',
+                url: 'https://www.tiktok.com/@alanxx_mc?_r=1&_t=ZS-94ZzAKdtOdB',
+                iconClass: 'wsp-icon',
+                iconHTML: '<span class="tiktok-logo"></span>',
+                useFaIcon: false,
+                customIconHTML: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.74a4.85 4.85 0 0 1-1.01-.05z"/></svg>`,
+                iconBg: 'background: linear-gradient(135deg, #010101, #1a1a2e); border: 1px solid rgba(254,44,85,0.35); box-shadow: 0 4px 15px rgba(254,44,85,0.25);',
+                nombre: 'TikTok',
+                desc: '@alanxx_mc · Tutoriales, novedades y contenido exclusivo',
+                badge: 'badge-tiktok',
+                badgeText: 'Síguenos'
+            },
+            {
+                clase: 'wsp-canal',
+                url: 'https://whatsapp.com/channel/0029VbBi9d19hXF0KOhncR3s',
+                iconClass: 'wsp-icon',
+                iconHTML: '<i class="fab fa-whatsapp" style="color:#25D366;font-size:1.7rem;"></i>',
+                useFaIcon: true,
+                iconBg: 'background: linear-gradient(135deg, #075e54, #0d7a6e); border: 1px solid rgba(37,211,102,0.3); box-shadow: 0 4px 15px rgba(37,211,102,0.2);',
+                nombre: 'Canal de WhatsApp',
+                desc: 'Recibe las últimas novedades y lanzamientos al instante',
+                badge: 'badge-wsp',
+                badgeText: 'Unirse'
+            },
+            {
+                clase: 'wsp-comunidad',
+                url: 'https://chat.whatsapp.com/H6pQc5Eq2FmB5ObLlqHqGX',
+                iconClass: 'wsp-icon',
+                iconHTML: '<i class="fas fa-users" style="color:#25D366;font-size:1.5rem;"></i>',
+                useFaIcon: true,
+                iconBg: 'background: linear-gradient(135deg, #128c7e, #1aab99); border: 1px solid rgba(37,211,102,0.3); box-shadow: 0 4px 15px rgba(37,211,102,0.2);',
+                nombre: 'Comunidad',
+                desc: 'Únete al grupo y comparte con otros jugadores',
+                badge: 'badge-wsp',
+                badgeText: 'Comunidad'
+            }
+        ];
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -772,7 +932,6 @@
                 const data = await res.json();
                 if(data.error) throw new Error(data.error);
                 db = data;
-                
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('dynamic-content').style.opacity = '1';
                 mostrarInicio();
@@ -785,12 +944,60 @@
             if(window.innerWidth < 1000) toggleSidebar(false);
             const container = document.getElementById('dynamic-content');
             container.innerHTML = '';
-
             const imagenes = db.map(i => i[3]).filter(url => url && url.startsWith('http'));
             renderHero(imagenes, container);
-
             renderHorizontalSection("Novedades", [...db].reverse().slice(0, 1000), container);
             renderHorizontalSection("Populares", [...db].sort((a,b)=>b[6]-a[6]).slice(0, 500), container);
+        }
+
+        // ---- NUEVA FUNCIÓN: MOSTRAR REDES SOCIALES ----
+        function mostrarRedes() {
+            toggleSidebar(false);
+            clearInterval(heroTimer);
+            const container = document.getElementById('dynamic-content');
+            container.style.opacity = '0';
+
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="redes-page">
+                        <div class="redes-hero">
+                            <div class="redes-hero-icon">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                            <h1>Redes Sociales</h1>
+                            <p>Síguenos y mantente al día con todas las novedades</p>
+                        </div>
+
+                        <div class="redes-divider"><span>Plataformas</span></div>
+
+                        <div class="social-grid">
+                            ${REDES.map(r => `
+                            <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="social-card ${r.clase}" onclick="showToast('Abriendo ${r.nombre}...')">
+                                <div class="social-icon-wrap" style="${r.iconBg}">
+                                    ${r.clase === 'tiktok' ? `
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26">
+                                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.74a4.85 4.85 0 0 1-1.01-.05z" fill="white"/>
+                                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.74a4.85 4.85 0 0 1-1.01-.05z" fill="rgba(254,44,85,0.25)" transform="translate(1.5,1.5)"/>
+                                        </svg>
+                                    ` : r.iconHTML}
+                                </div>
+                                <div class="social-info">
+                                    <div class="social-name">${r.nombre}</div>
+                                    <div class="social-desc">${r.desc}</div>
+                                </div>
+                                <span class="social-badge ${r.badge}">${r.badgeText}</span>
+                                <i class="fas fa-chevron-right social-arrow"></i>
+                            </a>`).join('')}
+                        </div>
+
+                        <div class="redes-footer-note">
+                            <p>🎮 Contenido nuevo cada semana.<br>
+                            Únete a la comunidad de <strong>AlanMarket</strong> y nunca te pierdas nada.</p>
+                        </div>
+                    </div>
+                `;
+                container.style.opacity = '1';
+            }, 200);
         }
 
         function renderHero(imgs, container) {
@@ -819,14 +1026,10 @@
                 const nextImg = imgs[idx];
                 if(activeDiv === 1) {
                     s2.style.backgroundImage = `url('${nextImg}')`;
-                    s2.classList.add('active');
-                    s1.classList.remove('active');
-                    activeDiv = 2;
+                    s2.classList.add('active'); s1.classList.remove('active'); activeDiv = 2;
                 } else {
                     s1.style.backgroundImage = `url('${nextImg}')`;
-                    s1.classList.add('active');
-                    s2.classList.remove('active');
-                    activeDiv = 1;
+                    s1.classList.add('active'); s2.classList.remove('active'); activeDiv = 1;
                 }
             }, 5000);
         }
@@ -842,7 +1045,6 @@
             container.appendChild(section);
         }
 
-        // --- ORDENAR ITEMS ---
         function ordenarItems(items, orden) {
             switch(orden) {
                 case 'nuevo':   return [...items].reverse();
@@ -884,13 +1086,11 @@
             clearInterval(heroTimer);
             const q = document.getElementById('addon-search').value.toLowerCase();
             if(!q) { mostrarInicio(); return; }
-
             const container = document.getElementById('dynamic-content');
             const res = db.filter(item => 
                 item[1].toString().toLowerCase().includes(q) || 
                 (item[9] && item[9].toString().toLowerCase().includes(q))
             );
-            
             container.innerHTML = `
                 <div class="section-header" style="margin-top:80px;">Resultados de búsqueda</div>
                 <div class="grid-layout">
@@ -899,21 +1099,15 @@
             `;
         }
 
-        // --- GENERADOR DE CARDS ---
         function getCardHTML(item, styleOverride = '') {
-            // j (9) = version, k (10) = descripcion
             const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = item;
-            
             const isSeed = cat.toLowerCase().includes('semilla');
             const displayVersion = version ? version : 'V1.0';
-            const displayDesc = desc ? desc : 'Sin descripción disponible.';
 
-            // CAMBIO: Si es semilla copia, si no, es botón "DETALLES"
             let btnAction;
             if(isSeed) {
                 btnAction = `<button class="btn-action" onclick="copiar('${seed}')"><i class="fas fa-copy"></i> COPIAR SEED</button>`;
             } else {
-                // El ID es item[0], nos aseguramos de pasarlo como string
                 btnAction = `<button class="btn-action" onclick="abrirDetalles('${id}')">DETALLES</button>`;
             }
 
@@ -931,7 +1125,6 @@
                         <div class="card-version">v${displayVersion}</div>
                     </div>
                     <h3 class="card-title">${nombre}</h3>
-                  
                     <div class="card-footer">
                         <span>By ${autor || 'Admin'}</span>
                         <div class="stat" onclick="like(this, '${nombre}')">
@@ -943,42 +1136,26 @@
             </div>`;
         }
 
-        // --- NUEVA FUNCIÓN: ABRIR DETALLES ---
         function abrirDetalles(id) {
-            // Buscar el addon en la DB usando el ID (posición 0)
-            // Se usa '==' para coincidir aunque sea string/number
             const item = db.find(x => x[0] == id);
             if(!item) return;
-
-            // Mapeo de datos: [0]ID, [1]Nombre, [2]Link, [3]Img, ... [9]Version(J), [10]Desc(K)
             const nombre = item[1];
             const link = item[2];
             const img = item[3];
             const version = item[9] || '1.0';
             const descripcion = item[10] || 'No hay descripción detallada disponible para este complemento.';
-
-            // Rellenar el modal
             document.getElementById('md-img').src = img;
             document.getElementById('md-nombre').innerText = nombre;
             document.getElementById('md-version').innerText = 'Versión: ' + version;
             document.getElementById('md-desc').innerText = descripcion;
-            
-            // Configurar botón final de descarga
             const btnDown = document.getElementById('md-btn-download');
             btnDown.href = link;
-            btnDown.onclick = function() {
-                registrar('download', nombre);
-            };
-
-            // Mostrar modal
+            btnDown.onclick = function() { registrar('download', nombre); };
             document.getElementById('modal-detalles').classList.add('active');
         }
 
-        function cerrarDetalles() {
-            document.getElementById('modal-detalles').classList.remove('active');
-        }
+        function cerrarDetalles() { document.getElementById('modal-detalles').classList.remove('active'); }
 
-        // --- INTERACCIONES ---
         function toggleSidebar(forceState) {
             const sb = document.getElementById('sidebar');
             const ov = document.getElementById('overlay');
