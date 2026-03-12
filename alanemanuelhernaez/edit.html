@@ -455,7 +455,9 @@ select.inp{
 
     <div class="fg">
       <label class="fl">Link Descarga (cuty)</label>
-      <input type="text" id="e-url" class="inp" placeholder="https://cuty.io/...">
+      <input type="text" id="e-url" class="inp" placeholder="https://cuty.io/..."
+        oninput="validarCuty(this,'e-urlmsg','btnSaveEdit')">
+      <small id="e-urlmsg" class="err-msg"></small>
     </div>
 
     <div class="fg">
@@ -582,7 +584,9 @@ select.inp{
 
           <div class="fg">
             <label class="fl">Enlace Directo (cuty)</label>
-            <input type="url" id="up-url" class="inp" required placeholder="https://cuty.io/...">
+            <input type="text" id="up-url" class="inp" required placeholder="https://cuty.io/..."
+              oninput="validarCuty(this,'up-urlmsg','btnSend')">
+            <small id="up-urlmsg" class="err-msg"></small>
           </div>
 
           <div class="fg">
@@ -654,6 +658,21 @@ function validarEsp(el,msgId,btnId){
       btn.disabled=any;
     }
   }
+  return true;
+}
+function validarCuty(el,msgId,btnId){
+  const val=el.value.trim();
+  const btn=document.getElementById(btnId);
+  const msg=document.getElementById(msgId);
+  if(val&&!val.startsWith('https://cuty.io/')){
+    el.classList.add('err');
+    msg.innerText='⛔ Solo se permiten enlaces de cuty.io/';
+    msg.style.display='block';
+    if(btn)btn.disabled=true;
+    return false;
+  }
+  el.classList.remove('err');msg.style.display='none';
+  if(btn){const scope=el.closest('.page,.modal');if(scope){const any=[...scope.querySelectorAll('.err-msg')].some(e=>e.id!==msgId&&e.style.display!=='none'&&e.innerText);btn.disabled=any;}}
   return true;
 }
 
@@ -865,6 +884,7 @@ async function handleUpload(e){
   e.preventDefault();
   if(!validarEsp(document.getElementById('up-nom'),'up-nmsg','btnSend'))return;
   if(!validarEsp(document.getElementById('up-desc'),'up-descmsg','btnSend'))return;
+  if(!validarCuty(document.getElementById('up-url'),'up-urlmsg','btnSend'))return;
   const btn=document.getElementById('btnSend');
   const bar=document.getElementById('upProgress');const fill=document.getElementById('upFill');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> SUBIENDO...';
@@ -914,8 +934,8 @@ function openEdit(nombre,link,version,desc,cat){
   document.getElementById('e-ver').value=version;
   document.getElementById('e-desc').value=desc.split('\\n').join('\n');
   const catSel=document.getElementById('e-cat');if(catSel)catSel.value=cat;
-  ['e-nmsg','e-descmsg','e-dmsg2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
-  ['e-nombre','e-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('err');});
+  ['e-nmsg','e-descmsg','e-dmsg2','e-urlmsg'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  ['e-nombre','e-desc','e-url'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('err');});
   document.getElementById('btnSaveEdit').disabled=false;
   clearEditImg();
   document.getElementById('editModal').classList.add('show');
@@ -924,6 +944,7 @@ function openEdit(nombre,link,version,desc,cat){
 async function procesarEdicion(){
   if(!validarEsp(document.getElementById('e-nombre'),'e-nmsg','btnSaveEdit'))return;
   if(!validarEsp(document.getElementById('e-desc'),'e-descmsg','btnSaveEdit'))return;
+  if(!validarCuty(document.getElementById('e-url'),'e-urlmsg','btnSaveEdit'))return;
   const btn=document.getElementById('btnSaveEdit');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> GUARDANDO...';
 
@@ -944,7 +965,6 @@ async function procesarEdicion(){
     const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify(payload)});
     const res=await r.text();
     if(res.includes('OK')){
-      // Actualizar cache local sin re-fetch (evita datos obsoletos del backend)
       const idx=datosLocales.findIndex(a=>a[1]===origNombre);
       if(idx!==-1){
         datosLocales[idx][1] = payload.nuevoNombre;
@@ -955,7 +975,7 @@ async function procesarEdicion(){
       }
       toast('¡Cambios guardados!','ok');
       closeModal('editModal');
-      renderContent(); // re-render local, no re-fetch
+      renderContent();
     } else toast('Error: '+res,'err');
   }catch(err){toast('Error de conexión','err');}
   finally{btn.disabled=false;btn.innerText='GUARDAR CAMBIOS';}
