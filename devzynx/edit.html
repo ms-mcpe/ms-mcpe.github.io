@@ -690,12 +690,37 @@ async function procesarEdicion(){
   if(!validarEsp(document.getElementById('e-desc'),'e-descmsg','btnSaveEdit'))return;
   const btn=document.getElementById('btnSaveEdit');
   btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> GUARDANDO...';
-  const payload={action:'edit',nombreOriginal:document.getElementById('e-orig').value,nuevoNombre:document.getElementById('e-nombre').value,nuevaUrl:document.getElementById('e-url').value,usuario:currentUser,nuevaVersion:document.getElementById('e-ver').value,nuevaDescripcion:document.getElementById('e-desc').value.replace(/\n/g,'<br>'),nuevaCat:document.getElementById('e-cat').value};
+
+  const origNombre = document.getElementById('e-orig').value;
+  const payload={
+    action:'edit',
+    nombreOriginal: origNombre,
+    nuevoNombre:    document.getElementById('e-nombre').value,
+    nuevaUrl:       document.getElementById('e-url').value,
+    usuario:        currentUser,
+    nuevaVersion:   document.getElementById('e-ver').value,
+    nuevaDescripcion: document.getElementById('e-desc').value.replace(/\n/g,'<br>'),
+    nuevaCat:       document.getElementById('e-cat').value
+  };
   const f=document.getElementById('e-img').files[0];if(f)payload.nuevaImg=await toB64(f);
+
   try{
-    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify(payload)});const res=await r.text();
-    if(res.includes('OK')){toast('¡Cambios guardados!','ok');closeModal('editModal');cargarDatos();}
-    else toast('Error: '+res,'err');
+    const r=await fetch(SCRIPT,{method:'POST',body:JSON.stringify(payload)});
+    const res=await r.text();
+    if(res.includes('OK')){
+      // Actualizar cache local sin re-fetch (evita datos obsoletos del backend)
+      const idx=datosLocales.findIndex(a=>a[1]===origNombre);
+      if(idx!==-1){
+        datosLocales[idx][1] = payload.nuevoNombre;
+        datosLocales[idx][2] = payload.nuevaUrl;
+        datosLocales[idx][4] = payload.nuevaCat;
+        datosLocales[idx][9] = payload.nuevaVersion;
+        datosLocales[idx][10]= payload.nuevaDescripcion;
+      }
+      toast('¡Cambios guardados!','ok');
+      closeModal('editModal');
+      renderContent(); // re-render local, no re-fetch
+    } else toast('Error: '+res,'err');
   }catch(err){toast('Error de conexión','err');}
   finally{btn.disabled=false;btn.innerText='GUARDAR CAMBIOS';}
 }
