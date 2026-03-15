@@ -7,240 +7,175 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-* { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-user-drag: none; }
-input, textarea { -webkit-user-select: text; -moz-user-select: text; user-select: text; }
-img { pointer-events: none; -webkit-user-drag: none; }
-:root {
-  --bg:#F4F4F6; --surface:#FFFFFF; --surface-2:#EBEBEF;
-  --border:rgba(0,0,0,0.08); --text:#13131A; --text-muted:#6B6F80;
-  --accent:#6C63FF; --accent-rgb:108,99,255;
-  --radius:14px; --radius-sm:8px;
-  --shadow:0 2px 16px rgba(0,0,0,0.06); --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
-  --font-head:'Syne',sans-serif; --font-body:'Manrope',sans-serif;
-  --topbar-h:64px; --sidebar-w:260px;
-  --star-yellow:#F59E0B; --star-blue:#3B82F6; --star-red:#EF4444;
-}
-[data-theme="dark"] { --bg:#0C0C10; --surface:#14141C; --surface-2:#1E1E2A; --border:rgba(255,255,255,0.07); --text:#EAEAF2; --text-muted:#8888A0; --shadow:0 2px 16px rgba(0,0,0,0.4); --shadow-lg:0 8px 40px rgba(0,0,0,0.6); }
-html,body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased; transition:background .3s,color .3s; overflow-x:hidden; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  * { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-user-drag: none; }
+  input, textarea, select { -webkit-user-select: text; -moz-user-select: text; user-select: text; }
+  img { pointer-events: none; -webkit-user-drag: none; }
+  :root {
+    --bg:#F4F4F6; --surface:#FFFFFF; --surface-2:#EBEBEF;
+    --border:rgba(0,0,0,0.08); --text:#13131A; --text-muted:#6B6F80;
+    --accent:#6C63FF; --accent-rgb:108,99,255;
+    --radius:14px; --radius-sm:8px;
+    --shadow:0 2px 16px rgba(0,0,0,0.06); --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+    --font-head:'Syne',sans-serif; --font-body:'Manrope',sans-serif;
+    --topbar-h:64px; --sidebar-w:260px;
+  }
+  [data-theme="dark"] { --bg:#0C0C10; --surface:#14141C; --surface-2:#1E1E2A; --border:rgba(255,255,255,0.07); --text:#EAEAF2; --text-muted:#8888A0; --shadow:0 2px 16px rgba(0,0,0,0.4); --shadow-lg:0 8px 40px rgba(0,0,0,0.6); }
+  html,body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased; transition:background .3s,color .3s; overflow-x:hidden; }
 
-/* TOPBAR */
-.topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:var(--topbar-h); background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:12px; box-shadow:var(--shadow); }
-.topbar-btn { background:none; border:none; cursor:pointer; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:background .2s,color .2s; flex-shrink:0; }
-.topbar-btn:hover { background:var(--surface-2); color:var(--text); }
-.topbar-logo { flex:1; text-align:center; font-family:var(--font-head); font-size:1.25rem; font-weight:800; letter-spacing:-.02em; background:linear-gradient(135deg,var(--accent),#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#a78bfa); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:.85rem; font-weight:700; color:#fff; cursor:pointer; overflow:hidden; border:2px solid rgba(var(--accent-rgb),.35); flex-shrink:0; transition:transform .2s; }
-.avatar:hover { transform:scale(1.06); }
-.avatar img { width:100%; height:100%; object-fit:cover; pointer-events:none; }
+  .topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:var(--topbar-h); background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:12px; box-shadow:var(--shadow); }
+  .topbar-btn { background:none; border:none; cursor:pointer; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:background .2s,color .2s; flex-shrink:0; }
+  .topbar-btn:hover { background:var(--surface-2); color:var(--text); }
+  .topbar-logo { flex:1; text-align:center; font-family:var(--font-head); font-size:1.25rem; font-weight:800; letter-spacing:-.02em; background:linear-gradient(135deg,var(--accent),#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#a78bfa); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:.85rem; font-weight:700; color:#fff; cursor:pointer; overflow:hidden; border:2px solid rgba(var(--accent-rgb),.35); flex-shrink:0; transition:transform .2s; }
+  .avatar:hover { transform:scale(1.06); }
+  .avatar img { width:100%; height:100%; object-fit:cover; pointer-events:none; }
 
-/* SIDEBAR */
-.sidebar-overlay { position:fixed; inset:0; z-index:89; background:rgba(0,0,0,.45); backdrop-filter:blur(3px); opacity:0; pointer-events:none; transition:opacity .3s; }
-.sidebar-overlay.show { opacity:1; pointer-events:all; }
-.sidebar { position:fixed; top:var(--topbar-h); left:0; bottom:0; width:var(--sidebar-w); z-index:90; background:var(--surface); border-right:1px solid var(--border); transform:translateX(-100%); transition:transform .3s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; padding:16px 12px; overflow-y:auto; }
-.sidebar.open { transform:translateX(0); }
-.nav-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:var(--radius-sm); cursor:pointer; transition:background .2s,color .2s; color:var(--text-muted); font-weight:500; font-size:.92rem; }
-.nav-item:hover,.nav-item.active { background:rgba(var(--accent-rgb),.1); color:var(--accent); }
-.nav-item.danger:hover { background:rgba(239,68,68,.1); color:#ef4444; }
-.nav-item svg { flex-shrink:0; }
-.sidebar-spacer { flex:1; }
-.sidebar-section { font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); padding:8px 16px 4px; margin-top:8px; }
+  .sidebar-overlay { position:fixed; inset:0; z-index:89; background:rgba(0,0,0,.45); backdrop-filter:blur(3px); opacity:0; pointer-events:none; transition:opacity .3s; }
+  .sidebar-overlay.show { opacity:1; pointer-events:all; }
+  .sidebar { position:fixed; top:var(--topbar-h); left:0; bottom:0; width:var(--sidebar-w); z-index:90; background:var(--surface); border-right:1px solid var(--border); transform:translateX(-100%); transition:transform .3s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; padding:16px 12px; overflow-y:auto; }
+  .sidebar.open { transform:translateX(0); }
+  .nav-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:var(--radius-sm); cursor:pointer; transition:background .2s,color .2s; color:var(--text-muted); font-weight:500; font-size:.92rem; }
+  .nav-item:hover, .nav-item.active { background:rgba(var(--accent-rgb),.1); color:var(--accent); }
+  .nav-item.danger:hover { background:rgba(239,68,68,.1); color:#ef4444; }
+  .nav-item svg { flex-shrink:0; }
+  .sidebar-spacer { flex:1; }
+  .sidebar-section { font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); padding:8px 16px 4px; margin-top:8px; }
 
-/* LAYOUT */
-.page-content { padding-top:var(--topbar-h); min-height:100vh; }
+  .page-content { padding-top:var(--topbar-h); min-height:100vh; }
+  .container { max-width:960px; margin:0 auto; padding:28px 16px 100px; }
 
-/* ════════════════════════════════════════
-   VISTA LISTA
-════════════════════════════════════════ */
-#view-list { display:block; }
-#view-detail { display:none; }
+  .page-hero { margin-bottom:22px; animation:fadeUp .4s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .page-title { font-family:var(--font-head); font-size:1.7rem; font-weight:800; letter-spacing:-.03em; margin-bottom:4px; }
+  .page-subtitle { font-size:.87rem; color:var(--text-muted); }
 
-.list-wrap { max-width:740px; margin:0 auto; padding:18px 16px 100px; }
+  /* CATEGORÍAS */
+  .cats-scroll { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; animation:fadeUp .4s ease .04s both; }
+  .cat-chip { padding:7px 16px; border-radius:999px; border:1.5px solid var(--border); background:none; cursor:pointer; font-family:var(--font-body); font-size:.81rem; font-weight:600; color:var(--text-muted); transition:all .2s; white-space:nowrap; }
+  .cat-chip:hover { border-color:var(--accent); color:var(--accent); }
+  .cat-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
-/* BARRA BÚSQUEDA + FILTRO */
-.search-bar-row { display:flex; gap:10px; margin-bottom:16px; }
-.search-input-wrap { position:relative; flex:1; }
-.search-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--text-muted); pointer-events:none; }
-.search-input { width:100%; padding:11px 14px 11px 40px; background:var(--surface); border:1.5px solid var(--border); border-radius:40px; color:var(--text); font-family:var(--font-body); font-size:.92rem; outline:none; transition:border-color .2s,box-shadow .2s; }
-.search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12); }
-.filter-btn { background:var(--surface); border:1.5px solid var(--border); border-radius:40px; padding:0 18px; display:flex; align-items:center; gap:7px; cursor:pointer; font-family:var(--font-body); font-size:.88rem; font-weight:600; color:var(--text-muted); transition:all .2s; white-space:nowrap; flex-shrink:0; }
-.filter-btn:hover,.filter-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(var(--accent-rgb),.06); }
+  /* GRID */
+  .addons-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:16px; }
 
-/* DROPDOWN FILTRO */
-.filter-dropdown { position:absolute; top:calc(var(--topbar-h) + 86px); right:16px; z-index:80; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-lg); width:230px; overflow:hidden; animation:fadeDown .15s ease; display:none; }
-.filter-dropdown.open { display:block; }
-@keyframes fadeDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-.filter-section { padding:12px 16px 6px; }
-.filter-section-title { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); display:flex; align-items:center; gap:7px; cursor:pointer; padding-bottom:8px; }
-.filter-options { padding-bottom:4px; }
-.filter-option { display:flex; align-items:center; gap:10px; padding:9px 8px; border-radius:var(--radius-sm); cursor:pointer; font-size:.87rem; color:var(--text-muted); transition:background .15s,color .15s; }
-.filter-option:hover { background:var(--surface-2); color:var(--text); }
-.filter-option.selected { color:var(--accent); font-weight:600; }
-.filter-option .check { width:16px; height:16px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; }
-.filter-option.selected .check { background:var(--accent); border-color:var(--accent); }
-.filter-divider { height:1px; background:var(--border); margin:4px 0; }
+  /* CARD */
+  .addon-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:transform .2s,box-shadow .2s; animation:fadeUp .35s ease both; display:flex; flex-direction:column; }
+  .addon-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+  .card-img { width:100%; height:165px; object-fit:cover; display:block; flex-shrink:0; }
+  .card-placeholder { width:100%; height:165px; background:linear-gradient(135deg,rgba(var(--accent-rgb),.1),rgba(var(--accent-rgb),.03)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .card-body { padding:13px 13px 9px; flex:1; display:flex; flex-direction:column; gap:5px; }
+  .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .card-name { font-family:var(--font-head); font-size:.95rem; font-weight:800; flex:1; line-height:1.3; }
+  .card-cat { font-size:.6rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:2px 7px; border-radius:999px; flex-shrink:0; white-space:nowrap; }
+  .card-desc { font-size:.8rem; color:var(--text-muted); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
+  .card-meta { font-size:.71rem; color:var(--text-muted); display:flex; align-items:center; gap:5px; }
+  .card-foot { padding:9px 13px 11px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:8px; }
 
-/* CHIPS FILTROS ACTIVOS */
-.filter-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; min-height:0; }
-.chip { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; background:rgba(var(--accent-rgb),.1); border:1px solid rgba(var(--accent-rgb),.25); color:var(--accent); font-size:.76rem; font-weight:700; }
-.chip-x { cursor:pointer; opacity:.7; font-size:.85rem; }
-.chip-x:hover { opacity:1; }
+  /* CATEGORIA COLORES */
+  .cat-Supervivencia { background:rgba(34,197,94,.12);  color:#16a34a; }
+  .cat-Aventura      { background:rgba(249,115,22,.12); color:#ea580c; }
+  .cat-Decoracion    { background:rgba(236,72,153,.12); color:#db2777; }
+  .cat-Mobs          { background:rgba(239,68,68,.12);  color:#dc2626; }
+  .cat-Mecanicas     { background:rgba(59,130,246,.12); color:#2563eb; }
+  .cat-Texturas      { background:rgba(168,85,247,.12); color:#9333ea; }
+  .cat-Mapas         { background:rgba(14,165,233,.12); color:#0284c7; }
+  .cat-Utilidades    { background:rgba(245,158,11,.12); color:#d97706; }
+  .cat-Otros         { background:rgba(107,111,128,.1); color:#6B6F80; }
 
-/* CONTEO */
-.results-count { font-size:.8rem; color:var(--text-muted); margin-bottom:14px; }
+  /* BOTÓN DESCARGA */
+  .btn-dl { display:inline-flex; align-items:center; gap:5px; padding:6px 13px; border-radius:var(--radius-sm); background:var(--accent); color:#fff; border:none; font-family:var(--font-body); font-size:.78rem; font-weight:700; cursor:pointer; text-decoration:none; transition:filter .2s,transform .2s; }
+  .btn-dl:hover { filter:brightness(1.1); transform:translateY(-1px); }
+  .btn-dl-off { display:inline-flex; align-items:center; gap:5px; padding:6px 13px; border-radius:var(--radius-sm); background:var(--surface-2); color:var(--text-muted); border:none; font-family:var(--font-body); font-size:.78rem; font-weight:600; }
 
-/* GRID DE CARDS */
-.addons-list { display:flex; flex-direction:column; gap:10px; }
+  /* MENÚ 3 PUNTOS */
+  .menu-wrap { position:relative; }
+  .menu-btn { background:none; border:none; cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:background .2s,color .2s; }
+  .menu-btn:hover { background:var(--surface-2); color:var(--text); }
+  .dropdown { position:absolute; top:32px; right:0; z-index:60; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); box-shadow:var(--shadow-lg); min-width:140px; overflow:hidden; animation:fdDown .15s ease; }
+  @keyframes fdDown { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+  .dd-item { display:flex; align-items:center; gap:9px; padding:10px 14px; cursor:pointer; font-size:.84rem; font-weight:500; color:var(--text); transition:background .15s; }
+  .dd-item:hover { background:var(--surface-2); }
+  .dd-item.danger { color:#ef4444; }
+  .dd-item.danger:hover { background:rgba(239,68,68,.08); }
 
-/* CARD (estilo Marketplace) */
-.addon-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; display:flex; cursor:pointer; transition:box-shadow .2s,transform .2s; box-shadow:var(--shadow); animation:fadeUp .3s ease both; }
-.addon-card:hover { box-shadow:var(--shadow-lg); transform:translateX(3px); }
-@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.addon-thumb { width:130px; min-width:130px; height:88px; object-fit:cover; display:block; background:linear-gradient(135deg,rgba(var(--accent-rgb),.3),rgba(var(--accent-rgb),.1)); flex-shrink:0; }
-.addon-thumb-placeholder { width:130px; min-width:130px; height:88px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,rgba(var(--accent-rgb),.2),rgba(var(--accent-rgb),.08)); flex-shrink:0; font-family:var(--font-head); font-size:2rem; font-weight:800; color:var(--accent); opacity:.6; }
-.addon-info { flex:1; padding:12px 14px; display:flex; flex-direction:column; justify-content:center; gap:4px; min-width:0; }
-.addon-name { font-family:var(--font-head); font-size:.97rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.addon-author { font-size:.77rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.addon-author span { color:var(--text-muted); }
-.addon-footer-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:2px; }
-.cat-badge { font-size:.65rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 8px; border-radius:999px; border:1px solid var(--border); color:var(--text-muted); background:var(--surface-2); }
-.cat-badge.addon     { color:#7C3AED; border-color:#7C3AED; background:rgba(124,58,237,.08); }
-.cat-badge.mapa      { color:#0EA5E9; border-color:#0EA5E9; background:rgba(14,165,233,.08); }
-.cat-badge.textura   { color:#F59E0B; border-color:#F59E0B; background:rgba(245,158,11,.08); }
-.cat-badge.marketplace { color:#22C55E; border-color:#22C55E; background:rgba(34,197,94,.08); }
+  /* FAB */
+  .fab { position:fixed; bottom:28px; right:24px; z-index:95; width:54px; height:54px; background:var(--accent); color:#fff; border:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(var(--accent-rgb),.45); transition:transform .2s; }
+  .fab:hover { transform:scale(1.1) rotate(45deg); }
 
-/* ESTRELLA RATING en cards */
-.star-row { display:flex; align-items:center; gap:4px; }
-.star-icon { font-size:.85rem; }
-.star-icon.yellow { color:var(--star-yellow); }
-.star-icon.blue   { color:var(--star-blue); }
-.star-icon.red    { color:var(--star-red); }
-.rating-val { font-size:.78rem; font-weight:700; }
-.rating-val.yellow { color:var(--star-yellow); }
-.rating-val.blue   { color:var(--star-blue); }
-.rating-val.red    { color:var(--star-red); }
+  /* MODALES */
+  .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .modal-bg.show { opacity:1; pointer-events:all; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:26px; width:100%; max-width:500px; box-shadow:var(--shadow-lg); transform:translateY(20px); transition:transform .25s; max-height:92vh; overflow-y:auto; }
+  .modal-bg.show .modal { transform:translateY(0); }
+  .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .modal-title { font-family:var(--font-head); font-size:1.1rem; font-weight:800; }
+  .modal-close { background:var(--surface-2); border:none; cursor:pointer; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:background .2s; }
+  .modal-close:hover { background:var(--border); }
 
-/* FAB — solo admin/owner */
-.fab { position:fixed; bottom:28px; right:24px; z-index:95; width:54px; height:54px; background:var(--accent); color:#fff; border:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(var(--accent-rgb),.45); transition:transform .2s; }
-.fab:hover { transform:scale(1.1) rotate(45deg); }
+  .field { margin-bottom:13px; }
+  .field label { display:flex; align-items:center; gap:5px; margin-bottom:5px; font-size:.71rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); }
+  .req { color:var(--accent); font-size:.75rem; }
+  .input { width:100%; padding:10px 13px; background:var(--surface-2); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:.91rem; transition:border-color .2s,box-shadow .2s; outline:none; }
+  .input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12); background:var(--surface); }
+  textarea.input { resize:vertical; min-height:88px; }
+  select.input { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6F80' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; padding-right:34px; }
 
-/* ════════════════════════════════════════
-   VISTA DETALLE
-════════════════════════════════════════ */
-.detail-wrap { max-width:640px; margin:0 auto; padding-bottom:60px; }
+  .img-pick { border:2px dashed var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:border-color .2s,background .2s; overflow:hidden; }
+  .img-pick:hover { border-color:var(--accent); background:rgba(var(--accent-rgb),.03); }
+  .img-pick input { display:none; }
+  .img-pick-row { padding:13px 14px; display:flex; align-items:center; gap:11px; }
+  .img-pick-thumb { width:52px; height:52px; border-radius:var(--radius-sm); flex-shrink:0; background:var(--surface-2); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .img-pick-thumb img { width:100%; height:100%; object-fit:cover; display:none; }
+  .img-pick-lbl { font-size:.83rem; font-weight:600; color:var(--accent); }
+  .img-pick-sub { font-size:.72rem; color:var(--text-muted); }
 
-/* BACK BAR */
-.detail-back { display:flex; align-items:center; gap:10px; padding:14px 16px 10px; cursor:pointer; color:var(--text-muted); transition:color .2s; }
-.detail-back:hover { color:var(--accent); }
-.detail-back-name { font-family:var(--font-head); font-size:1rem; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 20px; border-radius:var(--radius-sm); font-family:var(--font-body); font-weight:700; font-size:.88rem; cursor:pointer; transition:all .2s; border:none; }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-primary:hover { filter:brightness(1.1); transform:translateY(-1px); }
+  .btn-primary:disabled { opacity:.5; cursor:not-allowed; transform:none; filter:none; }
+  .btn-ghost { background:var(--surface-2); color:var(--text); border:1.5px solid var(--border); }
+  .btn-ghost:hover { background:var(--border); }
+  .btn-danger { background:#ef4444; color:#fff; }
+  .btn-danger:hover { filter:brightness(1.1); }
+  .btn-danger:disabled { opacity:.5; cursor:not-allowed; filter:none; }
+  .btn-full { width:100%; }
 
-/* BANNER */
-.detail-banner { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:linear-gradient(135deg,rgba(var(--accent-rgb),.3),rgba(var(--accent-rgb),.1)); }
-.detail-banner-placeholder { width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,rgba(var(--accent-rgb),.2),rgba(var(--accent-rgb),.08)); font-family:var(--font-head); font-size:4rem; font-weight:800; color:var(--accent); opacity:.4; }
+  .err-banner { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#ef4444; font-size:.81rem; font-weight:500; padding:9px 13px; border-radius:var(--radius-sm); margin-bottom:12px; display:none; align-items:center; gap:7px; }
+  .err-banner.show { display:flex; }
 
-/* INFO PANEL */
-.detail-info { padding:16px 16px 0; }
-.detail-title { font-family:var(--font-head); font-size:1.35rem; font-weight:800; margin-bottom:4px; }
-.detail-author { font-size:.84rem; color:var(--text-muted); margin-bottom:12px; }
-.detail-actions-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .confirm-text { font-size:.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.6; }
+  .confirm-row { display:flex; gap:10px; }
 
-/* RATING PANEL */
-.rating-panel { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border); }
-.rating-big { font-family:var(--font-head); font-size:1.6rem; font-weight:800; line-height:1; }
-.rating-big.yellow { color:var(--star-yellow); }
-.rating-big.blue   { color:var(--star-blue); }
-.rating-big.red    { color:var(--star-red); }
-.rating-star-lg { font-size:1.3rem; }
-.rating-star-lg.yellow { color:var(--star-yellow); }
-.rating-star-lg.blue   { color:var(--star-blue); }
-.rating-star-lg.red    { color:var(--star-red); }
+  .empty-wrap { text-align:center; padding:60px 20px; color:var(--text-muted); }
+  .empty-wrap svg { margin-bottom:12px; opacity:.25; }
+  .empty-title { font-family:var(--font-head); font-size:1.05rem; font-weight:700; margin-bottom:5px; }
 
-/* VOTE BUTTONS */
-.vote-btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:40px; border:1.5px solid var(--border); background:var(--surface); cursor:pointer; font-family:var(--font-body); font-size:.87rem; font-weight:600; color:var(--text-muted); transition:all .2s; flex-shrink:0; }
-.vote-btn:hover { border-color:var(--text-muted); color:var(--text); }
-.vote-btn.like.active   { border-color:#22C55E; color:#22C55E; background:rgba(34,197,94,.08); }
-.vote-btn.dislike.active { border-color:#EF4444; color:#EF4444; background:rgba(239,68,68,.08); }
-.vote-btn:disabled { opacity:.5; cursor:not-allowed; }
+  .spin-wrap { text-align:center; padding:60px; }
+  .spinner { width:28px; height:28px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--accent); animation:sp .7s linear infinite; display:inline-block; }
+  .sp-sm { width:15px; height:15px; border-width:2px; border-color:rgba(255,255,255,.3); border-top-color:#fff; }
+  @keyframes sp { to{transform:rotate(360deg)} }
 
-/* DOWNLOAD BTN */
-.download-btn { display:inline-flex; align-items:center; gap:8px; padding:10px 20px; border-radius:40px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-family:var(--font-body); font-size:.9rem; font-weight:700; transition:filter .2s,transform .2s; text-decoration:none; flex-shrink:0; }
-.download-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
-.download-btn.disabled { opacity:.45; cursor:not-allowed; pointer-events:none; }
-
-/* DESCRIPCIÓN */
-.detail-desc-box { background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--border); padding:16px; margin:14px 16px 0; font-size:.88rem; line-height:1.7; color:var(--text); white-space:pre-wrap; word-break:break-word; }
-
-/* BADGE CATEGORIA detalle */
-.detail-cat-row { padding:10px 16px 0; display:flex; align-items:center; gap:8px; }
-
-/* ADMIN DELETE en detalle */
-.detail-admin-row { padding:14px 16px 0; }
-.btn-del-addon { background:rgba(239,68,68,.08); border:1.5px solid rgba(239,68,68,.25); color:#ef4444; padding:8px 18px; border-radius:var(--radius-sm); cursor:pointer; font-family:var(--font-body); font-size:.85rem; font-weight:600; transition:all .2s; display:inline-flex; align-items:center; gap:7px; }
-.btn-del-addon:hover { background:rgba(239,68,68,.15); }
-
-/* ════════════════════════════════════════
-   MODAL AGREGAR ADDON
-════════════════════════════════════════ */
-.modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .25s; }
-.modal-bg.show { opacity:1; pointer-events:all; }
-.modal { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px; width:100%; max-width:500px; box-shadow:var(--shadow-lg); transform:translateY(20px); transition:transform .25s; max-height:90vh; overflow-y:auto; }
-.modal-bg.show .modal { transform:translateY(0); }
-.modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
-.modal-title { font-family:var(--font-head); font-size:1.1rem; font-weight:700; }
-.modal-close { background:var(--surface-2); border:none; cursor:pointer; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:background .2s; }
-.modal-close:hover { background:var(--border); }
-.field { margin-bottom:14px; }
-.field label { display:block; margin-bottom:5px; font-size:.73rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); }
-.input { width:100%; padding:11px 14px; background:var(--surface-2); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:.93rem; transition:border-color .2s,box-shadow .2s; outline:none; }
-.input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),.15); background:var(--surface); }
-textarea.input { resize:vertical; min-height:90px; }
-select.input { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6F80' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:36px; }
-.img-picker { border:2px dashed var(--border); border-radius:var(--radius-sm); padding:18px; text-align:center; cursor:pointer; transition:border-color .2s,background .2s; }
-.img-picker:hover { border-color:var(--accent); background:rgba(var(--accent-rgb),.03); }
-.img-picker input { display:none; }
-.img-picker-hint { font-size:.82rem; color:var(--text-muted); }
-.img-preview { width:100%; max-height:140px; object-fit:contain; border-radius:var(--radius-sm); display:none; margin-bottom:8px; }
-.btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:11px 22px; border-radius:var(--radius-sm); background:var(--accent); color:#fff; border:none; font-family:var(--font-body); font-weight:700; font-size:.92rem; cursor:pointer; transition:all .2s; width:100%; margin-top:4px; }
-.btn-primary:hover { filter:brightness(1.1); transform:translateY(-1px); }
-.btn-primary:disabled { opacity:.5; cursor:not-allowed; transform:none; filter:none; }
-.err-msg { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#ef4444; font-size:.82rem; font-weight:500; padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:14px; display:none; }
-
-/* MODAL CONFIRMAR ELIMINAR */
-.confirm-text { font-size:.92rem; color:var(--text-muted); margin-bottom:20px; line-height:1.6; }
-.confirm-btns { display:flex; gap:10px; }
-.btn-secondary { display:inline-flex; align-items:center; justify-content:center; padding:10px 22px; border-radius:var(--radius-sm); background:transparent; color:var(--text); border:1.5px solid var(--border); font-family:var(--font-body); font-weight:600; font-size:.9rem; cursor:pointer; transition:all .2s; flex:1; }
-.btn-secondary:hover { background:var(--surface-2); }
-.btn-danger { display:inline-flex; align-items:center; justify-content:center; padding:10px 22px; border-radius:var(--radius-sm); background:#ef4444; color:#fff; border:none; font-family:var(--font-body); font-weight:700; font-size:.9rem; cursor:pointer; transition:all .2s; flex:1; }
-.btn-danger:hover { filter:brightness(1.1); }
-
-/* MISC */
-.spinner-wrap { text-align:center; padding:60px; }
-.spinner { width:28px; height:28px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--accent); animation:spin .7s linear infinite; display:inline-block; }
-.spinner-sm { width:16px; height:16px; border-width:2px; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.empty-state { text-align:center; padding:60px 20px; color:var(--text-muted); }
-.empty-state-icon { font-size:2.5rem; margin-bottom:12px; opacity:.5; }
-
-#toast-container { position:fixed; bottom:88px; right:20px; z-index:999; display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
-.toast { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 18px; box-shadow:var(--shadow-lg); font-size:.87rem; font-weight:500; animation:toastIn .3s ease,toastOut .4s 2.6s forwards; max-width:300px; }
-.toast.success { border-left:3px solid #22c55e; }
-.toast.error   { border-left:3px solid #ef4444; }
-@keyframes toastIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
-@keyframes toastOut { from{opacity:1} to{opacity:0;pointer-events:none} }
-::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+  #toast-wrap { position:fixed; bottom:90px; right:20px; z-index:999; display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
+  .toast { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 17px; box-shadow:var(--shadow-lg); font-size:.86rem; font-weight:500; animation:tIn .3s ease,tOut .4s 2.6s forwards; max-width:290px; }
+  .toast.success { border-left:3px solid #22c55e; }
+  .toast.error   { border-left:3px solid #ef4444; }
+  @keyframes tIn  { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
+  @keyframes tOut { from{opacity:1} to{opacity:0;pointer-events:none} }
+  ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+  @media(max-width:520px){ .addons-grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <button class="topbar-btn" onclick="toggleSidebar()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <div class="topbar-logo">BlockVault</div>
-  <div class="avatar" id="top-avatar" onclick="location.href='perfil.html'"><span id="top-av-letter"></span></div>
+  <div class="avatar" id="top-av" onclick="location.href='perfil.html'"><span id="top-av-ltr"></span></div>
 </div>
 
-<!-- SIDEBAR -->
 <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-section">Navegación</div>
@@ -266,465 +201,453 @@ select.input { cursor:pointer; appearance:none; background-image:url("data:image
   </a>
 </nav>
 
-<!-- ════════ DROPDOWN FILTRO (fuera del topbar) ════════ -->
-<div class="filter-dropdown" id="filter-dropdown">
-  <!-- ORDEN -->
-  <div class="filter-section">
-    <div class="filter-section-title">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="8" y2="18"/></svg>
-      Orden
+<div class="page-content">
+  <div class="container">
+    <div class="page-hero">
+      <div class="page-title">🎮 Addons de Minecraft</div>
+      <p class="page-subtitle">Explora y descarga addons organizados por categoría. Cualquier usuario puede publicar sus propios addons.</p>
     </div>
-    <div class="filter-options">
-      <div class="filter-option selected" data-order="nuevos"  onclick="setOrder('nuevos')">  <div class="check"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div> Más nuevos</div>
-      <div class="filter-option"          data-order="viejos"  onclick="setOrder('viejos')">  <div class="check"></div> Más viejos</div>
-      <div class="filter-option"          data-order="mejor"   onclick="setOrder('mejor')">   <div class="check"></div> Mejor valorados</div>
-      <div class="filter-option"          data-order="peor"    onclick="setOrder('peor')">    <div class="check"></div> Peor valorados</div>
-    </div>
-  </div>
-  <div class="filter-divider"></div>
-  <!-- TIPO -->
-  <div class="filter-section">
-    <div class="filter-section-title">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Tipo
-    </div>
-    <div class="filter-options">
-      <div class="filter-option selected" data-cat="all"         onclick="setCat('all')">         <div class="check"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg></div> Todos</div>
-      <div class="filter-option"          data-cat="addon"       onclick="setCat('addon')">       <div class="check"></div> Add-Ons</div>
-      <div class="filter-option"          data-cat="mapa"        onclick="setCat('mapa')">        <div class="check"></div> Mapas</div>
-      <div class="filter-option"          data-cat="textura"     onclick="setCat('textura')">     <div class="check"></div> Texturas</div>
-      <div class="filter-option"          data-cat="marketplace" onclick="setCat('marketplace')"> <div class="check"></div> Marketplace</div>
-    </div>
-  </div>
-</div>
-
-<!-- ════════ VISTA LISTA ════════ -->
-<div class="page-content" id="view-list">
-  <div class="list-wrap">
-    <div class="search-bar-row">
-      <div class="search-input-wrap">
-        <div class="search-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <input class="search-input" id="search-input" type="text" placeholder="Buscar addon..." oninput="onSearch()">
-      </div>
-      <button class="filter-btn" id="filter-btn" onclick="toggleFilter()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-        Filtrar
-      </button>
-    </div>
-    <div class="filter-chips" id="filter-chips"></div>
-    <div class="results-count" id="results-count"></div>
-    <div class="addons-list" id="addons-list">
-      <div class="spinner-wrap"><div class="spinner"></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ════════ VISTA DETALLE ════════ -->
-<div class="page-content" id="view-detail" style="display:none">
-  <div class="detail-wrap">
-    <div class="detail-back" onclick="goToList()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-      <span class="detail-back-name" id="detail-back-name">Addons</span>
-    </div>
-    <div id="detail-content"></div>
+    <div class="cats-scroll" id="cats"></div>
+    <div id="grid-area"><div class="spin-wrap"><div class="spinner"></div></div></div>
   </div>
 </div>
 
 <!-- FAB -->
-<button class="fab" id="fab-add" style="display:none" onclick="openAddModal()" title="Agregar addon">
+<button class="fab" onclick="abrirCrear()" title="Publicar addon">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 
-<!-- MODAL AGREGAR ADDON -->
-<div class="modal-bg" id="modal-add">
+<!-- MODAL CREAR / EDITAR -->
+<div class="modal-bg" id="m-form">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Agregar Addon</div>
-      <button class="modal-close" onclick="closeAddModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div class="modal-title" id="m-form-title">Publicar Addon</div>
+      <button class="modal-close" onclick="cerrarForm()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
-    <div class="err-msg" id="add-err"></div>
-    <div class="field"><label>Nombre del addon *</label><input class="input" id="add-nombre" type="text" placeholder="Ej: Better Villages" maxlength="80"></div>
-    <div class="field"><label>Autor (By) *</label><input class="input" id="add-autor" type="text" placeholder="Ej: Waypoint Studios" maxlength="60"></div>
+
+    <div class="err-banner" id="form-err">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="form-err-msg"></span>
+    </div>
+
     <div class="field">
-      <label>Categoría *</label>
-      <select class="input" id="add-categoria">
-        <option value="addon">Add-On</option>
-        <option value="mapa">Mapa</option>
-        <option value="textura">Textura</option>
-        <option value="marketplace">Marketplace</option>
+      <label>Nombre <span class="req">*</span></label>
+      <input class="input" id="f-nombre" type="text" placeholder="Nombre del addon" maxlength="80">
+    </div>
+    <div class="field">
+      <label>Categoría <span class="req">*</span></label>
+      <select class="input" id="f-cat">
+        <option value="">— Elige categoría —</option>
+        <option value="Supervivencia">🌿 Supervivencia</option>
+        <option value="Aventura">⚔️ Aventura</option>
+        <option value="Decoración">🏡 Decoración</option>
+        <option value="Mobs">🐉 Mobs</option>
+        <option value="Mecánicas">⚙️ Mecánicas</option>
+        <option value="Texturas">🎨 Texturas</option>
+        <option value="Mapas">🗺️ Mapas</option>
+        <option value="Utilidades">🔧 Utilidades</option>
+        <option value="Otros">📦 Otros</option>
       </select>
     </div>
-    <div class="field"><label>Descripción *</label><textarea class="input" id="add-desc" placeholder="Describe el addon: qué hace, para qué versión de Minecraft es, qué incluye..." maxlength="1000" rows="4"></textarea></div>
-    <div class="field"><label>URL de descarga</label><input class="input" id="add-url" type="url" placeholder="https://mcpedl.com/... o marketplace"></div>
     <div class="field">
-      <label>Imagen <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional · portada del addon)</span></label>
-      <div class="img-picker" onclick="document.getElementById('add-img-input').click()">
-        <input type="file" id="add-img-input" accept="image/*" onchange="previewAddImg(this)">
-        <img class="img-preview" id="add-img-preview" src="" alt="">
-        <p class="img-picker-hint" id="add-img-hint">Haz clic para subir imagen de portada</p>
-      </div>
+      <label>Descripción <span class="req">*</span></label>
+      <textarea class="input" id="f-desc" placeholder="Describe el addon: qué hace, versión de Minecraft compatible, requisitos..." maxlength="800" rows="4"></textarea>
     </div>
-    <button class="btn-primary" id="btn-add-submit" onclick="doAddAddon()">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <div class="field">
+      <label>URL de descarga <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional)</span></label>
+      <input class="input" id="f-url" type="url" placeholder="https://mcpedl.com/... o marketplace.minecraft.net/...">
+    </div>
+    <div class="field">
+      <label>Imagen <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional · máx 5MB)</span></label>
+      <div class="img-pick" onclick="document.getElementById('f-img').click()">
+        <input type="file" id="f-img" accept="image/*" onchange="prevImg(this)">
+        <div class="img-pick-row">
+          <div class="img-pick-thumb" id="f-thumb">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <img id="f-thumb-img" src="" alt="">
+          </div>
+          <div>
+            <div class="img-pick-lbl" id="f-img-lbl">Subir imagen</div>
+            <div class="img-pick-sub">JPG, PNG, WEBP</div>
+          </div>
+        </div>
+      </div>
+      <button type="button" id="btn-rm-img" onclick="quitarImg()" style="display:none;margin-top:5px;background:none;border:none;cursor:pointer;font-size:.77rem;color:#ef4444;font-weight:600;padding:0;">✕ Quitar imagen</button>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="btn-submit" onclick="submitForm()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
       Publicar addon
     </button>
   </div>
 </div>
 
-<!-- MODAL CONFIRMAR ELIMINAR ADDON -->
-<div class="modal-bg" id="modal-del">
-  <div class="modal" style="max-width:380px">
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-bg" id="m-del">
+  <div class="modal" style="max-width:370px">
     <div class="modal-header"><div class="modal-title">Eliminar addon</div></div>
-    <p class="confirm-text">¿Eliminar este addon permanentemente? Esta acción no se puede deshacer.</p>
-    <div class="confirm-btns">
-      <button class="btn-secondary" onclick="closeDelModal()">Cancelar</button>
-      <button class="btn-danger" id="btn-del-confirm" onclick="doDeleteAddon()">Eliminar</button>
+    <p class="confirm-text">¿Seguro que quieres eliminar <b id="del-nm"></b>? Esta acción no se puede deshacer.</p>
+    <div class="confirm-row">
+      <button class="btn btn-ghost" style="flex:1" onclick="cerrarDel()">Cancelar</button>
+      <button class="btn btn-danger" style="flex:1" id="btn-del-ok" onclick="confirmarDelete()">Eliminar</button>
     </div>
   </div>
 </div>
 
-<div id="toast-container"></div>
+<div id="toast-wrap"></div>
 
 <script>
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycby_q9XZ8vYBsnr0G5PZGapHZh1iZ-GFBJqychgMnZ-hs3Napp1fWE_RfisJ91B2ZBwQ/exec';
 
-  var session = null;
-  try { session = JSON.parse(localStorage.getItem('bv_session') || 'null'); } catch(e) {}
-  if (!session) { location.href = 'index.html'; return; }
+  // ── SESIÓN ────────────────────────────────────────────────
+  var ses = null;
+  try { ses = JSON.parse(localStorage.getItem('bv_session') || 'null'); } catch(e) {}
+  if (!ses) { location.href = 'index.html'; return; }
 
-  var miRol        = session.rol || 'usuario';
-  var puedeModerar = (miRol === 'admin' || miRol === 'owner');
+  var miRol  = ses.rol || 'usuario';
+  var esMod  = (miRol === 'admin' || miRol === 'owner');
 
-  // ── Tema ──────────────────────────────────────────────────
+  // ── TEMA ──────────────────────────────────────────────────
   function applyAccent(hex) {
-    try { var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); document.documentElement.style.setProperty('--accent',hex); document.documentElement.style.setProperty('--accent-rgb',r+','+g+','+b); } catch(e) {}
+    try {
+      var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+      document.documentElement.style.setProperty('--accent',hex);
+      document.documentElement.style.setProperty('--accent-rgb',r+','+g+','+b);
+    } catch(e) {}
   }
   document.documentElement.setAttribute('data-theme', localStorage.getItem('bv_theme')||'light');
   applyAccent(localStorage.getItem('bv_accent')||'#6C63FF');
 
-  var av = document.getElementById('top-avatar');
-  if (session.fotoPerfil) av.innerHTML = '<img src="'+session.fotoPerfil+'" alt="">';
-  else document.getElementById('top-av-letter').textContent = (session.nombre||'?')[0].toUpperCase();
+  var av = document.getElementById('top-av');
+  if (ses.fotoPerfil) av.innerHTML = '<img src="'+ses.fotoPerfil+'" alt="">';
+  else document.getElementById('top-av-ltr').textContent = (ses.nombre||'?')[0].toUpperCase();
 
-  if (puedeModerar) document.getElementById('fab-add').style.display = 'flex';
+  // ── UTILS ─────────────────────────────────────────────────
+  window.logout        = function(){ localStorage.removeItem('bv_session'); location.href='index.html'; };
+  window.toggleSidebar = function(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); };
+  window.closeSidebar  = function(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); };
 
-  // ── Nav ───────────────────────────────────────────────────
-  window.logout        = function() { localStorage.removeItem('bv_session'); location.href='index.html'; };
-  window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); };
-  window.closeSidebar  = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); };
+  function post(p){ return fetch(API,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();}); }
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmt(d){ try{ return new Date(d).toLocaleDateString('es',{day:'numeric',month:'short',year:'numeric'}); }catch(_){return '';} }
+  function toast(msg,t){
+    var el=document.createElement('div'); el.className='toast '+(t||'info'); el.textContent=msg;
+    document.getElementById('toast-wrap').appendChild(el);
+    setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},3100);
+  }
+  function showErr(msg){ var e=document.getElementById('form-err'); document.getElementById('form-err-msg').textContent=msg; e.classList.add('show'); e.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  function hideErr(){ document.getElementById('form-err').classList.remove('show'); }
 
-  function api(p) { return fetch(API,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();}); }
-  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function toast(msg,type) { var t=document.createElement('div'); t.className='toast '+(type||'info'); t.textContent=msg; document.getElementById('toast-container').appendChild(t); setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},3100); }
-  function fmtDate(d){ try{ var dt=new Date(d),diff=(new Date()-dt)/1000; if(diff<60)return 'ahora mismo'; if(diff<3600)return Math.floor(diff/60)+' min'; if(diff<86400)return Math.floor(diff/3600)+'h'; return dt.toLocaleDateString('es',{day:'numeric',month:'short',year:'numeric'}); }catch(_){return '';} }
+  // Cerrar dropdowns al click fuera
+  document.addEventListener('click',function(e){ if(!e.target.closest('.menu-wrap')) closeMenus(); });
+  function closeMenus(){ document.querySelectorAll('.dropdown').forEach(function(d){d.remove();}); }
 
   // ── ESTADO ────────────────────────────────────────────────
-  var allAddons  = [];
-  var orderActual = 'nuevos';
-  var catActual   = 'all';
-  var queryActual = '';
-  var addImgBase64 = '';
-  var delUuid = '';
+  var cache       = {};   // uuid → addon
+  var catActual   = '';
+  var editMode    = false;
+  var editUUID    = '';
+  var imgB64      = '';
+  var imgRemove   = false;
+  var pendingDel  = '';
+  var chipsBuilt  = false;
 
-  // ── CARGA ─────────────────────────────────────────────────
-  function loadAddons() {
-    api({action:'obtenerAddons', uuidUsuario:session.uuid}).then(function(res) {
-      if (!res||!res.ok) {
-        document.getElementById('addons-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Error al cargar addons.</p></div>';
-        return;
-      }
-      allAddons = res.addons || [];
-      renderList();
-    }).catch(function() {
-      document.getElementById('addons-list').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📡</div><p>No se pudo conectar.</p></div>';
+  // ── CARGAR ────────────────────────────────────────────────
+  function cargar(cat) {
+    catActual = cat || '';
+    document.getElementById('grid-area').innerHTML = '<div class="spin-wrap"><div class="spinner"></div></div>';
+    post({ action:'obtenerAddons', categoria:catActual })
+      .then(function(res) {
+        if (!res || !res.ok) {
+          document.getElementById('grid-area').innerHTML = '<div class="empty-wrap"><p>Error al cargar addons.</p></div>';
+          return;
+        }
+        if (!chipsBuilt) { buildChips(res.categorias || []); chipsBuilt = true; }
+        renderGrid(res.addons || []);
+      })
+      .catch(function(){
+        document.getElementById('grid-area').innerHTML = '<div class="empty-wrap"><p>No se pudo conectar con el servidor.</p></div>';
+      });
+  }
+
+  // Normalizar categoría para class CSS (sin acentos problemáticos)
+  function catClass(cat) {
+    var map = {
+      'Supervivencia':'Supervivencia','Aventura':'Aventura',
+      'Decoración':'Decoracion','Mobs':'Mobs',
+      'Mecánicas':'Mecanicas','Texturas':'Texturas',
+      'Mapas':'Mapas','Utilidades':'Utilidades','Otros':'Otros'
+    };
+    return map[cat] || 'Otros';
+  }
+
+  function catEmoji(cat) {
+    var m={'Supervivencia':'🌿','Aventura':'⚔️','Decoración':'🏡','Mobs':'🐉','Mecánicas':'⚙️','Texturas':'🎨','Mapas':'🗺️','Utilidades':'🔧','Otros':'📦'};
+    return m[cat]||'📦';
+  }
+
+  function buildChips(cats) {
+    var wrap = document.getElementById('cats');
+    // "Todos" ya está en HTML, solo añadir categorías
+    wrap.innerHTML = '<button class="cat-chip active" data-cat="" onclick="filtrar(this,\'\')">🎮 Todos</button>';
+    cats.forEach(function(c) {
+      var b = document.createElement('button');
+      b.className = 'cat-chip';
+      b.dataset.cat = c;
+      b.textContent = catEmoji(c) + ' ' + c;
+      b.onclick = function(){ filtrar(b, c); };
+      wrap.appendChild(b);
     });
   }
 
-  // ── RATING HELPER ─────────────────────────────────────────
-  function starClass(r) {
-    if (r >= 5)  return 'blue';
-    if (r <  0)  return 'red';
-    return 'yellow';
-  }
-  function starIcon() { return '★'; }
-  function catLabel(c) {
-    return { addon:'Add-On', mapa:'Mapa', textura:'Textura', marketplace:'Marketplace' }[c] || c;
-  }
+  window.filtrar = function(btn, cat) {
+    document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
+    btn.classList.add('active');
+    cargar(cat);
+  };
 
-  // ── RENDER LISTA ──────────────────────────────────────────
-  function renderList() {
-    var q   = queryActual.trim().toLowerCase();
-    var list = allAddons.slice();
-
-    // Filtro búsqueda por iniciales
-    if (q) {
-      list = list.filter(function(a) {
-        return a.nombre.toLowerCase().startsWith(q) ||
-               a.nombre.toLowerCase().includes(q)  ||
-               a.autor.toLowerCase().startsWith(q);
-      });
-    }
-    // Filtro categoría
-    if (catActual !== 'all') list = list.filter(function(a){ return a.categoria === catActual; });
-
-    // Orden
-    if (orderActual === 'nuevos')  list.sort(function(a,b){ return new Date(b.fecha)-new Date(a.fecha); });
-    if (orderActual === 'viejos')  list.sort(function(a,b){ return new Date(a.fecha)-new Date(b.fecha); });
-    if (orderActual === 'mejor')   list.sort(function(a,b){ return b.rating - a.rating; });
-    if (orderActual === 'peor')    list.sort(function(a,b){ return a.rating - b.rating; });
-
-    var cont = document.getElementById('addons-list');
-    var cnt  = document.getElementById('results-count');
-    cnt.textContent = list.length === 1 ? '1 addon encontrado' : list.length + ' addons encontrados';
-
+  function renderGrid(list) {
+    cache = {};
     if (!list.length) {
-      cont.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>No se encontraron addons.</p></div>';
+      document.getElementById('grid-area').innerHTML =
+        '<div class="empty-wrap"><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>'
+        +'<div class="empty-title">'+(catActual?'Sin addons en "'+catActual+'"':'Aún no hay addons')+'</div>'
+        +'<p style="font-size:.83rem;color:var(--text-muted)">Usa el botón + para publicar el primero.</p></div>';
       return;
     }
-
-    cont.innerHTML = list.map(function(a, idx) {
-      var sc = starClass(a.rating);
-      var thumb = a.imagen
-        ? '<img class="addon-thumb" src="'+a.imagen+'" alt="" loading="lazy">'
-        : '<div class="addon-thumb-placeholder">'+esc(a.nombre[0]||'?')+'</div>';
-      return '<div class="addon-card" style="animation-delay:'+Math.min(idx*0.04,0.5)+'s" onclick="openDetail(\''+a.uuid+'\')">'
-        + thumb
-        + '<div class="addon-info">'
-        + '<div class="addon-name">'+esc(a.nombre)+'</div>'
-        + '<div class="addon-author"><span>por </span>'+esc(a.autor)+'</div>'
-        + '<div class="addon-footer-row">'
-        + '<span class="cat-badge '+a.categoria+'">'+catLabel(a.categoria)+'</span>'
-        + '<div class="star-row"><span class="star-icon '+sc+'">'+starIcon()+'</span><span class="rating-val '+sc+'">'+a.rating.toFixed(1)+'</span></div>'
-        + '</div></div></div>';
-    }).join('');
+    list.forEach(function(a){ cache[a.uuid]=a; });
+    document.getElementById('grid-area').innerHTML =
+      '<div class="addons-grid">' + list.map(buildCard).join('') + '</div>';
   }
 
-  // ── BÚSQUEDA ─────────────────────────────────────────────
-  window.onSearch = function() {
-    queryActual = document.getElementById('search-input').value;
-    renderList();
-  };
+  function buildCard(a) {
+    var puedo = (a.uuidCreador === ses.uuid) || esMod;
+    var cc    = catClass(a.categoria);
 
-  // ── FILTRO ────────────────────────────────────────────────
-  window.toggleFilter = function() {
-    var dd  = document.getElementById('filter-dropdown');
-    var btn = document.getElementById('filter-btn');
-    var open = dd.classList.toggle('open');
-    btn.classList.toggle('active', open);
-  };
+    var imgH = a.imagen
+      ? '<img class="card-img" src="'+esc(a.imagen)+'" alt="'+esc(a.nombre)+'" loading="lazy">'
+      : '<div class="card-placeholder"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.25"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div>';
 
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('#filter-dropdown') && !e.target.closest('#filter-btn')) {
-      document.getElementById('filter-dropdown').classList.remove('open');
-      document.getElementById('filter-btn').classList.remove('active');
-    }
-    if (!e.target.closest('.modal-bg')) return; // no cerrar modales con click fuera
-  });
-
-  function renderChips() {
-    var chips = document.getElementById('filter-chips');
-    var html  = '';
-    if (orderActual !== 'nuevos') {
-      var labels = {viejos:'Más viejos', mejor:'Mejor valorados', peor:'Peor valorados'};
-      html += '<span class="chip">'+labels[orderActual]+' <span class="chip-x" onclick="setOrder(\'nuevos\')">✕</span></span>';
-    }
-    if (catActual !== 'all') {
-      html += '<span class="chip">'+catLabel(catActual)+' <span class="chip-x" onclick="setCat(\'all\')">✕</span></span>';
-    }
-    chips.innerHTML = html;
-  }
-
-  window.setOrder = function(o) {
-    orderActual = o;
-    document.querySelectorAll('[data-order]').forEach(function(el) {
-      var sel = el.dataset.order === o;
-      el.classList.toggle('selected', sel);
-      el.querySelector('.check').innerHTML = sel ? '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>' : '';
-    });
-    renderChips(); renderList();
-  };
-  window.setCat = function(c) {
-    catActual = c;
-    document.querySelectorAll('[data-cat]').forEach(function(el) {
-      var sel = el.dataset.cat === c;
-      el.classList.toggle('selected', sel);
-      el.querySelector('.check').innerHTML = sel ? '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>' : '';
-    });
-    renderChips(); renderList();
-  };
-
-  // ── DETALLE ───────────────────────────────────────────────
-  window.openDetail = function(uuid) {
-    var a = allAddons.find(function(x){ return x.uuid === uuid; });
-    if (!a) return;
-    renderDetail(a);
-    document.getElementById('view-list').style.display   = 'none';
-    document.getElementById('view-detail').style.display = 'block';
-    window.scrollTo(0, 0);
-  };
-
-  window.goToList = function() {
-    document.getElementById('view-detail').style.display = 'none';
-    document.getElementById('view-list').style.display   = 'block';
-  };
-
-  function renderDetail(a) {
-    document.getElementById('detail-back-name').textContent = a.nombre;
-    var sc = starClass(a.rating);
-
-    var bannerHtml = a.imagen
-      ? '<img class="detail-banner" src="'+a.imagen+'" alt="">'
-      : '<div class="detail-banner-placeholder">'+esc(a.nombre[0]||'?')+'</div>';
-
-    var dlBtn = a.urlDescarga
-      ? '<a class="download-btn" href="'+esc(a.urlDescarga)+'" target="_blank" rel="noopener">'
-        +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
-        +'Descargar</a>'
-      : '<span class="download-btn disabled"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Sin enlace</span>';
-
-    var likeActive    = a.miVoto === 'like'    ? ' active' : '';
-    var dislikeActive = a.miVoto === 'dislike' ? ' active' : '';
-
-    var adminRow = puedeModerar
-      ? '<div class="detail-admin-row"><button class="btn-del-addon" onclick="askDeleteAddon(\''+a.uuid+'\')">'
-        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>'
-        +'Eliminar addon</button></div>'
+    var menuH = puedo
+      ? '<div class="menu-wrap"><button class="menu-btn" onclick="toggleMenu(event,\''+esc(a.uuid)+'\')" title="Opciones">'
+        +'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>'
+        +'</button></div>'
       : '';
 
-    document.getElementById('detail-content').innerHTML =
-      bannerHtml
-      + '<div class="detail-info">'
-      + '<div class="detail-title">'+esc(a.nombre)+'</div>'
-      + '<div class="detail-author">por <strong>'+esc(a.autor)+'</strong> · '+fmtDate(a.fecha)+'</div>'
-      + '<div class="detail-actions-row">'
-      // Rating
-      + '<div class="rating-panel" id="rating-panel-'+a.uuid+'">'
-      + '<span class="rating-star-lg '+sc+'" id="rating-star-'+a.uuid+'">'+starIcon()+'</span>'
-      + '<span class="rating-big '+sc+'" id="rating-num-'+a.uuid+'">'+a.rating.toFixed(1)+'</span>'
+    var dlH = a.urlDescarga
+      ? '<a class="btn-dl" href="'+esc(a.urlDescarga)+'" target="_blank" rel="noopener">'
+        +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Descargar</a>'
+      : '<span class="btn-dl-off"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Sin enlace</span>';
+
+    return '<div class="addon-card">'
+      + imgH
+      + '<div class="card-body">'
+      + '<div class="card-top"><div class="card-name">'+esc(a.nombre)+'</div>'
+      + '<span class="card-cat cat-'+cc+'">'+esc(a.categoria)+'</span></div>'
+      + '<div class="card-desc">'+esc(a.descripcion)+'</div>'
+      + '<div class="card-meta"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>'+esc(a.nombreCreador)+'</div>'
       + '</div>'
-      // Like
-      + '<button class="vote-btn like'+likeActive+'" id="btn-like-'+a.uuid+'" onclick="vote(\''+a.uuid+'\',\'like\')">'
-      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>'
-      + '<span id="likes-'+a.uuid+'">'+a.likes+'</span>'
-      + '</button>'
-      // Dislike
-      + '<button class="vote-btn dislike'+dislikeActive+'" id="btn-dislike-'+a.uuid+'" onclick="vote(\''+a.uuid+'\',\'dislike\')">'
-      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>'
-      + '<span id="dislikes-'+a.uuid+'">'+a.dislikes+'</span>'
-      + '</button>'
-      // Download
-      + dlBtn
-      + '</div>'
-      + '</div>'
-      + '<div class="detail-cat-row"><span class="cat-badge '+a.categoria+'">'+catLabel(a.categoria)+'</span></div>'
-      + '<div class="detail-desc-box">'+esc(a.descripcion || 'Sin descripción.')+'</div>'
-      + adminRow;
+      + '<div class="card-foot">'+dlH
+      + '<div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.68rem;color:var(--text-muted)">'+fmt(a.fecha)+'</span>'+menuH+'</div>'
+      + '</div></div>';
   }
 
-  // ── VOTAR ─────────────────────────────────────────────────
-  window.vote = function(uuid, tipo) {
-    var btnLike    = document.getElementById('btn-like-'+uuid);
-    var btnDislike = document.getElementById('btn-dislike-'+uuid);
-    if (!btnLike) return;
-    btnLike.disabled = true; btnDislike.disabled = true;
+  // ── MENÚ 3 PUNTOS ─────────────────────────────────────────
+  window.toggleMenu = function(e, uuid) {
+    e.stopPropagation();
+    var existing = document.querySelector('.dropdown[data-id="'+uuid+'"]');
+    closeMenus();
+    if (existing) return;
 
-    api({action:'votarAddon', uuidAddon:uuid, tipo:tipo, uuidUsuario:session.uuid})
-      .then(function(res) {
-        btnLike.disabled = false; btnDislike.disabled = false;
-        if (!res.ok) { toast(res.msg||'Error','error'); return; }
+    var a    = cache[uuid];
+    var suyo = a && a.uuidCreador === ses.uuid;
+    var dd   = document.createElement('div');
+    dd.className = 'dropdown'; dd.dataset.id = uuid;
 
-        // Actualizar contadores
-        document.getElementById('likes-'+uuid).textContent    = res.likes;
-        document.getElementById('dislikes-'+uuid).textContent = res.dislikes;
+    if (suyo || esMod) {
+      var ei=document.createElement('div'); ei.className='dd-item';
+      ei.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar';
+      ei.onclick=function(){ closeMenus(); abrirEditar(uuid); };
+      dd.appendChild(ei);
+    }
+    if (suyo || esMod) {
+      var di=document.createElement('div'); di.className='dd-item danger';
+      di.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>Eliminar';
+      di.onclick=function(){ closeMenus(); abrirDel(uuid); };
+      dd.appendChild(di);
+    }
+    e.currentTarget.closest('.menu-wrap').appendChild(dd);
+  };
 
-        // Actualizar estado botones
-        btnLike.classList.toggle('active',    res.miVoto === 'like');
-        btnDislike.classList.toggle('active', res.miVoto === 'dislike');
+  // ── IMAGEN PICKER ─────────────────────────────────────────
+  window.prevImg = function(input) {
+    var f = input.files[0]; if (!f) return;
+    if (f.size > 5*1024*1024) { toast('Máx 5MB por imagen','error'); return; }
+    var r = new FileReader();
+    r.onload = function(e) {
+      imgB64 = e.target.result; imgRemove = false;
+      var ti = document.getElementById('f-thumb-img');
+      ti.src = imgB64; ti.style.display = 'block';
+      document.querySelector('#f-thumb svg').style.display = 'none';
+      document.getElementById('f-img-lbl').textContent = 'Cambiar imagen';
+      document.getElementById('btn-rm-img').style.display = 'inline-block';
+    };
+    r.readAsDataURL(f);
+  };
+  window.quitarImg = function() {
+    imgB64 = ''; imgRemove = true;
+    var ti = document.getElementById('f-thumb-img');
+    ti.src = ''; ti.style.display = 'none';
+    document.querySelector('#f-thumb svg').style.display = '';
+    document.getElementById('f-img-lbl').textContent = 'Subir imagen';
+    document.getElementById('btn-rm-img').style.display = 'none';
+    document.getElementById('f-img').value = '';
+  };
+  function resetPicker() {
+    imgB64=''; imgRemove=false;
+    document.getElementById('f-img').value='';
+    var ti=document.getElementById('f-thumb-img');
+    ti.src=''; ti.style.display='none';
+    document.querySelector('#f-thumb svg').style.display='';
+    document.getElementById('f-img-lbl').textContent='Subir imagen';
+    document.getElementById('btn-rm-img').style.display='none';
+  }
 
-        // Actualizar rating
-        var sc  = starClass(res.rating);
-        var num = document.getElementById('rating-num-'+uuid);
-        var str = document.getElementById('rating-star-'+uuid);
-        if (num) { num.textContent = res.rating.toFixed(1); num.className = 'rating-big '+sc; }
-        if (str) { str.className = 'rating-star-lg '+sc; }
+  // ── ABRIR CREAR ───────────────────────────────────────────
+  window.abrirCrear = function() {
+    editMode=false; editUUID='';
+    document.getElementById('m-form-title').textContent = 'Publicar Addon';
+    document.getElementById('btn-submit').innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Publicar addon';
+    document.getElementById('f-nombre').value='';
+    document.getElementById('f-cat').value='';
+    document.getElementById('f-desc').value='';
+    document.getElementById('f-url').value='';
+    resetPicker(); hideErr();
+    document.getElementById('m-form').classList.add('show');
+  };
 
-        // Actualizar en cache
-        var idx = allAddons.findIndex(function(x){ return x.uuid === uuid; });
-        if (idx > -1) {
-          allAddons[idx].likes    = res.likes;
-          allAddons[idx].dislikes = res.dislikes;
-          allAddons[idx].rating   = res.rating;
-          allAddons[idx].miVoto   = res.miVoto;
+  // ── ABRIR EDITAR ──────────────────────────────────────────
+  function abrirEditar(uuid) {
+    var a = cache[uuid]; if (!a) return;
+    editMode=true; editUUID=uuid;
+    document.getElementById('m-form-title').textContent = 'Editar Addon';
+    document.getElementById('btn-submit').innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Guardar cambios';
+    document.getElementById('f-nombre').value  = a.nombre      || '';
+    document.getElementById('f-cat').value     = a.categoria   || '';
+    document.getElementById('f-desc').value    = a.descripcion || '';
+    document.getElementById('f-url').value     = a.urlDescarga || '';
+    resetPicker();
+    if (a.imagen) {
+      var ti=document.getElementById('f-thumb-img');
+      ti.src=a.imagen; ti.style.display='block';
+      document.querySelector('#f-thumb svg').style.display='none';
+      document.getElementById('f-img-lbl').textContent='Cambiar imagen';
+      document.getElementById('btn-rm-img').style.display='inline-block';
+    }
+    hideErr();
+    document.getElementById('m-form').classList.add('show');
+  }
+
+  window.cerrarForm = function() {
+    document.getElementById('m-form').classList.remove('show');
+    editMode=false; editUUID=''; resetPicker(); hideErr();
+  };
+
+  // ── SUBMIT ────────────────────────────────────────────────
+  window.submitForm = function() {
+    hideErr();
+    var nombre = document.getElementById('f-nombre').value.trim();
+    var cat    = document.getElementById('f-cat').value;
+    var desc   = document.getElementById('f-desc').value.trim();
+    var url    = document.getElementById('f-url').value.trim();
+
+    if (!nombre || nombre.length < 2)  return showErr('El nombre del addon es obligatorio (mínimo 2 caracteres).');
+    if (!cat)                           return showErr('Selecciona una categoría.');
+    if (!desc || desc.length < 10)     return showErr('La descripción debe tener al menos 10 caracteres.');
+    if (url && url.indexOf('http') !== 0) return showErr('La URL de descarga debe empezar con http:// o https://');
+
+    var btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner sp-sm"></span> Guardando...';
+
+    var payload;
+
+    if (!editMode) {
+      payload = {
+        action: 'crearAddon',
+        datos: {
+          nombre:nombre, descripcion:desc, categoria:cat,
+          urlDescarga:url, imagen:imgB64,
+          uuidCreador:ses.uuid, nombreCreador:ses.nombre
         }
-        toast(res.miVoto ? (res.miVoto==='like'?'👍 Me gusta':'👎 No me gusta') : 'Voto retirado', 'success');
+      };
+    } else {
+      payload = {
+        action: 'editarAddon',
+        datos: {
+          uuid:editUUID, uuidSolicitante:ses.uuid,
+          nombre:nombre, descripcion:desc, categoria:cat,
+          urlDescarga:url, imagen:imgB64, quitarImagen:imgRemove
+        }
+      };
+    }
+
+    post(payload)
+      .then(function(res) {
+        btn.disabled = false;
+        btn.innerHTML = editMode
+          ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Guardar cambios'
+          : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Publicar addon';
+
+        if (!res || !res.ok) {
+          showErr(res ? (res.msg||'Error al guardar.') : 'Error de respuesta del servidor.');
+          return;
+        }
+        window.cerrarForm();
+        toast(editMode ? 'Addon actualizado ✓' : '¡Addon publicado! ✓', 'success');
+        cargar(catActual);
       })
-      .catch(function(){ btnLike.disabled=false; btnDislike.disabled=false; toast('Error de conexión','error'); });
+      .catch(function(err) {
+        btn.disabled = false;
+        btn.textContent = editMode ? 'Guardar cambios' : 'Publicar addon';
+        showErr('Error de conexión. Verifica tu internet e intenta de nuevo.');
+      });
   };
 
-  // ── ELIMINAR ADDON ────────────────────────────────────────
-  window.askDeleteAddon = function(uuid) {
-    delUuid = uuid;
-    document.getElementById('modal-del').classList.add('show');
+  // ── ELIMINAR ──────────────────────────────────────────────
+  function abrirDel(uuid) {
+    pendingDel = uuid;
+    var a = cache[uuid];
+    document.getElementById('del-nm').textContent = a ? a.nombre : '';
+    document.getElementById('m-del').classList.add('show');
+  }
+  window.cerrarDel = function() {
+    document.getElementById('m-del').classList.remove('show');
+    pendingDel = '';
   };
-  window.closeDelModal = function() {
-    document.getElementById('modal-del').classList.remove('show');
-    delUuid = '';
-  };
-  window.doDeleteAddon = function() {
-    if (!delUuid) return;
-    var btn = document.getElementById('btn-del-confirm');
+  window.confirmarDelete = function() {
+    if (!pendingDel) return;
+    var btn = document.getElementById('btn-del-ok');
     btn.disabled = true; btn.textContent = 'Eliminando...';
-    api({action:'eliminarAddon', uuid:delUuid, uuidSolicitante:session.uuid})
+    post({ action:'eliminarAddon', uuid:pendingDel, uuidSolicitante:ses.uuid })
       .then(function(res) {
         btn.disabled = false; btn.textContent = 'Eliminar';
-        window.closeDelModal();
-        if (!res.ok) { toast(res.msg||'Error','error'); return; }
-        toast('Addon eliminado','success');
-        allAddons = allAddons.filter(function(a){ return a.uuid !== delUuid; });
-        window.goToList();
-      }).catch(function(){ btn.disabled=false; btn.textContent='Eliminar'; toast('Error de conexión','error'); });
-  };
-
-  // ── AGREGAR ADDON ─────────────────────────────────────────
-  window.openAddModal  = function() { document.getElementById('modal-add').classList.add('show'); };
-  window.closeAddModal = function() {
-    document.getElementById('modal-add').classList.remove('show');
-    document.getElementById('add-err').style.display = 'none';
-    ['add-nombre','add-autor','add-url'].forEach(function(id){ document.getElementById(id).value=''; });
-    document.getElementById('add-desc').value = '';
-    document.getElementById('add-img-preview').style.display='none';
-    document.getElementById('add-img-hint').style.display='';
-    addImgBase64 = '';
-  };
-  window.previewAddImg = function(input) {
-    var f=input.files[0]; if(!f)return;
-    if(f.size>5*1024*1024){ toast('Máx 5MB','error'); return; }
-    var r=new FileReader(); r.onload=function(e){ addImgBase64=e.target.result; var p=document.getElementById('add-img-preview'); p.src=addImgBase64; p.style.display='block'; document.getElementById('add-img-hint').style.display='none'; }; r.readAsDataURL(f);
-  };
-  window.doAddAddon = function() {
-    var nombre = document.getElementById('add-nombre').value.trim();
-    var autor  = document.getElementById('add-autor').value.trim();
-    var cat    = document.getElementById('add-categoria').value;
-    var desc   = document.getElementById('add-desc').value.trim();
-    var url    = document.getElementById('add-url').value.trim();
-    var errEl  = document.getElementById('add-err');
-    errEl.style.display = 'none';
-    if (!nombre || nombre.length < 2) { errEl.textContent='Nombre obligatorio (mín 2 caracteres).'; errEl.style.display='block'; return; }
-    if (!autor  || autor.length  < 2) { errEl.textContent='Autor obligatorio.'; errEl.style.display='block'; return; }
-    if (!desc   || desc.length   < 10){ errEl.textContent='Descripción obligatoria (mín 10 caracteres).'; errEl.style.display='block'; return; }
-    var btn = document.getElementById('btn-add-submit');
-    btn.disabled=true; btn.innerHTML='<span class="spinner spinner-sm" style="border-top-color:#fff;display:inline-block"></span> Publicando...';
-    api({action:'crearAddon', uuidCreador:session.uuid, datos:{nombre:nombre,autor:autor,categoria:cat,descripcion:desc,urlDescarga:url,imagen:addImgBase64}})
-      .then(function(res){
-        btn.disabled=false; btn.innerHTML='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Publicar addon';
-        if(!res.ok){ errEl.textContent=res.msg||'Error.'; errEl.style.display='block'; return; }
-        window.closeAddModal(); toast('¡Addon publicado!','success'); loadAddons();
-      }).catch(function(){ btn.disabled=false; btn.textContent='Publicar addon'; toast('Error de conexión','error'); });
+        if (!res || !res.ok) { toast(res ? (res.msg||'Error al eliminar') : 'Error','error'); window.cerrarDel(); return; }
+        window.cerrarDel();
+        toast('Addon eliminado', 'success');
+        cargar(catActual);
+      })
+      .catch(function(){
+        btn.disabled = false; btn.textContent = 'Eliminar';
+        toast('Error de conexión','error');
+      });
   };
 
   // ── INICIO ────────────────────────────────────────────────
-  loadAddons();
+  cargar('');
 })();
 </script>
 </body>
