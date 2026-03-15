@@ -219,6 +219,9 @@
   <a class="nav-item active" onclick="miPerfil()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mi Perfil</a>
   <div class="sidebar-spacer"></div>
   <div class="sidebar-section">Ajustes</div>
+  <a class="nav-item" onclick="location.href='addons.html'">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Addons
+  </a>
   <a class="nav-item" onclick="location.href='sugerencias.html'">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Sugerencias
   </a>
@@ -239,15 +242,6 @@
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Editar perfil</div><button class="modal-close" onclick="closeEditPerfil()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
 
-   <!-- FOTO PERFIL -->
-    <div class="field">
-      <label>Foto de perfil <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
-      <div class="img-picker" onclick="document.getElementById('edit-foto-input').click()">
-        <input type="file" id="edit-foto-input" accept="image/*" onchange="previewFoto(this)">
-        <div class="img-picker-row"><div class="img-picker-thumb" id="edit-thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div><div class="img-picker-label">Cambiar foto</div><div class="img-picker-sub">JPG, PNG · Máx 3MB</div></div></div>
-      </div>
-    </div>
-   
     <!-- PORTADA -->
     <div class="field">
       <label>Foto de portada <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
@@ -264,7 +258,14 @@
       </div>
     </div>
 
- 
+    <!-- FOTO PERFIL -->
+    <div class="field">
+      <label>Foto de perfil <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
+      <div class="img-picker" onclick="document.getElementById('edit-foto-input').click()">
+        <input type="file" id="edit-foto-input" accept="image/*" onchange="previewFoto(this)">
+        <div class="img-picker-row"><div class="img-picker-thumb" id="edit-thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div><div class="img-picker-label">Cambiar foto</div><div class="img-picker-sub">JPG, PNG · Máx 3MB</div></div></div>
+      </div>
+    </div>
 
     <div class="field"><label>Nombre</label><input class="input" type="text" id="edit-nombre" placeholder="Tu nombre" maxlength="40"></div>
     <div class="field"><label>Descripción</label><textarea class="input" id="edit-desc" placeholder="Cuéntanos algo sobre ti..." maxlength="300" rows="3"></textarea></div>
