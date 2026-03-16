@@ -480,15 +480,22 @@
     document.getElementById('d-cat').textContent = a.categoria;
     document.getElementById('d-by').textContent = 'by '+a.nombreCreador;
 
-    // Descarga
-    var dlBtn = document.getElementById('d-dl-btn');
-    if (a.urlDescarga) {
-      dlBtn.href = a.urlDescarga;
-      dlBtn.className = 'detail-dl-btn';
-    } else {
-      dlBtn.href = '#';
-      dlBtn.className = 'detail-dl-btn no-url';
-    }
+   // Descarga
+var dlBtn = document.getElementById('d-dl-btn');
+if (a.urlDescarga) {
+  var urlFinal = a.urlDescarga;
+  
+  // Verificamos si la URL no empieza con http:// ni https://
+  if (!/^https?:\/\//i.test(urlFinal)) {
+    urlFinal = 'https://' + urlFinal; // Se lo agregamos por defecto
+  }
+  
+  dlBtn.href = urlFinal;
+  dlBtn.className = 'detail-dl-btn';
+} else {
+  dlBtn.href = '#';
+  dlBtn.className = 'detail-dl-btn no-url';
+}
 
     // Botones voto
     resetVoteBtns();
