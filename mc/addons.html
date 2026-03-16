@@ -423,9 +423,9 @@
   /* ── RENDER LISTA ── */
   function ratingInfo(r) {
     var ico, cls;
-    if (r < 0)   { ico='⭐'; cls='star-red'; }
-    else if (r >= 5.0) { ico='⭐'; cls='star-blue'; }
-    else               { ico='⭐'; cls='star-yellow'; }
+    if (r < 0)   { ico='💔'; cls='star-red'; }
+    else if (r >= 5.0) { ico='💖'; cls='star-blue'; }
+    else               { ico='❤️'; cls='star-yellow'; }
     return { ico:ico, cls:cls };
   }
 
