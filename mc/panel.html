@@ -3,525 +3,458 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BlockVault — Panel de Addons</title>
+<title>BlockVault — Panel Addons</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  * { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-user-drag: none; }
-  input, textarea, select { -webkit-user-select: text; -moz-user-select: text; user-select: text; }
-  img { pointer-events: none; -webkit-user-drag: none; }
-  :root {
-    --bg:#F4F4F6; --surface:#FFFFFF; --surface-2:#EBEBEF;
-    --border:rgba(0,0,0,0.08); --text:#13131A; --text-muted:#6B6F80;
-    --accent:#6C63FF; --accent-rgb:108,99,255;
-    --radius:14px; --radius-sm:8px;
-    --shadow:0 2px 16px rgba(0,0,0,0.06); --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
-    --font-head:'Syne',sans-serif; --font-body:'Manrope',sans-serif;
-    --topbar-h:64px;
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  *{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}
+  input,textarea,select{-webkit-user-select:text;-moz-user-select:text;user-select:text}
+  img{pointer-events:none}
+  :root{
+    --bg:#EEEEF2;--surface:#FFF;--surface-2:#EBEBEF;
+    --border:rgba(0,0,0,.08);--text:#13131A;--text-muted:#6B6F80;
+    --accent:#6C63FF;--accent-rgb:108,99,255;
+    --radius:12px;--radius-sm:8px;
+    --shadow:0 2px 12px rgba(0,0,0,.06);--shadow-lg:0 8px 32px rgba(0,0,0,.12);
+    --font-head:'Syne',sans-serif;--font-body:'Manrope',sans-serif;
+    --sb-w:230px;--tb-h:56px;--gold:#F59E0B;
   }
-  [data-theme="dark"] { --bg:#0C0C10; --surface:#14141C; --surface-2:#1E1E2A; --border:rgba(255,255,255,0.07); --text:#EAEAF2; --text-muted:#8888A0; --shadow:0 2px 16px rgba(0,0,0,0.4); --shadow-lg:0 8px 40px rgba(0,0,0,0.6); }
-  html,body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased; transition:background .3s,color .3s; overflow-x:hidden; }
-
-  /* TOPBAR */
-  .topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:var(--topbar-h); background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 20px; gap:14px; box-shadow:var(--shadow); }
-  .topbar-logo { font-family:var(--font-head); font-size:1.1rem; font-weight:800; background:linear-gradient(135deg,var(--accent),#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .topbar-badge { background:rgba(var(--accent-rgb),.12); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.3); border-radius:999px; font-size:.65rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:3px 10px; }
-  .topbar-spacer { flex:1; }
-  .topbar-user { font-size:.82rem; font-weight:600; color:var(--text-muted); display:flex; align-items:center; gap:7px; }
-  .topbar-av { width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#a78bfa); display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-size:.75rem; font-weight:700; color:#fff; overflow:hidden; }
-  .topbar-av img { width:100%; height:100%; object-fit:cover; }
-  .topbar-btn { background:none; border:none; cursor:pointer; padding:7px 14px; border-radius:var(--radius-sm); color:var(--text-muted); font-family:var(--font-body); font-size:.83rem; font-weight:600; transition:background .2s,color .2s; }
-  .topbar-btn:hover { background:var(--surface-2); color:var(--text); }
+  [data-theme="dark"]{--bg:#0A0A0E;--surface:#13131B;--surface-2:#1C1C28;--border:rgba(255,255,255,.07);--text:#EAEAF2;--text-muted:#8888A0;--shadow:0 2px 12px rgba(0,0,0,.5);--shadow-lg:0 8px 32px rgba(0,0,0,.7)}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;overflow:hidden;transition:background .3s,color .3s}
 
   /* LAYOUT */
-  .page-content { padding-top:var(--topbar-h); min-height:100vh; }
-  .container { max-width:980px; margin:0 auto; padding:28px 16px 80px; }
+  .layout{display:flex;height:100vh}
+  
+  /* SIDEBAR */
+  .asb{width:var(--sb-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+  .asb-brand{padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+  .asb-logo{font-family:var(--font-head);font-size:1.05rem;font-weight:800;background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .asb-badge{background:rgba(var(--accent-rgb),.1);color:var(--accent);border:1px solid rgba(var(--accent-rgb),.25);border-radius:999px;font-size:.6rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;display:inline-block;margin-top:3px}
+  .asb-nav{padding:8px 8px;flex:1}
+  .asb-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--radius-sm);cursor:pointer;font-size:.86rem;font-weight:600;color:var(--text-muted);transition:all .15s;margin-bottom:2px}
+  .asb-item:hover{background:var(--surface-2);color:var(--text)}
+  .asb-item.active{background:rgba(var(--accent-rgb),.1);color:var(--accent)}
+  .asb-item.danger:hover{background:rgba(239,68,68,.1);color:#ef4444}
+  .asb-sep{height:1px;background:var(--border);margin:6px 0}
+  .asb-label{font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:5px 11px 2px}
+  .asb-user{padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:9px}
+  .asb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a78bfa);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:.75rem;font-weight:700;color:#fff;overflow:hidden;flex-shrink:0}
+  .asb-av img{width:100%;height:100%;object-fit:cover}
+  .asb-uname{font-size:.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .asb-urol{font-size:.66rem;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
-  /* HERO */
-  .panel-hero { background:linear-gradient(135deg,rgba(var(--accent-rgb),.08),rgba(var(--accent-rgb),.02)); border:1px solid rgba(var(--accent-rgb),.15); border-radius:var(--radius); padding:22px 24px; margin-bottom:28px; display:flex; align-items:center; gap:16px; }
-  .panel-hero-icon { width:48px; height:48px; background:linear-gradient(135deg,var(--accent),#a78bfa); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .panel-hero-title { font-family:var(--font-head); font-size:1.3rem; font-weight:800; margin-bottom:2px; }
-  .panel-hero-sub { font-size:.83rem; color:var(--text-muted); }
+  /* MAIN */
+  .amain{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  .atb{height:var(--tb-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;box-shadow:var(--shadow)}
+  .atb-title{font-family:var(--font-head);font-size:1.05rem;font-weight:800}
+  .atb-spacer{flex:1}
+  .acontent{flex:1;overflow-y:auto;padding:18px;display:grid;grid-template-columns:380px 1fr;gap:18px;align-items:start}
+  @media(max-width:1050px){.acontent{grid-template-columns:1fr}}
 
-  /* SECCIÓN FORM + TABLA en dos columnas en pantallas grandes */
-  .panel-grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
-  @media(max-width:820px){ .panel-grid { grid-template-columns:1fr; } }
+  /* CARDS */
+  .pcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .pcard-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .pcard-title{font-family:var(--font-head);font-size:.92rem;font-weight:800;flex:1}
+  .pcard-body{padding:16px}
 
-  /* TARJETA FORM */
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-  .card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-  .card-title { font-family:var(--font-head); font-size:1rem; font-weight:800; }
-  .card-body { padding:20px; }
+  /* FORM */
+  .field{margin-bottom:11px}
+  .field label{display:flex;align-items:center;gap:4px;margin-bottom:4px;font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted)}
+  .req{color:var(--accent)}
+  .inp{width:100%;padding:9px 11px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font-body);font-size:.89rem;transition:border-color .2s,box-shadow .2s;outline:none}
+  .inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12);background:var(--surface)}
+  textarea.inp{resize:vertical;min-height:84px}
+  select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B6F80' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:30px}
+  .inp-ro{color:var(--text-muted);cursor:not-allowed}
 
-  /* FIELDS */
-  .field { margin-bottom:14px; }
-  .field label { display:flex; align-items:center; gap:5px; margin-bottom:5px; font-size:.71rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); }
-  .req { color:var(--accent); }
-  .input { width:100%; padding:10px 13px; background:var(--surface-2); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:.91rem; transition:border-color .2s,box-shadow .2s; outline:none; }
-  .input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12); background:var(--surface); }
-  textarea.input { resize:vertical; min-height:100px; }
-  select.input { cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6F80' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; padding-right:34px; }
-  .input-readonly { background:var(--surface-2); color:var(--text-muted); cursor:not-allowed; border-color:var(--border); }
-
-  /* IMG PICKER */
-  .img-pick { border:2px dashed var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:border-color .2s,background .2s; overflow:hidden; }
-  .img-pick:hover { border-color:var(--accent); background:rgba(var(--accent-rgb),.03); }
-  .img-pick input { display:none; }
-  .img-pick-row { padding:12px 14px; display:flex; align-items:center; gap:11px; }
-  .img-thumb { width:56px; height:56px; border-radius:var(--radius-sm); flex-shrink:0; background:var(--surface-2); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .img-thumb img { width:100%; height:100%; object-fit:cover; display:none; }
-  .img-thumb-lbl { font-size:.82rem; font-weight:600; color:var(--accent); }
-  .img-thumb-sub { font-size:.71rem; color:var(--text-muted); }
+  /* IMG */
+  .imgpick{border:2px dashed var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:border-color .2s}
+  .imgpick:hover{border-color:var(--accent)} .imgpick input{display:none}
+  .imgpick-in{padding:10px 12px;display:flex;align-items:center;gap:10px}
+  .imgthumb{width:46px;height:46px;border-radius:var(--radius-sm);flex-shrink:0;background:var(--surface-2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .imgthumb img{width:100%;height:100%;object-fit:cover;display:none}
+  .imgpick-lbl{font-size:.79rem;font-weight:600;color:var(--accent)}
+  .imgpick-sub{font-size:.68rem;color:var(--text-muted)}
 
   /* BTNS */
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:10px 20px; border-radius:var(--radius-sm); font-family:var(--font-body); font-weight:700; font-size:.88rem; cursor:pointer; transition:all .2s; border:none; }
-  .btn-primary { background:var(--accent); color:#fff; }
-  .btn-primary:hover { filter:brightness(1.1); transform:translateY(-1px); }
-  .btn-primary:disabled { opacity:.5; cursor:not-allowed; transform:none; filter:none; }
-  .btn-ghost { background:var(--surface-2); color:var(--text); border:1.5px solid var(--border); }
-  .btn-ghost:hover { background:var(--border); }
-  .btn-danger { background:#ef4444; color:#fff; }
-  .btn-danger:hover { filter:brightness(1.1); }
-  .btn-danger:disabled { opacity:.5; cursor:not-allowed; filter:none; }
-  .btn-full { width:100%; }
-  .btn-sm { padding:6px 13px; font-size:.78rem; }
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);font-family:var(--font-body);font-weight:700;font-size:.84rem;cursor:pointer;transition:all .18s;border:none;white-space:nowrap}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+  .btn-ghost{background:var(--surface-2);color:var(--text);border:1.5px solid var(--border)}
+  .btn-ghost:hover{background:var(--border)}
+  .btn-danger{background:#ef4444;color:#fff}
+  .btn-danger:hover{filter:brightness(1.1)}
+  .btn-danger:disabled{opacity:.5;cursor:not-allowed;filter:none}
+  .btn-sm{padding:5px 11px;font-size:.74rem}
+  .btn-full{width:100%}
 
-  /* ERR */
-  .err-banner { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#ef4444; font-size:.81rem; font-weight:500; padding:9px 13px; border-radius:var(--radius-sm); margin-bottom:12px; display:none; align-items:center; gap:7px; }
-  .err-banner.show { display:flex; }
-  .ok-banner { background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.25); color:#16a34a; font-size:.81rem; font-weight:500; padding:9px 13px; border-radius:var(--radius-sm); margin-bottom:12px; display:none; align-items:center; gap:7px; }
-  .ok-banner.show { display:flex; }
+  /* BANNERS */
+  .err-b{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:.78rem;font-weight:500;padding:7px 11px;border-radius:var(--radius-sm);margin-bottom:9px;display:none;align-items:center;gap:6px}
+  .err-b.show{display:flex}
+  .ok-b{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);color:#16a34a;font-size:.78rem;font-weight:500;padding:7px 11px;border-radius:var(--radius-sm);margin-bottom:9px;display:none;align-items:center;gap:6px}
+  .ok-b.show{display:flex}
+
+  /* BUSCADOR TABLA */
+  .tsearch{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--border)}
+  .tsearch-box{flex:1;display:flex;align-items:center;gap:7px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;transition:border-color .2s}
+  .tsearch-box:focus-within{border-color:var(--accent)}
+  .tsearch-box input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:.83rem}
+  .tsearch-box input::placeholder{color:var(--text-muted)}
+  .tstats{font-size:.72rem;color:var(--text-muted);white-space:nowrap}
 
   /* TABLA */
-  .table-wrap { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:.84rem; }
-  th { padding:10px 14px; text-align:left; font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap; }
-  td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
-  tr:last-child td { border-bottom:none; }
-  tr:hover td { background:var(--surface-2); }
-  .td-img { width:52px; height:44px; object-fit:cover; border-radius:6px; display:block; }
-  .td-img-ph { width:52px; height:44px; background:var(--surface-2); border-radius:6px; display:flex; align-items:center; justify-content:center; }
-  .td-name { font-weight:700; font-family:var(--font-head); font-size:.88rem; max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .td-cat { font-size:.7rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 8px; border-radius:999px; white-space:nowrap; }
-  .cat-Addons      { background:rgba(108,99,255,.12); color:#6C63FF; }
-  .cat-Mapas       { background:rgba(14,165,233,.12); color:#0284c7; }
-  .cat-Texturas    { background:rgba(168,85,247,.12); color:#9333ea; }
-  .cat-Marketplace { background:rgba(34,197,94,.12);  color:#16a34a; }
-  .td-rating { font-size:.8rem; font-weight:700; }
-  .star-y { color:#F59E0B; }
-  .star-b { color:#3B82F6; }
-  .star-r { color:#EF4444; }
-  .td-actions { display:flex; gap:6px; }
-  .edit-row-btn { background:rgba(var(--accent-rgb),.1); border:none; cursor:pointer; border-radius:var(--radius-sm); padding:6px 12px; font-size:.75rem; font-weight:700; color:var(--accent); font-family:var(--font-body); transition:background .2s; display:flex; align-items:center; gap:5px; }
-  .edit-row-btn:hover { background:rgba(var(--accent-rgb),.2); }
-  .del-row-btn  { background:rgba(239,68,68,.1); border:none; cursor:pointer; border-radius:var(--radius-sm); padding:6px 12px; font-size:.75rem; font-weight:700; color:#ef4444; font-family:var(--font-body); transition:background .2s; display:flex; align-items:center; gap:5px; }
-  .del-row-btn:hover { background:rgba(239,68,68,.2); }
+  .tscroll{max-height:calc(100vh - 155px);overflow-y:auto}
+  table{width:100%;border-collapse:collapse}
+  th{padding:8px 12px;text-align:left;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface);z-index:1}
+  td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.81rem}
+  tr:last-child td{border-bottom:none}
+  tr.hl td{background:rgba(var(--accent-rgb),.05)}
+  tr:hover td{background:var(--surface-2)}
+  .td-img{width:42px;height:36px;object-fit:cover;border-radius:6px;display:block}
+  .td-ph{width:42px;height:36px;background:var(--surface-2);border-radius:6px;display:flex;align-items:center;justify-content:center}
+  .td-nm{font-weight:700;font-family:var(--font-head);font-size:.83rem;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .td-cat{font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 6px;border-radius:999px;white-space:nowrap}
+  .cat-Addons{background:rgba(108,99,255,.1);color:#6C63FF}
+  .cat-Mapas{background:rgba(14,165,233,.1);color:#0284c7}
+  .cat-Texturas{background:rgba(168,85,247,.1);color:#9333ea}
+  .cat-Marketplace{background:rgba(245,158,11,.1);color:#d97706}
+  .cat-Version{background:rgba(34,197,94,.1);color:#16a34a}
+  .td-rat{font-size:.78rem;font-weight:700}
+  .td-pre{font-size:.78rem;font-weight:700;color:var(--gold)}
+  .sy{color:#F59E0B}.sb{color:#3B82F6}.sr{color:#EF4444}
+  .td-acts{display:flex;gap:4px}
+  .te{background:rgba(var(--accent-rgb),.1);border:none;cursor:pointer;border-radius:6px;padding:5px 9px;font-size:.7rem;font-weight:700;color:var(--accent);font-family:var(--font-body);transition:background .15s}
+  .te:hover{background:rgba(var(--accent-rgb),.2)}
+  .td{background:rgba(239,68,68,.1);border:none;cursor:pointer;border-radius:6px;padding:5px 9px;font-size:.7rem;font-weight:700;color:#ef4444;font-family:var(--font-body);transition:background .15s}
+  .td:hover{background:rgba(239,68,68,.2)}
 
-  /* CONFIRM OVERLAY */
-  .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:opacity .25s; }
-  .modal-bg.show { opacity:1; pointer-events:all; }
-  .modal { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:26px; width:100%; max-width:360px; box-shadow:var(--shadow-lg); transform:translateY(20px); transition:transform .25s; }
-  .modal-bg.show .modal { transform:translateY(0); }
-  .modal-title { font-family:var(--font-head); font-size:1.1rem; font-weight:800; margin-bottom:10px; }
-  .modal-text { font-size:.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.6; }
-  .modal-btns { display:flex; gap:10px; }
+  /* MODAL */
+  .modal-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+  .modal-bg.show{opacity:1;pointer-events:all}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;width:100%;max-width:330px;box-shadow:var(--shadow-lg);transform:translateY(16px);transition:transform .2s}
+  .modal-bg.show .modal{transform:translateY(0)}
+  .modal-title{font-family:var(--font-head);font-size:.97rem;font-weight:800;margin-bottom:7px}
+  .modal-text{font-size:.83rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6}
+  .modal-btns{display:flex;gap:8px}
 
   /* MISC */
-  .spin-wrap { text-align:center; padding:40px; }
-  .spinner { width:24px; height:24px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--accent); animation:sp .7s linear infinite; display:inline-block; }
-  .sp-sm { width:14px; height:14px; border-width:2px; border-color:rgba(255,255,255,.3); border-top-color:#fff; }
-  @keyframes sp { to{transform:rotate(360deg)} }
-  .empty-note { text-align:center; padding:30px; color:var(--text-muted); font-size:.85rem; }
-  #toast-wrap { position:fixed; bottom:20px; right:16px; z-index:999; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
-  .toast { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 16px; box-shadow:var(--shadow-lg); font-size:.85rem; font-weight:500; animation:tIn .3s ease,tOut .4s 2.6s forwards; max-width:280px; }
-  .toast.success { border-left:3px solid #22c55e; }
-  .toast.error   { border-left:3px solid #ef4444; }
-  @keyframes tIn  { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
-  @keyframes tOut { from{opacity:1} to{opacity:0;pointer-events:none} }
-  ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+  .spin-w{text-align:center;padding:28px;color:var(--text-muted)}
+  .spinner{width:22px;height:22px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:sp .7s linear infinite;display:inline-block}
+  .sp-sm{width:13px;height:13px;border-width:2px;border-color:rgba(255,255,255,.3);border-top-color:#fff}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .empty-n{text-align:center;padding:26px;color:var(--text-muted);font-size:.82rem}
+  #toast-w{position:fixed;bottom:16px;right:14px;z-index:999;display:flex;flex-direction:column;gap:7px;align-items:flex-end}
+  .toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px;box-shadow:var(--shadow-lg);font-size:.83rem;font-weight:500;animation:tIn .3s ease,tOut .4s 2.6s forwards;max-width:260px}
+  .toast.success{border-left:3px solid #22c55e}.toast.error{border-left:3px solid #ef4444}
+  @keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes tOut{from{opacity:1}to{opacity:0;pointer-events:none}}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+  .precio-note{font-size:.7rem;color:var(--text-muted);margin-top:3px}
 </style>
 </head>
 <body>
-
-<div class="topbar">
-  <div class="topbar-logo">BlockVault</div>
-  <div class="topbar-badge">Panel Addons</div>
-  <div class="topbar-spacer"></div>
-  <div class="topbar-user">
-    <div class="topbar-av" id="top-av"><span id="top-av-ltr"></span></div>
-    <span id="top-nombre"></span>
-  </div>
-  <button class="topbar-btn" onclick="location.href='main.html'">← App</button>
-</div>
-
-<div class="page-content">
-  <div class="container">
-
-    <!-- HERO -->
-    <div class="panel-hero">
-      <div class="panel-hero-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
-      </div>
-      <div>
-        <div class="panel-hero-title">Panel de Gestión de Addons</div>
-        <p class="panel-hero-sub">Solo los owners pueden acceder a este panel. Publica, edita y elimina addons de la comunidad.</p>
-      </div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="asb">
+    <div class="asb-brand">
+      <div class="asb-logo">BlockVault</div>
+      <div class="asb-badge">Panel Addons</div>
     </div>
+    <div class="asb-nav">
+      <div class="asb-label">Panel</div>
+      <div class="asb-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Gestión de Addons</div>
+      <div class="asb-sep"></div>
+      <div class="asb-label">Navegación</div>
+      <div class="asb-item" onclick="location.href='main.html'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Inicio</div>
+      <div class="asb-item" onclick="location.href='addons.html'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Ver Addons</div>
+      <div class="asb-sep"></div>
+      <div class="asb-item danger" onclick="logout()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Cerrar Sesión</div>
+    </div>
+    <div class="asb-user">
+      <div class="asb-av" id="asb-av"><span id="asb-av-ltr"></span></div>
+      <div><div class="asb-uname" id="asb-nom"></div><div class="asb-urol">👑 Owner</div></div>
+    </div>
+  </div>
 
-    <div class="panel-grid">
+  <!-- MAIN -->
+  <div class="amain">
+    <div class="atb">
+      <div class="atb-title" id="atb-title">➕ Nuevo Addon</div>
+      <div class="atb-spacer"></div>
+      <button class="btn btn-ghost btn-sm" id="btn-cancel" onclick="cancelEdit()" style="display:none">✕ Cancelar edición</button>
+      <button class="btn btn-ghost btn-sm" onclick="location.href='addons.html'" style="margin-left:6px">↗ Vista pública</button>
+    </div>
+    <div class="acontent">
 
       <!-- FORMULARIO -->
-      <div class="card" id="form-card">
-        <div class="card-header">
-          <div class="card-title" id="form-card-title">
-            <span id="form-mode-icon">➕</span> Nuevo Addon
-          </div>
-          <button class="btn btn-ghost btn-sm" id="btn-cancel-edit" onclick="cancelarEdicion()" style="display:none">✕ Cancelar edición</button>
-        </div>
-        <div class="card-body">
-          <div class="err-banner" id="form-err">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span id="form-err-msg"></span>
-          </div>
-          <div class="ok-banner" id="form-ok">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            <span id="form-ok-msg"></span>
-          </div>
+      <div class="pcard">
+        <div class="pcard-hdr"><div class="pcard-title" id="form-title">Publicar Addon</div></div>
+        <div class="pcard-body">
+          <div class="err-b" id="f-err"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg><span id="f-err-msg"></span></div>
+          <div class="ok-b" id="f-ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span id="f-ok-msg"></span></div>
 
-          <div class="field">
-            <label>Publicado por <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(automático)</span></label>
-            <input class="input input-readonly" id="f-by" type="text" readonly>
-          </div>
-
-          <div class="field">
-            <label>Nombre del addon <span class="req">*</span></label>
-            <input class="input" id="f-nombre" type="text" placeholder="Ej: Better Caves Pro" maxlength="80"
-              oninput="limpiarErr()">
-          </div>
-
-          <div class="field">
-            <label>Categoría <span class="req">*</span></label>
-            <select class="input" id="f-cat" onchange="limpiarErr()">
+          <div class="field"><label>Publicado por</label>
+            <input class="inp inp-ro" id="f-by" type="text" readonly tabindex="-1"></div>
+          <div class="field"><label>Nombre <span class="req">*</span></label>
+            <input class="inp" id="f-nom" type="text" placeholder="Nombre del addon" maxlength="80" oninput="clrB()"></div>
+          <div class="field"><label>Categoría <span class="req">*</span></label>
+            <select class="inp" id="f-cat" onchange="onCat()">
               <option value="">— Selecciona —</option>
               <option value="Addons">📦 Addons</option>
               <option value="Mapas">🗺️ Mapas</option>
               <option value="Texturas">🎨 Texturas</option>
               <option value="Marketplace">🛒 Marketplace</option>
-            </select>
+              <option value="Versión">📌 Versión</option>
+            </select></div>
+          <div class="field" id="field-precio" style="display:none">
+            <label>Precio en Monedas 🪙 <span class="req">*</span></label>
+            <input class="inp" id="f-precio" type="number" min="0" max="99999" placeholder="Ej: 250" oninput="clrB()">
+            <div class="precio-note">Solo para Marketplace. Poner 0 = gratis.</div>
           </div>
-
-          <div class="field">
-            <label>Descripción <span class="req">*</span></label>
-            <textarea class="input" id="f-desc" placeholder="Describe el addon: qué hace, versión de Minecraft compatible, características principales..." maxlength="800" rows="4" oninput="limpiarErr()"></textarea>
-          </div>
-
-          <div class="field">
-            <label>URL de descarga <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional)</span></label>
-            <input class="input" id="f-url" type="url" placeholder="https://mcpedl.com/... o marketplace.minecraft.net/..."
-              oninput="limpiarErr()">
-          </div>
-
-          <div class="field">
-            <label>Imagen del addon <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional · máx 5MB)</span></label>
-            <div class="img-pick" onclick="document.getElementById('f-img').click()">
+          <div class="field"><label>Descripción <span class="req">*</span></label>
+            <textarea class="inp" id="f-desc" placeholder="Describe el addon: qué hace, versión de Minecraft, características..." maxlength="800" rows="4" oninput="clrB()"></textarea></div>
+          <div class="field"><label>URL de descarga <span style="font-weight:400;font-size:.65rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional)</span></label>
+            <input class="inp" id="f-url" type="url" placeholder="https://mcpedl.com/..."></div>
+          <div class="field"><label>Imagen <span style="font-weight:400;font-size:.65rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional · máx 5MB)</span></label>
+            <div class="imgpick" onclick="document.getElementById('f-img').click()">
               <input type="file" id="f-img" accept="image/*" onchange="prevImg(this)">
-              <div class="img-pick-row">
-                <div class="img-thumb" id="f-thumb">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div class="imgpick-in">
+                <div class="imgthumb" id="f-thumb">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                   <img id="f-thumb-img" src="" alt="">
                 </div>
-                <div>
-                  <div class="img-thumb-lbl" id="f-img-lbl">Subir imagen</div>
-                  <div class="img-thumb-sub">JPG, PNG, WEBP</div>
-                </div>
+                <div><div class="imgpick-lbl" id="f-img-lbl">Subir imagen</div><div class="imgpick-sub">JPG, PNG, WEBP</div></div>
               </div>
             </div>
-            <button type="button" id="btn-rm-img" onclick="quitarImg()" style="display:none;margin-top:5px;background:none;border:none;cursor:pointer;font-size:.76rem;color:#ef4444;font-weight:600;padding:0;">✕ Quitar imagen actual</button>
+            <button type="button" id="btn-rm" onclick="rmImg()" style="display:none;margin-top:4px;background:none;border:none;cursor:pointer;font-size:.72rem;color:#ef4444;font-weight:700;padding:0">✕ Quitar imagen</button>
           </div>
-
-          <button class="btn btn-primary btn-full" id="btn-submit" onclick="submitForm()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span id="btn-submit-txt">Publicar addon</span>
+          <button class="btn btn-primary btn-full" id="btn-sub" onclick="submitF()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span id="btn-sub-txt">Publicar addon</span>
           </button>
         </div>
       </div>
 
-      <!-- TABLA DE ADDONS -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📋 Addons publicados</div>
-          <button class="btn btn-ghost btn-sm" onclick="cargarAddons()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-            Recargar
+      <!-- TABLA -->
+      <div class="pcard">
+        <div class="pcard-hdr">
+          <div class="pcard-title">📋 Addons publicados</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadAddons()" title="Recargar">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
           </button>
         </div>
-        <div id="table-area"><div class="spin-wrap"><div class="spinner"></div></div></div>
+        <div class="tsearch">
+          <div class="tsearch-box">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Buscar por nombre, categoría o creador..." id="buscar" oninput="filtrar(this.value)" autocomplete="off">
+          </div>
+          <span class="tstats" id="tstats">— addons</span>
+        </div>
+        <div class="tscroll">
+          <div id="table-area"><div class="spin-w"><div class="spinner"></div></div></div>
+        </div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- MODAL CONFIRMAR ELIMINAR -->
+<!-- CONFIRM DEL -->
 <div class="modal-bg" id="m-del">
   <div class="modal">
     <div class="modal-title">Eliminar addon</div>
-    <p class="modal-text">¿Seguro que quieres eliminar <b id="del-nm"></b>? Esta acción no se puede deshacer y borrará la imagen de Drive.</p>
+    <p class="modal-text">¿Eliminar <b id="del-nm"></b>? Es permanente y borra la imagen de Drive.</p>
     <div class="modal-btns">
-      <button class="btn btn-ghost" style="flex:1" onclick="cerrarDel()">Cancelar</button>
-      <button class="btn btn-danger" style="flex:1" id="btn-del-ok" onclick="confirmarDel()">Eliminar</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="cDel()">Cancelar</button>
+      <button class="btn btn-danger" style="flex:1" id="btn-del-ok" onclick="confirmDel()">Eliminar</button>
     </div>
   </div>
 </div>
-
-<div id="toast-wrap"></div>
+<div id="toast-w"></div>
 
 <script>
-(function () {
-  var API = 'https://script.google.com/macros/s/AKfycby_q9XZ8vYBsnr0G5PZGapHZh1iZ-GFBJqychgMnZ-hs3Napp1fWE_RfisJ91B2ZBwQ/exec';
+(function(){
+  var API='https://script.google.com/macros/s/AKfycby_q9XZ8vYBsnr0G5PZGapHZh1iZ-GFBJqychgMnZ-hs3Napp1fWE_RfisJ91B2ZBwQ/exec';
+  var ses=null;
+  try{ses=JSON.parse(localStorage.getItem('bv_session')||'null');}catch(e){}
+  if(!ses){location.href='index.html';return;}
+  if(ses.rol!=='owner'){location.href='main.html';return;}
 
-  // ── PROTECCIÓN: solo owners ────────────────────────────────
-  var ses = null;
-  try { ses = JSON.parse(localStorage.getItem('bv_session') || 'null'); } catch(e) {}
-  if (!ses) { location.href = 'index.html'; return; }
-  if (ses.rol !== 'owner') {
-    // Redirigir silenciosamente sin revelar que el panel existe
-    location.href = 'main.html'; return;
-  }
-
-  // ── TEMA ──────────────────────────────────────────────────
-  function applyAccent(hex) {
-    try { var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); document.documentElement.style.setProperty('--accent',hex); document.documentElement.style.setProperty('--accent-rgb',r+','+g+','+b); } catch(e) {}
-  }
-  document.documentElement.setAttribute('data-theme', localStorage.getItem('bv_theme')||'light');
+  function applyAccent(h){try{var r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);document.documentElement.style.setProperty('--accent',h);document.documentElement.style.setProperty('--accent-rgb',r+','+g+','+b);}catch(e){}}
+  document.documentElement.setAttribute('data-theme',localStorage.getItem('bv_theme')||'light');
   applyAccent(localStorage.getItem('bv_accent')||'#6C63FF');
 
-  // ── INFO USUARIO ──────────────────────────────────────────
-  document.getElementById('top-nombre').textContent = ses.nombre || '';
-  document.getElementById('f-by').value             = ses.nombre || '';
-  var topAv = document.getElementById('top-av');
-  if (ses.fotoPerfil) topAv.innerHTML = '<img src="'+ses.fotoPerfil+'" alt="">';
-  else document.getElementById('top-av-ltr').textContent = (ses.nombre||'?')[0].toUpperCase();
+  document.getElementById('f-by').value=ses.nombre||'';
+  document.getElementById('asb-nom').textContent=ses.nombre||'';
+  var asbAv=document.getElementById('asb-av');
+  if(ses.fotoPerfil)asbAv.innerHTML='<img src="'+ses.fotoPerfil+'" alt="">';
+  else document.getElementById('asb-av-ltr').textContent=(ses.nombre||'?')[0].toUpperCase();
 
-  // ── HELPERS ───────────────────────────────────────────────
-  function post(p){ return fetch(API,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();}); }
-  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function toast(msg,t){ var el=document.createElement('div'); el.className='toast '+(t||'info'); el.textContent=msg; document.getElementById('toast-wrap').appendChild(el); setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},3100); }
-  function showErr(msg){ var e=document.getElementById('form-err'); document.getElementById('form-err-msg').textContent=msg; e.classList.add('show'); document.getElementById('form-ok').classList.remove('show'); e.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-  function showOk(msg) { var e=document.getElementById('form-ok'); document.getElementById('form-ok-msg').textContent=msg; e.classList.add('show'); document.getElementById('form-err').classList.remove('show'); }
-  window.limpiarErr = function(){ document.getElementById('form-err').classList.remove('show'); document.getElementById('form-ok').classList.remove('show'); };
+  window.logout=function(){localStorage.removeItem('bv_session');location.href='index.html';};
 
-  // ── ESTADO ────────────────────────────────────────────────
-  var cache      = {};
-  var editMode   = false;
-  var editUUID   = '';
-  var imgB64     = '';
-  var imgRemove  = false;
-  var pendingDel = '';
+  function post(p){return fetch(API,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();});}
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function toast(msg,t){var el=document.createElement('div');el.className='toast '+(t||'info');el.textContent=msg;document.getElementById('toast-w').appendChild(el);setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},3100);}
+  function showB(id,msg){var e=document.getElementById(id);document.getElementById(id+'-msg').textContent=msg;e.classList.add('show');e.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  window.clrB=function(){['f-err','f-ok'].forEach(function(id){document.getElementById(id).classList.remove('show');});};
 
-  // ── IMAGEN PICKER ─────────────────────────────────────────
-  window.prevImg = function(input) {
-    var f = input.files[0]; if (!f) return;
-    if (f.size > 5*1024*1024) { toast('Máx 5MB','error'); return; }
-    var r = new FileReader();
-    r.onload = function(e) {
-      imgB64 = e.target.result; imgRemove = false;
-      var ti = document.getElementById('f-thumb-img');
-      ti.src = imgB64; ti.style.display = 'block';
-      document.querySelector('#f-thumb svg').style.display = 'none';
-      document.getElementById('f-img-lbl').textContent = 'Cambiar imagen';
-      document.getElementById('btn-rm-img').style.display = 'inline-block';
-    };
+  var allAddons=[],cache={},editMode=false,editUUID='',imgB64='',imgRm=false,pendDel='';
+
+  /* CATEGORÍA → precio */
+  window.onCat=function(){
+    var cat=document.getElementById('f-cat').value;
+    document.getElementById('field-precio').style.display=(cat==='Marketplace')?'block':'none';
+    if(cat!=='Marketplace')document.getElementById('f-precio').value='';
+    clrB();
+  };
+
+  /* IMG PICKER */
+  window.prevImg=function(input){
+    var f=input.files[0];if(!f)return;
+    if(f.size>5*1024*1024){toast('Máx 5MB','error');return;}
+    var r=new FileReader();
+    r.onload=function(e){imgB64=e.target.result;imgRm=false;
+      var ti=document.getElementById('f-thumb-img');ti.src=imgB64;ti.style.display='block';
+      document.querySelector('#f-thumb svg').style.display='none';
+      document.getElementById('f-img-lbl').textContent='Cambiar imagen';
+      document.getElementById('btn-rm').style.display='inline-block';};
     r.readAsDataURL(f);
   };
-  window.quitarImg = function() {
-    imgB64 = ''; imgRemove = true;
-    var ti = document.getElementById('f-thumb-img');
-    ti.src = ''; ti.style.display = 'none';
-    document.querySelector('#f-thumb svg').style.display = '';
-    document.getElementById('f-img-lbl').textContent = 'Subir imagen';
-    document.getElementById('btn-rm-img').style.display = 'none';
-    document.getElementById('f-img').value = '';
+  window.rmImg=function(){
+    imgB64='';imgRm=true;document.getElementById('f-img').value='';
+    var ti=document.getElementById('f-thumb-img');ti.src='';ti.style.display='none';
+    document.querySelector('#f-thumb svg').style.display='';
+    document.getElementById('f-img-lbl').textContent='Subir imagen';
+    document.getElementById('btn-rm').style.display='none';
   };
-  function resetPicker() {
-    imgB64 = ''; imgRemove = false;
-    document.getElementById('f-img').value = '';
-    var ti = document.getElementById('f-thumb-img');
-    ti.src = ''; ti.style.display = 'none';
-    document.querySelector('#f-thumb svg').style.display = '';
-    document.getElementById('f-img-lbl').textContent = 'Subir imagen';
-    document.getElementById('btn-rm-img').style.display = 'none';
-  }
+  function resetPick(){imgB64='';imgRm=false;document.getElementById('f-img').value='';
+    var ti=document.getElementById('f-thumb-img');ti.src='';ti.style.display='none';
+    document.querySelector('#f-thumb svg').style.display='';
+    document.getElementById('f-img-lbl').textContent='Subir imagen';
+    document.getElementById('btn-rm').style.display='none';}
 
-  // ── CARGAR ADDONS ─────────────────────────────────────────
-  window.cargarAddons = function() {
-    document.getElementById('table-area').innerHTML = '<div class="spin-wrap"><div class="spinner"></div></div>';
-    post({ action:'obtenerAddons', categoria:'', orden:'nuevos' })
-      .then(function(res) {
-        if (!res||!res.ok) { document.getElementById('table-area').innerHTML='<div class="empty-note">Error al cargar.</div>'; return; }
-        cache = {};
-        (res.addons||[]).forEach(function(a){ cache[a.uuid]=a; });
-        renderTabla(res.addons||[]);
-      })
-      .catch(function(){ document.getElementById('table-area').innerHTML='<div class="empty-note">No se pudo conectar.</div>'; });
+  /* CARGAR */
+  window.loadAddons=function(){
+    document.getElementById('table-area').innerHTML='<div class="spin-w"><div class="spinner"></div></div>';
+    post({action:'obtenerAddons',categoria:'',orden:'nuevos'}).then(function(res){
+      if(!res||!res.ok){document.getElementById('table-area').innerHTML='<div class="empty-n">Error al cargar.</div>';return;}
+      allAddons=res.addons||[];cache={};allAddons.forEach(function(a){cache[a.uuid]=a;});
+      renderTable(allAddons);
+    }).catch(function(){document.getElementById('table-area').innerHTML='<div class="empty-n">No se pudo conectar.</div>';});
   };
 
-  function starClass(r) { return r < 0 ? 'star-r' : r >= 5 ? 'star-b' : 'star-y'; }
+  /* FILTRAR */
+  window.filtrar=function(q){
+    q=q.toLowerCase().trim();
+    if(!q){renderTable(allAddons);return;}
+    renderTable(allAddons.filter(function(a){
+      return a.nombre.toLowerCase().indexOf(q)>=0||a.categoria.toLowerCase().indexOf(q)>=0||a.nombreCreador.toLowerCase().indexOf(q)>=0;
+    }));
+  };
 
-  function renderTabla(list) {
-    if (!list.length) {
-      document.getElementById('table-area').innerHTML = '<div class="empty-note">No hay addons publicados aún.</div>';
-      return;
-    }
-    var html = '<div class="table-wrap"><table>'
-      + '<thead><tr><th></th><th>Nombre</th><th>Categoría</th><th>Por</th><th>Rating</th><th>Acciones</th></tr></thead><tbody>';
-    html += list.map(function(a) {
-      var sc = starClass(a.rating);
-      var imgH = a.imagen
-        ? '<img class="td-img" src="'+esc(a.imagen)+'" alt="" loading="lazy">'
-        : '<div class="td-img-ph"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';
-      return '<tr>'
-        + '<td>'+imgH+'</td>'
-        + '<td><div class="td-name" title="'+esc(a.nombre)+'">'+esc(a.nombre)+'</div></td>'
-        + '<td><span class="td-cat cat-'+esc(a.categoria)+'">'+esc(a.categoria)+'</span></td>'
-        + '<td style="font-size:.8rem;color:var(--text-muted)">'+esc(a.nombreCreador)+'</td>'
-        + '<td class="td-rating"><span class="'+sc+'">⭐</span> '+a.rating.toFixed(1)+'</td>'
-        + '<td><div class="td-actions">'
-        + '<button class="edit-row-btn" onclick="abrirEditar(\''+esc(a.uuid)+'\')">'
-        + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar</button>'
-        + '<button class="del-row-btn" onclick="abrirDel(\''+esc(a.uuid)+'\')">'
-        + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Eliminar</button>'
-        + '</div></td></tr>';
+  function sc(r){return r<0?'sr':r>=5?'sb':'sy';}
+  function catCls(c){var m={'Addons':'Addons','Mapas':'Mapas','Texturas':'Texturas','Marketplace':'Marketplace','Versión':'Version'};return m[c]||'Addons';}
+
+  function renderTable(list){
+    document.getElementById('tstats').textContent=list.length+' addon'+(list.length!==1?'s':'');
+    if(!list.length){document.getElementById('table-area').innerHTML='<div class="empty-n">Sin resultados.</div>';return;}
+    var html='<table><thead><tr><th></th><th>Nombre</th><th>Cat.</th><th>Precio</th><th>Rating</th><th>Por</th><th>Acciones</th></tr></thead><tbody>';
+    html+=list.map(function(a){
+      var s=sc(a.rating),cl=catCls(a.categoria);
+      var precio=(a.categoria==='Marketplace'&&a.precio>0)?a.precio+' 🪙':'—';
+      var imgH=a.imagen?'<img class="td-img" src="'+esc(a.imagen)+'" alt="" loading="lazy">'
+        :'<div class="td-ph"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';
+      var isE=(editMode&&editUUID===a.uuid);
+      return '<tr'+(isE?' class="hl"':'')+'><td>'+imgH+'</td>'
+        +'<td><div class="td-nm" title="'+esc(a.nombre)+'">'+esc(a.nombre)+'</div></td>'
+        +'<td><span class="td-cat cat-'+cl+'">'+esc(a.categoria)+'</span></td>'
+        +'<td class="td-pre">'+precio+'</td>'
+        +'<td class="td-rat"><span class="'+s+'">⭐</span> '+a.rating.toFixed(1)+'</td>'
+        +'<td style="font-size:.76rem;color:var(--text-muted);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(a.nombreCreador)+'</td>'
+        +'<td><div class="td-acts">'
+        +'<button class="te" onclick="openEdit(\''+esc(a.uuid)+'\')">✏️ Editar</button>'
+        +'<button class="td" onclick="openDel(\''+esc(a.uuid)+'\')">🗑️</button>'
+        +'</div></td></tr>';
     }).join('');
-    html += '</tbody></table></div>';
-    document.getElementById('table-area').innerHTML = html;
+    html+='</tbody></table>';
+    document.getElementById('table-area').innerHTML=html;
   }
 
-  // ── ABRIR EDITAR ──────────────────────────────────────────
-  window.abrirEditar = function(uuid) {
-    var a = cache[uuid]; if (!a) return;
-    editMode = true; editUUID = uuid;
-    document.getElementById('form-mode-icon').textContent   = '✏️';
-    document.getElementById('form-card-title').childNodes[1] ? null : null; // refresh
-    document.getElementById('form-card-title').innerHTML = '✏️ Editando addon';
-    document.getElementById('btn-submit-txt').textContent    = 'Guardar cambios';
-    document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
-
-    document.getElementById('f-nombre').value = a.nombre      || '';
-    document.getElementById('f-cat').value    = a.categoria   || '';
-    document.getElementById('f-desc').value   = a.descripcion || '';
-    document.getElementById('f-url').value    = a.urlDescarga || '';
-    resetPicker();
-    if (a.imagen) {
-      var ti = document.getElementById('f-thumb-img');
-      ti.src = a.imagen; ti.style.display = 'block';
-      document.querySelector('#f-thumb svg').style.display = 'none';
-      document.getElementById('f-img-lbl').textContent = 'Cambiar imagen';
-      document.getElementById('btn-rm-img').style.display = 'inline-block';
-    }
-    limpiarErr();
-    document.getElementById('form-card').scrollIntoView({behavior:'smooth',block:'start'});
+  /* EDITAR */
+  window.openEdit=function(uuid){
+    var a=cache[uuid];if(!a)return;
+    editMode=true;editUUID=uuid;
+    document.getElementById('form-title').textContent='✏️ Editando: '+a.nombre;
+    document.getElementById('atb-title').textContent='✏️ Editando Addon';
+    document.getElementById('btn-sub-txt').textContent='Guardar cambios';
+    document.getElementById('btn-cancel').style.display='inline-flex';
+    document.getElementById('f-nom').value=a.nombre||'';
+    document.getElementById('f-cat').value=a.categoria||'';
+    document.getElementById('f-desc').value=a.descripcion||'';
+    document.getElementById('f-url').value=a.urlDescarga||'';
+    document.getElementById('f-precio').value=a.precio||'';
+    document.getElementById('field-precio').style.display=(a.categoria==='Marketplace')?'block':'none';
+    resetPick();
+    if(a.imagen){var ti=document.getElementById('f-thumb-img');ti.src=a.imagen;ti.style.display='block';document.querySelector('#f-thumb svg').style.display='none';document.getElementById('f-img-lbl').textContent='Cambiar imagen';document.getElementById('btn-rm').style.display='inline-block';}
+    clrB();renderTable(allAddons);
+  };
+  window.cancelEdit=function(){
+    editMode=false;editUUID='';
+    document.getElementById('form-title').textContent='Publicar Addon';
+    document.getElementById('atb-title').textContent='➕ Nuevo Addon';
+    document.getElementById('btn-sub-txt').textContent='Publicar addon';
+    document.getElementById('btn-cancel').style.display='none';
+    ['f-nom','f-desc','f-url','f-precio'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('f-cat').value='';
+    document.getElementById('field-precio').style.display='none';
+    resetPick();clrB();renderTable(allAddons);
   };
 
-  window.cancelarEdicion = function() {
-    editMode = false; editUUID = '';
-    document.getElementById('form-card-title').innerHTML = '<span id="form-mode-icon">➕</span> Nuevo Addon';
-    document.getElementById('btn-submit-txt').textContent    = 'Publicar addon';
-    document.getElementById('btn-cancel-edit').style.display = 'none';
-    document.getElementById('f-nombre').value = '';
-    document.getElementById('f-cat').value    = '';
-    document.getElementById('f-desc').value   = '';
-    document.getElementById('f-url').value    = '';
-    resetPicker(); limpiarErr();
+  /* SUBMIT */
+  window.submitF=function(){
+    clrB();
+    var nom=document.getElementById('f-nom').value.trim();
+    var cat=document.getElementById('f-cat').value;
+    var desc=document.getElementById('f-desc').value.trim();
+    var url=document.getElementById('f-url').value.trim();
+    var precio=(cat==='Marketplace')?(parseInt(document.getElementById('f-precio').value)||0):0;
+    if(!nom||nom.length<2)return showB('f-err','El nombre es obligatorio (mín. 2 caracteres).');
+    if(!cat)return showB('f-err','Selecciona una categoría.');
+    if(!desc||desc.length<10)return showB('f-err','La descripción debe tener al menos 10 caracteres.');
+    if(url&&url.indexOf('http')!==0)return showB('f-err','La URL debe comenzar con http:// o https://');
+    var btn=document.getElementById('btn-sub');
+    btn.disabled=true;btn.innerHTML='<span class="spinner sp-sm"></span> '+(editMode?'Guardando...':'Publicando...');
+    var payload=editMode
+      ?{action:'editarAddon',datos:{uuid:editUUID,uuidSolicitante:ses.uuid,nombre:nom,descripcion:desc,categoria:cat,urlDescarga:url,imagen:imgB64,quitarImagen:imgRm,precio:precio}}
+      :{action:'crearAddon',datos:{nombre:nom,descripcion:desc,categoria:cat,urlDescarga:url,imagen:imgB64,uuidCreador:ses.uuid,nombreCreador:ses.nombre,precio:precio}};
+    post(payload).then(function(res){
+      btn.disabled=false;btn.textContent=editMode?'Guardar cambios':'Publicar addon';
+      if(!res||!res.ok){showB('f-err',res?(res.msg||'Error'):'Error de conexión');return;}
+      showB('f-ok',editMode?'✅ Addon actualizado correctamente.':'✅ Addon publicado correctamente.');
+      cancelEdit();loadAddons();
+    }).catch(function(){btn.disabled=false;btn.textContent=editMode?'Guardar cambios':'Publicar addon';showB('f-err','Error de conexión.');});
   };
 
-  // ── SUBMIT ────────────────────────────────────────────────
-  window.submitForm = function() {
-    limpiarErr();
-    var nombre = document.getElementById('f-nombre').value.trim();
-    var cat    = document.getElementById('f-cat').value;
-    var desc   = document.getElementById('f-desc').value.trim();
-    var url    = document.getElementById('f-url').value.trim();
-
-    // Validaciones estrictas
-    if (!nombre || nombre.length < 2)  return showErr('El nombre del addon es obligatorio (mínimo 2 caracteres).');
-    if (!cat)                           return showErr('Selecciona una categoría para el addon.');
-    if (!desc  || desc.length < 10)    return showErr('La descripción debe tener al menos 10 caracteres.');
-    if (url && url.length > 0 && url.indexOf('http') !== 0) return showErr('La URL de descarga debe comenzar con http:// o https://');
-    if (url && url.length > 500) return showErr('URL demasiado larga (máx 500 caracteres).');
-
-    var btn = document.getElementById('btn-submit');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner sp-sm"></span> Guardando...';
-
-    var payload;
-    if (!editMode) {
-      payload = {
-        action:'crearAddon',
-        datos:{ nombre:nombre, descripcion:desc, categoria:cat, urlDescarga:url, imagen:imgB64, uuidCreador:ses.uuid, nombreCreador:ses.nombre }
-      };
-    } else {
-      payload = {
-        action:'editarAddon',
-        datos:{ uuid:editUUID, uuidSolicitante:ses.uuid, nombre:nombre, descripcion:desc, categoria:cat, urlDescarga:url, imagen:imgB64, quitarImagen:imgRemove }
-      };
-    }
-
-    post(payload)
-      .then(function(res) {
-        btn.disabled = false;
-        btn.innerHTML = editMode
-          ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span id="btn-submit-txt">Guardar cambios</span>'
-          : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="btn-submit-txt">Publicar addon</span>';
-
-        if (!res||!res.ok) { showErr(res?(res.msg||'Error al guardar'):'Error de respuesta del servidor'); return; }
-
-        var msg = editMode ? 'Addon actualizado correctamente ✓' : 'Addon publicado correctamente ✓';
-        showOk(msg);
-        window.cancelarEdicion();
-        cargarAddons();
-      })
-      .catch(function(err) {
-        btn.disabled = false;
-        btn.innerHTML = editMode
-          ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span id="btn-submit-txt">Guardar cambios</span>'
-          : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="btn-submit-txt">Publicar addon</span>';
-        showErr('Error de conexión. Verifica tu internet e intenta de nuevo.');
-      });
+  /* ELIMINAR */
+  window.openDel=function(uuid){pendDel=uuid;var a=cache[uuid];document.getElementById('del-nm').textContent=a?a.nombre:'';document.getElementById('m-del').classList.add('show');};
+  window.cDel=function(){document.getElementById('m-del').classList.remove('show');pendDel='';};
+  window.confirmDel=function(){
+    if(!pendDel)return;
+    var btn=document.getElementById('btn-del-ok');btn.disabled=true;btn.textContent='Eliminando...';
+    post({action:'eliminarAddon',uuid:pendDel,uuidSolicitante:ses.uuid}).then(function(res){
+      btn.disabled=false;btn.textContent='Eliminar';
+      if(!res||!res.ok){toast(res?(res.msg||'Error'):'Error','error');cDel();return;}
+      cDel();toast('Addon eliminado.','success');loadAddons();
+    }).catch(function(){btn.disabled=false;btn.textContent='Eliminar';toast('Error de conexión','error');});
   };
 
-  // ── ELIMINAR ──────────────────────────────────────────────
-  window.abrirDel = function(uuid) {
-    pendingDel = uuid;
-    var a = cache[uuid];
-    document.getElementById('del-nm').textContent = a ? a.nombre : '';
-    document.getElementById('m-del').classList.add('show');
-  };
-  window.cerrarDel = function() {
-    document.getElementById('m-del').classList.remove('show');
-    pendingDel = '';
-  };
-  window.confirmarDel = function() {
-    if (!pendingDel) return;
-    var btn = document.getElementById('btn-del-ok');
-    btn.disabled = true; btn.textContent = 'Eliminando...';
-    post({ action:'eliminarAddon', uuid:pendingDel, uuidSolicitante:ses.uuid })
-      .then(function(res) {
-        btn.disabled = false; btn.textContent = 'Eliminar';
-        if (!res||!res.ok) { toast(res?(res.msg||'Error'):'Error','error'); cerrarDel(); return; }
-        cerrarDel(); toast('Addon eliminado correctamente','success'); cargarAddons();
-      })
-      .catch(function(){
-        btn.disabled = false; btn.textContent = 'Eliminar';
-        toast('Error de conexión','error');
-      });
-  };
-
-  window.cerrarDel = function() { document.getElementById('m-del').classList.remove('show'); pendingDel=''; };
-
-  // ── INICIO ────────────────────────────────────────────────
-  cargarAddons();
+  loadAddons();
 })();
 </script>
 </body>
