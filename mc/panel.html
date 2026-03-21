@@ -20,7 +20,11 @@
     --font-head:'Syne',sans-serif; --font-body:'Manrope',sans-serif;
     --topbar-h:64px;
   }
-  [data-theme="dark"] { --bg:#0C0C10; --surface:#14141C; --surface-2:#1E1E2A; --border:rgba(255,255,255,0.07); --text:#EAEAF2; --text-muted:#8888A0; --shadow:0 2px 16px rgba(0,0,0,0.4); --shadow-lg:0 8px 40px rgba(0,0,0,0.6); }
+  [data-theme="dark"] {
+    --bg:#0C0C10; --surface:#14141C; --surface-2:#1E1E2A;
+    --border:rgba(255,255,255,0.07); --text:#EAEAF2; --text-muted:#8888A0;
+    --shadow:0 2px 16px rgba(0,0,0,0.4); --shadow-lg:0 8px 40px rgba(0,0,0,0.6);
+  }
   html,body { height:100%; background:var(--bg); color:var(--text); font-family:var(--font-body); -webkit-font-smoothing:antialiased; transition:background .3s,color .3s; overflow-x:hidden; }
 
   /* TOPBAR */
@@ -36,23 +40,82 @@
 
   /* LAYOUT */
   .page-content { padding-top:var(--topbar-h); min-height:100vh; }
-  .container { max-width:980px; margin:0 auto; padding:28px 16px 80px; }
+  .container { max-width:900px; margin:0 auto; padding:28px 16px 100px; }
 
   /* HERO */
-  .panel-hero { background:linear-gradient(135deg,rgba(var(--accent-rgb),.08),rgba(var(--accent-rgb),.02)); border:1px solid rgba(var(--accent-rgb),.15); border-radius:var(--radius); padding:22px 24px; margin-bottom:28px; display:flex; align-items:center; gap:16px; }
+  .panel-hero { background:linear-gradient(135deg,rgba(var(--accent-rgb),.08),rgba(var(--accent-rgb),.02)); border:1px solid rgba(var(--accent-rgb),.15); border-radius:var(--radius); padding:22px 24px; margin-bottom:24px; display:flex; align-items:center; gap:16px; }
   .panel-hero-icon { width:48px; height:48px; background:linear-gradient(135deg,var(--accent),#a78bfa); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .panel-hero-title { font-family:var(--font-head); font-size:1.3rem; font-weight:800; margin-bottom:2px; }
   .panel-hero-sub { font-size:.83rem; color:var(--text-muted); }
 
-  /* SECCIÓN FORM + TABLA en dos columnas en pantallas grandes */
-  .panel-grid { display:grid; grid-template-columns:380px 1fr; gap:24px; align-items:start; }
-  @media(max-width:820px){ .panel-grid { grid-template-columns:1fr; } }
+  /* SEARCH BAR */
+  .search-bar-wrap { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .search-box { flex:1; position:relative; }
+  .search-box-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--text-muted); pointer-events:none; display:flex; }
+  .search-input { width:100%; padding:11px 13px 11px 40px; background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:.9rem; transition:border-color .2s,box-shadow .2s; outline:none; box-shadow:var(--shadow); }
+  .search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12); }
+  .search-input::placeholder { color:var(--text-muted); }
+  .btn-reload { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-sm); color:var(--text-muted); cursor:pointer; padding:10px 14px; font-family:var(--font-body); font-size:.83rem; font-weight:600; transition:background .2s,color .2s,border-color .2s; display:flex; align-items:center; gap:6px; box-shadow:var(--shadow); white-space:nowrap; }
+  .btn-reload:hover { background:var(--surface-2); color:var(--text); border-color:rgba(var(--accent-rgb),.3); }
+  .search-count { font-size:.78rem; color:var(--text-muted); font-weight:600; white-space:nowrap; }
 
-  /* TARJETA FORM */
+  /* CARD */
   .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-  .card-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-  .card-title { font-family:var(--font-head); font-size:1rem; font-weight:800; }
-  .card-body { padding:20px; }
+
+  /* TABLA */
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:.84rem; }
+  th { padding:10px 14px; text-align:left; font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap; background:var(--surface-2); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(var(--accent-rgb),.03); transition:background .15s; }
+  .td-img { width:52px; height:44px; object-fit:cover; border-radius:6px; display:block; }
+  .td-img-ph { width:52px; height:44px; background:var(--surface-2); border-radius:6px; display:flex; align-items:center; justify-content:center; }
+  .td-name { font-weight:700; font-family:var(--font-head); font-size:.88rem; max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .td-cat { font-size:.7rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+  .cat-Addons      { background:rgba(108,99,255,.12); color:#6C63FF; }
+  .cat-Mapas       { background:rgba(14,165,233,.12); color:#0284c7; }
+  .cat-Texturas    { background:rgba(168,85,247,.12); color:#9333ea; }
+  .cat-Marketplace { background:rgba(34,197,94,.12);  color:#16a34a; }
+  .cat-Versión     { background:rgba(245,158,11,.12); color:#d97706; }
+  .td-rating { font-size:.8rem; font-weight:700; }
+  .star-y { color:#F59E0B; }
+  .star-b { color:#3B82F6; }
+  .star-r { color:#EF4444; }
+  .td-actions { display:flex; gap:6px; }
+  .edit-row-btn { background:rgba(var(--accent-rgb),.1); border:none; cursor:pointer; border-radius:var(--radius-sm); padding:6px 12px; font-size:.75rem; font-weight:700; color:var(--accent); font-family:var(--font-body); transition:background .2s; display:flex; align-items:center; gap:5px; }
+  .edit-row-btn:hover { background:rgba(var(--accent-rgb),.2); }
+  .del-row-btn  { background:rgba(239,68,68,.1); border:none; cursor:pointer; border-radius:var(--radius-sm); padding:6px 12px; font-size:.75rem; font-weight:700; color:#ef4444; font-family:var(--font-body); transition:background .2s; display:flex; align-items:center; gap:5px; }
+  .del-row-btn:hover { background:rgba(239,68,68,.2); }
+
+  /* FAB */
+  .fab { position:fixed; bottom:28px; right:24px; z-index:150; width:58px; height:58px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#a78bfa); border:none; cursor:pointer; box-shadow:0 6px 24px rgba(var(--accent-rgb),.45); display:flex; align-items:center; justify-content:center; transition:transform .2s,box-shadow .2s; }
+  .fab:hover { transform:scale(1.08) translateY(-2px); box-shadow:0 10px 32px rgba(var(--accent-rgb),.55); }
+  .fab:active { transform:scale(.95); }
+  .fab svg { transition:transform .3s; }
+  .fab.open svg { transform:rotate(45deg); }
+  .fab-tooltip { position:fixed; bottom:38px; right:90px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 12px; font-size:.78rem; font-weight:700; color:var(--text); box-shadow:var(--shadow-lg); white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .fab:hover ~ .fab-tooltip { opacity:1; }
+
+  /* MODAL BASE */
+  .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .modal-bg.show { opacity:1; pointer-events:all; }
+
+  /* MODAL FORM */
+  .modal-form { background:var(--surface); border:1px solid var(--border); border-radius:20px; width:100%; max-width:480px; max-height:92vh; overflow-y:auto; box-shadow:var(--shadow-lg); transform:translateY(24px) scale(.97); transition:transform .28s cubic-bezier(.22,1,.36,1); }
+  .modal-bg.show .modal-form { transform:translateY(0) scale(1); }
+  .modal-form-header { padding:18px 22px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--surface); z-index:2; border-radius:20px 20px 0 0; }
+  .modal-form-title { font-family:var(--font-head); font-size:1.05rem; font-weight:800; display:flex; align-items:center; gap:8px; }
+  .modal-form-body { padding:20px 22px 24px; }
+  .btn-close-modal { background:var(--surface-2); border:none; cursor:pointer; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); transition:background .2s,color .2s; }
+  .btn-close-modal:hover { background:rgba(239,68,68,.1); color:#ef4444; }
+
+  /* MODAL CONFIRM */
+  .modal-confirm { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:26px; width:100%; max-width:360px; box-shadow:var(--shadow-lg); transform:translateY(20px); transition:transform .25s; }
+  .modal-bg.show .modal-confirm { transform:translateY(0); }
+  .modal-title { font-family:var(--font-head); font-size:1.1rem; font-weight:800; margin-bottom:10px; }
+  .modal-text  { font-size:.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.6; }
+  .modal-btns  { display:flex; gap:10px; }
 
   /* FIELDS */
   .field { margin-bottom:14px; }
@@ -87,59 +150,28 @@
   .btn-full { width:100%; }
   .btn-sm { padding:6px 13px; font-size:.78rem; }
 
-  /* ERR */
+  /* BANNERS */
   .err-banner { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#ef4444; font-size:.81rem; font-weight:500; padding:9px 13px; border-radius:var(--radius-sm); margin-bottom:12px; display:none; align-items:center; gap:7px; }
   .err-banner.show { display:flex; }
   .ok-banner { background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.25); color:#16a34a; font-size:.81rem; font-weight:500; padding:9px 13px; border-radius:var(--radius-sm); margin-bottom:12px; display:none; align-items:center; gap:7px; }
   .ok-banner.show { display:flex; }
 
-  /* TABLA */
-  .table-wrap { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:.84rem; }
-  th { padding:10px 14px; text-align:left; font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--text-muted); border-bottom:1px solid var(--border); white-space:nowrap; }
-  td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
-  tr:last-child td { border-bottom:none; }
-  tr:hover td { background:var(--surface-2); }
-  .td-img { width:52px; height:44px; object-fit:cover; border-radius:6px; display:block; }
-  .td-img-ph { width:52px; height:44px; background:var(--surface-2); border-radius:6px; display:flex; align-items:center; justify-content:center; }
-  .td-name { font-weight:700; font-family:var(--font-head); font-size:.88rem; max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .td-cat { font-size:.7rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 8px; border-radius:999px; white-space:nowrap; }
-  .cat-Addons      { background:rgba(108,99,255,.12); color:#6C63FF; }
-  .cat-Mapas       { background:rgba(14,165,233,.12); color:#0284c7; }
-  .cat-Texturas    { background:rgba(168,85,247,.12); color:#9333ea; }
-  .cat-Marketplace { background:rgba(34,197,94,.12);  color:#16a34a; }
-  .td-rating { font-size:.8rem; font-weight:700; }
-  .star-y { color:#F59E0B; }
-  .star-b { color:#3B82F6; }
-  .star-r { color:#EF4444; }
-  .td-actions { display:flex; gap:6px; }
-  .edit-row-btn { background:rgba(var(--accent-rgb),.1); border:none; cursor:pointer; border-radius:var(--radius-sm); padding:6px 12px; font-size:.75rem; font-weight:700; color:var(--accent); font-family:var(--font-body); transition:background .2s; display:flex; align-items:center; gap:5px; }
-  .edit-row-btn:hover { background:rgba(var(--accent-rgb),.2); }
-  .del-row-btn  { background:rgba(239,68,68,.1); border:none; cursor:pointer; border-radius:var(--radius-sm); padding:6px 12px; font-size:.75rem; font-weight:700; color:#ef4444; font-family:var(--font-body); transition:background .2s; display:flex; align-items:center; gap:5px; }
-  .del-row-btn:hover { background:rgba(239,68,68,.2); }
-
-  /* CONFIRM OVERLAY */
-  .modal-bg { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.55); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:opacity .25s; }
-  .modal-bg.show { opacity:1; pointer-events:all; }
-  .modal { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:26px; width:100%; max-width:360px; box-shadow:var(--shadow-lg); transform:translateY(20px); transition:transform .25s; }
-  .modal-bg.show .modal { transform:translateY(0); }
-  .modal-title { font-family:var(--font-head); font-size:1.1rem; font-weight:800; margin-bottom:10px; }
-  .modal-text { font-size:.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.6; }
-  .modal-btns { display:flex; gap:10px; }
-
   /* MISC */
-  .spin-wrap { text-align:center; padding:40px; }
+  .spin-wrap { text-align:center; padding:50px; }
   .spinner { width:24px; height:24px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--accent); animation:sp .7s linear infinite; display:inline-block; }
   .sp-sm { width:14px; height:14px; border-width:2px; border-color:rgba(255,255,255,.3); border-top-color:#fff; }
   @keyframes sp { to{transform:rotate(360deg)} }
-  .empty-note { text-align:center; padding:30px; color:var(--text-muted); font-size:.85rem; }
-  #toast-wrap { position:fixed; bottom:20px; right:16px; z-index:999; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+  .empty-note { text-align:center; padding:50px; color:var(--text-muted); font-size:.85rem; }
+  #toast-wrap { position:fixed; bottom:20px; right:16px; z-index:999; display:flex; flex-direction:column; gap:8px; align-items:flex-end; pointer-events:none; }
   .toast { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 16px; box-shadow:var(--shadow-lg); font-size:.85rem; font-weight:500; animation:tIn .3s ease,tOut .4s 2.6s forwards; max-width:280px; }
   .toast.success { border-left:3px solid #22c55e; }
   .toast.error   { border-left:3px solid #ef4444; }
   @keyframes tIn  { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
   @keyframes tOut { from{opacity:1} to{opacity:0;pointer-events:none} }
   ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+
+  /* Highlight en búsqueda */
+  .hl { background:rgba(var(--accent-rgb),.18); color:var(--accent); border-radius:3px; padding:0 2px; }
 </style>
 </head>
 <body>
@@ -169,104 +201,116 @@
       </div>
     </div>
 
-    <div class="panel-grid">
-
-      <!-- FORMULARIO -->
-      <div class="card" id="form-card">
-        <div class="card-header">
-          <div class="card-title" id="form-card-title">
-            <span id="form-mode-icon">➕</span> Nuevo Addon
-          </div>
-          <button class="btn btn-ghost btn-sm" id="btn-cancel-edit" onclick="cancelarEdicion()" style="display:none">✕ Cancelar edición</button>
+    <!-- BARRA DE BÚSQUEDA -->
+    <div class="search-bar-wrap">
+      <div class="search-box">
+        <div class="search-box-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
-        <div class="card-body">
-          <div class="err-banner" id="form-err">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span id="form-err-msg"></span>
-          </div>
-          <div class="ok-banner" id="form-ok">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            <span id="form-ok-msg"></span>
-          </div>
+        <input class="search-input" id="search-input" type="text" placeholder="Buscar addon por nombre, categoría o creador..." oninput="filtrarAddons(this.value)">
+      </div>
+      <button class="btn-reload" onclick="cargarAddons()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Recargar
+      </button>
+    </div>
 
-          <div class="field">
-            <label>Publicado por <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(automático)</span></label>
-            <input class="input input-readonly" id="f-by" type="text" readonly>
-          </div>
+    <!-- TABLA -->
+    <div class="card">
+      <div id="table-area"><div class="spin-wrap"><div class="spinner"></div></div></div>
+    </div>
 
-          <div class="field">
-            <label>Nombre del addon <span class="req">*</span></label>
-            <input class="input" id="f-nombre" type="text" placeholder="Ej: Better Caves Pro" maxlength="80"
-              oninput="limpiarErr()">
-          </div>
+  </div>
+</div>
 
-          <div class="field">
-            <label>Categoría <span class="req">*</span></label>
-            <select class="input" id="f-cat" onchange="limpiarErr()">
-              <option value="">— Selecciona —</option>
-              <option value="Addons">📦 Addons</option>
-              <option value="Mapas">🗺️ Mapas</option>
-              <option value="Texturas">🎨 Texturas</option>
-              <option value="Marketplace">🛒 Marketplace</option>
-               <option value="Versión">📌 Versión</option>
-            </select>
-          </div>
+<!-- FAB: Nuevo Addon -->
+<button class="fab" id="fab-btn" onclick="abrirModalNuevo()" title="Publicar nuevo addon">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+<div class="fab-tooltip">Publicar nuevo addon</div>
 
-          <div class="field">
-            <label>Descripción <span class="req">*</span></label>
-            <textarea class="input" id="f-desc" placeholder="Describe el addon: qué hace, versión de Minecraft compatible, características principales..." maxlength="800" rows="4" oninput="limpiarErr()"></textarea>
-          </div>
+<div id="toast-wrap"></div>
 
-          <div class="field">
-            <label>URL de descarga <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional)</span></label>
-            <input class="input" id="f-url" type="url" placeholder="https://mcpedl.com/... o marketplace.minecraft.net/..."
-              oninput="limpiarErr()">
-          </div>
+<!-- MODAL: FORMULARIO (nuevo / editar) -->
+<div class="modal-bg" id="m-form">
+  <div class="modal-form">
+    <div class="modal-form-header">
+      <div class="modal-form-title" id="form-card-title">
+        <span id="form-mode-icon">➕</span> Nuevo Addon
+      </div>
+      <button class="btn-close-modal" onclick="cerrarModalForm()" aria-label="Cerrar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-form-body">
+      <div class="err-banner" id="form-err">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="form-err-msg"></span>
+      </div>
+      <div class="ok-banner" id="form-ok">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="form-ok-msg"></span>
+      </div>
 
-          <div class="field">
-            <label>Imagen del addon <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional · máx 5MB)</span></label>
-            <div class="img-pick" onclick="document.getElementById('f-img').click()">
-              <input type="file" id="f-img" accept="image/*" onchange="prevImg(this)">
-              <div class="img-pick-row">
-                <div class="img-thumb" id="f-thumb">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  <img id="f-thumb-img" src="" alt="">
-                </div>
-                <div>
-                  <div class="img-thumb-lbl" id="f-img-lbl">Subir imagen</div>
-                  <div class="img-thumb-sub">JPG, PNG, WEBP</div>
-                </div>
-              </div>
+      <div class="field">
+        <label>Publicado por <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(automático)</span></label>
+        <input class="input input-readonly" id="f-by" type="text" readonly>
+      </div>
+      <div class="field">
+        <label>Nombre del addon <span class="req">*</span></label>
+        <input class="input" id="f-nombre" type="text" placeholder="Ej: Better Caves Pro" maxlength="80" oninput="limpiarErr()">
+      </div>
+      <div class="field">
+        <label>Categoría <span class="req">*</span></label>
+        <select class="input" id="f-cat" onchange="limpiarErr()">
+          <option value="">— Selecciona —</option>
+          <option value="Addons">📦 Addons</option>
+          <option value="Mapas">🗺️ Mapas</option>
+          <option value="Texturas">🎨 Texturas</option>
+          <option value="Marketplace">🛒 Marketplace</option>
+          <option value="Versión">📌 Versión</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Descripción <span class="req">*</span></label>
+        <textarea class="input" id="f-desc" placeholder="Describe el addon: qué hace, versión de Minecraft compatible, características principales..." maxlength="800" rows="4" oninput="limpiarErr()"></textarea>
+      </div>
+      <div class="field">
+        <label>URL de descarga <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional)</span></label>
+        <input class="input" id="f-url" type="url" placeholder="https://mcpedl.com/... o marketplace.minecraft.net/..." oninput="limpiarErr()">
+      </div>
+      <div class="field">
+        <label>Imagen del addon <span style="font-weight:400;font-size:.68rem;text-transform:none;letter-spacing:0;color:var(--text-muted)">(opcional · máx 5MB)</span></label>
+        <div class="img-pick" onclick="document.getElementById('f-img').click()">
+          <input type="file" id="f-img" accept="image/*" onchange="prevImg(this)">
+          <div class="img-pick-row">
+            <div class="img-thumb" id="f-thumb">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <img id="f-thumb-img" src="" alt="">
             </div>
-            <button type="button" id="btn-rm-img" onclick="quitarImg()" style="display:none;margin-top:5px;background:none;border:none;cursor:pointer;font-size:.76rem;color:#ef4444;font-weight:600;padding:0;">✕ Quitar imagen actual</button>
+            <div>
+              <div class="img-thumb-lbl" id="f-img-lbl">Subir imagen</div>
+              <div class="img-thumb-sub">JPG, PNG, WEBP</div>
+            </div>
           </div>
-
-          <button class="btn btn-primary btn-full" id="btn-submit" onclick="submitForm()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span id="btn-submit-txt">Publicar addon</span>
-          </button>
         </div>
+        <button type="button" id="btn-rm-img" onclick="quitarImg()" style="display:none;margin-top:5px;background:none;border:none;cursor:pointer;font-size:.76rem;color:#ef4444;font-weight:600;padding:0;">✕ Quitar imagen actual</button>
       </div>
 
-      <!-- TABLA DE ADDONS -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">📋 Addons publicados</div>
-          <button class="btn btn-ghost btn-sm" onclick="cargarAddons()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-            Recargar
-          </button>
-        </div>
-        <div id="table-area"><div class="spin-wrap"><div class="spinner"></div></div></div>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button class="btn btn-ghost" id="btn-cancel-edit" onclick="cerrarModalForm()" style="flex:1">Cancelar</button>
+        <button class="btn btn-primary" id="btn-submit" onclick="submitForm()" style="flex:2">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span id="btn-submit-txt">Publicar addon</span>
+        </button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- MODAL CONFIRMAR ELIMINAR -->
+<!-- MODAL: CONFIRMAR ELIMINAR -->
 <div class="modal-bg" id="m-del">
-  <div class="modal">
+  <div class="modal-confirm">
     <div class="modal-title">Eliminar addon</div>
     <p class="modal-text">¿Seguro que quieres eliminar <b id="del-nm"></b>? Esta acción no se puede deshacer y borrará la imagen de Drive.</p>
     <div class="modal-btns">
@@ -276,8 +320,6 @@
   </div>
 </div>
 
-<div id="toast-wrap"></div>
-
 <script>
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycby_q9XZ8vYBsnr0G5PZGapHZh1iZ-GFBJqychgMnZ-hs3Napp1fWE_RfisJ91B2ZBwQ/exec';
@@ -286,10 +328,7 @@
   var ses = null;
   try { ses = JSON.parse(localStorage.getItem('bv_session') || 'null'); } catch(e) {}
   if (!ses) { location.href = 'index.html'; return; }
-  if (ses.rol !== 'owner') {
-    // Redirigir silenciosamente sin revelar que el panel existe
-    location.href = 'main.html'; return;
-  }
+  if (ses.rol !== 'owner') { location.href = 'main.html'; return; }
 
   // ── TEMA ──────────────────────────────────────────────────
   function applyAccent(hex) {
@@ -314,12 +353,41 @@
   window.limpiarErr = function(){ document.getElementById('form-err').classList.remove('show'); document.getElementById('form-ok').classList.remove('show'); };
 
   // ── ESTADO ────────────────────────────────────────────────
+  var allAddons  = [];
   var cache      = {};
   var editMode   = false;
   var editUUID   = '';
   var imgB64     = '';
   var imgRemove  = false;
   var pendingDel = '';
+
+  // ── MODAL FORM ────────────────────────────────────────────
+  window.abrirModalNuevo = function() {
+    editMode = false; editUUID = '';
+    document.getElementById('form-card-title').innerHTML = '<span id="form-mode-icon">➕</span> Nuevo Addon';
+    document.getElementById('btn-submit-txt').textContent = 'Publicar addon';
+    document.getElementById('btn-submit').innerHTML =
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="btn-submit-txt">Publicar addon</span>';
+    document.getElementById('f-nombre').value = '';
+    document.getElementById('f-cat').value    = '';
+    document.getElementById('f-desc').value   = '';
+    document.getElementById('f-url').value    = '';
+    resetPicker(); limpiarErr();
+    document.getElementById('fab-btn').classList.add('open');
+    document.getElementById('m-form').classList.add('show');
+  };
+
+  window.cerrarModalForm = function() {
+    document.getElementById('m-form').classList.remove('show');
+    document.getElementById('fab-btn').classList.remove('open');
+    editMode = false; editUUID = '';
+    limpiarErr();
+  };
+
+  // cerrar modal al click en el fondo
+  document.getElementById('m-form').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModalForm();
+  });
 
   // ── IMAGEN PICKER ─────────────────────────────────────────
   window.prevImg = function(input) {
@@ -358,21 +426,42 @@
   // ── CARGAR ADDONS ─────────────────────────────────────────
   window.cargarAddons = function() {
     document.getElementById('table-area').innerHTML = '<div class="spin-wrap"><div class="spinner"></div></div>';
+    document.getElementById('search-input').value = '';
     post({ action:'obtenerAddons', categoria:'', orden:'nuevos' })
       .then(function(res) {
         if (!res||!res.ok) { document.getElementById('table-area').innerHTML='<div class="empty-note">Error al cargar.</div>'; return; }
-        cache = {};
-        (res.addons||[]).forEach(function(a){ cache[a.uuid]=a; });
-        renderTabla(res.addons||[]);
+        cache = {}; allAddons = res.addons || [];
+        allAddons.forEach(function(a){ cache[a.uuid]=a; });
+        renderTabla(allAddons, '');
       })
       .catch(function(){ document.getElementById('table-area').innerHTML='<div class="empty-note">No se pudo conectar.</div>'; });
   };
 
+  // ── FILTRAR ───────────────────────────────────────────────
+  window.filtrarAddons = function(q) {
+    var term = q.trim().toLowerCase();
+    if (!term) { renderTabla(allAddons, ''); return; }
+    var filtered = allAddons.filter(function(a) {
+      return (a.nombre||'').toLowerCase().indexOf(term) >= 0
+          || (a.categoria||'').toLowerCase().indexOf(term) >= 0
+          || (a.nombreCreador||'').toLowerCase().indexOf(term) >= 0;
+    });
+    renderTabla(filtered, term);
+  };
+
+  function hlText(text, term) {
+    if (!term) return esc(text);
+    var safe = esc(text);
+    var safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return safe.replace(new RegExp('('+safeTerm+')','gi'), '<span class="hl">$1</span>');
+  }
+
   function starClass(r) { return r < 0 ? 'star-r' : r >= 5 ? 'star-b' : 'star-y'; }
 
-  function renderTabla(list) {
+  function renderTabla(list, term) {
     if (!list.length) {
-      document.getElementById('table-area').innerHTML = '<div class="empty-note">No hay addons publicados aún.</div>';
+      var msg = term ? 'No se encontraron addons para "'+esc(term)+'".' : 'No hay addons publicados aún.';
+      document.getElementById('table-area').innerHTML = '<div class="empty-note">'+msg+'</div>';
       return;
     }
     var html = '<div class="table-wrap"><table>'
@@ -384,9 +473,9 @@
         : '<div class="td-img-ph"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>';
       return '<tr>'
         + '<td>'+imgH+'</td>'
-        + '<td><div class="td-name" title="'+esc(a.nombre)+'">'+esc(a.nombre)+'</div></td>'
-        + '<td><span class="td-cat cat-'+esc(a.categoria)+'">'+esc(a.categoria)+'</span></td>'
-        + '<td style="font-size:.8rem;color:var(--text-muted)">'+esc(a.nombreCreador)+'</td>'
+        + '<td><div class="td-name" title="'+esc(a.nombre)+'">'+hlText(a.nombre, term)+'</div></td>'
+        + '<td><span class="td-cat cat-'+esc(a.categoria)+'">'+hlText(a.categoria, term)+'</span></td>'
+        + '<td style="font-size:.8rem;color:var(--text-muted)">'+hlText(a.nombreCreador, term)+'</td>'
         + '<td class="td-rating"><span class="'+sc+'">⭐</span> '+a.rating.toFixed(1)+'</td>'
         + '<td><div class="td-actions">'
         + '<button class="edit-row-btn" onclick="abrirEditar(\''+esc(a.uuid)+'\')">'
@@ -403,12 +492,9 @@
   window.abrirEditar = function(uuid) {
     var a = cache[uuid]; if (!a) return;
     editMode = true; editUUID = uuid;
-    document.getElementById('form-mode-icon').textContent   = '✏️';
-    document.getElementById('form-card-title').childNodes[1] ? null : null; // refresh
     document.getElementById('form-card-title').innerHTML = '✏️ Editando addon';
-    document.getElementById('btn-submit-txt').textContent    = 'Guardar cambios';
-    document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
-
+    document.getElementById('btn-submit').innerHTML =
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span id="btn-submit-txt">Guardar cambios</span>';
     document.getElementById('f-nombre').value = a.nombre      || '';
     document.getElementById('f-cat').value    = a.categoria   || '';
     document.getElementById('f-desc').value   = a.descripcion || '';
@@ -422,19 +508,8 @@
       document.getElementById('btn-rm-img').style.display = 'inline-block';
     }
     limpiarErr();
-    document.getElementById('form-card').scrollIntoView({behavior:'smooth',block:'start'});
-  };
-
-  window.cancelarEdicion = function() {
-    editMode = false; editUUID = '';
-    document.getElementById('form-card-title').innerHTML = '<span id="form-mode-icon">➕</span> Nuevo Addon';
-    document.getElementById('btn-submit-txt').textContent    = 'Publicar addon';
-    document.getElementById('btn-cancel-edit').style.display = 'none';
-    document.getElementById('f-nombre').value = '';
-    document.getElementById('f-cat').value    = '';
-    document.getElementById('f-desc').value   = '';
-    document.getElementById('f-url').value    = '';
-    resetPicker(); limpiarErr();
+    document.getElementById('fab-btn').classList.add('open');
+    document.getElementById('m-form').classList.add('show');
   };
 
   // ── SUBMIT ────────────────────────────────────────────────
@@ -445,7 +520,6 @@
     var desc   = document.getElementById('f-desc').value.trim();
     var url    = document.getElementById('f-url').value.trim();
 
-    // Validaciones estrictas
     if (!nombre || nombre.length < 2)  return showErr('El nombre del addon es obligatorio (mínimo 2 caracteres).');
     if (!cat)                           return showErr('Selecciona una categoría para el addon.');
     if (!desc  || desc.length < 10)    return showErr('La descripción debe tener al menos 10 caracteres.');
@@ -458,15 +532,9 @@
 
     var payload;
     if (!editMode) {
-      payload = {
-        action:'crearAddon',
-        datos:{ nombre:nombre, descripcion:desc, categoria:cat, urlDescarga:url, imagen:imgB64, uuidCreador:ses.uuid, nombreCreador:ses.nombre }
-      };
+      payload = { action:'crearAddon', datos:{ nombre:nombre, descripcion:desc, categoria:cat, urlDescarga:url, imagen:imgB64, uuidCreador:ses.uuid, nombreCreador:ses.nombre } };
     } else {
-      payload = {
-        action:'editarAddon',
-        datos:{ uuid:editUUID, uuidSolicitante:ses.uuid, nombre:nombre, descripcion:desc, categoria:cat, urlDescarga:url, imagen:imgB64, quitarImagen:imgRemove }
-      };
+      payload = { action:'editarAddon', datos:{ uuid:editUUID, uuidSolicitante:ses.uuid, nombre:nombre, descripcion:desc, categoria:cat, urlDescarga:url, imagen:imgB64, quitarImagen:imgRemove } };
     }
 
     post(payload)
@@ -475,13 +543,10 @@
         btn.innerHTML = editMode
           ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span id="btn-submit-txt">Guardar cambios</span>'
           : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="btn-submit-txt">Publicar addon</span>';
-
         if (!res||!res.ok) { showErr(res?(res.msg||'Error al guardar'):'Error de respuesta del servidor'); return; }
-
         var msg = editMode ? 'Addon actualizado correctamente ✓' : 'Addon publicado correctamente ✓';
         showOk(msg);
-        window.cancelarEdicion();
-        cargarAddons();
+        setTimeout(function(){ cerrarModalForm(); cargarAddons(); }, 900);
       })
       .catch(function(err) {
         btn.disabled = false;
@@ -519,7 +584,15 @@
       });
   };
 
-  window.cerrarDel = function() { document.getElementById('m-del').classList.remove('show'); pendingDel=''; };
+  document.getElementById('m-del').addEventListener('click', function(e){ if(e.target===this) cerrarDel(); });
+
+  // Tecla ESC para cerrar modales
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (document.getElementById('m-form').classList.contains('show')) cerrarModalForm();
+      if (document.getElementById('m-del').classList.contains('show')) cerrarDel();
+    }
+  });
 
   // ── INICIO ────────────────────────────────────────────────
   cargarAddons();
