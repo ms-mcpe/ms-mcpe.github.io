@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#6c3fc7">
+    <title>MC Addons - (Web)</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Rajdhani:wght@500;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           ECLIPSE MC — DESIGN SYSTEM
+           Light = Default, Dark = Blue-steel
+        ========================================== */
+        :root {
+            /* Warmer Light theme */
+            --primary: #f97316;
+            --primary-glow: rgba(249, 115, 22, 0.25);
+            --bg-dark: #fafaf9;
+            --bg-panel: #ffffff;
+            --surface: #f5f5f4;
+            --text-main: #1c1917;
+            --text-sec: #57534e;
+            --success: #16a34a;
+            --glass: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(249, 115, 22, 0.15);
+            --radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --logo-cyan: #f97316;
+            --logo-lime-shadow: rgba(249, 115, 22, 0.4);
+            --accent-red: #ea580c;
+            --accent-bright: #f97316;
+            --accent-gold: #d97706;
+            --header-shadow: rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: rgba(249, 115, 22, 0.15);
+            --scrollbar-thumb: #fdba74;
+        }
+
+        /* Perfectly Detailed Dark Theme: Orange-Black-White */
+        [data-theme="dark"] {
+            --primary: #f97316;
+            --primary-glow: rgba(249, 115, 22, 0.35);
+            --bg-dark: #0a0a0a;
+            --bg-panel: #121212;
+            --surface: #1a1a1a;
+            --text-main: #ffffff;
+            --text-sec: #a3a3a3;
+            --success: #22c55e;
+            --glass: rgba(10, 10, 10, 0.92);
+            --glass-border: rgba(249, 115, 22, 0.2);
+            --logo-cyan: #f97316;
+            --logo-lime-shadow: rgba(249, 115, 22, 0.6);
+            --accent-red: #ea580c;
+            --accent-bright: #f97316;
+            --accent-gold: #fbbf24;
+            --header-shadow: rgba(0, 0, 0, 0.5);
+            --card-hover-shadow: rgba(249, 115, 22, 0.4);
+            --scrollbar-thumb: #ea580c;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-red);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-bright);
+        }
+
+        /* --- HEADER --- */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 30px var(--header-shadow);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .app-logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: var(--accent-bright);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(249, 115, 22, 0.6), 0 0 30px var(--primary-glow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        #addon-search {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--glass-border);
+            padding: 10px 45px 10px 20px;
+            border-radius: 50px;
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        #addon-search::placeholder {
+            color: var(--text-sec);
+        }
+
+        #addon-search:focus {
+            background: var(--bg-panel);
+            border-color: var(--accent-bright);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-bright);
+            pointer-events: none;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 290px;
+            height: 100vh;
+            background: var(--bg-panel);
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 2000;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, var(--primary-glow), transparent);
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 15px 10px;
+            margin: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 11px 15px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: var(--transition);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-glow);
+            color: var(--accent-bright);
+        }
+
+        .nav-link i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-section-label {
+            padding: 16px 15px 6px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-gold);
+            font-weight: 800;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--glass-border);
+            margin: 8px 15px;
+        }
+
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            padding-left: 15px;
+        }
+
+        .submenu.open {
+            max-height: 500px;
+        }
+
+        .dropdown-arrow {
+            margin-left: auto;
+            transition: 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .dropdown-arrow.rotate {
+            transform: rotate(180deg);
+        }
+
+        /* --- FILTER SORT BAR --- */
+        .sort-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 10px 20px 0;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .sort-btn {
+            background: var(--surface);
+            border: 1.5px solid var(--glass-border);
+            color: var(--text-sec);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .sort-btn:hover,
+        .sort-btn.active {
+            background: #ffffff;
+            color: #000;
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero-container {
+            margin-top: 70px;
+            position: relative;
+            height: 240px;
+            width: 100%;
+            overflow: hidden;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+            filter: brightness(0.5);
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+            transform: scale(1.05);
+            transition: opacity 1s ease, transform 6s linear;
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 20px;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.4rem;
+            text-transform: uppercase;
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.8);
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .hero-subtitle {
+            color: #bfdbfe;
+            font-size: 0.9rem;
+            margin-top: 6px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content {
+            padding: 20px;
+            min-height: calc(100vh - 350px);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin: 30px 0 15px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .section-header i {
+            margin-right: 10px;
+            color: var(--accent-bright);
+        }
+
+        .section-line {
+            flex-grow: 1;
+            height: 1px;
+            background: var(--glass-border);
+            margin-left: 15px;
+        }
+
+        /* --- SCROLL HORIZONTAL --- */
+        .h-scroll-wrapper {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .h-scroll-wrapper::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        /* --- GRID LAYOUT --- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 20px;
+            }
+
+            .hero-container {
+                height: 350px;
+            }
+        }
+
+        /* --- CARDS ESTÁNDAR --- */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 45px var(--card-hover-shadow);
+            border-color: #ffffff;
+            /* White border on hover for contrast */
+        }
+
+        .card-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: var(--surface);
+        }
+
+        .card-body {
+            padding: 14px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-tag {
+            font-size: 0.7rem;
+            color: var(--accent-bright);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .card-version {
+            font-size: 0.65rem;
+            background: var(--primary-glow);
+            color: var(--accent-gold);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            margin: 0 0 6px;
+            line-height: 1.4;
+            font-weight: 600;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+            height: 2.2rem;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-sec);
+            padding-top: 10px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat i {
+            color: var(--text-sec);
+            transition: 0.2s;
+        }
+
+        .stat.liked i {
+            color: #ff4757;
+        }
+
+        .btn-action {
+            width: 100%;
+            margin-top: 10px;
+            background: var(--surface);
+            border: 1.5px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-action:hover {
+            background: var(--accent-bright);
+            color: #fff;
+            border-color: var(--accent-bright);
+            box-shadow: 0 0 18px var(--primary-glow);
+            transform: translateY(-1px);
+        }
+
+        /* --- CARDS APPS/JUEGOS --- */
+        .card[data-cat="Apps"],
+        .card[data-cat="Juegos"] {
+            flex-direction: row;
+            align-items: center;
+            padding: 3px;
+            gap: 8px;
+            border-radius: 20px;
+        }
+
+        .card[data-cat="Apps"] .card-img,
+        .card[data-cat="Juegos"] .card-img {
+            width: 65px;
+            height: 65px;
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            object-fit: cover;
+        }
+
+        .card[data-cat="Apps"]>div:first-child,
+        .card[data-cat="Juegos"]>div:first-child {
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            border-radius: 14px;
+        }
+
+        .card[data-cat="Apps"]>div:first-child>div,
+        .card[data-cat="Juegos"]>div:first-child>div {
+            display: none;
+        }
+
+        .card[data-cat="Apps"] .card-body,
+        .card[data-cat="Juegos"] .card-body {
+            display: block;
+            padding: 0;
+        }
+
+        .card[data-cat="Apps"] .card-title,
+        .card[data-cat="Juegos"] .card-title {
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        .card[data-cat="Apps"] .card-meta,
+        .card[data-cat="Juegos"] .card-meta {
+            justify-content: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .card[data-cat="Apps"] .card-tag,
+        .card[data-cat="Juegos"] .card-tag {
+            background: var(--surface);
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: var(--text-sec);
+            font-size: 0.65rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .card[data-cat="Apps"] .card-version,
+        .card[data-cat="Juegos"] .card-version {
+            background: transparent;
+            color: var(--text-sec);
+            padding: 0;
+        }
+
+        .card[data-cat="Apps"] .card-desc,
+        .card[data-cat="Juegos"] .card-desc,
+        .card[data-cat="Apps"] .card-footer,
+        .card[data-cat="Juegos"] .card-footer {
+            display: none;
+        }
+
+        .card[data-cat="Apps"] .btn-action,
+        .card[data-cat="Juegos"] .btn-action {
+            display: inline-block;
+            width: auto;
+            padding: 6px 18px;
+            border-radius: 20px;
+            background: var(--accent-bright);
+            color: #fff;
+            border: none;
+            margin-top: 0;
+            font-size: 0.75rem;
+        }
+
+        /* --- BADGES --- */
+        .badge-new {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.5);
+            z-index: 2;
+        }
+
+        [data-theme="dark"] .badge-new {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.5);
+        }
+
+        .badge-dlc {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45);
+            z-index: 2;
+        }
+
+        /* --- LOADER & OVERLAY --- */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1500;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loader-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(139, 0, 0, 0.2);
+            border-top-color: var(--accent-bright);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(20, 5, 5, 0.97);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 42, 42, 0.3);
+            z-index: 2000;
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* --- MODAL DETALLES --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: var(--bg-panel);
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 24px;
+            border: 1px solid var(--accent-bright);
+            box-shadow: 0 0 40px var(--logo-lime-shadow), 0 0 80px rgba(255, 42, 42, 0.1);
+            border-radius: 24px;
+            transform: scale(0.9);
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(139, 0, 0, 0.2);
+            border: none;
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 42, 42, 0.4);
+        }
+
+        .detalles-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 14px;
+            border: 1px solid rgba(139, 0, 0, 0.25);
+            margin-bottom: 20px;
+        }
+
+        .detalles-nombre {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            color: var(--text-main);
+            text-align: center;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .detalles-version {
+            display: inline-block;
+            background: rgba(139, 0, 0, 0.2);
+            color: var(--accent-gold);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 165, 0, 0.2);
+        }
+
+        .detalles-desc {
+            width: 100%;
+            text-align: center;
+            color: var(--text-sec);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: rgba(139, 0, 0, 0.06);
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-descarga-final {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent-red));
+            color: #fff;
+            font-weight: 800;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px var(--primary-glow);
+            transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-descarga-final:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 28px rgba(255, 42, 42, 0.5);
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+
+    <div style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;display:none;" id="security-shield">
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="app-logo"><i class="fas fa-cube"></i> CraftNexus</div>
+            <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item"><a class="nav-link" onclick="mostrarInicio()"><i class="fas fa-home"></i> Inicio</a>
+            </li>
+
+            <!-- CATEGORÍAS PRINCIPALES -->
+            <li>
+                <div class="nav-section-label"><i class="fas fa-layer-group" style="margin-right:6px;"></i> Categorías
+                </div>
+            </li>
+            <li class="nav-item">
+                <div class="nav-link" onclick="toggleDropdown()">
+                    <i class="fas fa-th-large"></i> Explorar todo
+                    <i class="fas fa-chevron-down dropdown-arrow" id="dd-arrow"></i>
+                </div>
+                <ul class="submenu" id="submenu">
+                    <li><a class="nav-link" onclick="filtrar('Addons')" style="padding-left:50px;"><i
+                                class="fas fa-puzzle-piece"
+                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Addons</a>
+                    </li>
+                    <li><a class="nav-link" onclick="filtrar('Texturas')" style="padding-left:50px;"><i
+                                class="fas fa-palette"
+                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Texturas</a>
+                    </li>
+                    <li><a class="nav-link" onclick="filtrar('Mapas')" style="padding-left:50px;"><i class="fas fa-map"
+                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Mapas</a></li>
+                </ul>
+            </li>
+
+            <!-- REDES SOCIALES -->
+            <li>
+                <div class="nav-divider"></div>
+            </li>
+        </ul>
+        <div style="padding: 20px;">
+            <button class="btn-action" onclick="toggleTheme()"
+                style="background:transparent; border:1px solid rgba(139,0,0,0.4); color:var(--text-sec);">
+                <i class="fas fa-moon"></i> Cambiar Tema
+            </button>
+        </div>
+    </nav>
+
+    <header class="app-header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div class="app-logo" style="display:none;" id="header-logo">MC Add-Ons </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="addon-search" placeholder="Buscar por nombre o versión..." oninput="buscar()">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div style="width: 30px;"></div>
+    </header>
+
+    <main>
+        <div id="loader" class="loader-container">
+            <div class="spinner"></div>
+            <div style="font-size:0.8rem; letter-spacing:1px; color:var(--text-sec); font-weight:600;">CARGANDO
+                RECURSOS...</div>
+        </div>
+
+        <div id="dynamic-content" style="opacity: 0; transition: opacity 0.5s;"></div>
+    </main>
+
+    <div class="modal-overlay" id="modal-detalles">
+        <div class="modal-card">
+            <button class="modal-close-btn" onclick="cerrarDetalles()"><i class="fas fa-times"></i></button>
+            <img id="md-img" src="" class="detalles-img">
+            <h2 id="md-nombre" class="detalles-nombre">Nombre del Addon</h2>
+            <div id="md-version" class="detalles-version">v1.0.0</div>
+            <div id="md-desc" class="detalles-desc">Descripción del addon...</div>
+            <a id="md-btn-download" href="#" target="_blank" class="btn-descarga-final">
+                <i class="fas fa-download"></i> DESCARGAR AHORA
+            </a>
+        </div>
+    </div>
+
+    <div id="toast">Acción completada</div>
+
+    <script>
+        // --- SEGURIDAD ---
+        (function () {
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.onkeydown = function (e) {
+                if (e.keyCode == 123) return false;
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+                if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+                if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            };
+        })();
+
+        // --- LÓGICA ---
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwqlhICMqWznbvQ28cucxuGmXfTIntwq40ICzrCNkchM5OvubP1xwUkZvVVlk5Wklx9/exec";
+        let db = [];
+        let heroTimer;
+
+
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+            cargarDatos();
+        });
+
+        function updateThemeButton(theme) {
+            const icon = document.getElementById('theme-icon');
+            const label = document.getElementById('theme-label');
+            if (!icon || !label) return;
+            if (theme === 'dark') {
+                icon.className = 'fas fa-sun';
+                label.textContent = 'Tema Claro';
+            } else {
+                icon.className = 'fas fa-moon';
+                label.textContent = 'Tema Oscuro';
+            }
+        }
+
+        async function cargarDatos() {
+            try {
+                const res = await fetch(`${scriptURL}?action=read`);
+                const data = await res.json();
+                if (data.error) throw new Error(data.error);
+                db = data;
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('dynamic-content').style.opacity = '1';
+                mostrarInicio();
+            } catch (e) {
+                document.getElementById('loader').innerHTML = `<p style="color:#ff4757">Error de conexión.<br>Intenta recargar.</p>`;
+            }
+        }
+
+        function mostrarInicio() {
+            if (window.innerWidth < 1000) toggleSidebar(false);
+            const container = document.getElementById('dynamic-content');
+            container.innerHTML = '';
+            const imagenes = db.map(i => i[3]).filter(url => url && url.startsWith('http'));
+            renderHero(imagenes, container);
+            renderHorizontalSection("Novedades", [...db].reverse().slice(0, 1000), container);
+            renderHorizontalSection("Populares", [...db].sort((a, b) => b[6] - a[6]).slice(0, 500), container);
+        }
+
+
+
+        function renderHero(imgs, container) {
+            if (!imgs.length) return;
+            const hero = document.createElement('div');
+            hero.className = 'hero-container';
+            hero.innerHTML = `
+                <div id="hero-bg-1" class="hero-slide active"></div>
+                <div id="hero-bg-2" class="hero-slide"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">Explora. Crea. Juega.</h1>
+                    <p class="hero-subtitle">LA MEJOR COLECCIÓN PARA MINECRAFT PE/BE</p>
+                </div>
+            `;
+            container.appendChild(hero);
+
+            let idx = 0;
+            let activeDiv = 1;
+            const s1 = hero.querySelector('#hero-bg-1');
+            const s2 = hero.querySelector('#hero-bg-2');
+            s1.style.backgroundImage = `url('${imgs[Math.floor(Math.random() * imgs.length)]}')`;
+
+            if (heroTimer) clearInterval(heroTimer);
+            heroTimer = setInterval(() => {
+                idx = Math.floor(Math.random() * imgs.length);
+                const nextImg = imgs[idx];
+                if (activeDiv === 1) {
+                    s2.style.backgroundImage = `url('${nextImg}')`;
+                    s2.classList.add('active'); s1.classList.remove('active'); activeDiv = 2;
+                } else {
+                    s1.style.backgroundImage = `url('${nextImg}')`;
+                    s1.classList.add('active'); s2.classList.remove('active'); activeDiv = 1;
+                }
+            }, 5000);
+        }
+
+        function renderHorizontalSection(titulo, items, container) {
+            const section = document.createElement('div');
+            section.innerHTML = `
+                <div class="section-header"><i class="fas fa-fire"></i> ${titulo} <div class="section-line"></div></div>
+                <div class="h-scroll-wrapper">
+                    ${items.map(item => getCardHTML(item, 'min-width:180px; width:180px;')).join('')}
+                </div>
+            `;
+            container.appendChild(section);
+        }
+
+        function ordenarItems(items, orden) {
+            switch (orden) {
+                case 'nuevo': return [...items].reverse();
+                case 'viejo': return [...items];
+                case 'mas': return [...items].sort((a, b) => (b[5] || 0) - (a[5] || 0));
+                case 'menos': return [...items].sort((a, b) => (a[5] || 0) - (b[5] || 0));
+                default: return [...items].reverse();
+            }
+        }
+
+        function filtrar(categoria, orden = 'nuevo') {
+            toggleSidebar(false);
+            clearInterval(heroTimer);
+            const container = document.getElementById('dynamic-content');
+            const filtrados = db.filter(item => item[4] === categoria);
+            const ordenados = ordenarItems(filtrados, orden);
+
+            const sortButtons = ['nuevo', 'viejo', 'mas', 'menos'].map(o => {
+                const labels = { nuevo: '🆕 Nuevo', viejo: '📅 Viejo', mas: '❤️ Más Valorada', menos: '🤍 Menos Valorada' };
+                return `<button class="sort-btn ${o === orden ? 'active' : ''}" onclick="filtrar('${categoria}','${o}')">${labels[o]}</button>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div style="padding-top:80px;"></div>
+                <div class="sort-bar">${sortButtons}</div>
+                <div style="padding: 0 20px;">
+                    <div class="section-header" style="margin-top:20px;">
+                        <i class="fas fa-layer-group"></i> ${categoria}
+                        <span style="font-size:0.8rem; margin-left:10px; color:var(--text-sec)">(${filtrados.length})</span>
+                    </div>
+                    <div class="grid-layout">
+                        ${ordenados.length ? ordenados.map(item => getCardHTML(item)).join('') : '<p>No hay resultados.</p>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function buscar() {
+            clearInterval(heroTimer);
+            const q = document.getElementById('addon-search').value.toLowerCase();
+            if (!q) { mostrarInicio(); return; }
+            const container = document.getElementById('dynamic-content');
+            const res = db.filter(item =>
+                item[1].toString().toLowerCase().includes(q) ||
+                (item[9] && item[9].toString().toLowerCase().includes(q))
+            );
+            container.innerHTML = `
+                <div class="section-header" style="margin-top:80px;">Resultados de búsqueda</div>
+                <div class="grid-layout">
+                    ${res.length ? res.map(item => getCardHTML(item)).join('') : '<p style="padding:20px;">No se encontraron coincidencias.</p>'}
+                </div>
+            `;
+        }
+
+        function getCardHTML(item, styleOverride = '') {
+            const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = item;
+            const isSeed = cat.toLowerCase().includes('semilla');
+            const displayVersion = version ? version : 'V1.0';
+
+            let btnAction;
+            if (isSeed) {
+                btnAction = `<button class="btn-action" onclick="copiar('${seed}')"><i class="fas fa-copy"></i> COPIAR SEED</button>`;
+            } else {
+                btnAction = `<button class="btn-action" onclick="abrirDetalles('${id}')">DETALLES</button>`;
+            }
+
+            return `
+            <div class="card" data-cat="${cat}" style="${styleOverride}">
+                <div style="position:relative; overflow:hidden;">
+                    <img src="${img}" class="card-img" onerror="this.src='https://via.placeholder.com/300x170?text=MC+Addons'" loading="lazy">
+                    <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); padding:2px 8px; border-radius:4px; font-size:0.7rem; color:#fff;">
+                        <i class="fas fa-download"></i> ${dls || 0}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <div class="card-tag">${cat}</div>
+                        <div class="card-version">v${displayVersion}</div>
+                    </div>
+                    <h3 class="card-title">${nombre}</h3>
+                    <div class="card-footer">
+                        <span>By ${autor || 'Admin'}</span>
+                        <div class="stat" onclick="like(this, '${nombre}')">
+                            <i class="fas fa-heart"></i> <span>${likes || 0}</span>
+                        </div>
+                    </div>
+                    ${btnAction}
+                </div>
+            </div>`;
+        }
+
+        function abrirDetalles(id) {
+            const item = db.find(x => x[0] == id);
+            if (!item) return;
+            const nombre = item[1];
+            const link = item[2];
+            const img = item[3];
+            const version = item[9] || '1.0';
+            const descripcion = item[10] || 'No hay descripción detallada disponible para este complemento.';
+            document.getElementById('md-img').src = img;
+            document.getElementById('md-nombre').innerText = nombre;
+            document.getElementById('md-version').innerText = 'Versión: ' + version;
+            document.getElementById('md-desc').innerText = descripcion;
+            const btnDown = document.getElementById('md-btn-download');
+            btnDown.href = link;
+            btnDown.onclick = function () { registrar('download', nombre); };
+            document.getElementById('modal-detalles').classList.add('active');
+        }
+
+        function cerrarDetalles() { document.getElementById('modal-detalles').classList.remove('active'); }
+
+        function toggleSidebar(forceState) {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('overlay');
+            if (forceState !== undefined) {
+                if (forceState) { sb.classList.add('active'); ov.classList.add('active'); }
+                else { sb.classList.remove('active'); ov.classList.remove('active'); }
+            } else {
+                sb.classList.toggle('active');
+                ov.classList.toggle('active');
+            }
+        }
+
+        function toggleDropdown() {
+            document.getElementById('submenu').classList.toggle('open');
+            document.getElementById('dd-arrow').classList.toggle('rotate');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateThemeButton(next);
+        }
+
+        function copiar(texto) {
+            navigator.clipboard.writeText(texto);
+            showToast("¡Semilla copiada al portapapeles!");
+        }
+
+        function like(el, nombre) {
+            if (el.classList.contains('liked')) return;
+            el.classList.add('liked');
+            const span = el.querySelector('span');
+            span.innerText = parseInt(span.innerText) + 1;
+            registrar('like', nombre);
+        }
+
+        function registrar(accion, nombre) {
+            fetch(`${scriptURL}?action=${accion}&nombre=${encodeURIComponent(nombre)}`, { mode: 'no-cors' });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+
+</html>
