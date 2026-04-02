@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MC Addons Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#080c12; --bg2:#0e1520; --bg3:#111d2e; --card:#0d1826;
+      --border:#1a3050; --cyan:#00d4ff; --cyan-dim:#006880;
+      --green:#00ff88; --red:#ff3b5c; --yellow:#ffd000;
+      --text:#c8daf0; --muted:#4a6a8a;
+      --font-head:'Orbitron',sans-serif; --font-body:'Exo 2',sans-serif;
+      --radius:10px;
+      --glow:0 0 20px rgba(0,212,255,0.25);
+      --glow-strong:0 0 35px rgba(0,212,255,0.5);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 20% 10%,rgba(0,100,180,0.07) 0%,transparent 60%),radial-gradient(ellipse 60% 60% at 80% 80%,rgba(0,212,255,0.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--cyan-dim);border-radius:3px}
+    /* images & text */
+    img{-webkit-user-drag:auto;max-width:100%}
+    .card-name,.card-desc,.card-uploader,.badge{user-select:text;-webkit-user-select:text}
+    /* CONFIG BANNER */
+    #config-banner{background:linear-gradient(135deg,#1a0a00,#2a1500);border-bottom:2px solid var(--yellow);padding:10px 16px;text-align:center;font-family:var(--font-body);font-size:.82rem;color:var(--yellow);position:relative;z-index:100}
+    #config-banner input{background:rgba(255,208,0,.1);border:1px solid var(--yellow);color:var(--yellow);padding:5px 10px;border-radius:5px;font-size:.8rem;width:clamp(160px,40vw,460px);margin:4px 6px;outline:none;display:inline-block}
+    #config-banner button{background:var(--yellow);color:#000;border:none;padding:5px 14px;border-radius:5px;font-weight:700;cursor:pointer;font-size:.8rem;margin-top:2px}
+    /* LOGIN */
+    #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:10;padding:20px}
+    .login-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:var(--glow),0 30px 60px rgba(0,0,0,.5);position:relative;overflow:hidden}
+    .login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+    .login-logo{text-align:center;margin-bottom:26px}
+    .login-logo .icon{font-size:2.8rem;display:block;margin-bottom:8px}
+    .login-logo h1{font-family:var(--font-head);font-size:1.4rem;color:var(--cyan);letter-spacing:.1em;text-shadow:var(--glow)}
+    .login-logo p{color:var(--muted);font-size:.78rem;margin-top:4px}
+    .tab-btns{display:flex;gap:5px;margin-bottom:22px;background:var(--bg3);border-radius:8px;padding:4px}
+    .tab-btn{flex:1;padding:9px;border:none;border-radius:6px;background:transparent;color:var(--muted);font-family:var(--font-body);font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+    .tab-btn.active{background:var(--cyan);color:#000}
+    .form-group{margin-bottom:14px}
+    .form-group label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+    .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--radius);font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(212,115,0,.1)}
+    .form-group textarea{resize:vertical;min-height:80px}
+    .form-group select option{background:var(--bg3)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border:none;border-radius:var(--radius);font-family:var(--font-body);font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    .btn-primary{background:var(--cyan);color:#000;box-shadow:0 0 20px rgba(0,212,255,.3)}
+    .btn-primary:hover{box-shadow:var(--glow-strong);transform:translateY(-1px)}
+    .btn-danger{background:var(--red);color:#fff}
+    .btn-ghost{background:transparent;color:var(--cyan);border:1px solid var(--cyan-dim)}
+    .btn-ghost:hover{background:rgba(0,212,255,.08)}
+    .btn-sm{padding:7px 13px;font-size:.78rem}
+    .btn-full{width:100%}
+    .auth-msg{margin-top:10px;padding:9px 13px;border-radius:var(--radius);font-size:.83rem;text-align:center;display:none}
+    .auth-msg.ok{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3)}
+    .auth-msg.err{background:rgba(255,59,92,.1);color:var(--red);border:1px solid rgba(255,59,92,.3)}
+    /* APP */
+    #app{display:none;min-height:100vh;flex-direction:column;position:relative;z-index:10}
+    .app-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;height:58px}
+    .header-logo{font-family:var(--font-head);font-size:1rem;color:var(--cyan);text-shadow:var(--glow);flex-shrink:0;display:flex;align-items:center;gap:6px}
+    .header-logo .dot{color:var(--green)}
+    .search-wrap{position:relative;flex:1;min-width:0;max-width:360px}
+    .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted)}
+    .header-search{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px 8px 34px;border-radius:8px;font-size:.83rem;outline:none;font-family:var(--font-body);-webkit-appearance:none;appearance:none}
+    .header-search:focus{border-color:var(--cyan-dim)}
+    .header-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .user-chip{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);padding:5px 10px;border-radius:20px;font-size:.8rem}
+    .user-chip .avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),#0060ff);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#000;flex-shrink:0}
+    @media(max-width:380px){.user-name-text{display:none}}
+    /* FILTER */
+    .filter-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 14px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .filter-bar::-webkit-scrollbar{display:none}
+    .filter-label{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;flex-shrink:0}
+    .filter-chip{padding:4px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.76rem;cursor:pointer;font-family:var(--font-body);transition:all .15s;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    .filter-chip.active,.filter-chip:hover{background:rgba(0,212,255,.1);border-color:var(--cyan);color:var(--cyan)}
+    .filter-mine{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--muted);cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+    .toggle-switch{width:32px;height:17px;border-radius:9px;background:var(--border);position:relative;transition:background .2s;flex-shrink:0}
+    .toggle-switch.on{background:var(--cyan)}
+    .toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform .2s}
+    .toggle-switch.on::after{transform:translateX(15px)}
+    /* CONTENT */
+    .main-content{flex:1;padding:16px}
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+    .section-title{font-family:var(--font-head);font-size:.9rem;color:var(--cyan);letter-spacing:.07em;display:flex;align-items:center;gap:7px}
+    .count-badge{background:rgba(0,212,255,.15);color:var(--cyan);padding:2px 8px;border-radius:10px;font-size:.7rem;font-family:var(--font-body);font-weight:700}
+    .addons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+    /* CARD */
+    .addon-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s}
+    .addon-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 15px rgba(0,212,255,.1);border-color:var(--cyan-dim)}
+    .addon-card.mine{border-color:rgba(0,212,255,.3)}
+    .card-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--bg3)}
+    .card-img-placeholder{width:100%;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--muted)}
+    .card-body{padding:13px 14px}
+    .card-badges{display:flex;gap:5px;margin-bottom:7px;flex-wrap:wrap}
+    .badge{padding:2px 7px;border-radius:4px;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+    .badge-cat{background:rgba(0,212,255,.12);color:var(--cyan)}
+    .badge-ver{background:rgba(0,255,136,.1);color:var(--green)}
+    .badge-mine{background:rgba(255,208,0,.15);color:var(--yellow)}
+    .card-name{font-family:var(--font-head);font-size:.85rem;color:#fff;margin-bottom:5px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-desc{font-size:.77rem;color:var(--muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .card-stats{display:flex;gap:12px;font-size:.73rem;color:var(--muted);margin-bottom:10px}
+    .card-stat{display:flex;align-items:center;gap:4px}
+    .card-owner-btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+    .card-owner-btns .btn{flex:1;min-width:70px}
+    .card-uploader{font-size:.68rem;color:var(--muted);margin-top:8px;padding-top:7px;border-top:1px solid var(--border)}
+    /* EMPTY/LOADER */
+    .empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
+    .empty-state .icon{font-size:2.8rem;margin-bottom:10px}
+    .empty-state h3{font-family:var(--font-head);font-size:.95rem;color:var(--text);margin-bottom:5px}
+    .loader-wrap{text-align:center;padding:50px 20px}
+    .spinner{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(5,10,20,.88);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.6),var(--glow);transform:translateY(20px);transition:transform .25s;-webkit-overflow-scrolling:touch}
+    .modal-overlay.open .modal{transform:translateY(0)}
+    .modal-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:5}
+    .modal-title{font-family:var(--font-head);font-size:.88rem;color:var(--cyan)}
+    .modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;-webkit-tap-highlight-color:transparent}
+    .modal-close:hover{color:var(--red);background:rgba(255,59,92,.1)}
+    .modal-body{padding:18px 20px}
+    .modal-footer{padding:12px 20px 18px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+    /* IMG UPLOAD */
+    .img-upload-area{border:2px dashed var(--border);border-radius:var(--radius);padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+    .img-upload-area:hover{border-color:var(--cyan);background:rgba(0,212,255,.04)}
+    .img-preview{width:100%;max-height:150px;object-fit:cover;border-radius:6px;display:none;margin-bottom:8px}
+    .img-upload-text{font-size:.78rem;color:var(--muted)}
+    .img-upload-text span{color:var(--cyan)}
+    #img-file-input{display:none}
+    /* TOAST */
+    #toast-container{position:fixed;bottom:20px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+    .toast{padding:11px 18px;border-radius:var(--radius);font-size:.83rem;font-weight:600;min-width:200px;max-width:320px;animation:toast-in .3s ease;box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;pointer-events:all}
+    .toast.ok{background:#0d2a1c;color:var(--green);border-left:4px solid var(--green)}
+    .toast.err{background:#2a0d13;color:var(--red);border-left:4px solid var(--red)}
+    .toast.info{background:#0d1e2a;color:var(--cyan);border-left:4px solid var(--cyan)}
+    @keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    /* CONFIRM */
+    .confirm-overlay{position:fixed;inset:0;background:rgba(5,10,20,.92);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+    .confirm-overlay.open{opacity:1;pointer-events:all}
+    .confirm-box{background:var(--bg2);border:1px solid var(--red);border-radius:14px;padding:26px 22px;max-width:360px;width:100%;text-align:center;box-shadow:0 0 40px rgba(255,59,92,.2)}
+    .confirm-box h3{font-family:var(--font-head);color:var(--red);margin-bottom:10px;font-size:1rem}
+    .confirm-box p{color:var(--muted);font-size:.83rem;margin-bottom:18px;line-height:1.5}
+    .confirm-box .btns{display:flex;gap:10px}
+    .confirm-box .btns .btn{flex:1}
+    /* FAB */
+    .fab{position:fixed;bottom:22px;right:18px;width:54px;height:54px;border-radius:50%;background:var(--cyan);color:#000;font-size:1.6rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;box-shadow:0 0 28px rgba(0,212,255,.5);transition:all .2s;z-index:40;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    .fab:active{transform:scale(.93)}
+    /* HINTS */
+    .url-hint{font-size:.7rem;color:var(--muted);margin-top:4px}
+    .url-hint.ok{color:var(--green)}.url-hint.err{color:var(--red)}
+    /* FORM ROW */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      .addons-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+      .login-box{padding:32px 22px}
+    }
+    @media(max-width:540px){
+      .form-row{grid-template-columns:1fr}
+      .modal{border-radius:14px 14px 0 0;max-height:95vh}
+      .modal-overlay{align-items:flex-end;padding:0}
+      .login-box{padding:28px 18px}
+      .app-header{padding:0 12px;height:54px}
+      .main-content{padding:12px}
+      .filter-bar{padding:8px 12px}
+      #toast-container{bottom:14px;right:12px;left:12px}
+      .toast{min-width:auto;max-width:100%}
+      .fab{bottom:18px;right:14px;width:50px;height:50px;font-size:1.4rem}
+      .section-header{flex-direction:column;align-items:flex-start}
+      .addons-grid{grid-template-columns:1fr 1fr;gap:10px}
+    }
+    @media(max-width:360px){.addons-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div id="config-banner">
+  ⚙️ &nbsp;Configura la URL del script:
+  <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" />
+  <button onclick="saveApiUrl()">Guardar</button>
+</div>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="icon">🎮</span>
+      <h1>JM Panel<span style="color:var(--green)">.</span></h1>
+      <p>Panel de Administración</p>
+    </div>
+    <div class="tab-btns">
+      <button class="tab-btn active" id="tab-login"    onclick="switchTab('login')">Iniciar Sesión</button>
+      <button class="tab-btn"        id="tab-register" onclick="switchTab('register')">Registrarse</button>
+    </div>
+    <div id="form-login">
+      <div class="form-group"><label>Usuario</label><input type="text" id="login-user" placeholder="Tu nombre de usuario" autocomplete="username"/></div>
+      <div class="form-group"><label>Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+      <div class="auth-msg" id="login-msg"></div>
+    </div>
+    <div id="form-register" style="display:none">
+      <div class="form-group"><label>Usuario</label><input type="text" id="reg-user" placeholder="Elige un nombre único" autocomplete="username"/></div>
+      <div class="form-group"><label>Contraseña</label><input type="password" id="reg-pass" placeholder="••••••••" autocomplete="new-password"/></div>
+      <div class="form-group"><label>Confirmar contraseña</label><input type="password" id="reg-pass2" placeholder="••••••••" autocomplete="new-password"/></div>
+      <button class="btn btn-primary btn-full" onclick="doRegister()">Crear Cuenta</button>
+      <div class="auth-msg" id="reg-msg"></div>
+    </div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <header class="app-header">
+    <div class="header-logo">🎮 <span>JM<span style="color:var(--green)">.</span>PANEL</span></div>
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="header-search" type="text" id="search-input" placeholder="Buscar..." oninput="filterAddons()"/>
+    </div>
+    <div class="header-actions">
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar">?</div>
+        <span id="user-display" class="user-name-text">Usuario</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Salir</button>
+    </div>
+  </header>
+  <div class="filter-bar">
+    <span class="filter-label">Cat:</span>
+    <button class="filter-chip active" onclick="setFilter('Todos',this)">Todos</button>
+    <label class="filter-mine">
+      <div class="toggle-switch" id="mine-toggle" onclick="toggleMine()"></div>
+      Míos
+    </label>
+  </div>
+  <div class="main-content">
+    <div class="section-header">
+      <div class="section-title">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        ADDONS PUBLICADOS <span class="count-badge" id="count-badge">0</span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Publicar</button>
+    </div>
+    <div id="addons-container">
+      <div class="loader-wrap"><div class="spinner"></div><p style="color:var(--muted);font-size:.82rem">Cargando...</p></div>
+    </div>
+  </div>
+</div>
+
+<button class="fab" id="fab-btn" onclick="openAddModal()" style="display:none">+</button>
+
+<div class="modal-overlay" id="addon-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">📦 PUBLICAR ADDON</div>
+      <button class="modal-close" onclick="closeModal('addon-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-original-name"/>
+      <div class="form-group">
+        <label>Nombre del Addon *</label>
+        <input type="text" id="addon-nombre" placeholder="Nombre del addon..." oninput="liveSanitize(this,'nombre-hint')" maxlength="120"/>
+        <div class="url-hint" id="nombre-hint" style="display:none"></div>
+      </div>
+      <div class="form-group">
+        <label>URL de Descarga * (cuty.io)</label>
+        <input type="text" id="addon-url" placeholder="https://cuty.io/..." oninput="validateUrl(this)" inputmode="url"/>
+        <div class="url-hint" id="url-hint">Solo se permiten enlaces de cuty.io</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select id="addon-cat">
+            <option value="">Seleccionar...</option>
+            <option value="Addons">Addons</option>
+            <option value="Mapas">Mapas</option>
+            <option value="Shaders">Shaders</option>
+            <option value="Texturas">Texturas</option>
+            <option value="DLC">DLC</option>
+            <option value="Skins">Skins</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Versión</label>
+          <input type="text" id="addon-version" placeholder="V.1.0, 1.20.2..." maxlength="40"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripción *</label>
+        <textarea id="addon-desc" placeholder="Describe el addon..." oninput="liveSanitize(this,'desc-hint')" maxlength="500"></textarea>
+        <div class="url-hint" id="desc-hint" style="display:none"></div>
+      </div>
+      <div class="form-group">
+        <label>Imagen</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <button class="btn btn-ghost btn-sm" id="img-tab-upload" onclick="switchImgTab('upload')" style="flex:1">📁 Subir</button>
+          <button class="btn btn-ghost btn-sm" id="img-tab-url"    onclick="switchImgTab('url')"    style="flex:1">🔗 URL</button>
+        </div>
+        <div id="img-panel-upload">
+          <div class="img-upload-area" onclick="document.getElementById('img-file-input').click()">
+            <img id="img-preview" class="img-preview" alt="preview"/>
+            <div class="img-upload-text"><div style="font-size:1.8rem;margin-bottom:5px">🖼️</div>Toca o arrastra una imagen<br/><span>PNG, JPG, WEBP (máx 5MB)</span></div>
+          </div>
+          <input type="file" id="img-file-input" accept="image/*" onchange="handleImgFile(this)"/>
+        </div>
+        <div id="img-panel-url" style="display:none">
+          <input type="text" id="addon-img-url" placeholder="https://..." inputmode="url"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--radius);outline:none;font-family:var(--font-body);font-size:.9rem;-webkit-appearance:none;appearance:none"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addon-modal')">Cancelar</button>
+      <button class="btn btn-primary" id="modal-submit-btn" onclick="submitAddon()">📤 Publicar</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h3>🗑️ Eliminar Addon</h3>
+    <p id="confirm-text">¿Seguro que quieres eliminar este addon?</p>
+    <div class="btns">
+      <button class="btn btn-ghost"  onclick="closeModal('confirm-overlay')">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-yes-btn" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   ANTI DEVTOOLS
+   — SIN detector de tamaño de ventana
+   — Compatible con Android / tablet / iOS
+══════════════════════════════════════════════ */
+(function(){
+  // Bloquear atajos de teclado (solo aplica en desktop)
+  document.addEventListener('keydown',function(e){
+    if(e.key==='F12'){e.preventDefault();e.stopPropagation();return false}
+    if(e.ctrlKey&&e.shiftKey&&['I','J','C','i','j','c'].includes(e.key)){e.preventDefault();e.stopPropagation();return false}
+    if(e.ctrlKey&&['U','u'].includes(e.key)){e.preventDefault();e.stopPropagation();return false}
+    if(e.metaKey&&e.altKey&&['I','i','J','j','C','c'].includes(e.key)){e.preventDefault();e.stopPropagation();return false}
+  },true);
+
+  // Bloquear clic derecho (excepto en inputs/textarea para poder pegar)
+  document.addEventListener('contextmenu',function(e){
+    const tag=(e.target.tagName||'').toLowerCase();
+    if(['input','textarea','select'].includes(tag))return;
+    e.preventDefault();return false;
+  });
+
+  // Envenenar la consola
+  const noop=()=>{};
+  const fc={log:noop,warn:noop,error:noop,info:noop,debug:noop,dir:noop,table:noop,trace:noop};
+  try{Object.defineProperty(window,'console',{get:()=>fc,set:noop,configurable:false})}catch(x){}
+
+  // Trampa debugger (solo actúa si DevTools está abierto en desktop)
+  setInterval(function(){try{(function(){}).constructor('debugger')()}catch(x){}},4000);
+})();
+
+/* ══════════════════════════════════════════════ CONFIG ══ */
+let API_URL=localStorage.getItem('mc_api_url')||'';
+
+function saveApiUrl(){
+  const val=document.getElementById('api-url-input').value.trim();
+  if(!val.startsWith('https://script.google.com')){toast('Ingresa una URL válida de Google Apps Script','err');return}
+  API_URL=val;localStorage.setItem('mc_api_url',val);
+  const b=document.getElementById('config-banner');
+  b.innerHTML='✅ &nbsp;URL guardada. <button onclick="resetApiUrl()">Cambiar</button>';
+  b.style.cssText='background:linear-gradient(135deg,#001a0a,#003020);border-bottom:2px solid #00ff88;padding:8px 16px;text-align:center;font-family:var(--font-body);font-size:.82rem;color:#00ff88;position:relative;z-index:100';
+  toast('URL guardada ✓','ok');
+}
+function resetApiUrl(){localStorage.removeItem('mc_api_url');location.reload()}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  if(API_URL){
+    document.getElementById('api-url-input').value=API_URL;
+    const b=document.getElementById('config-banner');
+    b.innerHTML='✅ &nbsp;Script configurado. <button onclick="resetApiUrl()">Cambiar URL</button>';
+    b.style.cssText='background:linear-gradient(135deg,#001a0a,#003020);border-bottom:2px solid #00ff88;padding:8px 16px;text-align:center;font-family:var(--font-body);font-size:.82rem;color:#00ff88;position:relative;z-index:100';
+  }
+  checkSession();
+  // Drag & drop imagen
+  const area=document.querySelector('.img-upload-area');
+  if(area){
+    area.addEventListener('dragover',e=>{e.preventDefault();area.style.borderColor='var(--cyan)'});
+    area.addEventListener('dragleave',()=>area.style.borderColor='');
+    area.addEventListener('drop',e=>{
+      e.preventDefault();area.style.borderColor='';
+      const f=e.dataTransfer.files[0];
+      if(f&&f.type.startsWith('image/')){document.getElementById('img-file-input').files=e.dataTransfer.files;handleImgFile(document.getElementById('img-file-input'))}
+    });
+  }
+});
+
+/* ══════════════════════════════════════════════ STATE ═══ */
+let currentUser='',allAddons=[],activeFilter='Todos',showMineOnly=false,pendingDelete=null,isEditing=false,imgBase64=null;
+
+/* ══════════════════════════════════════════════ AUTH ════ */
+function checkSession(){const s=localStorage.getItem('mc_user');if(s){currentUser=s;showApp()}}
+
+function switchTab(tab){
+  document.getElementById('tab-login').classList.toggle('active',tab==='login');
+  document.getElementById('tab-register').classList.toggle('active',tab==='register');
+  document.getElementById('form-login').style.display=tab==='login'?'':'none';
+  document.getElementById('form-register').style.display=tab==='register'?'':'none';
+}
+
+async function doLogin(){
+  if(!checkApiUrl())return;
+  const user=document.getElementById('login-user').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(!user||!pass){showAuthMsg('login-msg','Completa todos los campos','err');return}
+  try{
+    const r=await apiPost({action:'login',user,pass});
+    if(r==='LOGIN_OK'){currentUser=user;localStorage.setItem('mc_user',user);showApp()}
+    else showAuthMsg('login-msg','Usuario o contraseña incorrectos','err');
+  }catch(e){showAuthMsg('login-msg','Error de conexión','err')}
+}
+
+async function doRegister(){
+  if(!checkApiUrl())return;
+  const user=document.getElementById('reg-user').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  const pass2=document.getElementById('reg-pass2').value;
+  if(!user||!pass){showAuthMsg('reg-msg','Completa todos los campos','err');return}
+  if(pass!==pass2){showAuthMsg('reg-msg','Las contraseñas no coinciden','err');return}
+  if(user.length<3){showAuthMsg('reg-msg','Mínimo 3 caracteres','err');return}
+  try{
+    const r=await apiPost({action:'register',user,pass});
+    if(r==='REGISTER_OK'){showAuthMsg('reg-msg','¡Cuenta creada! Inicia sesión.','ok');setTimeout(()=>switchTab('login'),1500)}
+    else if(r==='USER_EXISTS')showAuthMsg('reg-msg','Ese nombre ya existe','err');
+    else showAuthMsg('reg-msg','Error al registrarse','err');
+  }catch(e){showAuthMsg('reg-msg','Error de conexión','err')}
+}
+
+function logout(){
+  localStorage.removeItem('mc_user');currentUser='';allAddons=[];
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('fab-btn').style.display='none';
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+}
+
+function showApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('fab-btn').style.display='flex';
+  document.getElementById('user-display').textContent=currentUser;
+  document.getElementById('user-avatar').textContent=currentUser.charAt(0).toUpperCase();
+  loadAddons();
+}
+
+function showAuthMsg(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='auth-msg '+type;el.style.display='block';
+  setTimeout(()=>el.style.display='none',4000);
+}
+
+/* ══════════════════════════════════════════════ API ═════ */
+function checkApiUrl(){if(!API_URL){toast('Configura primero la URL del script','err');return false}return true}
+async function apiPost(data){
+  const r=await fetch(API_URL,{method:'POST',body:JSON.stringify(data),headers:{'Content-Type':'text/plain;charset=utf-8'}});
+  return r.text();
+}
+async function apiGet(){const r=await fetch(API_URL+'?action=read');return r.json()}
+
+/* ══════════════════════════════════════════════ LOAD ════ */
+async function loadAddons(){
+  if(!checkApiUrl())return;
+  document.getElementById('addons-container').innerHTML='<div class="loader-wrap"><div class="spinner"></div><p style="color:var(--muted);font-size:.82rem">Cargando addons...</p></div>';
+  try{allAddons=await apiGet();renderAddons()}
+  catch(e){document.getElementById('addons-container').innerHTML='<div class="empty-state"><div class="icon">⚠️</div><h3>Error al cargar</h3><p>Revisa la URL del script y tu conexión.</p><button class="btn btn-ghost" style="margin-top:14px" onclick="loadAddons()">Reintentar</button></div>'}
+}
+
+/* ══════════════════════════════════════════════ RENDER ══ */
+function renderAddons(){
+  const search=(document.getElementById('search-input').value||'').toLowerCase();
+  const filtered=allAddons.filter(row=>{
+    if(!row||!row[1])return false;
+    const ms=!search||(row[1]||'').toLowerCase().includes(search)||(row[10]||'').toLowerCase().includes(search)||(row[4]||'').toLowerCase().includes(search);
+    return ms&&(activeFilter==='Todos'||(row[4]||'')===activeFilter)&&(!showMineOnly||isOwner(row));
+  });
+  document.getElementById('count-badge').textContent=filtered.length;
+  if(!filtered.length){
+    document.getElementById('addons-container').innerHTML='<div class="empty-state"><div class="icon">🔍</div><h3>Sin resultados</h3><p>No hay addons que coincidan.</p></div>';
+    return;
+  }
+  document.getElementById('addons-container').innerHTML='<div class="addons-grid">'+filtered.map(makeCard).join('')+'</div>';
+}
+
+function isOwner(row){return row[8]===currentUser||row[7]===currentUser}
+
+function makeCard(row){
+  const nombre=esc(row[1]||''),urlImg=row[3]||'',cat=esc(row[4]||''),
+        likes=row[5]||0,desc=esc(row[10]||''),descargas=row[6]||0,
+        uploader=esc(row[8]||row[7]||''),version=esc(row[9]||'V.desconocida'),mine=isOwner(row);
+
+  const imgHtml=urlImg
+    ?`<img class="card-img" src="${urlImg}" alt="${nombre}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="card-img-placeholder" style="display:none">🖼️</div>`
+    :`<div class="card-img-placeholder">🖼️</div>`;
+
+  // Pasar datos del row al botón editar usando JSON codificado como atributo data
+  const rowId='row-'+Math.random().toString(36).slice(2);
+  const rowJson=JSON.stringify(row);
+
+  const ownerBtns=mine?`
+    <div class="card-owner-btns">
+      <button class="btn btn-ghost btn-sm" style="color:var(--yellow);border-color:rgba(255,208,0,.3)"
+        onclick='openEditModal(${rowJson})'>✏️ Editar</button>
+      <button class="btn btn-danger btn-sm"
+        onclick="askDelete(${JSON.stringify(row[1]||'')})">🗑️ Eliminar</button>
+    </div>`:'';
+
+  return `<div class="addon-card${mine?' mine':''}">
+    ${imgHtml}
+    <div class="card-body">
+      <div class="card-badges">
+        ${cat?`<span class="badge badge-cat">${cat}</span>`:''}
+        <span class="badge badge-ver">${version}</span>
+        ${mine?'<span class="badge badge-mine">⭐ Mío</span>':''}
+      </div>
+      <div class="card-name" title="${nombre}">${nombre}</div>
+      ${desc?`<div class="card-desc">${desc}</div>`:''}
+      <div class="card-stats"><span class="card-stat">❤️ ${likes}</span><span class="card-stat">⬇️ ${descargas}</span></div>
+      ${ownerBtns}
+      <div class="card-uploader">👤 ${uploader}</div>
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════ SANITIZE  */
+function sanitize(str){
+  if(str==null)return'';
+  return String(str).replace(/<[^>]*>/g,'').replace(/[<>"'`\\{}[\]=+*%^~|;&]/g,'').replace(/[\x00-\x1F\x7F]/g,'').replace(/\s{3,}/g,'  ').trim().substring(0,500);
+}
+function esc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+const BANNED=/[<>"'`\\{}[\]=+*%^~|;&]/;
+function liveSanitize(input,hintId){
+  const h=document.getElementById(hintId);
+  if(BANNED.test(input.value)){h.textContent='⚠ Caracteres no permitidos serán eliminados al guardar';h.className='url-hint err';h.style.display='block'}
+  else h.style.display='none';
+}
+
+/* ══════════════════════════════════════════════ FILTER ══ */
+function setFilter(cat,btn){activeFilter=cat;document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAddons()}
+function toggleMine(){showMineOnly=!showMineOnly;document.getElementById('mine-toggle').classList.toggle('on',showMineOnly);renderAddons()}
+function filterAddons(){renderAddons()}
+
+/* ══════════════════════════════════════════════ MODAL ═══ */
+function openAddModal(){
+  if(!checkApiUrl())return;
+  isEditing=false;imgBase64=null;
+  document.getElementById('modal-title').textContent='📦 PUBLICAR ADDON';
+  document.getElementById('modal-submit-btn').textContent='📤 Publicar';
+  document.getElementById('edit-original-name').value='';
+  clearForm();openModal('addon-modal');
+}
+function openEditModal(row){
+  if(!checkApiUrl())return;
+  isEditing=true;imgBase64=null;
+  document.getElementById('modal-title').textContent='✏️ EDITAR ADDON';
+  document.getElementById('modal-submit-btn').textContent='💾 Guardar Cambios';
+  document.getElementById('edit-original-name').value=row[1]||'';
+  document.getElementById('addon-nombre').value=row[1]||'';
+  document.getElementById('addon-url').value=row[2]||'';
+  document.getElementById('addon-cat').value=row[4]||'';
+  document.getElementById('addon-version').value=row[9]||'';
+  document.getElementById('addon-desc').value=row[10]||'';
+  switchImgTab('url');
+  document.getElementById('addon-img-url').value=row[3]||'';
+  validateUrl(document.getElementById('addon-url'));
+  ['nombre-hint','desc-hint'].forEach(id=>document.getElementById(id).style.display='none');
+  openModal('addon-modal');
+}
+function clearForm(){
+  ['addon-nombre','addon-url','addon-version','addon-desc','addon-img-url'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addon-cat').value='';
+  document.getElementById('img-preview').style.display='none';
+  document.getElementById('img-file-input').value='';
+  document.getElementById('url-hint').textContent='Solo se permiten enlaces de cuty.io';
+  document.getElementById('url-hint').className='url-hint';
+  ['nombre-hint','desc-hint'].forEach(id=>document.getElementById(id).style.display='none');
+  switchImgTab('upload');
+}
+
+/* ══════════════════════════════════════════════ SUBMIT ══ */
+async function submitAddon(){
+  if(!checkApiUrl())return;
+  const nombre=sanitize(document.getElementById('addon-nombre').value);
+  const url=document.getElementById('addon-url').value.trim();
+  const cat=document.getElementById('addon-cat').value;
+  const version=sanitize(document.getElementById('addon-version').value);
+  const desc=sanitize(document.getElementById('addon-desc').value);
+  const imgUrl=document.getElementById('addon-img-url').value.trim();
+  if(!nombre){toast('El nombre es obligatorio','err');return}
+  if(!url){toast('La URL de descarga es obligatoria','err');return}
+  if(!isCutyUrl(url)){toast('Solo se permiten URLs de cuty.io','err');return}
+  if(!cat){toast('Selecciona una categoría','err');return}
+  if(!desc){toast('La descripción es obligatoria','err');return}
+  const btn=document.getElementById('modal-submit-btn');
+  btn.disabled=true;btn.textContent=isEditing?'💾 Guardando...':'📤 Publicando...';
+  try{
+    let resp;
+    if(isEditing){
+      const p={action:'edit',nombreOriginal:document.getElementById('edit-original-name').value,usuario:currentUser,nuevoNombre:nombre,nuevaUrl:url,nuevaCategoria:cat,nuevaVersion:version,nuevaDescripcion:desc};
+      if(imgBase64){p.nuevaImg=imgBase64;p.nuevoNombre=nombre}
+      resp=await apiPost(p);
+      if(resp==='EDIT_OK'){toast('¡Addon actualizado!','ok');closeModal('addon-modal');loadAddons()}
+      else toast('Error al editar: '+resp,'err');
+    }else{
+      const p={action:'add',nombre,link:url,category:cat,seed:'',subidoPor:currentUser,version,descripcion:desc};
+      if(imgBase64)p.img=imgBase64;else if(imgUrl)p.imgUrl=imgUrl;
+      resp=await apiPost(p);
+      if(resp==='OK_EN_REVISION'||resp==='OK'){toast('¡Addon publicado!','ok');closeModal('addon-modal');loadAddons()}
+      else toast('Error al publicar: '+resp,'err');
+    }
+  }catch(e){toast('Error de conexión: '+e.message,'err')}
+  finally{btn.disabled=false;btn.textContent=isEditing?'💾 Guardar Cambios':'📤 Publicar'}
+}
+
+/* ══════════════════════════════════════════════ DELETE ══ */
+function askDelete(nombre){
+  pendingDelete=nombre;
+  document.getElementById('confirm-text').textContent='¿Eliminar "'+nombre+'"? Esta acción no se puede deshacer.';
+  openModal('confirm-overlay');
+}
+async function confirmDelete(){
+  if(!pendingDelete||!checkApiUrl())return;
+  const btn=document.getElementById('confirm-yes-btn');
+  btn.disabled=true;btn.textContent='Eliminando...';
+  try{
+    const resp=await apiPost({action:'delete',nombre:pendingDelete,usuario:currentUser});
+    if(resp==='DELETE_OK'){toast('Addon eliminado','ok');closeModal('confirm-overlay');loadAddons()}
+    else toast('Error al eliminar. ¿Eres el propietario?','err');
+  }catch(e){toast('Error de conexión','err')}
+  finally{btn.disabled=false;btn.textContent='Eliminar';pendingDelete=null}
+}
+
+/* ══════════════════════════════════════════════ IMAGE ═══ */
+function switchImgTab(tab){
+  document.getElementById('img-panel-upload').style.display=tab==='upload'?'':'none';
+  document.getElementById('img-panel-url').style.display=tab==='url'?'':'none';
+  document.getElementById('img-tab-upload').classList.toggle('btn-primary',tab==='upload');
+  document.getElementById('img-tab-url').classList.toggle('btn-primary',tab==='url');
+  document.getElementById('img-tab-upload').classList.toggle('btn-ghost',tab!=='upload');
+  document.getElementById('img-tab-url').classList.toggle('btn-ghost',tab!=='url');
+  if(tab==='upload')imgBase64=null;
+}
+function handleImgFile(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('La imagen no puede superar 5MB','err');return}
+  const reader=new FileReader();
+  reader.onload=e=>{imgBase64=e.target.result;const p=document.getElementById('img-preview');p.src=imgBase64;p.style.display='block'};
+  reader.readAsDataURL(file);
+}
+
+/* ══════════════════════════════════════════════ URL VAL ══ */
+function isCutyUrl(url){return/^https?:\/\/(www\.)?cuty\.io\/.+/.test(url)}
+function validateUrl(input){
+  const h=document.getElementById('url-hint'),val=input.value.trim();
+  if(!val){h.textContent='Solo se permiten enlaces de cuty.io';h.className='url-hint';return}
+  if(isCutyUrl(val)){h.textContent='✓ URL válida de cuty.io';h.className='url-hint ok'}
+  else{h.textContent='✗ Solo cuty.io (ej: https://cuty.io/...)';h.className='url-hint err'}
+}
+
+/* ══════════════════════════════════════════════ MODALS ══ */
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+document.querySelectorAll('.modal-overlay,.confirm-overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id)})});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('addon-modal');closeModal('confirm-overlay')}});
+
+/* ══════════════════════════════════════════════ TOAST ═══ */
+function toast(msg,type='info'){
+  const icons={ok:'✓',err:'✗',info:'ℹ'};
+  const el=document.createElement('div');el.className='toast '+type;
+  el.textContent=icons[type]+' '+msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(()=>{el.style.cssText='opacity:0;transform:translateX(20px);transition:all .3s';setTimeout(()=>el.remove(),300)},3500);
+}
+
+/* ══════════════════════════════════════════════ ENTER ═══ */
+['login-user','login-pass'].forEach(id=>document.getElementById(id)?.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()}));
+['reg-user','reg-pass','reg-pass2'].forEach(id=>document.getElementById(id)?.addEventListener('keydown',e=>{if(e.key==='Enter')doRegister()}));
+</script>
+</body>
+</html>
