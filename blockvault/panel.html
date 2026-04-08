@@ -346,6 +346,9 @@
 
   // ── HELPERS ───────────────────────────────────────────────
   function post(p){ return fetch(API,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();}); }
+  /* ── PING LOOP ── */
+  post({action:'ping', uuid:ses.uuid});
+  setInterval(function(){ post({action:'ping', uuid:ses.uuid}); }, 30000);
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function toast(msg,t){ var el=document.createElement('div'); el.className='toast '+(t||'info'); el.textContent=msg; document.getElementById('toast-wrap').appendChild(el); setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},3100); }
   function showErr(msg){ var e=document.getElementById('form-err'); document.getElementById('form-err-msg').textContent=msg; e.classList.add('show'); document.getElementById('form-ok').classList.remove('show'); e.scrollIntoView({behavior:'smooth',block:'nearest'}); }
