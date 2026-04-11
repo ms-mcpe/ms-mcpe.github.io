@@ -74,12 +74,18 @@
     <div class="form-panel active" id="panel-login">
       <div class="field"><label>Nombre de usuario</label><input class="input" type="text" id="login-nombre" placeholder="Tu nombre" autocomplete="off"></div>
       <div class="field"><label>Contraseña</label><input class="input" type="password" id="login-pass" placeholder="••••••••"></div>
+      <div style="text-align:right;margin-bottom:12px;margin-top:-6px">
+        <a href="#" style="font-size:0.75rem;color:var(--accent);font-weight:600;text-decoration:none" onclick="switchTab('recover')">¿Olvidaste tu contraseña?</a>
+      </div>
       <div class="err-msg" id="login-err"></div>
       <button class="btn" id="btn-login" onclick="doLogin()">Entrar</button>
     </div>
     <div class="form-panel" id="panel-register">
       <div class="field"><label>Nombre de usuario</label><input class="input" type="text" id="reg-nombre" placeholder="Elige un nombre único" autocomplete="off"></div>
-      <div class="field"><label>Contraseña</label><input class="input" type="password" id="reg-pass" placeholder="Mínimo 4 caracteres"></div>
+      <div class="field"><label>Contraseña</label><input class="input" type="password" id="reg-pass" placeholder="Mínimo 8 caracteres"></div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;margin-top:-10px">
+        Debe tener 8+ caracteres y no empezar por número.
+      </div>
       <div class="field">
         <label>Foto de perfil <span style="color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
         <div class="img-picker" onclick="document.getElementById('reg-foto-input').click()">
@@ -95,6 +101,18 @@
       </div>
       <div class="err-msg" id="reg-err"></div>
       <button class="btn" id="btn-reg" onclick="doRegister()">Crear cuenta</button>
+    </div>
+    <div class="form-panel" id="panel-recover">
+       <div style="margin-bottom:20px;text-align:center">
+         <h3 style="font-family:var(--font-head);margin-bottom:8px">Recuperar cuenta</h3>
+         <p style="font-size:0.8rem;color:var(--text-muted)">Usa tu ID de 8 dígitos guardada en Ajustes > Personal para recuperar tus datos.</p>
+       </div>
+       <div class="field"><label>Nombre de usuario</label><input class="input" type="text" id="rec-nombre" placeholder="Tu nombre"></div>
+       <div class="field"><label>ID de recuperación (8 dígitos)</label><input class="input" type="text" id="rec-id" placeholder="12345678" maxlength="8"></div>
+       <div class="field"><label>Nueva contraseña</label><input class="input" type="password" id="rec-pass" placeholder="Mínimo 8 caracteres"></div>
+       <div class="err-msg" id="rec-err"></div>
+       <button class="btn" id="btn-rec" onclick="doRecover()">Actualizar contraseña</button>
+       <button class="btn" style="background:var(--surface-2);color:var(--text);margin-top:10px" onclick="switchTab('login')">Volver</button>
     </div>
   </div>
 </div>
@@ -112,13 +130,19 @@
   function api(p){ return fetch(API,{method:'POST',body:JSON.stringify(p)}).then(function(r){return r.json();}); }
   function showErr(id,msg){ var el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
   function hideErr(id){ document.getElementById(id).style.display='none'; }
-  function setLoading(id,on){ var b=document.getElementById(id); b.disabled=on; b.innerHTML=on?'<span class="spinner"></span>':(id==='btn-login'?'Entrar':'Crear cuenta'); }
-  window.switchTab=function(tab){ document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(i===0)===(tab==='login'));}); document.getElementById('panel-login').classList.toggle('active',tab==='login'); document.getElementById('panel-register').classList.toggle('active',tab==='register'); };
+  function setLoading(id,on){ var b=document.getElementById(id); b.disabled=on; var txt='Entrar'; if(id==='btn-reg')txt='Crear cuenta'; if(id==='btn-rec')txt='Actualizar contraseña'; b.innerHTML=on?'<span class="spinner"></span>':txt; }
+  window.switchTab=function(tab){ 
+    document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(tab==='login'?i===0:(tab==='register'?i===1:false)));}); 
+    document.getElementById('panel-login').classList.toggle('active',tab==='login'); 
+    document.getElementById('panel-register').classList.toggle('active',tab==='register'); 
+    document.getElementById('panel-recover').classList.toggle('active',tab==='recover'); 
+  };
   var avatarBase64='';
   window.previewAvatar=function(input){ var f=input.files[0]; if(!f)return; if(f.size>3*1024*1024){showErr('reg-err','Máx 3MB.');return;} var r=new FileReader(); r.onload=function(e){ avatarBase64=e.target.result; var img=document.getElementById('avatar-preview'); img.src=avatarBase64; img.style.display='block'; document.querySelector('#avatar-thumb svg').style.display='none'; }; r.readAsDataURL(f); };
   window.doLogin=function(){ hideErr('login-err'); var nombre=document.getElementById('login-nombre').value.trim(); var pass=document.getElementById('login-pass').value; if(!nombre||!pass)return showErr('login-err','Completa todos los campos.'); setLoading('btn-login',true); api({action:'iniciarSesion',nombre:nombre,contrasena:pass}).then(function(res){ setLoading('btn-login',false); if(!res.ok)return showErr('login-err',res.msg); localStorage.setItem('bv_session',JSON.stringify(res)); location.href='main.html'; }).catch(function(){ setLoading('btn-login',false); showErr('login-err','Error de conexión.'); }); };
-  window.doRegister=function(){ hideErr('reg-err'); var nombre=document.getElementById('reg-nombre').value.trim(); var pass=document.getElementById('reg-pass').value; if(!nombre||!pass)return showErr('reg-err','Completa todos los campos.'); if(nombre.length<3)return showErr('reg-err','Mínimo 3 caracteres.'); if(pass.length<4)return showErr('reg-err','Contraseña de al menos 4 caracteres.'); setLoading('btn-reg',true); api({action:'registrarUsuario',datos:{nombre:nombre,contrasena:pass,fotoPerfil:avatarBase64}}).then(function(res){ setLoading('btn-reg',false); if(!res.ok)return showErr('reg-err',res.msg); localStorage.setItem('bv_session',JSON.stringify(res)); location.href='main.html'; }).catch(function(){ setLoading('btn-reg',false); showErr('reg-err','Error de conexión.'); }); };
-  document.addEventListener('keydown',function(e){ if(e.key!=='Enter')return; var p=document.querySelector('.form-panel.active').id; if(p==='panel-login')window.doLogin(); else window.doRegister(); });
+  window.doRegister=function(){ hideErr('reg-err'); var nombre=document.getElementById('reg-nombre').value.trim(); var pass=document.getElementById('reg-pass').value; if(!nombre||!pass)return showErr('reg-err','Completa todos los campos.'); if(nombre.length<3)return showErr('reg-err','Nombre muy corto (mín. 3).'); if(pass.length<8)return showErr('reg-err','La contraseña debe tener 8+ caracteres.'); if(/^\d/.test(pass))return showErr('reg-err','No puede empezar con un número.'); setLoading('btn-reg',true); api({action:'registrarUsuario',datos:{nombre:nombre,contrasena:pass,fotoPerfil:avatarBase64}}).then(function(res){ setLoading('btn-reg',false); if(!res.ok)return showErr('reg-err',res.msg); localStorage.setItem('bv_session',JSON.stringify(res)); location.href='main.html'; }).catch(function(){ setLoading('btn-reg',false); showErr('reg-err','Error de conexión.'); }); };
+  window.doRecover=function(){ hideErr('rec-err'); var nombre=document.getElementById('rec-nombre').value.trim(); var rid=document.getElementById('rec-id').value.trim(); var pass=document.getElementById('rec-pass').value; if(!nombre||!rid||!pass)return showErr('rec-err','Completa todos los campos.'); if(rid.length!==8)return showErr('rec-err','El ID debe ser de 8 dígitos.'); if(pass.length<8)return showErr('rec-err','Nueva contraseña de 8+ caracteres.'); if(/^\d/.test(pass))return showErr('rec-err','No puede empezar con un número.'); setLoading('btn-rec',true); api({action:'recuperarCuentaConID',nombre:nombre,recoveryId:rid,nuevaContrasena:pass}).then(function(res){ setLoading('btn-rec',false); if(!res.ok)return showErr('rec-err',res.msg); alert('¡Contraseña recuperada! Ya puedes iniciar sesión.'); switchTab('login'); }).catch(function(){ setLoading('btn-rec',false); showErr('rec-err','Error de conexión.'); }); };
+  document.addEventListener('keydown',function(e){ if(e.key!=='Enter')return; var p=document.querySelector('.form-panel.active').id; if(p==='panel-login')window.doLogin(); else if(p==='panel-register')window.doRegister(); else if(p==='panel-recover')window.doRecover(); });
 })();
 </script>
 </body>
