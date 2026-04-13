@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlockVault — Inicio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #050508;
+    --surface: #0E0E14;
+    --border: rgba(255,255,255,0.08);
+    --text: #F1F1F4;
+    --text-muted: #8888A0;
+    --accent: #6C63FF;
+    --accent-rgb: 108,99,255;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'Outfit', sans-serif;
+  }
+  
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* BLOQUEO */
+  * { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  input, textarea { -webkit-user-select: text; -moz-user-select: text; user-select: text; }
+  img { pointer-events: none; -webkit-user-drag: none; }
+
+  .landing {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+    position: relative;
+    padding: 24px;
+    z-index: 10;
+  }
+
+  /* BACKGROUND EFFECTS */
+  .bg-glow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at 50% 50%, rgba(var(--accent-rgb), 0.15) 0%, transparent 70%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .content {
+    text-align: center;
+    max-width: 600px;
+    animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .brand {
+    font-family: var(--font-head);
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #FFF 30%, rgba(255,255,255,0.6));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .tagline {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  .stats {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 48px;
+    animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: var(--font-head);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-lbl {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .btn-enter {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 40px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.3);
+    border: none;
+    cursor: pointer;
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+  }
+
+  .btn-enter:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(var(--accent-rgb), 0.45);
+    filter: brightness(1.1);
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 32px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    animation: fadeIn 2s ease 1s both;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 0.6; } }
+
+  /* OVERLAY LOADING */
+  #loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(var(--accent-rgb), 0.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="spinner"></div></div>
+
+<div class="bg-glow"></div>
+
+<div class="landing">
+  <div class="content">
+    <h1 class="brand">BlockVault</h1>
+    <p class="tagline">La colección definitiva de addons para tu experiencia Minecraft.</p>
+    
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-val" id="count-addons">—</span>
+        <span class="stat-lbl">Addons</span>
+      </div>
+      <div class="stat-item" title="Activos en los últimos 10 minutos">
+        <span class="stat-val" id="count-users">—</span>
+        <span class="stat-lbl">Usuarios Online</span>
+      </div>
+    </div>
+
+    <button class="btn-enter" onclick="enter()">
+      Explorar Ahora
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="footer">
+    © 2026 BlockVault · Profesional & Minimalista
+  </div>
+</div>
+
+<script>
+(function() {
+  const API = 'https://script.google.com/macros/s/AKfycby_q9XZ8vYBsnr0G5PZGapHZh1iZ-GFBJqychgMnZ-hs3Napp1fWE_RfisJ91B2ZBwQ/exec';
+
+  /* ── ANTI-INSPECT ── */
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+    }
+  });
+
+  /* ── FETCH STATS ── */
+  fetch(API, { method: 'POST', body: JSON.stringify({ action: 'obtenerEstadisticas' }) })
+    .then(r => r.json())
+    .then(res => {
+      if (res.ok) {
+        animateValue("count-addons", 0, res.addons, 1500);
+        animateValue("count-users", 0, res.usuariosActivos, 1500);
+      }
+      document.getElementById('loader').style.opacity = '0';
+      setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+    })
+    .catch(() => {
+      document.getElementById('loader').style.display = 'none';
+    });
+
+  function animateValue(id, start, end, duration) {
+    if (start === end) { document.getElementById(id).textContent = end; return; }
+    const obj = document.getElementById(id);
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      obj.textContent = Math.floor(progress * (end - start) + start);
+      if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  window.enter = function() {
+    // Redirigir a addons.html
+    location.href = 'addons.html';
+  };
+})();
+</script>
+</body>
+</html>
