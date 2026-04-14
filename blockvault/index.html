@@ -522,6 +522,7 @@
     let currentPage = 'home';
     let appTheme = localStorage.getItem('bv_theme') || 'dark';
     let sessionData = null;
+    let pendingData = null; // Para pasar filtros u otros datos al iframe
 
     // ════════════════════════════════════════════════════════════
     //  PARTÍCULAS
@@ -566,9 +567,10 @@
     // ════════════════════════════════════════════════════════════
     //  NAVEGACIÓN CON IFRAME
     // ════════════════════════════════════════════════════════════
-    function navigateTo(page) {
+    function navigateTo(page, data = null) {
       if (!PAGES[page]) return;
       currentPage = page;
+      pendingData = data;
 
       const frame = document.getElementById('page-frame');
       frame.classList.add('loading');
@@ -577,7 +579,14 @@
         frame.src = PAGES[page];
         frame.onload = () => {
           frame.classList.remove('loading');
-          notifyFrame({ type: 'init', theme: appTheme, session: sessionData, scriptUrl: SCRIPT_URL });
+          notifyFrame({ 
+            type: 'init', 
+            theme: appTheme, 
+            session: sessionData, 
+            scriptUrl: SCRIPT_URL,
+            data: pendingData 
+          });
+          pendingData = null;
         };
       }, 150);
     }
@@ -588,7 +597,7 @@
       if (!d || !d.type) return;
 
       switch (d.type) {
-        case 'navigate': navigateTo(d.page); break;
+        case 'navigate': navigateTo(d.page, d.data); break;
         case 'toast': showToast(d.msg, d.style); break;
         case 'setSession':
           sessionData = d.session;

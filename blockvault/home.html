@@ -394,7 +394,6 @@ footer span{color:var(--accent);font-family:var(--font-display);font-size:0.9rem
 
   <div class="hero-actions">
     <button class="btn primary" onclick="nav('addons')">🧩 Ver Addons</button>
-    <button class="btn secondary" onclick="nav('settings')">⚙️ Ajustes</button>
   </div>
 </section>
 
@@ -426,30 +425,30 @@ footer span{color:var(--accent);font-family:var(--font-display);font-size:0.9rem
   <p class="section-label">📂 Explora por categoría</p>
   <h2 class="section-title">¿Qué buscas hoy?</h2>
   <div class="cat-grid">
-    <div class="cat-card" onclick="nav('addons')">
+    <div class="cat-card" onclick="nav('addons', {filter:'Addons'})">
       <span class="cat-icon">🧩</span>
       <div class="cat-name">Addons</div>
       <div class="cat-desc">Mods y funcionalidades</div>
     </div>
-    <div class="cat-card" onclick="nav('addons')">
+    <div class="cat-card" onclick="nav('addons', {filter:'Mapas'})">
       <span class="cat-icon">🗺️</span>
       <div class="cat-name">Mapas</div>
       <div class="cat-desc">Mundos y aventuras</div>
     </div>
-    <div class="cat-card" onclick="nav('addons')">
+    <div class="cat-card" onclick="nav('addons', {filter:'Texturas'})">
       <span class="cat-icon">🎨</span>
       <div class="cat-name">Texturas</div>
       <div class="cat-desc">Resource packs y skins</div>
     </div>
-    <div class="cat-card" onclick="nav('addons')">
+    <div class="cat-card" onclick="nav('addons', {filter:'DLC'})">
       <span class="cat-icon">💎</span>
       <div class="cat-name">DLC</div>
       <div class="cat-desc">Contenido premium</div>
     </div>
-    <div class="cat-card" onclick="nav('addons')">
+    <div class="cat-card" onclick="nav('addons', {filter:'Popurris'})">
       <span class="cat-icon">🎭</span>
-      <div class="cat-name">Popurrís</div>
-      <div class="cat-desc">Packs variados</div>
+      <div class="cat-name">Popurris</div>
+      <div class="cat-desc">Contenido variado</div>
     </div>
   </div>
 </section>
@@ -537,8 +536,8 @@ function closePwa(install) {
   }
 }
 
-function nav(page) {
-  window.parent.postMessage({ type: 'navigate', page }, '*');
+function nav(page, data = null) {
+  window.parent.postMessage({ type: 'navigate', page, data }, '*');
 }
 
 // Contador animado
