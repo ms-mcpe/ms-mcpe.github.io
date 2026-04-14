@@ -13,54 +13,50 @@
         rel="stylesheet">
 
     <style>
-        /* ==========================================
-           BLOCKVAULT — DESIGN SYSTEM
-           Light = Default, Dark = Emerald-steel
-        ========================================== */
         :root {
             /* Clean Light Theme */
-            --primary: #10b981;
-            --primary-glow: rgba(16, 185, 129, 0.25);
+            --primary: #7c3aed;
+            --primary-glow: rgba(124, 58, 237, 0.25);
             --bg-dark: #f8fafc;
             --bg-panel: #ffffff;
             --surface: #f1f5f9;
             --text-main: #0f172a;
             --text-sec: #475569;
-            --success: #10b981;
+            --success: #7c3aed;
             --glass: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(16, 185, 129, 0.15);
+            --glass-border: rgba(124, 58, 237, 0.15);
             --radius: 20px;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --logo-cyan: #059669;
-            --logo-lime-shadow: rgba(16, 185, 129, 0.4);
-            --accent-red: #059669;
-            --accent-bright: #10b981;
-            --accent-gold: #34d399;
+            --logo-cyan: #06b6d4;
+            --logo-lime-shadow: rgba(124, 58, 237, 0.4);
+            --accent-red: #7c3aed;
+            --accent-bright: #7c3aed;
+            --accent-gold: #06b6d4;
             --header-shadow: rgba(0, 0, 0, 0.05);
-            --card-hover-shadow: rgba(16, 185, 129, 0.15);
-            --scrollbar-thumb: #6ee7b7;
+            --card-hover-shadow: rgba(124, 58, 237, 0.15);
+            --scrollbar-thumb: #a78bfa;
         }
 
-        /* Perfectly Detailed Dark Theme: Emerald-Black-White */
+        /* Perfectly Detailed Dark Theme: Purple-Cyan-Black */
         [data-theme="dark"] {
-            --primary: #10b981;
-            --primary-glow: rgba(16, 185, 129, 0.35);
-            --bg-dark: #0a0a0a;
-            --bg-panel: #121212;
-            --surface: #1a1a1a;
+            --primary: #7c3aed;
+            --primary-glow: rgba(124, 58, 237, 0.35);
+            --bg-dark: #0a0a14;
+            --bg-panel: #12121f;
+            --surface: #1a1a2e;
             --text-main: #ffffff;
-            --text-sec: #a3a3a3;
-            --success: #22c55e;
-            --glass: rgba(10, 10, 10, 0.92);
-            --glass-border: rgba(16, 185, 129, 0.2);
-            --logo-cyan: #10b981;
-            --logo-lime-shadow: rgba(16, 185, 129, 0.6);
-            --accent-red: #059669;
-            --accent-bright: #10b981;
-            --accent-gold: #34d399;
+            --text-sec: #94a3b8;
+            --success: #7c3aed;
+            --glass: rgba(10, 10, 20, 0.92);
+            --glass-border: rgba(124, 58, 237, 0.2);
+            --logo-cyan: #06b6d4;
+            --logo-lime-shadow: rgba(124, 58, 237, 0.6);
+            --accent-red: #7c3aed;
+            --accent-bright: #7c3aed;
+            --accent-gold: #06b6d4;
             --header-shadow: rgba(0, 0, 0, 0.5);
-            --card-hover-shadow: rgba(16, 185, 129, 0.4);
-            --scrollbar-thumb: #059669;
+            --card-hover-shadow: rgba(124, 58, 237, 0.4);
+            --scrollbar-thumb: #7c3aed;
         }
 
         * {
@@ -97,23 +93,14 @@
             background: var(--accent-bright);
         }
 
-        /* --- HEADER --- */
-        .app-header {
-            position: fixed;
+        /* --- MODIFIED SEARCH --- */
+        .search-area {
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
             z-index: 1000;
-            box-shadow: 0 4px 30px var(--header-shadow);
+            background: var(--bg-dark);
+            padding: 20px 0;
+            margin-bottom: 20px;
         }
 
         .header-left {
@@ -858,7 +845,7 @@
             position: relative;
             padding: 24px;
             border: 1px solid var(--accent-bright);
-            box-shadow: 0 0 40px var(--logo-lime-shadow), 0 0 80px rgba(255, 42, 42, 0.1);
+            box-shadow: 0 0 40px var(--logo-lime-shadow), 0 0 80px rgba(124, 58, 237, 0.1);
             border-radius: 24px;
             transform: scale(0.9);
             transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -875,7 +862,7 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background: rgba(139, 0, 0, 0.2);
+            background: rgba(124, 58, 237, 0.2);
             border: none;
             color: #fff;
             width: 34px;
@@ -887,7 +874,7 @@
         }
 
         .modal-close-btn:hover {
-            background: rgba(255, 42, 42, 0.4);
+            background: rgba(124, 58, 237, 0.4);
         }
 
         .detalles-img {
@@ -895,7 +882,7 @@
             aspect-ratio: 16/9;
             object-fit: cover;
             border-radius: 14px;
-            border: 1px solid rgba(139, 0, 0, 0.25);
+            border: 1px solid rgba(124, 58, 237, 0.25);
             margin-bottom: 20px;
         }
 
@@ -912,14 +899,14 @@
 
         .detalles-version {
             display: inline-block;
-            background: rgba(139, 0, 0, 0.2);
+            background: rgba(124, 58, 237, 0.2);
             color: var(--accent-gold);
             padding: 6px 18px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: bold;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 165, 0, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.2);
         }
 
         .detalles-desc {
@@ -929,7 +916,7 @@
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 25px;
-            background: rgba(139, 0, 0, 0.06);
+            background: rgba(124, 58, 237, 0.06);
             padding: 18px;
             border-radius: 14px;
             border: 1px solid var(--glass-border);
@@ -937,7 +924,7 @@
 
         .btn-descarga-final {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent-bright), var(--accent-red));
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent-gold));
             color: #fff;
             font-weight: 800;
             padding: 16px;
@@ -955,7 +942,7 @@
 
         .btn-descarga-final:hover {
             transform: scale(1.02);
-            box-shadow: 0 8px 28px rgba(255, 42, 42, 0.5);
+            box-shadow: 0 8px 28px rgba(124, 58, 237, 0.5);
         }
     </style>
 </head>
@@ -965,85 +952,23 @@
     <div style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;display:none;" id="security-shield">
     </div>
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="app-logo"><img src="icon-192.png" alt="Logo" class="logo-img"> BlockVault</div>
-            <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
-        </div>
-        <ul class="nav-list">
-            <li class="nav-item"><a class="nav-link" onclick="mostrarInicio()"><i class="fas fa-home"></i> Inicio</a>
-            </li>
-
-            <!-- CATEGORÍAS PRINCIPALES -->
-            <li>
-                <div class="nav-section-label"><i class="fas fa-layer-group" style="margin-right:6px;"></i> Categorías
-                </div>
-            </li>
-            <li class="nav-item">
-                <div class="nav-link" onclick="toggleDropdown()">
-                    <i class="fas fa-th-large"></i> Explorar todo
-                    <i class="fas fa-chevron-down dropdown-arrow" id="dd-arrow"></i>
-                </div>
-                <ul class="submenu" id="submenu">
-                    <li><a class="nav-link" onclick="filtrar('Addons')" style="padding-left:50px;"><i
-                                class="fas fa-puzzle-piece"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Addons</a>
-                    </li>
-                    <li><a class="nav-link" onclick="filtrar('Mapas')" style="padding-left:50px;"><i class="fas fa-map"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Mapas</a>
-                    </li>
-                    <li><a class="nav-link" onclick="filtrar('Shaders')" style="padding-left:50px;"><i
-                                class="fas fa-sun"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Shaders</a>
-                    </li>
-                    <li><a class="nav-link" onclick="filtrar('Texturas')" style="padding-left:50px;"><i
-                                class="fas fa-palette"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Texturas</a>
-                    </li>
-                    <li><a class="nav-link" onclick="filtrar('DLC')" style="padding-left:50px;"><i
-                                class="fas fa-box-open"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>DLC</a>
-                    </li>
-                    <li><a class="nav-link" onclick="filtrar('Skins')" style="padding-left:50px;"><i
-                                class="fas fa-user-tag"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Skins</a>
-                    </li>
-                    <li><a class="nav-link" onclick="filtrar('Versiones')" style="padding-left:50px;"><i
-                                class="fas fa-mobile-alt"
-                                style="margin-right:8px;font-size:0.8rem;color:var(--accent-bright)"></i>Versiones</a>
-                    </li>
-                </ul>
-            </li>
-
-            <!-- REDES SOCIALES -->
-            <li>
-                <div class="nav-divider"></div>
-            </li>
-        </ul>
-        <div style="padding: 20px;">
-            <button class="btn-action" onclick="toggleTheme()"
-                style="background:transparent; border:1px solid rgba(139,0,0,0.4); color:var(--text-sec);">
-                <i class="fas fa-moon"></i> Cambiar Tema
-            </button>
-        </div>
-    </nav>
-
-    <header class="app-header">
-        <div class="header-left">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-            <div class="app-logo" style="display:none;" id="header-logo"><img src="icon-192.png" alt="Logo" class="logo-img"> BlockVault</div>
+    <main class="main-content" style="padding-top: 20px;">
+        <div class="search-area">
+            <div class="search-container" style="max-width: 800px; margin: 0 auto;">
+                <input type="text" id="addon-search" placeholder="Buscar por nombre o versión..." oninput="buscar()">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            
+            <div class="sort-bar" style="justify-content: center; margin-top: 15px;">
+                <button class="sort-btn active" onclick="filtrar('Todo')">Todo</button>
+                <button class="sort-btn" onclick="filtrar('Addons')">Addons</button>
+                <button class="sort-btn" onclick="filtrar('Mapas')">Mapas</button>
+                <button class="sort-btn" onclick="filtrar('Shaders')">Shaders</button>
+                <button class="sort-btn" onclick="filtrar('Texturas')">Texturas</button>
+                <button class="sort-btn" onclick="filtrar('DLC')">DLC</button>
+            </div>
         </div>
 
-        <div class="search-container">
-            <input type="text" id="addon-search" placeholder="Buscar por nombre o versión..." oninput="buscar()">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-
-        <div style="width: 30px;"></div>
-    </header>
-
-    <main>
         <div id="loader" class="loader-container">
             <div class="spinner"></div>
             <div style="font-size:0.8rem; letter-spacing:1px; color:var(--text-sec); font-weight:600;">CARGANDO
@@ -1123,7 +1048,6 @@
         }
 
         function mostrarInicio() {
-            if (window.innerWidth < 1000) toggleSidebar(false);
             const container = document.getElementById('dynamic-content');
             container.innerHTML = '';
             const imagenes = db.map(i => i[3]).filter(url => url && url.startsWith('http'));
