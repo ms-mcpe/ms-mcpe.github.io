@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#7c3aed" />
 
   <style>
     /* ══════════════════════════════════════════════════
@@ -670,11 +672,64 @@
     // ════════════════════════════════════════════════════════════
     //  INICIO — ocultar loader y cargar home
     // ════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════════════════════════
+    //  PWA / INSTALL LOGIC
+    // ════════════════════════════════════════════════════════════
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevenir que Chrome muestre el prompt automáticamente
+      e.preventDefault();
+      // Guardar el evento para dispararlo luego
+      deferredPrompt = e;
+      // Avisar al frame que la app es instalable
+      notifyFrame({ type: 'pwa-available' });
+    });
+
+    window.addEventListener('appinstalled', (evt) => {
+      showToast('¡BlockVault instalado con éxito!', 'success');
+      deferredPrompt = null;
+    });
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW registrado', reg))
+          .catch(err => console.log('SW error', err));
+      });
+    }
+
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loader').classList.add('hidden');
         navigateTo('home');
       }, 2200);
+    });
+
+    // Escuchar mensajes adicionales para PWA
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d || !d.type) return;
+
+      if (d.type === 'pwa-install-request') {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            } else {
+              console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+          });
+        }
+      }
+      
+      // Asegurarse de avisar al frame si carga y el prompt ya estaba listo
+      if (d.type === 'init' && deferredPrompt) {
+        setTimeout(() => notifyFrame({ type: 'pwa-available' }), 1000);
+      }
     });
   </script>
 </body>

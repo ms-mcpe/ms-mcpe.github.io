@@ -291,9 +291,92 @@ footer{
   font-size:0.8rem;color:var(--text-muted);
 }
 footer span{color:var(--accent);font-family:var(--font-display);font-size:0.9rem}
+
+/* ══ PWA Banner ════════════════════════════════ 
+
+*/
+.pwa-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  padding: 20px;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5), var(--shadow-accent);
+  animation: slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.pwa-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pwa-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-accent);
+}
+
+.pwa-text h4 {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.pwa-text p {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.pwa-actions {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .pwa-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .pwa-content {
+    flex-direction: column;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- PWA Install Banner -->
+<div id="pwa-banner" class="pwa-banner">
+  <div class="pwa-content">
+    <img src="icon-192.png" alt="BlockVault" class="pwa-icon">
+    <div class="pwa-text">
+      <h4>Instalar BlockVault</h4>
+      <p>¿Deseas descargar la app oficial de esta página?</p>
+    </div>
+  </div>
+  <div class="pwa-actions">
+    <button class="btn secondary" style="padding: 10px 20px;" onclick="closePwa(false)">No</button>
+    <button class="btn primary" style="padding: 10px 20px;" onclick="closePwa(true)">Sí, instalar</button>
+  </div>
+</div>
 
 <!-- Hero Section -->
 <section class="hero">
@@ -430,6 +513,28 @@ window.addEventListener('message', e => {
 function applyTheme(theme, custom) {
   document.documentElement.setAttribute('data-theme', theme || 'dark');
   if (custom) Object.entries(custom).forEach(([k,v]) => document.documentElement.style.setProperty(k,v));
+}
+
+// ── Lógica PWA ──────────────────────
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (d.type === 'pwa-available') {
+    // Si el usuario ya dijo que no, no molestar en esta sesión
+    if (sessionStorage.getItem('pwa-dismissed')) return;
+    document.getElementById('pwa-banner').style.display = 'flex';
+  }
+});
+
+function closePwa(install) {
+  const banner = document.getElementById('pwa-banner');
+  banner.style.animation = 'slide-up 0.4s ease reverse forwards';
+  setTimeout(() => banner.style.display = 'none', 400);
+  
+  if (install) {
+    window.parent.postMessage({ type: 'pwa-install-request' }, '*');
+  } else {
+    sessionStorage.setItem('pwa-dismissed', 'true');
+  }
 }
 
 function nav(page) {
