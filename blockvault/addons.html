@@ -2546,10 +2546,7 @@
         function irAlPanel() {
             if (!document.getElementById('policy-checkbox').classList.contains('checked')) return;
             cerrarPoliticas();
-            // Navegar al panel dentro del iframe del padre
-            window.parent.postMessage({ type: 'navigate', page: 'userpanel', data: null }, '*');
-            // Si está cargado directamente (sin padre), redirigir
-            if (window.parent === window) window.location.href = 'Userpanel1.html';
+            window.location.href = 'Userpanel1.html';
         }
 
         // Cerrar al clicar fuera del modal
