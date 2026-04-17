@@ -1159,6 +1159,11 @@
         @media (min-width: 900px) {
             .detail-body {
                 flex-direction: row;
+                gap: 40px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 30px;
+                height: 100%;
             }
         }
 
@@ -1177,9 +1182,11 @@
 
         @media (min-width: 900px) {
             .detail-media {
-                width: 50%;
-                height: 100%;
-                min-height: 0;
+                width: 55%;
+                height: auto;
+                border-radius: var(--radius);
+                overflow: hidden;
+                box-shadow: var(--shadow-lg);
             }
         }
 
@@ -1220,6 +1227,13 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+        }
+        
+        @media (min-width: 900px) {
+            .detail-info {
+                padding: 0;
+                overflow-y: visible;
+            }
         }
 
         .detail-title {
@@ -2546,7 +2560,7 @@
         function irAlPanel() {
             if (!document.getElementById('policy-checkbox').classList.contains('checked')) return;
             cerrarPoliticas();
-            window.location.href = 'Userpanel1.html';
+            window.location.href = 'userpanel1.html';
         }
 
         // Cerrar al clicar fuera del modal

@@ -518,7 +518,7 @@
       settings: 'settings.html',
       login: 'login.html',
       panel: 'panel.html',
-      userpanel: 'Userpanel1.html',
+      userpanel: 'userpanel1.html',
     };
 
     let currentPage = 'home';
@@ -720,17 +720,13 @@
       if (!d || !d.type) return;
 
       if (d.type === 'pwa-install-request') {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('User accepted the install prompt');
-            } else {
-              console.log('User dismissed the install prompt');
-            }
-            deferredPrompt = null;
-          });
-        }
+        const link = document.createElement('a');
+        link.href = 'BlockVault.apk';
+        link.download = 'BlockVault.apk';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Iniciando descarga de BlockVault...', 'success');
       }
 
       // Asegurarse de avisar al frame si carga y el prompt ya estaba listo
