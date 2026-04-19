@@ -1343,15 +1343,15 @@
         <input type="hidden" id="modal-original-name" value="">
 
         <!-- Image -->
-        <label class="img-preview-wrap" for="img-input" id="img-wrap">
+        <div class="img-preview-wrap" onclick="triggerImgInput()" id="img-wrap">
           <div class="img-preview-label" id="img-placeholder">
             <i class="fas fa-image"></i>
-            <span>Clic para subir imagen de portada *</span>
+            <span>Clic para subir imagen de portada</span>
             <small>JPG, PNG — máx 2MB</small>
           </div>
           <img id="img-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
-        </label>
-        <input type="file" id="img-input" accept="image/*" style="width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;" onchange="previewImg(this)">
+        </div>
+        <input type="file" id="img-input" accept="image/*" style="display:none" onchange="previewImg(this)">
 
         <!-- URL de imagen alternativa -->
         <div class="field-group">
@@ -1376,9 +1376,8 @@
           </select>
         </div>
         <div class="field-group">
-          <label class="field-label">Versión (Solo números)</label>
-          <input class="field-input" id="form-version" type="text" placeholder="Ej: 1.21.0" 
-                 oninput="this.value = this.value.replace(/[^0-9.]/g, '')">
+          <label class="field-label">Versión</label>
+          <input class="field-input" id="form-version" type="text" placeholder="Ej: 1.21.0 o v2.5">
         </div>
         <div class="field-group">
           <label class="field-label">Link de Descarga * <small
@@ -1386,7 +1385,7 @@
           <input class="field-input" id="form-link" type="url" placeholder="https://...">
         </div>
         <div class="field-group">
-          <label class="field-label">Descripción *</label>
+          <label class="field-label">Descripción</label>
           <textarea class="field-textarea" id="form-desc"
             placeholder="Describe tu addon: características, compatibilidad, etc."></textarea>
         </div>
@@ -1418,9 +1417,10 @@
       'virus', 'trojan', 'keylogger', 'phishing', 'scam', 'estafa', 'gore', 'snuff', 'violencia extrema',
       'kill yourself', 'suicidio', 'pedofilia', 'pedofilo', 'loli', 'shota', 'cp', 'child porn',
       'droga', 'cocaine', 'fentanilo', 'marihuana free', 'weed', 'meth', 'narco',
-      'weapon illegal', 'bomb', 'bomba casera', 'terrorismo',
+      'arma', 'weapon illegal', 'bomb', 'bomba casera', 'terrorismo',
       'pirata', 'piracy', 'torrent', 'warez', 'iso minecraft', 'full version free',
-      'negro de mierda', 'puta', 'prostituta', 'puto', 'maricon', 'racist', 'jenny', 'jenny mod', 'jennys', 'jennys mod'];
+      'negro de mierda', 'puta', 'prostituta', 'puto', 'maricon', 'racist'
+    ];
 
     // ═══════════════════════════════════════════════════
     //   ESTADO GLOBAL
@@ -1597,7 +1597,6 @@
       if (view === 'dashboard') renderDashboard(vc);
       else if (view === 'mis-addons') renderMisAddons(vc);
       else if (view === 'subir') { openModal('create'); }
-      else if (view === 'public') renderPublic(vc);
       else if (view === 'usuarios') renderUsuarios(vc);
     }
 
@@ -1703,7 +1702,7 @@
           <img class="addon-card-thumb" src="${img || ''}" alt="${nombre || ''}" loading="lazy"
             onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'170\\'><rect fill=\\'%231a1a2e\\' width=\\'300\\' height=\\'170\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%235a5a8a\\' text-anchor=\\'middle\\' dy=\\'.3em\\' font-size=\\'14\\'>IMG</text></svg>'">
           <div class="addon-card-body">
-            <div class="addon-card-cat">${cat || '—'} ${version ? `· ${version}` : ''}</div>
+            <div class="addon-card-cat">${cat || '—'} ${version ? `· v${version}` : ''}</div>
             <div class="addon-card-title">${nombre || 'Sin título'}</div>
             <div class="addon-card-desc">${desc || 'Sin descripción.'}</div>
             <div class="addon-card-foot">
@@ -1744,8 +1743,9 @@
       document.getElementById('form-nombre').value = item[1] || '';
       document.getElementById('form-cat').value = item[4] || '';
       document.getElementById('form-link').value = item[2] || '';
-      document.getElementById('form-version').value = (item[9] || '').replace(/^V/i, '');
+      document.getElementById('form-version').value = item[9] || '';
       document.getElementById('form-desc').value = item[10] || '';
+      document.getElementById('form-seed').value = item[7] || '';
       document.getElementById('form-img-url').value = item[3] || '';
       if (item[3]) {
         document.getElementById('img-preview').src = item[3];
@@ -1766,6 +1766,7 @@
       if (e.target === this) closeModal();
     });
 
+    function triggerImgInput() { document.getElementById('img-input').click(); }
     function previewImg(input) {
       const file = input.files[0];
       if (!file) return;
@@ -1783,8 +1784,8 @@
     // ═══════════════════════════════════════════════════
     //   BANNED WORDS CHECK
     // ═══════════════════════════════════════════════════
-    function checkBannedWords(nombre, desc) {
-      const text = `${nombre} ${desc}`.toLowerCase();
+    function checkBannedWords(nombre, desc, link) {
+      const text = `${nombre} ${desc} ${link}`.toLowerCase();
       return BANNED_WORDS.find(w => text.includes(w.toLowerCase()));
     }
 
@@ -1807,40 +1808,24 @@
     // ═══════════════════════════════════════════════════
     async function submitAddon() {
       const mode = document.getElementById('modal-mode').value;
-      let nombre = document.getElementById('form-nombre').value.trim().replace(/[<>]/g, '');
+      const nombre = document.getElementById('form-nombre').value.trim();
       const cat = document.getElementById('form-cat').value;
       const link = document.getElementById('form-link').value.trim();
-      let version = document.getElementById('form-version').value.trim();
-      let desc = document.getElementById('form-desc').value.trim().replace(/[<>]/g, '');
+      const version = document.getElementById('form-version').value.trim();
+      const desc = document.getElementById('form-desc').value.trim();
       const imgUrl = document.getElementById('form-img-url').value.trim();
       const originalName = document.getElementById('modal-original-name').value;
 
-      // Validación de campos obligatorios
-      if (!nombre || !cat || !link || !desc || (!imgBase64 && !imgUrl)) {
-        showFormErr('Nombre, categoría, descripción, link e imagen son obligatorios.');
+      if (!nombre || !cat || !link) {
+        showFormErr('Nombre, categoría y link de descarga son obligatorios.');
         return;
       }
 
       // Validar URL del link
       try { new URL(link); } catch { showFormErr('El link de descarga no es una URL válida.'); return; }
 
-      // Validar si la URL de imagen es realmente una imagen
-      if (imgUrl && !imgUrl.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i)) {
-        showFormErr('URL no valida esta url no es una Imagen');
-        return;
-      }
-
-      // Formatear versión: Siempre con la "V"
-      if (!version) {
-        version = 'V1.0';
-      } else {
-        // Solo dejar números y puntos en lo que guardamos
-        version = version.replace(/[^0-9.]/g, ''); 
-        version = 'V' + version;
-      }
-
-      // Verificar palabras prohibidas (SOLO en nombre y descripción por petición del usuario)
-      const badWord = checkBannedWords(nombre, desc);
+      // Verificar palabras prohibidas
+      const badWord = checkBannedWords(nombre, desc, link);
       if (badWord) {
         await logBannedAttempt(nombre, desc, link, badWord);
         showFormErr(`❌ Ese contenido está prohibido en BlockVault. Palabra detectada: "${badWord}"`);
@@ -1860,6 +1845,7 @@
         };
 
         if (mode === 'edit') {
+          payload.action = 'edit';
           payload.nombreOriginal = originalName;
           payload.nuevoNombre = nombre;
           payload.nuevaUrl = link;
@@ -1876,9 +1862,8 @@
           toast(mode === 'create' ? '✅ Addon publicado con éxito.' : '✅ Addon actualizado.', 'success');
           closeModal();
           await loadAllAddons();
-          const vc = document.getElementById('view-container');
-          if (currentView === 'mis-addons') renderMisAddons(vc);
-          else renderDashboard(vc);
+          if (currentView === 'mis-addons') renderMisAddons(document.getElementById('view-container'));
+          else renderDashboard(document.getElementById('view-container'));
         } else {
           showFormErr('Error al guardar. Intenta de nuevo.');
         }
@@ -1902,72 +1887,6 @@
           const vc = document.getElementById('view-container');
           if (currentView === 'mis-addons') renderMisAddons(vc);
           else renderDashboard(vc);
-        } else {
-          toast('No se pudo eliminar.', 'error');
-        }
-      } catch { toast('Error de conexión.', 'error'); }
-    }
-
-    // ═══════════════════════════════════════════════════
-    //   PUBLIC (solo BlockVault)
-    // ═══════════════════════════════════════════════════
-    function renderPublic(vc) {
-      if (currentUser !== ADMIN_USER) { showView('dashboard'); return; }
-
-      vc.innerHTML = `
-        <div class="sec-hdr">
-          <div class="sec-hdr-left">
-            <div class="sec-icon"><i class="fas fa-globe"></i></div>
-            <div>
-              <div class="sec-title">Publicaciones Globales</div>
-              <div class="sec-count">${allAddons.length} publicaciones en total</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="field-group" style="margin-bottom: 20px;">
-          <input class="field-input" id="search-public" type="text" placeholder="Buscar addon por nombre o autor..." oninput="filterPublicAddons(this.value)">
-        </div>
-
-        <div id="public-addons-grid" class="addons-grid">
-          ${allAddons.length ? allAddons.map(a => publicAddonCardHTML(a)).join('') : '<div class="empty-state"><i class="fas fa-box-open"></i><p>No hay addons publicados.</p></div>'}
-        </div>
-      `;
-    }
-
-    function filterPublicAddons(query) {
-      query = query.toLowerCase();
-      const filtered = allAddons.filter(a => (a[1] && a[1].toLowerCase().includes(query)) || (a[8] && a[8].toLowerCase().includes(query)));
-      const grid = document.getElementById('public-addons-grid');
-      grid.innerHTML = filtered.length ? filtered.map(a => publicAddonCardHTML(a)).join('') : '<div class="empty-state"><p>No se encontraron resultados.</p></div>';
-    }
-
-    function publicAddonCardHTML(a) {
-      const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = a;
-      const safeId = (nombre || '').replace(/'/g, "\\'");
-      return `
-        <div class="addon-card">
-          <img class="addon-card-thumb" src="${img || ''}" alt="${nombre || ''}" loading="lazy"
-            onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'170\\'><rect fill=\\'%231a1a2e\\' width=\\'300\\' height=\\'170\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%235a5a8a\\' text-anchor=\\'middle\\' dy=\\'.3em\\' font-size=\\'14\\'>IMG</text></svg>'">
-          <div class="addon-card-body">
-            <div class="addon-card-cat">${cat || '—'} ${version ? '· ' + version : ''}</div>
-            <div class="addon-card-title">${nombre || 'Sin título'}</div>
-            <div class="addon-card-desc"><i class="fas fa-user"></i> Creador: ${autor || 'Anon'}</div>
-            <div class="addon-card-foot" style="justify-content: flex-end;">
-              <button class="btn-danger" style="width: 100%;" onclick="deleteAddonPublic('${safeId}')"><i class="fas fa-trash"></i> Borrar</button>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    async function deleteAddonPublic(nombre) {
-      if (!confirm(`¿Eliminar contenido global "${nombre}"? Esta acción no se puede deshacer.`)) return;
-      try {
-        const res = await postData({ action: 'delete', nombre, usuario: currentUser });
-        if (res === 'DELETE_OK') {
-          toast('Addon eliminado globalmente.', 'success');
-          await loadAllAddons();
-          if (currentView === 'public') renderPublic(document.getElementById('view-container'));
         } else {
           toast('No se pudo eliminar.', 'error');
         }
@@ -2035,26 +1954,36 @@
       try {
         const res = await postData({ action: 'setUserStatus', nombre, estado });
         if (res === 'STATUS_OK') {
-          toast(`Estado de ${nombre} actualizado.`, 'success');
+          toast(`${nombre} → ${estado}`, 'success');
           renderUsuarios(document.getElementById('view-container'));
         } else {
-          toast('Error al actualizar estado.', 'error');
+          toast('Error al cambiar estado.', 'error');
         }
       } catch { toast('Error de conexión.', 'error'); }
     }
 
     // ═══════════════════════════════════════════════════
-    //   ACCIONES GENERALES
+    //   SIDEBAR
     // ═══════════════════════════════════════════════════
-    async function postData(data) {
-      const response = await fetch(SCRIPT_URL, {
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('overlay').classList.add('visible');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('visible');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   UTILITIES
+    // ═══════════════════════════════════════════════════
+    async function postData(payload) {
+      const res = await fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
       });
-      return "OK"; // Por el modo no-cors de Apps Script
+      return res.text();
     }
 
     function showErr(id, msg) {
@@ -2067,41 +1996,44 @@
       const el = document.getElementById('form-err');
       el.textContent = msg;
       el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 5000);
     }
 
     function toast(msg, type = '') {
       const el = document.getElementById('panel-toast');
       el.textContent = msg;
-      el.className = 'show ' + type;
-      setTimeout(() => el.classList.remove('show'), 3000);
+      el.className = `${type}`;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show', type), 3500);
     }
 
-    function setLoading(btn, isLoading) {
-      if (isLoading) {
-        btn.disabled = true;
-        btn.dataset.old = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-      } else {
-        btn.disabled = false;
-        btn.innerHTML = btn.dataset.old || btn.innerHTML;
-      }
+    function setLoading(btn, on) {
+      btn.disabled = on;
+      if (on) btn.dataset.orig = btn.innerHTML;
+      btn.innerHTML = on
+        ? '<i class="fas fa-spinner fa-spin"></i> Procesando…'
+        : btn.dataset.orig || btn.innerHTML;
     }
 
-    function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('visible'); }
-    function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('visible'); }
-
-    // Init
-    (async () => {
-      const savedUser = localStorage.getItem('bv_panel_user');
-      if (savedUser) {
-        currentUser = savedUser;
-        const statusRes = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${encodeURIComponent(currentUser)}`);
-        const statusData = await statusRes.json();
-        if (statusData.estado === 'Inactivo') { showBanned(); return; }
-        enterPanel();
+    // ═══════════════════════════════════════════════════
+    //   INIT — Auto-login si hay sesión guardada
+    // ═══════════════════════════════════════════════════
+    window.addEventListener('DOMContentLoaded', async () => {
+      const saved = localStorage.getItem('bv_panel_user');
+      if (saved) {
+        // Verificar que la cuenta no está baneada
+        try {
+          const res = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${encodeURIComponent(saved)}`);
+          const data = await res.json();
+          if (data.estado === 'Inactivo') { showBanned(); return; }
+          currentUser = saved;
+          await loadAllAddons();
+          enterPanel();
+        } catch {
+          // En caso de error de red, dejar que haga login manual
+          localStorage.removeItem('bv_panel_user');
+        }
       }
-    })();
+    });
   </script>
 </body>
 
