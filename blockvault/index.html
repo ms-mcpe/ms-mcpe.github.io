@@ -425,6 +425,10 @@
       }
     }
   </style>
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345712294617095"
+     crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -518,8 +522,11 @@
       settings: 'settings.html',
       login: 'login.html',
       panel: 'panel.html',
-      userpanel: 'userpanel1.html',
+      userpanel: 'Userpanel1.html',
     };
+
+    const VERIFY_LINK = 'https://cuty.io/m8uEHt1ws';
+    const VERIFY_DURATION = 15 * 60 * 60 * 1000; // 15 horas
 
     let currentPage = 'home';
     let appTheme = localStorage.getItem('bv_theme') || 'dark';
@@ -615,8 +622,18 @@
           localStorage.setItem('bv_custom_theme', JSON.stringify(d.custom));
           applyTheme();
           break;
+        case 'check-verification':
+          const isVerified = checkVerification();
+          notifyFrame({ type: 'verification-result', verified: isVerified, verifyLink: VERIFY_LINK });
+          break;
       }
     });
+
+    function checkVerification() {
+      const verifiedTime = localStorage.getItem('bv_verified_time');
+      if (!verifiedTime) return false;
+      return (Date.now() - parseInt(verifiedTime)) < VERIFY_DURATION;
+    }
 
     function notifyFrame(data) {
       try {
@@ -734,6 +751,24 @@
         setTimeout(() => notifyFrame({ type: 'pwa-available' }), 1000);
       }
     });
+
+    // ════════════════════════════════════════════════════════════
+    //  DETECCIÓN DE VERIFICACIÓN (Cuty.io)
+    // ════════════════════════════════════════════════════════════
+    (function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('verified') === 'true') {
+        localStorage.setItem('bv_verified_time', Date.now().toString());
+        // Limpiar la URL para que no diga ?verified=true
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        
+        // Mostrar mensaje de éxito tras un pequeño delay para que cargue la UI
+        setTimeout(() => {
+          showToast('¡Identidad verificada! Tienes 15 horas de acceso libre.', 'success');
+        }, 2500);
+      }
+    })();
   </script>
 </body>
 

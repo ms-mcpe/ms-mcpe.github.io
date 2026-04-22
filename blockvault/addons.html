@@ -2035,7 +2035,30 @@
                 }
             }
             if (d.type === 'theme') applyTheme(d.theme, d.custom);
+            if (d.type === 'verification-result') {
+                if (d.verified) {
+                    processDownload();
+                } else {
+                    window.parent.location.href = d.verifyLink;
+                }
+            }
         });
+
+        let pendingDownload = null;
+
+        function prepararDescarga(e, url, name) {
+            e.preventDefault();
+            pendingDownload = { url, name };
+            window.parent.postMessage({ type: 'check-verification' }, '*');
+        }
+
+        function processDownload() {
+            if (!pendingDownload) return;
+            const { url, name } = pendingDownload;
+            registrar('download', name);
+            window.open(url, '_blank');
+            pendingDownload = null;
+        }
 
         function applyTheme(theme, custom) {
             document.body.setAttribute('data-theme', theme || 'dark');
@@ -2352,7 +2375,7 @@
             <div class="apk-badge"><i class="fas fa-mobile-alt"></i> APK Oficial</div>
             <div class="card-apk-title">${nombre}</div>
             <div class="card-apk-desc">${desc || 'APK de Minecraft para Android.'}</div>
-            <a href="${link}" target="_blank" class="btn-apk" onclick="registrar('download','${nombre}')">
+            <a href="${link}" target="_blank" class="btn-apk" onclick="prepararDescarga(event, '${link}', '${nombre}')">
               <i class="fas fa-download"></i> DESCARGAR APK ${version || ''}
             </a>
           </div>`;
@@ -2459,7 +2482,7 @@
 
           <div class="detail-actions">
             <a id="detail-btn-dl" href="${link}" target="_blank" class="btn-download"
-              onclick="registrar('download','${nombre}')">
+              onclick="prepararDescarga(event, '${link}', '${nombre}')">
               <i class="fas fa-download"></i> DESCARGAR
             </a>
             <button class="btn-like-big" id="detail-like-btn" onclick="likeFromDetail('${_id}', '${nombre}')">
@@ -2560,7 +2583,7 @@
         function irAlPanel() {
             if (!document.getElementById('policy-checkbox').classList.contains('checked')) return;
             cerrarPoliticas();
-            window.location.href = 'Userpanel1.html';
+            window.location.href = 'userpanel1.html';
         }
 
         // Cerrar al clicar fuera del modal
