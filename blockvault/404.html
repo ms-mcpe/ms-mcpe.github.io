@@ -266,7 +266,7 @@
     </div>
 
     <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1B39u_DKsjRpXleKrh-syH0xE2tBuJxvlQIUZa1WBE-0/export?format=csv&gid=0';
+        const GVIZ_URL = 'https://docs.google.com/spreadsheets/d/1B39u_DKsjRpXleKrh-syH0xE2tBuJxvlQIUZa1WBE-0/gviz/tq?tqx=out:json&tq&gid=0';
         const track = document.getElementById('carouselTrack');
         const loader = document.getElementById('mainLoader');
         let images = [];
@@ -275,17 +275,24 @@
 
         async function fetchImages() {
             try {
-                const response = await fetch(CSV_URL);
-                const csvText = await response.text();
-                const lines = csvText.split('\n');
+                const response = await fetch(GVIZ_URL);
+                const text = await response.text();
+                
+                // Extraer el JSON de la respuesta de Google Visualization
+                const jsonString = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\);/)[1];
+                const data = JSON.parse(jsonString);
+                
                 const urls = [];
+                const rows = data.table.rows;
 
-                // Omitir cabecera (línea 0)
-                for (let i = 1; i < lines.length; i++) {
-                    const columns = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // Split por coma ignorando comillas
-                    if (columns.length > 3) {
-                        const url = columns[3].trim().replace(/^"|"$/g, ''); // Columna D (urlimg)
-                        if (url.startsWith('http')) urls.push(url);
+                // Empezamos en 1 para omitir la cabecera
+                for (let i = 1; i < rows.length; i++) {
+                    // La columna D es el índice 3
+                    if (rows[i] && rows[i].c && rows[i].c[3] && rows[i].c[3].v) {
+                        const url = rows[i].c[3].v.trim();
+                        if (url.startsWith('http')) {
+                            urls.push(url);
+                        }
                     }
                 }
 
@@ -303,7 +310,8 @@
                 // Fallback a algunas imágenes si falla el fetch
                 images = [
                     "https://media.forgecdn.net/attachments/1572/960/bedrock_reimagined_keyart-jpg.jpg",
-                    "https://lh3.googleusercontent.com/u/0/d/1PbQX4TSkFK9e7v9lCuAtI0aAr93uT4gq=s1000"
+                    "https://lh3.googleusercontent.com/u/0/d/1PbQX4TSkFK9e7v9lCuAtI0aAr93uT4gq=s1000",
+                    "https://media.forgecdn.net/attachments/1308/602/mcpedl.png"
                 ];
                 loader.style.display = 'none';
                 initCarousel();
