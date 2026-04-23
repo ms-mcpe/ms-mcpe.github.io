@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ajustes — BlockVault Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #9d5ff3;
+      --primary-dark: #5b21b6;
+      --primary-glow: rgba(124, 58, 237, 0.3);
+      --cyan: #06b6d4;
+      --bg: #f0f2ff;
+      --bg-panel: #ffffff;
+      --bg-card: #f8f9ff;
+      --surface: #eef0fb;
+      --surface-2: #e4e6f8;
+      --text: #0f0f1a;
+      --text-sec: #4a4a6a;
+      --text-muted: #8888aa;
+      --border: rgba(124, 58, 237, 0.15);
+      --border-strong: rgba(124, 58, 237, 0.35);
+      --radius: 18px;
+      --radius-sm: 10px;
+      --transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --shadow: 0 8px 30px rgba(124, 58, 237, 0.14);
+      --shadow-lg: 0 20px 60px rgba(124, 58, 237, 0.22);
+    }
+    [data-theme="dark"] {
+      --bg: #080812;
+      --bg-panel: #0f0f1e;
+      --bg-card: #13132a;
+      --surface: #1a1a2e;
+      --surface-2: #22223e;
+      --text: #f0f0ff;
+      --text-sec: #a0a0cc;
+      --text-muted: #5a5a8a;
+      --border: rgba(124, 58, 237, 0.18);
+      --border-strong: rgba(124, 58, 237, 0.45);
+      --shadow: 0 8px 30px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: background .3s, color .3s; overflow-y: auto; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 99px; }
+
+    /* ── HEADER ── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 20px; height: 62px;
+      backdrop-filter: blur(16px);
+    }
+    .back-btn {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: var(--transition);
+    }
+    .back-btn:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .header-brand {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800; font-size: 0.95rem; color: var(--primary);
+    }
+    .header-brand-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; box-shadow: 0 0 12px var(--primary-glow);
+    }
+    .header-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
+    .user-pill {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 30px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 0.78rem; font-weight: 600; color: var(--text-sec);
+    }
+    .user-pill i { color: var(--primary); }
+
+    /* ── MAIN ── */
+    .page { max-width: 680px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    .page-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem; font-weight: 800; color: var(--text);
+      margin: 0 0 4px;
+    }
+    .page-sub { font-size: 0.84rem; color: var(--text-muted); margin: 0 0 32px; }
+
+    /* ── SECTION CARD ── */
+    .settings-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .card-hdr {
+      display: flex; align-items: center; gap: 12px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+      flex-shrink: 0;
+    }
+    .card-hdr-text h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem; font-weight: 700; color: var(--text); margin: 0 0 2px;
+    }
+    .card-hdr-text p { font-size: 0.76rem; color: var(--text-muted); margin: 0; }
+    .card-body { padding: 22px; }
+
+    /* ── FIELDS ── */
+    .field-group { margin-bottom: 16px; }
+    .field-label {
+      display: block; font-size: 0.76rem; font-weight: 700;
+      color: var(--text-sec); margin-bottom: 6px; letter-spacing: 0.3px;
+    }
+    .field-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); color: var(--text);
+      font-family: inherit; font-size: 0.88rem; outline: none;
+      transition: var(--transition);
+    }
+    .field-input:focus {
+      border-color: var(--primary); background: var(--bg-panel);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .field-input::placeholder { color: var(--text-muted); }
+    .field-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── INFO ROW ── */
+    .info-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(124,58,237,.07), rgba(6,182,212,.04));
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      margin-bottom: 18px;
+    }
+    .info-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .info-name { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .info-role { font-size: 0.68rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      width: 100%; padding: 13px;
+      border-radius: var(--radius-sm); border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff; font-family: inherit; font-size: 0.92rem; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.3px;
+      transition: var(--transition); box-shadow: 0 4px 16px var(--primary-glow);
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      width: 100%; padding: 11px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: transparent;
+      color: var(--text-sec); font-family: inherit;
+      font-size: 0.88rem; font-weight: 700; cursor: pointer;
+      transition: var(--transition); margin-top: 8px;
+    }
+    .btn-secondary:hover { background: var(--surface); border-color: var(--primary); color: var(--primary); }
+
+    /* ── ERROR / SUCCESS ── */
+    .msg-box {
+      display: none; padding: 10px 14px;
+      border-radius: var(--radius-sm); font-size: 0.8rem;
+      font-weight: 600; margin-top: 12px;
+    }
+    .msg-box.show { display: block; }
+    .msg-box.error { background: rgba(239,68,68,.1); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+    .msg-box.success { background: rgba(34,197,94,.1); color: #22c55e; border: 1px solid rgba(34,197,94,.3); }
+
+    /* ── DANGER ZONE ── */
+    .danger-card {
+      background: rgba(239,68,68,.04);
+      border: 1px solid rgba(239,68,68,.25);
+      border-radius: var(--radius); padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+    .danger-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; font-weight: 700; color: #ef4444; margin-bottom: 6px;
+    }
+    .danger-desc { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
+    .btn-danger {
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(239,68,68,.4); background: rgba(239,68,68,.08);
+      color: #ef4444; font-family: inherit; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-danger:hover { background: #ef4444; color: #fff; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-panel); color: var(--text);
+      border: 1px solid var(--border-strong);
+      padding: 10px 22px; border-radius: 30px;
+      font-size: 0.85rem; font-weight: 600;
+      opacity: 0; pointer-events: none;
+      transition: 0.3s; z-index: 9999;
+      white-space: nowrap; box-shadow: var(--shadow);
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Header -->
+  <header class="header">
+    <button class="back-btn" onclick="volver()" title="Volver al panel">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-brand">
+      <div class="header-brand-icon">🔷</div>
+      <div>
+        <div>BlockVault</div>
+        <div class="header-sub">/ Ajustes de Cuenta</div>
+      </div>
+    </div>
+    <div class="user-pill">
+      <i class="fas fa-user-circle"></i>
+      <span id="hdr-user">—</span>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="page">
+    <h1 class="page-title">⚙️ Ajustes</h1>
+    <p class="page-sub">Administra tu cuenta y preferencias del panel de creador.</p>
+
+    <!-- Perfil info -->
+    <div class="settings-card">
+      <div class="card-hdr">
+        <div class="card-icon"><i class="fas fa-user"></i></div>
+        <div class="card-hdr-text">
+          <h3>Mi Perfil</h3>
+          <p>Información de tu cuenta actual</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-row">
+          <div class="info-avatar" id="profile-avatar">?</div>
+          <div>
+            <div class="info-name" id="profile-name">—</div>
+            <div class="info-role" id="profile-role">Creador</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Nombre de usuario actual</label>
+          <input class="field-input" id="current-name-display" type="text" disabled>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cambiar nombre -->
+    <div class="settings-card">
+      <div class="card-hdr">
+        <div class="card-icon"><i class="fas fa-edit"></i></div>
+        <div class="card-hdr-text">
+          <h3>Cambiar Nombre de Usuario</h3>
+          <p>El nuevo nombre se actualizará en todos tus addons</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-group">
+          <label class="field-label">Nuevo nombre de usuario *</label>
+          <input class="field-input" id="new-name" type="text" placeholder="Ej: MiNuevoNombre">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Contraseña actual (para confirmar) *</label>
+          <input class="field-input" id="confirm-pass" type="password" placeholder="Tu contraseña actual">
+        </div>
+        <div class="msg-box" id="rename-msg"></div>
+        <button class="btn-primary" id="rename-btn" onclick="renameUser()">
+          <i class="fas fa-save"></i> Guardar Nuevo Nombre
+        </button>
+      </div>
+    </div>
+
+    <!-- Zona peligrosa -->
+    <div class="danger-card">
+      <div class="danger-title"><i class="fas fa-exclamation-triangle"></i> Zona de Peligro</div>
+      <p class="danger-desc">
+        Cerrar sesión eliminará tu sesión guardada localmente. Tendrás que volver a iniciar sesión la próxima vez.
+      </p>
+      <button class="btn-danger" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- Volver -->
+    <button class="btn-secondary" onclick="volver()">
+      <i class="fas fa-arrow-left"></i> Volver al Panel
+    </button>
+  </main>
+
+  <div id="toast">Acción completada</div>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────────
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+    const ADMIN_USER = 'BlockVault';
+
+    // ── TEMA (sincronización con index.html) ─────────────────────
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (d && (d.type === 'init' || d.type === 'theme')) applyTheme(d.theme, d.custom);
+    });
+    function applyTheme(theme, custom) {
+      document.body.setAttribute('data-theme', theme || 'dark');
+      if (custom) Object.entries(custom).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+    }
+    const saved = localStorage.getItem('bv_theme');
+    if (saved) applyTheme(saved);
+
+    // ── SEGURIDAD ────────────────────────────────────────────────
+    document.addEventListener('contextmenu', e => { if (!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12') { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return false; }
+    });
+
+    // ── INIT ─────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      const user = localStorage.getItem('bv_panel_user');
+      if (!user) { window.location.href = 'Userpanel1.html'; return; }
+
+      document.getElementById('hdr-user').textContent = user;
+      document.getElementById('profile-name').textContent = user;
+      document.getElementById('profile-avatar').textContent = user[0].toUpperCase();
+      document.getElementById('current-name-display').value = user;
+      document.getElementById('profile-role').textContent = user === ADMIN_USER ? 'Administrador' : 'Creador';
+    });
+
+    // ── RENAME USER ──────────────────────────────────────────────
+    async function renameUser() {
+      const currentUser = localStorage.getItem('bv_panel_user');
+      const newName = document.getElementById('new-name').value.trim();
+      const pass = document.getElementById('confirm-pass').value.trim();
+      const msgEl = document.getElementById('rename-msg');
+
+      const showMsg = (msg, type) => {
+        msgEl.textContent = msg;
+        msgEl.className = `msg-box show ${type}`;
+      };
+
+      if (!newName || !pass) { showMsg('⚠️ Completa todos los campos.', 'error'); return; }
+      if (newName.length < 3) { showMsg('⚠️ El nombre debe tener al menos 3 caracteres.', 'error'); return; }
+      if (newName === currentUser) { showMsg('⚠️ El nuevo nombre es igual al actual.', 'error'); return; }
+      if (newName.toLowerCase() === ADMIN_USER.toLowerCase()) { showMsg('⚠️ Ese nombre no está disponible.', 'error'); return; }
+
+      const btn = document.getElementById('rename-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando…';
+      msgEl.className = 'msg-box';
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'renameUser', user: currentUser, newName, pass })
+        });
+        const text = await res.text();
+
+        if (text.includes('RENAME_OK')) {
+          localStorage.setItem('bv_panel_user', newName);
+          showMsg('✅ Nombre cambiado con éxito. Redirigiendo…', 'success');
+          toast('¡Nombre actualizado!');
+          setTimeout(() => window.location.href = 'Userpanel1.html', 1800);
+        } else if (text.includes('NAME_TAKEN')) {
+          showMsg('❌ Ese nombre ya está en uso. Elige otro.', 'error');
+        } else if (text.includes('AUTH_ERROR')) {
+          showMsg('❌ Contraseña incorrecta.', 'error');
+        } else if (text.includes('FORBIDDEN')) {
+          showMsg('❌ Nombre no permitido.', 'error');
+        } else {
+          showMsg('❌ Error al cambiar nombre. Intenta de nuevo.', 'error');
+        }
+      } catch (e) {
+        showMsg('❌ Error de conexión. Intenta más tarde.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Guardar Nuevo Nombre';
+      }
+    }
+
+    // ── LOGOUT ───────────────────────────────────────────────────
+    function doLogout() {
+      if (!confirm('¿Cerrar sesión?')) return;
+      localStorage.removeItem('bv_panel_user');
+      window.location.href = 'Userpanel1.html';
+    }
+
+    // ── VOLVER ──────────────────────────────────────────────────
+    function volver() {
+      window.location.href = 'Userpanel1.html';
+    }
+
+    // ── TOAST ────────────────────────────────────────────────────
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BlockVault — Panel de Creador</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ═══════════════════════════ TOKENS & THEME ══════════════════════════ */
+    :root {
+      --primary: #7c3aed;
+      --primary-light: #9d5ff3;
+      --primary-dark: #5b21b6;
+      --primary-glow: rgba(124, 58, 237, 0.3);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.25);
+
+      --bg: #f0f2ff;
+      --bg-panel: #ffffff;
+      --bg-card: #f8f9ff;
+      --surface: #eef0fb;
+      --surface-2: #e4e6f8;
+
+      --text: #0f0f1a;
+      --text-sec: #4a4a6a;
+      --text-muted: #8888aa;
+
+      --border: rgba(124, 58, 237, 0.15);
+      --border-strong: rgba(124, 58, 237, 0.35);
+      --radius: 18px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --transition: all 0.28s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --shadow-sm: 0 2px 12px rgba(124, 58, 237, 0.08);
+      --shadow: 0 8px 30px rgba(124, 58, 237, 0.14);
+      --shadow-lg: 0 20px 60px rgba(124, 58, 237, 0.22);
+      --header-h: 62px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #080812;
+      --bg-panel: #0f0f1e;
+      --bg-card: #13132a;
+      --surface: #1a1a2e;
+      --surface-2: #22223e;
+      --text: #f0f0ff;
+      --text-sec: #a0a0cc;
+      --text-muted: #5a5a8a;
+      --border: rgba(124, 58, 237, 0.18);
+      --border-strong: rgba(124, 58, 237, 0.45);
+      --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.4);
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    /* ════════════════════════ RESET & BASE ═══════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 99px;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+      font-family: inherit;
+    }
+
+    input,
+    textarea,
+    select {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    /* ══════════════════════════ LAYOUT ══════════════════════════════ */
+    .shell {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ═══════════════════════════ HEADER ═════════════════════════════ */
+    .panel-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-h);
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      gap: 12px;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .hdr-menu-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .hdr-menu-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--primary);
+    }
+
+    .hdr-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--primary);
+      letter-spacing: 0.3px;
+    }
+
+    .hdr-brand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .hdr-title-small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    .hdr-user-pill {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-sec);
+    }
+
+    .hdr-user-pill i {
+      color: var(--primary);
+    }
+
+    .hdr-logout-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .hdr-logout-btn:hover {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* ═══════════════════════════ SIDEBAR ════════════════════════════ */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sb-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sb-brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sb-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .sb-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+
+    .sb-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .sb-close:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .sb-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .sb-section-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      padding: 10px 8px 5px;
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-sec);
+      font-size: 0.86rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .sb-item:hover,
+    .sb-item.active {
+      background: var(--surface);
+      color: var(--primary);
+    }
+
+    .sb-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      border-radius: 99px;
+      background: var(--primary);
+    }
+
+    .sb-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 0.88rem;
+    }
+
+    .sb-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 8px;
+    }
+
+    .sb-footer {
+      padding: 14px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sb-user-card {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.06));
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sb-user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      min-width: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .sb-user-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .sb-user-role {
+      font-size: 0.67rem;
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ═══════════════════════ OVERLAY ════════════════════════════════ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ═══════════════════════ MAIN CONTENT ═══════════════════════════ */
+    .main-area {
+      margin-top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px 20px 40px;
+      scroll-behavior: smooth;
+    }
+
+    .content-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════ AUTH SCREENS ═══════════════════════════ */
+    .auth-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - var(--header-h) - 60px);
+    }
+
+    .auth-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .auth-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .auth-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+
+    .auth-sub {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin: 0 0 26px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 22px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-sec);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .auth-tab.active {
+      background: var(--bg-panel);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ═══════════════════════ FORM FIELDS ════════════════════════════ */
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-sec);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+      display: block;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.88rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      border-color: var(--primary);
+      background: var(--bg-panel);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .field-select {
+      cursor: pointer;
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════ BUTTONS ════════════════════════════════ */
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 11px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-sec);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-danger {
+      padding: 8px 14px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.08);
+      color: #ef4444;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-danger:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-edit {
+      padding: 8px 14px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-edit:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ═══════════════════ SECTION HEADER ═════════════════════════ */
+    .sec-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .sec-hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #fff;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+
+    .sec-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .sec-count {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════ ADDON CARDS ════════════════════════════ */
+    .addons-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .addons-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .addons-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .addon-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .addon-card:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--border-strong);
+    }
+
+    .addon-card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: var(--surface);
+      display: block;
+    }
+
+    .addon-card-body {
+      padding: 14px;
+    }
+
+    .addon-card-cat {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .addon-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .addon-card-desc {
+      font-size: 0.77rem;
+      color: var(--text-sec);
+      line-height: 1.5;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .addon-card-foot {
+      display: flex;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══════════════════ UPLOAD/EDIT FORM MODAL ═════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 7000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .modal-hdr-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-foot {
+      padding: 14px 20px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Image preview */
+    .img-preview-wrap {
+      width: 100%;
+      aspect-ratio: 16/7;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      margin-bottom: 16px;
+    }
+
+    .img-preview-wrap:hover {
+      border-color: var(--primary);
+      background: var(--surface-2);
+    }
+
+    .img-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .img-preview-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .img-preview-label i {
+      font-size: 1.8rem;
+      color: var(--primary);
+      opacity: 0.6;
+    }
+
+    /* ═══════════════════ STATS BAR ══════════════════════════════ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ═══════════════════ BANNED SCREEN ═════════════════════════ */
+    #banned-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    #banned-screen.show {
+      display: flex;
+    }
+
+    .banned-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 22px;
+    }
+
+    .banned-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ef4444;
+      margin: 0 0 10px;
+    }
+
+    .banned-sub {
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+      margin: 0 0 28px;
+      max-width: 420px;
+    }
+
+    .banned-btn {
+      padding: 13px 32px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .banned-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* ═══════════════════ TOAST ══════════════════════════════════ */
+    #panel-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-panel);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s;
+      z-index: 9980;
+      white-space: nowrap;
+      box-shadow: var(--shadow);
+    }
+
+    #panel-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #panel-toast.error {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    #panel-toast.success {
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+
+    /* ═══════════════════ LOADER ═════════════════════════════════ */
+    .loader-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 14px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinner-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════ USUARIOS TABLE ════════════════════════ */
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .users-table th,
+    .users-table td {
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .users-table th {
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.68rem;
+    }
+
+    .users-table tr:hover td {
+      background: var(--surface);
+    }
+
+    .badge-active {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .badge-inactive {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-ban {
+      padding: 6px 12px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.08);
+      color: #ef4444;
+      font-size: 0.73rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-ban:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-unban {
+      padding: 6px 12px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.08);
+      color: #22c55e;
+      font-size: 0.73rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-unban:hover {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    /* ═══════════════════ EMPTY STATE ════════════════════════════ */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 14px;
+      display: block;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════ NOTICE BOX ════════════════════════════ */
+    .notice-box {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(6, 182, 212, 0.05));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .notice-box strong {
+      color: var(--primary);
+    }
+
+    /* btn-row */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* error box */
+    .err-msg {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .err-msg.show {
+      display: block;
+    }
+  </style>
+</head>
+
+<body data-theme="dark">
+
+  <!-- Banned screen -->
+  <div id="banned-screen">
+    <div class="banned-icon">🚫</div>
+    <h2 class="banned-title">Tu cuenta ha sido suspendida</h2>
+    <p class="banned-sub">Tu cuenta ha sido suspendida por un mal uso en la plataforma BlockVault. Si crees que es un
+      error, contacta con el administrador.</p>
+    <button class="banned-btn" onclick="volverAlInicio()"><i class="fas fa-home"></i> Volver al Inicio</button>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Header -->
+  <header class="panel-header" id="panel-header" style="display:none">
+    <button class="hdr-menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="hdr-brand">
+      <div class="hdr-brand-icon">🔷</div>
+      <span>BlockVault</span>
+      <span class="hdr-title-small">/ Creator Panel</span>
+    </div>
+    <div class="hdr-user-pill">
+      <i class="fas fa-user-circle"></i>
+      <span id="hdr-user-name">—</span>
+    </div>
+    <button class="hdr-logout-btn" onclick="logout()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-left">
+        <div class="sb-logo">🔷</div>
+        <span class="sb-title">BlockVault</span>
+      </div>
+      <button class="sb-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sb-body">
+      <div class="sb-section-label">Panel</div>
+      <div class="sb-item active" id="sb-dashboard" onclick="showView('dashboard')"><i class="fas fa-chart-bar"></i>
+        Dashboard</div>
+      <div class="sb-item" id="sb-mis-addons" onclick="showView('mis-addons')"><i class="fas fa-layer-group"></i> Mis
+        Addons</div>
+      <div class="sb-item" id="sb-subir" onclick="showView('subir')"><i class="fas fa-cloud-upload-alt"></i> Publicar
+        Addon</div>
+      <div class="sb-divider"></div>
+      <div class="sb-section-label">Cuenta</div>
+      <div class="sb-item" id="sb-usuarios" onclick="showView('usuarios')" style="display:none"><i
+          class="fas fa-users"></i> Usuarios</div>
+      <div class="sb-item" id="sb-ajustes" onclick="window.location.href='ajustes.html'"><i class="fas fa-cog"></i> Ajustes</div>
+      <div class="sb-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</div>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-user-card">
+        <div class="sb-user-avatar" id="sb-avatar">?</div>
+        <div>
+          <div class="sb-user-name" id="sb-user-name">—</div>
+          <div class="sb-user-role" id="sb-user-role">Creador</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-area" id="main-area" style="display:none">
+    <div class="content-wrap" id="view-container">
+      <!-- injected by JS -->
+    </div>
+  </main>
+
+  <!-- Auth wrapper -->
+  <div id="auth-wrapper">
+    <div class="main-area" style="display:block">
+      <div class="auth-center">
+        <div class="auth-card">
+          <div class="auth-icon">🔐</div>
+          <h2 class="auth-title">Panel de Creadores</h2>
+          <p class="auth-sub">Ingresa a tu cuenta para gestionar y publicar addons</p>
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar Sesión</button>
+            <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+          </div>
+
+          <!-- Login Form -->
+          <div id="form-login">
+            <div class="field-group">
+              <label class="field-label">Usuario</label>
+              <input class="field-input" id="login-user" type="text" placeholder="Tu nombre de usuario"
+                autocomplete="username">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contraseña</label>
+              <input class="field-input" id="login-pass" type="password" placeholder="Tu contraseña"
+                autocomplete="current-password">
+            </div>
+            <p class="err-msg" id="login-err">Usuario o contraseña incorrectos.</p>
+            <button class="btn-primary" id="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>
+              Entrar</button>
+          </div>
+
+          <!-- Register Form -->
+          <div id="form-register" style="display:none">
+            <div class="field-group">
+              <label class="field-label">Nombre de Usuario</label>
+              <input class="field-input" id="reg-user" type="text" placeholder="Elige un nombre único"
+                autocomplete="username">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contraseña</label>
+              <input class="field-input" id="reg-pass" type="password" placeholder="Mínimo 6 caracteres"
+                autocomplete="new-password">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Confirmar Contraseña</label>
+              <input class="field-input" id="reg-pass2" type="password" placeholder="Repite tu contraseña"
+                autocomplete="new-password">
+            </div>
+            <p class="err-msg" id="reg-err">Error en el registro.</p>
+            <button class="btn-primary" id="reg-btn" onclick="doRegister()"><i class="fas fa-user-plus"></i> Crear
+              Cuenta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload / Edit Modal -->
+  <div class="modal-overlay" id="upload-modal">
+    <div class="modal-box">
+      <div class="modal-hdr">
+        <div class="modal-hdr-title" id="modal-title">📦 Publicar Nuevo Addon</div>
+        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modal-mode" value="create">
+        <input type="hidden" id="modal-original-name" value="">
+
+        <!-- Image -->
+        <!-- FIX APLICADO: se usa un label con ID forçado y opacidad oculta en vez de display: none para Android -->
+        <label for="img-input" class="img-preview-wrap" id="img-wrap">
+          <div class="img-preview-label" id="img-placeholder">
+            <i class="fas fa-image"></i>
+            <span>Clic para subir imagen de portada</span>
+            <small>JPG, PNG — máx 2MB</small>
+          </div>
+          <img id="img-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
+        </label>
+        <input type="file" id="img-input" accept="image/*" style="opacity:0; position:absolute; z-index:-1; width:0.1px; height:0.1px;" onchange="previewImg(this)">
+
+        <!-- URL de imagen alternativa -->
+        <div class="field-group">
+          <label class="field-label">URL de Imagen (alternativa a subir archivo)</label>
+          <input class="field-input" id="form-img-url" type="url" placeholder="https://...imagen.jpg">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Nombre del Addon *</label>
+          <input class="field-input" id="form-nombre" type="text" placeholder="Ej: Ultra Combat Pack v2">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Categoría *</label>
+          <select class="field-select" id="form-cat">
+            <option value="">— Seleccionar —</option>
+            <option value="Addons">Addons</option>
+            <option value="Mapas">Mapas</option>
+            <option value="Texturas">Texturas</option>
+            <option value="Skins">Skins</option>
+            <option value="DLC">DLC</option>
+            <option value="Popurris">Popurris</option>
+            <option value="Versiones">Versiones (APK)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Versión</label>
+          <input class="field-input" id="form-version" type="text" placeholder="Ej: 1.21.0 o v2.5">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Link de Descarga * <small
+              style="color:var(--text-muted);font-weight:400">(cualquier URL válida)</small></label>
+          <input class="field-input" id="form-link" type="url" placeholder="https://...">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Descripción</label>
+          <textarea class="field-textarea" id="form-desc"
+            placeholder="Describe tu addon: características, compatibilidad, etc."></textarea>
+        </div>
+        <p class="err-msg" id="form-err">Completa todos los campos requeridos.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-secondary" style="flex:1" onclick="closeModal()">Cancelar</button>
+        <button class="btn-primary" style="flex:2" id="modal-submit-btn" onclick="submitAddon()">
+          <i class="fas fa-paper-plane"></i> Publicar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="panel-toast">Mensaje</div>
+
+  <script>
+    // ═══════════════════════════════════════════════════
+    //   CONFIG
+    // ═══════════════════════════════════════════════════
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+    const ADMIN_USER = 'BlockVault';
+
+    // Palabras prohibidas
+    const BANNED_WORDS = [
+      'porn', 'porno', 'pornografia', 'pornography', 'xxx', 'sexy', 'nude', 'desnudo', 'sexo', 'sex',
+      'hack', 'hacker', 'crack', 'cracked', 'minecraft crack', 'apk crack', 'exploit', 'malware',
+      'virus', 'trojan', 'keylogger', 'phishing', 'scam', 'estafa', 'gore', 'snuff', 'violencia extrema',
+      'kill yourself', 'suicidio', 'pedofilia', 'pedofilo', 'loli', 'shota', 'cp', 'child porn',
+      'droga', 'cocaine', 'fentanilo', 'marihuana free', 'weed', 'meth', 'narco',
+      'arma', 'weapon illegal', 'bomb', 'bomba casera', 'terrorismo',
+      'pirata', 'piracy', 'torrent', 'warez', 'iso minecraft', 'full version free',
+      'negro de mierda', 'puta', 'prostituta', 'puto', 'maricon', 'racist'
+    ];
+
+    // ═══════════════════════════════════════════════════
+    //   ESTADO GLOBAL
+    // ═══════════════════════════════════════════════════
+    let currentUser = null;
+    let allAddons = [];
+    let editingItem = null;
+    let imgBase64 = null;
+    let currentView = 'dashboard';
+
+    // ═══════════════════════════════════════════════════
+    //   THEME SYNC (postMessage desde index.html)
+    // ═══════════════════════════════════════════════════
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init' || d.type === 'theme') {
+        applyTheme(d.theme, d.custom);
+      }
+    });
+
+    function applyTheme(theme, custom) {
+      document.body.setAttribute('data-theme', theme || 'dark');
+      if (custom) Object.entries(custom).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+    }
+
+    // Cargar tema guardado localmente como fallback
+    const savedTheme = localStorage.getItem('bv_theme');
+    if (savedTheme) applyTheme(savedTheme);
+
+    // ═══════════════════════════════════════════════════
+    //   SEGURIDAD
+    // ═══════════════════════════════════════════════════
+    document.addEventListener('contextmenu', e => {
+      if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12') { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return false; }
+    });
+
+    // ═══════════════════════════════════════════════════
+    //   AUTH - TABS
+    // ═══════════════════════════════════════════════════
+    function switchTab(tab) {
+      document.getElementById('form-login').style.display = tab === 'login' ? '' : 'none';
+      document.getElementById('form-register').style.display = tab === 'register' ? '' : 'none';
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      document.getElementById('login-err').classList.remove('show');
+      document.getElementById('reg-err').classList.remove('show');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   LOGIN
+    // ═══════════════════════════════════════════════════
+    async function doLogin() {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      if (!user || !pass) { showErr('login-err', 'Completa todos los campos.'); return; }
+
+      const btn = document.getElementById('login-btn');
+      setLoading(btn, true);
+      try {
+        const res = await postData({ action: 'login', user, pass });
+        if (res.includes('LOGIN_OK') || res.trim() === 'LOGIN_OK') {
+          // Verificar si el usuario está baneado
+          const statusRes = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${encodeURIComponent(user)}`);
+          const statusData = await statusRes.json();
+
+          if (statusData.estado === 'Inactivo') {
+            showBanned();
+            return;
+          }
+
+          currentUser = user;
+          localStorage.setItem('bv_panel_user', user);
+          enterPanel();
+        } else {
+          showErr('login-err', 'Usuario o contraseña incorrectos.');
+        }
+      } catch (e) {
+        showErr('login-err', 'Error de conexión. Intenta de nuevo.');
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   REGISTER
+    // ═══════════════════════════════════════════════════
+    async function doRegister() {
+      const user = document.getElementById('reg-user').value.trim();
+      const pass = document.getElementById('reg-pass').value.trim();
+      const pass2 = document.getElementById('reg-pass2').value.trim();
+
+      if (!user || !pass || !pass2) { showErr('reg-err', 'Completa todos los campos.'); return; }
+      if (pass.length < 6) { showErr('reg-err', 'La contraseña debe tener mínimo 6 caracteres.'); return; }
+      if (pass !== pass2) { showErr('reg-err', 'Las contraseñas no coinciden.'); return; }
+      if (user.toLowerCase() === ADMIN_USER.toLowerCase()) { showErr('reg-err', 'Ese nombre no está disponible.'); return; }
+
+      const btn = document.getElementById('reg-btn');
+      setLoading(btn, true);
+      try {
+        const res = await postData({ action: 'register', user, pass });
+        if (res.includes('REGISTER_OK') || res.trim() === 'REGISTER_OK') {
+          toast('¡Cuenta creada! Ahora inicia sesión.', 'success');
+          switchTab('login');
+        } else if (res.includes('USER_EXISTS') || res.trim() === 'USER_EXISTS') {
+          showErr('reg-err', 'Ese nombre de usuario ya existe.');
+        } else {
+          showErr('reg-err', 'Error al registrar. Intenta de nuevo.');
+        }
+      } catch (e) {
+        showErr('reg-err', 'Error de conexión.');
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   ENTER PANEL
+    // ═══════════════════════════════════════════════════
+    function enterPanel() {
+      document.getElementById('auth-wrapper').style.display = 'none';
+      document.getElementById('panel-header').style.display = '';
+      document.getElementById('main-area').style.display = '';
+      document.getElementById('hdr-user-name').textContent = currentUser;
+      document.getElementById('sb-user-name').textContent = currentUser;
+      document.getElementById('sb-avatar').textContent = currentUser[0].toUpperCase();
+
+      const isAdmin = currentUser === ADMIN_USER;
+      document.getElementById('sb-usuarios').style.display = isAdmin ? '' : 'none';
+      document.getElementById('sb-user-role').textContent = isAdmin ? 'Administrador' : 'Creador';
+
+      loadAllAddons();
+      showView('dashboard');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   LOGOUT
+    // ═══════════════════════════════════════════════════
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('bv_panel_user');
+      document.getElementById('panel-header').style.display = 'none';
+      document.getElementById('main-area').style.display = 'none';
+      document.getElementById('auth-wrapper').style.display = '';
+      closeSidebar();
+    }
+
+    function volverAlInicio() {
+      window.parent.postMessage({ type: 'navigate', page: 'home', data: null }, '*');
+      if (window.parent === window) window.location.href = 'index.html';
+    }
+
+    function showBanned() {
+      document.getElementById('banned-screen').classList.add('show');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   VIEWS
+    // ═══════════════════════════════════════════════════
+    function showView(view) {
+      currentView = view;
+      closeSidebar();
+      document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+      const sb = document.getElementById(`sb-${view}`);
+      if (sb) sb.classList.add('active');
+
+      const vc = document.getElementById('view-container');
+
+      if (view === 'dashboard') renderDashboard(vc);
+      else if (view === 'mis-addons') renderMisAddons(vc);
+      else if (view === 'subir') { openModal('create'); }
+      else if (view === 'usuarios') renderUsuarios(vc);
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   LOAD ADDONS
+    // ═══════════════════════════════════════════════════
+    async function loadAllAddons() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=read`);
+        allAddons = await res.json();
+      } catch (e) { allAddons = []; }
+    }
+
+    function myAddons() {
+      return allAddons.filter(a => a[8] === currentUser);
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   DASHBOARD
+    // ═══════════════════════════════════════════════════
+    function renderDashboard(vc) {
+      const mine = myAddons();
+      const totalLikes = mine.reduce((s, a) => s + (parseInt(a[5]) || 0), 0);
+      const totalDls = mine.reduce((s, a) => s + (parseInt(a[6]) || 0), 0);
+      const isAdmin = currentUser === ADMIN_USER;
+
+      vc.innerHTML = `
+        <div style="margin-bottom:24px">
+          <div class="notice-box">
+            👋 Bienvenido al panel de creadores, <strong>${currentUser}</strong>. Aquí puedes gestionar todo tu contenido publicado en BlockVault.
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-val">${mine.length}</span>
+            <span class="stat-label">📦 Mis Addons</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val">${totalLikes}</span>
+            <span class="stat-label">❤️ Me Gusta</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val">${totalDls}</span>
+            <span class="stat-label">⬇️ Descargas</span>
+          </div>
+        </div>
+
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-fire"></i></div>
+            <div>
+              <div class="sec-title">Publicaciones Recientes</div>
+              <div class="sec-count">${mine.length} addons publicados</div>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:auto;padding:9px 18px;font-size:0.82rem" onclick="openModal('create')">
+            <i class="fas fa-plus"></i> Publicar
+          </button>
+        </div>
+
+        ${mine.length ? `
+          <div class="addons-grid">
+            ${mine.slice(-6).reverse().map(a => addonCardHTML(a)).join('')}
+          </div>
+        ` : `
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>Aún no tienes addons publicados.<br>¡Sube tu primer addon!</p>
+          </div>
+        `}
+      `;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   MIS ADDONS VIEW
+    // ═══════════════════════════════════════════════════
+    function renderMisAddons(vc) {
+      const mine = myAddons();
+      vc.innerHTML = `
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-layer-group"></i></div>
+            <div>
+              <div class="sec-title">Mis Addons</div>
+              <div class="sec-count">${mine.length} publicaciones</div>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:auto;padding:9px 18px;font-size:0.82rem" onclick="openModal('create')">
+            <i class="fas fa-plus"></i> Nuevo
+          </button>
+        </div>
+        ${mine.length ? `<div class="addons-grid">${mine.map(a => addonCardHTML(a)).join('')}</div>`
+          : `<div class="empty-state"><i class="fas fa-layer-group"></i><p>No tienes addons publicados todavía.</p></div>`}
+      `;
+    }
+
+    function addonCardHTML(a) {
+      const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = a;
+      const safeId = (nombre || '').replace(/'/g, "\\'");
+      return `
+        <div class="addon-card">
+          <img class="addon-card-thumb" src="${img || ''}" alt="${nombre || ''}" loading="lazy"
+            onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'170\\'><rect fill=\\'%231a1a2e\\' width=\\'300\\' height=\\'170\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%235a5a8a\\' text-anchor=\\'middle\\' dy=\\'.3em\\' font-size=\\'14\\'>IMG</text></svg>'">
+          <div class="addon-card-body">
+            <div class="addon-card-cat">${cat || '—'} ${version ? `· v${version}` : ''}</div>
+            <div class="addon-card-title">${nombre || 'Sin título'}</div>
+            <div class="addon-card-desc">${desc || 'Sin descripción.'}</div>
+            <div class="addon-card-foot">
+              <button class="btn-edit" onclick="openEditModal('${safeId}')"><i class="fas fa-edit"></i> Editar</button>
+              <button class="btn-danger" onclick="deleteAddon('${safeId}')"><i class="fas fa-trash"></i> Borrar</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   UPLOAD / EDIT MODAL
+    // ═══════════════════════════════════════════════════
+    function openModal(mode) {
+      imgBase64 = null;
+      document.getElementById('modal-mode').value = mode;
+      document.getElementById('modal-title').textContent = mode === 'create' ? '📦 Publicar Nuevo Addon' : '✏️ Editar Addon';
+      document.getElementById('modal-submit-btn').innerHTML = mode === 'create'
+        ? '<i class="fas fa-paper-plane"></i> Publicar'
+        : '<i class="fas fa-save"></i> Guardar Cambios';
+      ['form-nombre', 'form-cat', 'form-link', 'form-version', 'form-desc', 'form-img-url'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('img-preview').style.display = 'none';
+      document.getElementById('img-placeholder').style.display = '';
+      document.getElementById('form-err').classList.remove('show');
+      document.getElementById('upload-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function openEditModal(nombre) {
+      const item = allAddons.find(a => a[1] === nombre && a[8] === currentUser);
+      if (!item) return;
+      editingItem = item;
+      openModal('edit');
+      document.getElementById('modal-original-name').value = nombre;
+      document.getElementById('form-nombre').value = item[1] || '';
+      document.getElementById('form-cat').value = item[4] || '';
+      document.getElementById('form-link').value = item[2] || '';
+      document.getElementById('form-version').value = item[9] || '';
+      document.getElementById('form-desc').value = item[10] || '';
+      document.getElementById('form-img-url').value = item[3] || '';
+      if (item[3]) {
+        document.getElementById('img-preview').src = item[3];
+        document.getElementById('img-preview').style.display = '';
+        document.getElementById('img-placeholder').style.display = 'none';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('upload-modal').classList.remove('open');
+      document.body.style.overflow = '';
+      editingItem = null;
+      imgBase64 = null;
+      if (currentView === 'subir') showView('dashboard');
+    }
+
+    document.getElementById('upload-modal').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Esta función ya no es estrictamente necesaria porque al usar <label for="img-input">, el navegador hace clic automáticamente en el input type="file", pero se deja por si quisieras mantener la estructura vieja, aunque con el form de arriba basta.
+    // function triggerImgInput() { document.getElementById('img-input').click(); }
+
+    function previewImg(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) { toast('La imagen supera los 2MB', 'error'); return; }
+      const reader = new FileReader();
+      reader.onload = ev => {
+        imgBase64 = ev.target.result;
+        document.getElementById('img-preview').src = imgBase64;
+        document.getElementById('img-preview').style.display = '';
+        document.getElementById('img-placeholder').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   BANNED WORDS CHECK
+    // ═══════════════════════════════════════════════════
+    function checkBannedWords(nombre, desc, link) {
+      const text = `${nombre} ${desc} ${link}`.toLowerCase();
+      return BANNED_WORDS.find(w => text.includes(w.toLowerCase()));
+    }
+
+    async function logBannedAttempt(nombre, desc, link, wordFound) {
+      try {
+        await postData({
+          action: 'logBanned',
+          usuario: currentUser,
+          nombre: nombre,
+          descripcion: desc,
+          link: link,
+          palabra: wordFound,
+          fecha: new Date().toLocaleString()
+        });
+      } catch (e) { /* silencioso */ }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   SUBMIT ADDON
+    // ═══════════════════════════════════════════════════
+    async function submitAddon() {
+      const mode = document.getElementById('modal-mode').value;
+      const nombre = document.getElementById('form-nombre').value.trim();
+      const cat = document.getElementById('form-cat').value;
+      const link = document.getElementById('form-link').value.trim();
+      const version = document.getElementById('form-version').value.trim();
+      const desc = document.getElementById('form-desc').value.trim();
+      const imgUrl = document.getElementById('form-img-url').value.trim();
+      const originalName = document.getElementById('modal-original-name').value;
+
+      if (!nombre || !cat || !link) {
+        showFormErr('Nombre, categoría y link de descarga son obligatorios.');
+        return;
+      }
+
+      // Validar URL del link
+      try { new URL(link); } catch { showFormErr('El link de descarga no es una URL válida.'); return; }
+
+      // Verificar palabras prohibidas
+      const badWord = checkBannedWords(nombre, desc, link);
+      if (badWord) {
+        await logBannedAttempt(nombre, desc, link, badWord);
+        showFormErr(`❌ Ese contenido está prohibido en BlockVault. Palabra detectada: "${badWord}"`);
+        return;
+      }
+
+      const btn = document.getElementById('modal-submit-btn');
+      setLoading(btn, true);
+
+      try {
+        const payload = {
+          action: mode === 'create' ? 'add' : 'edit',
+          nombre, link, category: cat, version, descripcion: desc,
+          subidoPor: currentUser,
+          img: imgBase64 || '',
+          imgUrl: imgUrl || ''
+        };
+
+        if (mode === 'edit') {
+          payload.action = 'edit';
+          payload.nombreOriginal = originalName;
+          payload.nuevoNombre = nombre;
+          payload.nuevaUrl = link;
+          payload.nuevaCategoria = cat;
+          payload.nuevaVersion = version;
+          payload.nuevaDescripcion = desc;
+          payload.nuevaImg = imgBase64 || '';
+          payload.usuario = currentUser;
+        }
+
+        const res = await postData(payload);
+
+        if (res.includes('OK')) {
+          toast(mode === 'create' ? '✅ Addon publicado con éxito.' : '✅ Addon actualizado.', 'success');
+          closeModal();
+          await loadAllAddons();
+          if (currentView === 'mis-addons') renderMisAddons(document.getElementById('view-container'));
+          else renderDashboard(document.getElementById('view-container'));
+        } else {
+          showFormErr('Error al guardar. Intenta de nuevo.');
+        }
+      } catch (e) {
+        showFormErr('Error de conexión.');
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   DELETE
+    // ═══════════════════════════════════════════════════
+    async function deleteAddon(nombre) {
+      if (!confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) return;
+      try {
+        const res = await postData({ action: 'delete', nombre, usuario: currentUser });
+        if (res.includes('DELETE_OK') || res.trim() === 'DELETE_OK') {
+          toast('Addon eliminado.', 'success');
+          await loadAllAddons();
+          const vc = document.getElementById('view-container');
+          if (currentView === 'mis-addons') renderMisAddons(vc);
+          else renderDashboard(vc);
+        } else {
+          toast('No se pudo eliminar.', 'error');
+        }
+      } catch { toast('Error de conexión.', 'error'); }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   USUARIOS (solo BlockVault)
+    // ═══════════════════════════════════════════════════
+    async function renderUsuarios(vc) {
+      if (currentUser !== ADMIN_USER) { showView('dashboard'); return; }
+      vc.innerHTML = `<div class="sec-hdr"><div class="sec-hdr-left"><div class="sec-icon"><i class="fas fa-users"></i></div><div><div class="sec-title">Gestión de Usuarios</div></div></div></div><div class="loader-center"><div class="spinner"></div><div class="spinner-label">Cargando usuarios…</div></div>`;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getUsers`);
+        const usuarios = await res.json();
+
+        if (!Array.isArray(usuarios) || !usuarios.length) {
+          vc.innerHTML += `<div class="empty-state"><i class="fas fa-users"></i><p>No hay usuarios registrados.</p></div>`;
+          return;
+        }
+
+        let rows = '';
+        usuarios.forEach((u, idx) => {
+          if (idx === 0) return; // skip header row
+          const [fecha, nombre, pass, estado] = u;
+          if (!nombre) return;
+          const isActive = (estado || 'Activo') === 'Activo';
+          const badgeClass = isActive ? 'badge-active' : 'badge-inactive';
+          const badgeText = isActive ? '● Activo' : '● Inactivo';
+          const actionBtn = isActive
+            ? `<button class="btn-ban" onclick="setUserStatus('${nombre}','Inactivo')"><i class="fas fa-ban"></i> Banear</button>`
+            : `<button class="btn-unban" onclick="setUserStatus('${nombre}','Activo')"><i class="fas fa-check"></i> Desbanear</button>`;
+          const isAdminUser = nombre === ADMIN_USER;
+          rows += `<tr>
+            <td style="font-weight:600;color:var(--text)">${nombre}</td>
+            <td><span class="${badgeClass}">${badgeText}</span></td>
+            <td style="color:var(--text-muted);font-size:0.75rem">${fecha || '—'}</td>
+            <td>${isAdminUser ? '<span style="color:var(--text-muted);font-size:0.75rem">Admin</span>' : actionBtn}</td>
+          </tr>`;
+        });
+
+        vc.innerHTML = `
+          <div class="sec-hdr">
+            <div class="sec-hdr-left">
+              <div class="sec-icon"><i class="fas fa-users"></i></div>
+              <div>
+                <div class="sec-title">Gestión de Usuarios</div>
+                <div class="sec-count">${usuarios.length - 1} usuarios registrados</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;overflow-x:auto">
+            <table class="users-table">
+              <thead><tr><th>Usuario</th><th>Estado</th><th>Registro</th><th>Acciones</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>`;
+      } catch (e) {
+        vc.querySelector('.loader-center').innerHTML = `<div class="empty-state"><i class="fas fa-wifi"></i><p>Error al cargar usuarios.</p></div>`;
+      }
+    }
+
+    async function setUserStatus(nombre, estado) {
+      try {
+        const res = await postData({ action: 'setUserStatus', nombre, estado });
+        if (res.includes('STATUS_OK') || res.trim() === 'STATUS_OK') {
+          toast(`${nombre} → ${estado}`, 'success');
+          renderUsuarios(document.getElementById('view-container'));
+        } else {
+          toast('Error al cambiar estado.', 'error');
+        }
+      } catch { toast('Error de conexión.', 'error'); }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   SIDEBAR
+    // ═══════════════════════════════════════════════════
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('overlay').classList.add('visible');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('visible');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   UTILITIES
+    // ═══════════════════════════════════════════════════
+    async function postData(payload) {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      return await res.text();
+    }
+
+    function showErr(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function showFormErr(msg) {
+      const el = document.getElementById('form-err');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function toast(msg, type = '') {
+      const el = document.getElementById('panel-toast');
+      el.textContent = msg;
+      el.className = `${type}`;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show', type), 3500);
+    }
+
+    function setLoading(btn, on) {
+      btn.disabled = on;
+      if (on) btn.dataset.orig = btn.innerHTML;
+      btn.innerHTML = on
+        ? '<i class="fas fa-spinner fa-spin"></i> Procesando…'
+        : btn.dataset.orig || btn.innerHTML;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   INIT — Auto-login si hay sesión guardada
+    // ═══════════════════════════════════════════════════
+    window.addEventListener('DOMContentLoaded', async () => {
+      const saved = localStorage.getItem('bv_panel_user');
+      if (saved) {
+        // Verificar que la cuenta no está baneada
+        try {
+          const res = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${encodeURIComponent(saved)}`);
+          const data = await res.json();
+          if (data.estado === 'Inactivo') { showBanned(); return; }
+          currentUser = saved;
+          await loadAllAddons();
+          enterPanel();
+        } catch {
+          // En caso de error de red, dejar que haga login manual
+          localStorage.removeItem('bv_panel_user');
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
