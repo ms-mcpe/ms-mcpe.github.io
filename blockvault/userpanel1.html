@@ -1255,7 +1255,7 @@
       <div class="sb-section-label">Cuenta</div>
       <div class="sb-item" id="sb-usuarios" onclick="showView('usuarios')" style="display:none"><i
           class="fas fa-users"></i> Usuarios</div>
-      <div class="sb-item" id="sb-ajustes" onclick="window.location.href='ajustes.html'"><i class="fas fa-cog"></i> Ajustes</div>
+      <div class="sb-item" id="sb-ajustes" onclick="showView('ajustes')"><i class="fas fa-cog"></i> Ajustes</div>
       <div class="sb-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</div>
     </div>
     <div class="sb-footer">
@@ -1601,6 +1601,7 @@
       else if (view === 'mis-addons') renderMisAddons(vc);
       else if (view === 'subir') { openModal('create'); }
       else if (view === 'usuarios') renderUsuarios(vc);
+      else if (view === 'ajustes') renderAjustes(vc);
     }
 
     // ═══════════════════════════════════════════════════
@@ -1895,6 +1896,121 @@
           toast('No se pudo eliminar.', 'error');
         }
       } catch { toast('Error de conexión.', 'error'); }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   AJUSTES DE CUENTA
+    // ═══════════════════════════════════════════════════
+    function renderAjustes(vc) {
+      vc.innerHTML = `
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-cog"></i></div>
+            <div>
+              <div class="sec-title">Ajustes de Cuenta</div>
+              <div class="sec-count">Gestiona tu perfil</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Perfil actual -->
+        <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(6,182,212,.05));border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:22px">
+          <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#fff;flex-shrink:0" id="aj-avatar">${currentUser[0].toUpperCase()}</div>
+          <div>
+            <div style="font-size:.95rem;font-weight:700;color:var(--text)">${currentUser}</div>
+            <div style="font-size:.68rem;color:var(--primary);font-weight:600;text-transform:uppercase;letter-spacing:.5px">${currentUser === ADMIN_USER ? 'Administrador' : 'Creador'}</div>
+          </div>
+        </div>
+
+        <!-- Cambiar nombre -->
+        <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+            <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;box-shadow:0 3px 10px var(--primary-glow);flex-shrink:0"><i class="fas fa-user-edit"></i></div>
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;color:var(--text)">Cambiar Nombre de Usuario</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">El cambio se aplicará en todos tus addons publicados</div>
+            </div>
+          </div>
+          <div style="padding:20px">
+            <div class="field-group">
+              <label class="field-label">Nuevo nombre de usuario *</label>
+              <input class="field-input" id="aj-new-name" type="text" placeholder="Mínimo 3 caracteres">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contraseña actual (para confirmar) *</label>
+              <input class="field-input" id="aj-pass" type="password" placeholder="Tu contraseña">
+            </div>
+            <div id="aj-msg" style="display:none;padding:10px 14px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;margin-bottom:12px"></div>
+            <button class="btn-primary" id="aj-btn" onclick="doRenameUser()">
+              <i class="fas fa-save"></i> Guardar Nuevo Nombre
+            </button>
+          </div>
+        </div>
+
+        <!-- Cerrar sesión -->
+        <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius);padding:18px 20px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:#ef4444;margin-bottom:6px">
+            <i class="fas fa-exclamation-triangle"></i> Zona de Peligro
+          </div>
+          <p style="font-size:.78rem;color:var(--text-muted);margin:0 0 14px;line-height:1.6">
+            Cerrar sesión eliminará tu sesión guardada. Tendrás que volver a iniciar sesión.
+          </p>
+          <button onclick="logout()" style="padding:9px 18px;border-radius:var(--radius-sm);border:1.5px solid rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:#ef4444;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:var(--transition)" onmouseover="this.style.background='#ef4444';this.style.color='#fff'" onmouseout="this.style.background='rgba(239,68,68,.08)';this.style.color='#ef4444'">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+          </button>
+        </div>
+      `;
+    }
+
+    async function doRenameUser() {
+      const newName = document.getElementById('aj-new-name').value.trim();
+      const pass    = document.getElementById('aj-pass').value.trim();
+      const msgEl   = document.getElementById('aj-msg');
+      const btn     = document.getElementById('aj-btn');
+
+      const showMsg = (msg, ok) => {
+        msgEl.style.display = 'block';
+        msgEl.textContent = msg;
+        msgEl.style.background = ok ? 'rgba(34,197,94,.1)' : 'rgba(239,68,68,.1)';
+        msgEl.style.color = ok ? '#22c55e' : '#ef4444';
+        msgEl.style.border = ok ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(239,68,68,.3)';
+      };
+
+      if (!newName || !pass) { showMsg('⚠️ Completa todos los campos.', false); return; }
+      if (newName.length < 3) { showMsg('⚠️ El nombre debe tener al menos 3 caracteres.', false); return; }
+      if (newName === currentUser) { showMsg('⚠️ El nuevo nombre es igual al actual.', false); return; }
+      if (newName.toLowerCase() === ADMIN_USER.toLowerCase()) { showMsg('⚠️ Ese nombre no está disponible.', false); return; }
+
+      setLoading(btn, true);
+      msgEl.style.display = 'none';
+
+      try {
+        const res = await postData({ action: 'renameUser', user: currentUser, newName, pass });
+
+        if (res.includes('RENAME_OK')) {
+          localStorage.setItem('bv_panel_user', newName);
+          currentUser = newName;
+          // Actualizar UI
+          document.getElementById('hdr-user-name').textContent = newName;
+          document.getElementById('sb-user-name').textContent = newName;
+          document.getElementById('sb-avatar').textContent = newName[0].toUpperCase();
+          showMsg('✅ ¡Nombre cambiado con éxito!', true);
+          toast('¡Nombre actualizado correctamente!', 'success');
+          setTimeout(() => renderAjustes(document.getElementById('view-container')), 1500);
+        } else if (res.includes('NAME_TAKEN')) {
+          showMsg('❌ Ese nombre ya está en uso. Elige otro.', false);
+        } else if (res.includes('AUTH_ERROR')) {
+          showMsg('❌ Contraseña incorrecta.', false);
+        } else if (res.includes('FORBIDDEN')) {
+          showMsg('❌ Nombre no permitido.', false);
+        } else {
+          showMsg('❌ Error al cambiar nombre. Intenta de nuevo.', false);
+        }
+      } catch (e) {
+        showMsg('❌ Error de conexión.', false);
+      } finally {
+        setLoading(btn, false);
+      }
     }
 
     // ═══════════════════════════════════════════════════
