@@ -2035,29 +2035,29 @@
                 }
             }
             if (d.type === 'theme') applyTheme(d.theme, d.custom);
-            if (d.type === 'verification-result') {
-                if (d.verified) {
-                    processDownload();
-                } else {
-                    window.parent.location.href = d.verifyLink;
-                }
-            }
         });
 
-        let pendingDownload = null;
+        const VERIFY_LINK = 'https://cuty.io/m8uEHt1ws';
+        const VERIFY_DURATION = 15 * 60 * 60 * 1000;
 
-        function prepararDescarga(e, url, name) {
-            e.preventDefault();
-            pendingDownload = { url, name };
-            window.parent.postMessage({ type: 'check-verification' }, '*');
+        function checkVerification() {
+            const verifiedTime = localStorage.getItem('bv_verified_time');
+            if (!verifiedTime) return false;
+            return (Date.now() - parseInt(verifiedTime)) < VERIFY_DURATION;
         }
 
-        function processDownload() {
-            if (!pendingDownload) return;
-            const { url, name } = pendingDownload;
-            registrar('download', name);
-            window.open(url, '_blank');
-            pendingDownload = null;
+        function prepararDescarga(e, url, name) {
+            if (checkVerification()) {
+                // Usuario verificado: permitir descarga
+                registrar('download', name);
+                // No prevenimos el default para que el <a> con target="_blank" funcione nativamente
+                return true;
+            } else {
+                // Usuario no verificado: redirigir parent
+                e.preventDefault();
+                window.parent.location.href = VERIFY_LINK;
+                return false;
+            }
         }
 
         function applyTheme(theme, custom) {
