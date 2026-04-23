@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar BlockVault - Instalador Profesional</title>
+    <style>
+        /* CSS Resets & Variables */
+        :root {
+            --bg-dark: #050814;
+            --primary-purple: #7b2cbf;
+            --secondary-cyan: #00f5d4;
+            --dark-blue: #10002b;
+            --text-light: #e0e1dd;
+            --card-bg: rgba(20, 20, 35, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at 50% 0%, var(--dark-blue), var(--bg-dark) 80%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            justify-content: space-between;
+        }
+
+        /* --- BACKGROUND PARTICLES --- */
+        .particles-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.35;
+            animation: float-orb 15s ease-in-out infinite alternate;
+        }
+
+        .orb-1 { width: 400px; height: 400px; background: var(--primary-purple); top: -100px; left: -100px; }
+        .orb-2 { width: 350px; height: 350px; background: var(--secondary-cyan); bottom: -100px; right: -100px; animation-delay: -7s; }
+
+        @keyframes float-orb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, 80px) scale(1.3); }
+        }
+
+        /* --- CAROUSEL SLIDER 3D --- */
+        .carousel-section {
+            width: 100%;
+            height: clamp(250px, 40vh, 450px);
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px;
+            margin-top: 20px;
+        }
+
+        .carousel-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 65%;
+            max-width: 500px;
+            height: 90%;
+            border-radius: 18px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.7s ease, filter 0.7s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            opacity: 0;
+            transform: translateX(0) scale(0.6) translateZ(-300px);
+            z-index: 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .carousel-item.active { transform: translateX(0) scale(1) translateZ(0); opacity: 1; z-index: 10; border-color: var(--secondary-cyan); box-shadow: 0 0 40px rgba(123, 44, 191, 0.6); }
+        .carousel-item.prev-1 { transform: translateX(-45%) scale(0.8) translateZ(-150px); opacity: 0.6; z-index: 5; filter: blur(3px) brightness(0.5); }
+        .carousel-item.next-1 { transform: translateX(45%) scale(0.8) translateZ(-150px); opacity: 0.6; z-index: 5; filter: blur(3px) brightness(0.5); }
+        .carousel-item.prev-2 { transform: translateX(-80%) scale(0.6) translateZ(-300px); opacity: 0.2; z-index: 2; filter: blur(6px) brightness(0.3); }
+        .carousel-item.next-2 { transform: translateX(80%) scale(0.6) translateZ(-300px); opacity: 0.2; z-index: 2; filter: blur(6px) brightness(0.3); }
+
+        /* --- APP INSTALLER CARD --- */
+        .installer-wrapper {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 20px 10px 40px 10px;
+        }
+
+        .installer-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: clamp(20px, 5vw, 40px);
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-icon {
+            width: clamp(80px, 15vw, 120px);
+            height: clamp(80px, 15vw, 120px);
+            border-radius: 25%;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 30px rgba(0, 245, 212, 0.5);
+            border: 3px solid var(--secondary-cyan);
+            animation: floating 4s ease-in-out infinite;
+            background: #111;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .app-title-container {
+            margin-bottom: 15px;
+        }
+
+        .app-title {
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, var(--secondary-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1.5px;
+        }
+
+        .app-version {
+            background: linear-gradient(45deg, var(--primary-purple), #9d4edd);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 5px;
+            box-shadow: 0 5px 15px rgba(123, 44, 191, 0.4);
+        }
+
+        .app-desc {
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            line-height: 1.6;
+            color: #d1d5db;
+            margin-bottom: 30px;
+            max-width: 550px;
+        }
+
+        .download-btn {
+            background: linear-gradient(90deg, var(--primary-purple), #5a189a);
+            color: white;
+            text-decoration: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: clamp(1.1rem, 4vw, 1.35rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(123, 44, 191, 0.5);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid transparent;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            background: linear-gradient(90deg, #9d4edd, var(--secondary-cyan));
+            box-shadow: 0 20px 40px rgba(0, 245, 212, 0.4);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .download-btn svg { width: 24px; height: 24px; fill: currentColor; }
+
+        /* Loader */
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--secondary-cyan);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Responsive PC adjustments */
+        @media (min-width: 1024px) {
+            .carousel-section { height: 50vh; }
+            .installer-card { padding: 50px; }
+        }
+
+        /* Mobile specific */
+        @media (max-width: 600px) {
+            .carousel-item { width: 85%; }
+            .carousel-item.prev-2, .carousel-item.next-2 { display: none; }
+            .carousel-item.prev-1 { transform: translateX(-35%) scale(0.8); }
+            .carousel-item.next-1 { transform: translateX(35%) scale(0.8); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particles-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <div class="carousel-section">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="loader" id="mainLoader"></div>
+        </div>
+    </div>
+
+    <div class="installer-wrapper">
+        <div class="installer-card">
+            <img src="icon-192.png" alt="BlockVault Icon" class="app-icon">
+            
+            <div class="app-title-container">
+                <h1 class="app-title">BlockVault</h1>
+                <span class="app-version">V1.0</span>
+            </div>
+
+            <p class="app-desc">
+                BlockVault es la plataforma definitiva de addons para Minecraft Bedrock. Disfruta de una inmensa variedad de texturas, mapas y complementos de calidad profesional en una sola aplicación.
+            </p>
+
+            <a href="BlockVault.apk" download="BlockVault.apk" class="download-btn">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Descargar APK
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1B39u_DKsjRpXleKrh-syH0xE2tBuJxvlQIUZa1WBE-0/export?format=csv&gid=0';
+        const track = document.getElementById('carouselTrack');
+        const loader = document.getElementById('mainLoader');
+        let images = [];
+        let currentIndex = 0;
+        let items = [];
+
+        async function fetchImages() {
+            try {
+                const response = await fetch(CSV_URL);
+                const csvText = await response.text();
+                const lines = csvText.split('\n');
+                const urls = [];
+
+                // Omitir cabecera (línea 0)
+                for (let i = 1; i < lines.length; i++) {
+                    const columns = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // Split por coma ignorando comillas
+                    if (columns.length > 3) {
+                        const url = columns[3].trim().replace(/^"|"$/g, ''); // Columna D (urlimg)
+                        if (url.startsWith('http')) urls.push(url);
+                    }
+                }
+
+                // Aleatorizar (Shuffle)
+                images = urls.sort(() => Math.random() - 0.5);
+                
+                if (images.length > 0) {
+                    loader.style.display = 'none';
+                    initCarousel();
+                } else {
+                    throw new Error('No images found');
+                }
+            } catch (error) {
+                console.error('Error fetching images:', error);
+                // Fallback a algunas imágenes si falla el fetch
+                images = [
+                    "https://media.forgecdn.net/attachments/1572/960/bedrock_reimagined_keyart-jpg.jpg",
+                    "https://lh3.googleusercontent.com/u/0/d/1PbQX4TSkFK9e7v9lCuAtI0aAr93uT4gq=s1000"
+                ];
+                loader.style.display = 'none';
+                initCarousel();
+            }
+        }
+
+        function initCarousel() {
+            images.forEach((url, index) => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.style.backgroundImage = `url('${url}')`;
+                track.appendChild(item);
+            });
+            items = document.querySelectorAll('.carousel-item');
+            updateCarousel();
+            setInterval(nextSlide, 3000);
+        }
+
+        function updateCarousel() {
+            const total = items.length;
+            items.forEach((item, index) => {
+                item.classList.remove('active', 'prev-1', 'prev-2', 'next-1', 'next-2');
+                item.style.opacity = '0';
+                
+                let offset = (index - currentIndex) % total;
+                if (offset < -Math.floor(total / 2)) offset += total;
+                if (offset > Math.floor(total / 2)) offset -= total;
+
+                if (offset === 0) item.classList.add('active');
+                else if (offset === -1) item.classList.add('prev-1');
+                else if (offset === -2) item.classList.add('prev-2');
+                else if (offset === 1) item.classList.add('next-1');
+                else if (offset === 2) item.classList.add('next-2');
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % items.length;
+            updateCarousel();
+        }
+
+        fetchImages();
+    </script>
+</body>
+</html>
