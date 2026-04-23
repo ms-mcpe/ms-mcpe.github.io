@@ -454,6 +454,9 @@
       <span class="nav-title">BLOCKVAULT</span>
     </div>
     <div class="nav-actions">
+      <button class="nav-btn ghost" onclick="clearAllData()" style="padding: 6px 12px; font-size: 0.7rem; color: var(--text-muted); border-color: var(--border); margin-right: 4px;">
+        🗑️ Borrar Datos
+      </button>
       <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
     </div>
   </nav>
@@ -751,6 +754,32 @@
         setTimeout(() => notifyFrame({ type: 'pwa-available' }), 1000);
       }
     });
+
+    // ════════════════════════════════════════════════════════════
+    //  LIMPIEZA DE DATOS
+    // ════════════════════════════════════════════════════════════
+    async function clearAllData() {
+      if (!confirm("¿Estás seguro? Esto eliminará tu sesión de creador, tu tema personalizado y la verificación de descargas.")) return;
+      
+      // Limpiar Storages
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Limpiar Caches de Service Worker
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        for (const key of keys) await caches.delete(key);
+      }
+      
+      // Desregistrar Service Workers
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const reg of registrations) await reg.unregister();
+      }
+      
+      // Recargar con fuerza desde el servidor
+      window.location.reload(true);
+    }
 
     // ════════════════════════════════════════════════════════════
     //  DETECCIÓN DE VERIFICACIÓN (Cuty.io)
