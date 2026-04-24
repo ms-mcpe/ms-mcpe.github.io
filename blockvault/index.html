@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" />
-  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#7c3aed" />
 
   <style>
@@ -365,6 +364,100 @@
       animation: fade-up 0.8s 0.7s both;
     }
 
+    /* ══ App Prompt ══════════════════════════════ */
+    #app-prompt-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 20, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #app-prompt-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .app-prompt-modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transform: translateY(30px) scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+    #app-prompt-overlay.show .app-prompt-modal {
+      transform: translateY(0) scale(1);
+    }
+    .app-prompt-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color var(--transition);
+    }
+    .app-prompt-close:hover {
+      color: var(--text-primary);
+    }
+    .app-prompt-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-accent);
+    }
+    .app-prompt-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .app-prompt-text {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .app-prompt-btn {
+      display: inline-block;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--accent), #5b21b6);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-accent);
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+    .app-prompt-btn:hover {
+      box-shadow: 0 0 40px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
     /* ══ Toast ═══════════════════════════════════ */
     #toast {
       position: fixed;
@@ -464,6 +557,19 @@
   <!-- Contenedor principal con iframe -->
   <div id="app-container">
     <iframe id="page-frame" src="about:blank" title="BlockVault App"></iframe>
+  </div>
+
+  <!-- App Download Prompt -->
+  <div id="app-prompt-overlay">
+    <div class="app-prompt-modal">
+      <button class="app-prompt-close" onclick="closeAppPrompt()">✖</button>
+      <div class="app-prompt-icon">
+        <img src="icon-192.png" alt="Logo" style="width:80%; height:80%; object-fit:contain;">
+      </div>
+      <h3 class="app-prompt-title">¿Deseas descargar la app de BlockVault?</h3>
+      <p class="app-prompt-text">Obtén la mejor experiencia instalando nuestra aplicación oficial para dispositivos móviles.</p>
+      <button class="app-prompt-btn" onclick="goToAppInstall()">Sí, descargar app</button>
+    </div>
   </div>
 
   <!-- Toasts -->
@@ -700,58 +806,35 @@
     //  INICIO — ocultar loader y cargar home
     // ════════════════════════════════════════════════════════════
     // ════════════════════════════════════════════════════════════
-    //  PWA / INSTALL LOGIC
+    //  APP DOWNLOAD PROMPT LOGIC
     // ════════════════════════════════════════════════════════════
-    let deferredPrompt;
+    function closeAppPrompt() {
+      document.getElementById('app-prompt-overlay').classList.remove('show');
+    }
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevenir que Chrome muestre el prompt automáticamente
-      e.preventDefault();
-      // Guardar el evento para dispararlo luego
-      deferredPrompt = e;
-      // Avisar al frame que la app es instalable
-      notifyFrame({ type: 'pwa-available' });
-    });
-
-    window.addEventListener('appinstalled', (evt) => {
-      showToast('¡BlockVault instalado con éxito!', 'success');
-      deferredPrompt = null;
-    });
-
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('SW registrado', reg))
-          .catch(err => console.log('SW error', err));
-      });
+    function goToAppInstall() {
+      window.location.href = 'app.html';
     }
 
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loader').classList.add('hidden');
         navigateTo('home');
+        
+        // Show app prompt after loader finishes
+        setTimeout(() => {
+          document.getElementById('app-prompt-overlay').classList.add('show');
+        }, 800);
       }, 2200);
     });
 
-    // Escuchar mensajes adicionales para PWA
+    // Escuchar mensajes adicionales
     window.addEventListener('message', e => {
       const d = e.data;
       if (!d || !d.type) return;
 
       if (d.type === 'pwa-install-request') {
-        const link = document.createElement('a');
-        link.href = 'BlockVault.apk';
-        link.download = 'BlockVault.apk';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        showToast('Iniciando descarga de BlockVault...', 'success');
-      }
-
-      // Asegurarse de avisar al frame si carga y el prompt ya estaba listo
-      if (d.type === 'init' && deferredPrompt) {
-        setTimeout(() => notifyFrame({ type: 'pwa-available' }), 1000);
+        goToAppInstall();
       }
     });
 
