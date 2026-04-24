@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Download App</title>
+
+    <link rel="icon" href="icon-192.ico">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Orbitron:wght@700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --gold: #ffd700;
+            --gold-dim: #b8860b;
+            --gold-glow: rgba(255, 215, 0, 0.35);
+            --gold-soft: rgba(255, 215, 0, 0.08);
+            --accent: #00ffaa;
+            --accent-glow: rgba(0, 255, 170, 0.3);
+            --danger: #ff4545;
+            --danger-glow: rgba(255, 69, 69, 0.3);
+            --bg-deep: #020202;
+            --bg-card: rgba(14, 14, 14, 0.97);
+            --text-muted: #888;
+            --text-sub: #bbb;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --radius-card: 28px;
+            --radius-btn: 14px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-deep);
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ──────────────────── PARTÍCULAS ──────────────────── */
+        #particles-js {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* ──────────────────── APP IFRAME ──────────────────── */
+        .chat-container {
+            position: absolute;
+            inset: 0;
+            display: none;
+            z-index: 5;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* ──────────────────── OVERLAY DE ESTADO ──────────────────── */
+        #status-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 40%, #0d0d0d 0%, var(--bg-deep) 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 24px;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Logo animado */
+        .shield-wrap {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 28px;
+        }
+
+        .shield-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--gold);
+            animation: spin 1.2s linear infinite;
+        }
+
+        .shield-ring.r2 {
+            inset: 8px;
+            border-top-color: transparent;
+            border-right-color: rgba(255, 215, 0, 0.4);
+            animation-duration: 2s;
+            animation-direction: reverse;
+        }
+
+        .shield-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--gold);
+            filter: drop-shadow(0 0 12px var(--gold-glow));
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error icon (oculto por defecto) */
+        .error-wrap {
+            display: none;
+            margin-bottom: 28px;
+            animation: pulseErr 2s ease-in-out infinite;
+        }
+
+        .error-wrap i {
+            font-size: 3.2rem;
+            color: var(--danger);
+            filter: drop-shadow(0 0 18px var(--danger-glow));
+        }
+
+        @keyframes pulseErr {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.06);
+                opacity: 0.8;
+            }
+        }
+
+        #status-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        #status-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: var(--gold);
+            filter: drop-shadow(0 0 6px var(--gold-glow));
+        }
+
+        /* Puntos animados */
+        .dots::after {
+            content: '';
+            animation: dots 1.4s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0% {
+                content: '';
+            }
+
+            25% {
+                content: '.';
+            }
+
+            50% {
+                content: '..';
+            }
+
+            75% {
+                content: '...';
+            }
+        }
+
+        /* Mensaje de error detallado */
+        #policy-text {
+            display: none;
+            margin-top: 22px;
+            max-width: 360px;
+            padding: 20px 22px;
+            background: rgba(255, 69, 69, 0.07);
+            border: 1px solid rgba(255, 69, 69, 0.25);
+            border-radius: 16px;
+            line-height: 1.7;
+            font-size: 0.88rem;
+            color: #ccc;
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        #policy-text strong {
+            color: var(--danger);
+            font-size: 0.95rem;
+        }
+
+        .retry-btn {
+            display: none;
+            margin-top: 20px;
+            padding: 13px 30px;
+            border: 1px solid var(--gold);
+            border-radius: var(--radius-btn);
+            background: transparent;
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: var(--gold-soft);
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ──────────────────── MODAL PWA ──────────────────── */
+        #install-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 410px;
+            background: linear-gradient(160deg, rgba(18, 18, 18, 1) 0%, rgba(8, 8, 8, 0.98) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: var(--radius-card);
+            padding: 42px 28px 36px;
+            text-align: center;
+            box-shadow:
+                0 0 0 1px rgba(255, 215, 0, 0.06),
+                0 0 60px rgba(255, 215, 0, 0.12),
+                0 30px 80px rgba(0, 0, 0, 0.6);
+            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.88) translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Encabezado del modal */
+        .modal-icon-wrap {
+            width: 88px;
+            height: 88px;
+            border-radius: 22px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            border: 1.5px solid rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 4px rgba(255, 215, 0, 0.07),
+                0 0 24px rgba(255, 215, 0, 0.15),
+                0 8px 24px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Brillo sutil en el borde superior del icono */
+        .modal-icon-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            width: 80%;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .modal-icon-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            line-height: 1.55;
+            max-width: 280px;
+            margin: 0 auto 24px;
+        }
+
+        /* Divider decorativo */
+        .divider {
+            height: 1px;
+            margin: 0 0 22px;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 12px 6px;
+            transition: border-color 0.3s;
+        }
+
+        .stat-box:hover {
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .stat-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            color: #fff;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 0.58rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Votos */
+        .vote-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .vote-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .btn-vote {
+            flex: 1;
+            padding: 13px 10px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #888;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .btn-vote:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.07);
+            color: #ccc;
+        }
+
+        .btn-vote.active.like {
+            background: rgba(0, 255, 170, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-vote.active.dislike {
+            background: rgba(255, 69, 69, 0.15);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Botón principal */
+        .btn-install-main {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 60%, #ffe55c 100%);
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 30px var(--gold-glow), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-install-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                left: 160%;
+            }
+        }
+
+        .btn-install-main:active {
+            transform: scale(0.98);
+        }
+
+        /* Nota de política */
+        .policy-note {
+            margin-top: 16px;
+            font-size: 0.72rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .policy-note a {
+            color: #777;
+            text-decoration: underline;
+        }
+
+        /* SKIP siempre oculto */
+        .btn-skip {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+
+    <div id="particles-js"></div>
+
+    <!-- ── OVERLAY DE ESTADO ── -->
+    <div id="status-overlay">
+
+        <!-- Estado: cargando -->
+        <div id="loader-wrap" class="shield-wrap">
+            <div class="shield-ring"></div>
+            <div class="shield-ring r2"></div>
+            <div class="shield-icon"><i class="fas fa-shield-alt"></i></div>
+        </div>
+
+        <!-- Estado: error -->
+        <div id="error-wrap" class="error-wrap">
+            <i class="fas fa-ban"></i>
+        </div>
+
+        <div id="status-label">Sistema de seguridad</div>
+        <div id="status-text"><span class="dots">Verificando acceso</span></div>
+
+        <div id="policy-text">
+            <strong><i class="fas fa-exclamation-triangle" style="margin-right:6px;"></i>Acceso bloqueado: bloqueador de
+                anuncios detectado.</strong><br><br>
+            Para utilizar esta plataforma debes desactivar tu bloqueador de anuncios. Tenerlo activo impide que el
+            servicio se conecte a los servidores oficiales de JM-TechStudios.<br><br>
+            Desactívalo y vuelve a cargar la página.
+        </div>
+
+        <button class="retry-btn" id="retry-btn" onclick="location.reload()">
+            <i class="fas fa-redo" style="margin-right:8px;"></i>REINTENTAR
+        </button>
+    </div>
+
+    <!-- ── MODAL INSTALACIÓN ── -->
+    <div id="install-modal">
+        <div class="modal-card">
+
+            <div class="modal-icon-wrap">
+                <img src="icon-192.png" alt="App Icon"
+                    onerror="this.style.display='none';this.parentElement.innerHTML='<i class=&quot;fas fa-mobile-alt&quot; style=&quot;font-size:2rem;color:var(--gold);&quot;></i>'">
+            </div>
+
+            <h3 class="modal-title">EclipseMC</h3>
+            <p class="modal-subtitle">
+                Esta herramienta solo está disponible con google chrome.
+            </p>
+
+            <div class="divider"></div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span id="stat-dls" class="stat-num">—</span>
+                    <span class="stat-desc">Instalaciones</span>
+                </div>
+                <div class="stat-box">
+                    <span id="stat-likes" class="stat-num">—</span>
+                    <span class="stat-desc">Me gusta</span>
+                </div>
+                <div class="stat-box">
+                    <span id="stat-dislikes" class="stat-num">—</span>
+                    <span class="stat-desc">No me gusta</span>
+                </div>
+            </div>
+
+            <p class="vote-label">¿Qué te parece la app?</p>
+            <div class="vote-container">
+                <button id="btn-like" class="btn-vote" onclick="registrarVoto('like')">
+                    <i class="fas fa-thumbs-up"></i> Me gusta
+                </button>
+                <button id="btn-dislike" class="btn-vote" onclick="registrarVoto('dislike')">
+                    <i class="fas fa-thumbs-down"></i> No me gusta
+                </button>
+            </div>
+
+            <button id="pwa-install-btn" class="btn-install-main">
+                <i class="fas fa-download" style="margin-right:10px;"></i>INSTALAR APP
+            </button>
+
+            <p class="policy-note">
+                Al instalar aceptas los <a href="#">términos de uso</a> de JM-TechStudios.
+            </p>
+
+        </div>
+    </div>
+
+    <!-- ── CONTENIDO PRINCIPAL ── -->
+    <div id="main-app" class="chat-container">
+        <iframe src="index1.html" allow="clipboard-read; clipboard-write"></iframe>
+    </div>
+
+    <!-- Elemento señuelo para detección de bloqueadores -->
+    <div id="adblock-bait"
+        class="ads ad adsbox doubleclick ad-placement carbon-ads pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads"
+        style="width:1px;height:1px;position:absolute;left:-9999px;top:-9999px;pointer-events:none;" aria-hidden="true">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        "use strict";
+
+        /* ═══════════════════════════════════════════════
+           CONFIGURACIÓN
+        ═══════════════════════════════════════════════ */
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWkswFKLYHcYgzYdMGgQBnI6LdgNM9B8JlRtRtTED156ATqSiRfcKNs_KLwTmJK6RU/exec";
+
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
+
+        let deferredPrompt = null;
+
+        /* ═══════════════════════════════════════════════
+           DETECCIÓN DE BLOQUEADORES — MÚLTIPLES MÉTODOS
+        ═══════════════════════════════════════════════ */
+
+        /**
+         * Método 1: Elemento señuelo (bait)
+         * Los bloqueadores ocultan o eliminan nodos con clases relacionadas a anuncios.
+         */
+        function detectByBait() {
+            return new Promise(resolve => {
+                const bait = document.getElementById('adblock-bait');
+                if (!bait) { resolve(false); return; }
+
+                // Pequeño retraso para que el bloqueador actúe
+                setTimeout(() => {
+                    const style = window.getComputedStyle(bait);
+                    const blocked =
+                        bait.offsetParent === null ||
+                        bait.offsetHeight === 0 ||
+                        bait.offsetWidth === 0 ||
+                        bait.getClientRects().length === 0 ||
+                        style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        style.opacity === '0';
+                    resolve(blocked);
+                }, 150);
+            });
+        }
+
+        /**
+         * Método 2: Fetch a un recurso señuelo
+         * Intentamos cargar un JS con nombre típico de anuncio.
+         * Si el bloqueador cancela la petición → error → bloqueado.
+         */
+        function detectByFetch() {
+            return new Promise(resolve => {
+                const timeout = setTimeout(() => resolve(false), 2000);
+
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 1800);
+
+                fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    signal: controller.signal,
+                    cache: 'no-store'
+                })
+                    .then(() => { clearTimeout(timeout); resolve(false); })
+                    .catch(() => { clearTimeout(timeout); resolve(true); });
+            });
+        }
+
+        /**
+         * Método 3: Elemento script señuelo en el DOM
+         * Creamos un script con una URL tipo ad-network.
+         * Si falla al cargar → bloqueado.
+         */
+        function detectByScript() {
+            return new Promise(resolve => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.googlesyndication.com/pagead/js/adsbygoogle.js';
+                script.async = true;
+                script.id = 'ads-detection-bait';
+
+                const timer = setTimeout(() => {
+                    script.remove();
+                    resolve(false);
+                }, 2000);
+
+                script.onload = () => { clearTimeout(timer); script.remove(); resolve(false); };
+                script.onerror = () => { clearTimeout(timer); script.remove(); resolve(true); };
+
+                document.head.appendChild(script);
+            });
+        }
+
+        /**
+         * Combinación de los tres métodos:
+         * Si AL MENOS DOS de ellos dicen "bloqueado" → se considera detectado.
+         * Esto reduce falsos positivos.
+         */
+        async function hasAdBlocker() {
+            const [bait, fetchBlocked, scriptBlocked] = await Promise.all([
+                detectByBait(),
+                detectByFetch(),
+                detectByScript()
+            ]);
+
+            const positives = [bait, fetchBlocked, scriptBlocked].filter(Boolean).length;
+            return positives >= 2; // mayoría simple
+        }
+
+        /* ═══════════════════════════════════════════════
+           UI HELPERS
+        ═══════════════════════════════════════════════ */
+        function showLoading(msg) {
+            document.getElementById('status-text').innerHTML = `<span class="dots">${msg}</span>`;
+        }
+
+        function showError() {
+            document.getElementById('loader-wrap').style.display = 'none';
+            document.getElementById('error-wrap').style.display = 'block';
+            document.getElementById('status-label').innerText = 'Acceso denegado';
+            document.getElementById('status-text').innerHTML = '<span style="color:var(--danger);font-size:.9rem;">BLOQUEADOR DETECTADO</span>';
+            document.getElementById('policy-text').style.display = 'block';
+            document.getElementById('retry-btn').style.display = 'inline-flex';
+        }
+
+        /* ═══════════════════════════════════════════════
+           FLUJO PRINCIPAL
+        ═══════════════════════════════════════════════ */
+        async function checkSystem() {
+            showLoading('Verificando acceso');
+
+            const blocked = await hasAdBlocker();
+
+            if (blocked) {
+                showError();
+                return;
+            }
+
+            // Sin bloqueador → ocultar overlay
+            document.getElementById('status-overlay').style.opacity = '0';
+            setTimeout(() => { document.getElementById('status-overlay').style.display = 'none'; }, 400);
+
+            if (isStandalone) {
+                // Modo App instalada → mostrar contenido
+                document.getElementById('main-app').style.display = 'block';
+            } else {
+                // Modo navegador → mostrar modal de instalación
+                document.getElementById('install-modal').style.display = 'flex';
+            }
+        }
+
+        /* ═══════════════════════════════════════════════
+           LÓGICA PWA
+        ═══════════════════════════════════════════════ */
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    fetch(SCRIPT_URL + '?action=descarga', { mode: 'no-cors' });
+                    location.reload();
+                }
+            } else {
+                alert(
+                    'La app AlanMakert Ya fue instalada\n\n' +
+                    'Revise si tiene la app en su dispositivo'
+                );
+            }
+        });
+
+        /* ═══════════════════════════════════════════════
+           SISTEMA DE VOTOS
+        ═══════════════════════════════════════════════ */
+        function registrarVoto(tipo) {
+            if (localStorage.getItem('mc_addons_voto')) return;
+            localStorage.setItem('mc_addons_voto', tipo);
+
+            document.getElementById('btn-like').classList.remove('active');
+            document.getElementById('btn-dislike').classList.remove('active');
+            document.getElementById('btn-' + tipo).classList.add('active', tipo);
+
+            fetch(SCRIPT_URL + '?action=' + tipo, { mode: 'no-cors' });
+
+            // Actualizar stats visualmente
+            setTimeout(cargarStats, 600);
+        }
+
+        /* ═══════════════════════════════════════════════
+           STATS
+        ═══════════════════════════════════════════════ */
+        function formatNumber(n) {
+            if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+            return String(n);
+        }
+
+        async function cargarStats() {
+            try {
+                const res = await fetch(SCRIPT_URL + '?action=read');
+                const data = await res.json();
+                document.getElementById('stat-dls').innerText = formatNumber(data.descargas);
+                document.getElementById('stat-likes').innerText = formatNumber(data.likes);
+                document.getElementById('stat-dislikes').innerText = formatNumber(data.dislikes);
+            } catch { /* Silencioso */ }
+        }
+
+        /* ═══════════════════════════════════════════════
+           RESTAURAR ESTADO DE VOTO
+        ═══════════════════════════════════════════════ */
+        function restaurarVoto() {
+            const voto = localStorage.getItem('mc_addons_voto');
+            if (voto) {
+                document.getElementById('btn-' + voto).classList.add('active', voto);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════
+           PARTÍCULAS
+        ═══════════════════════════════════════════════ */
+        function initParticles() {
+            if (typeof particlesJS === 'undefined') return;
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 55, density: { enable: true, value_area: 900 } },
+                    color: { value: ['#ffd700', '#ffec6e', '#ffffff'] },
+                    opacity: { value: 0.18, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.05 } },
+                    size: { value: 2, random: true },
+                    line_linked: { enable: true, distance: 140, color: '#ffd700', opacity: 0.07, width: 1 },
+                    move: { enable: true, speed: 0.9, random: true, out_mode: 'out' }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+                    modes: { grab: { distance: 140, line_linked: { opacity: 0.18 } } }
+                },
+                retina_detect: true
+            });
+        }
+
+        /* ═══════════════════════════════════════════════
+           INICIO
+        ═══════════════════════════════════════════════ */
+        window.addEventListener('load', () => {
+            checkSystem();
+            cargarStats();
+            restaurarVoto();
+            initParticles();
+        });
+    </script>
+</body>
+
+</html>
