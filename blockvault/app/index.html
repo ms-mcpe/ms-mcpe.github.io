@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockvault - Actualizando Sistema</title>
+    <style>
+        /* Estilos Base y Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* Deshabilitar selección de texto */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        /* Fondo Galaxia Animado */
+        .galaxy-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.3;
+            animation: moveStars 100s linear infinite;
+        }
+
+        @keyframes moveStars {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
+
+        /* Luces de colores (Nebulosa) */
+        .nebulosa {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            filter: blur(80px);
+            border-radius: 50%;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        .neb-1 { background: #00ffff; top: -10%; left: -10%; } /* Celeste */
+        .neb-2 { background: #ffff00; bottom: -10%; right: -10%; } /* Amarillo */
+        .neb-3 { background: #00ff00; bottom: 20%; left: 30%; } /* Verde */
+
+        /* Contenedor Principal (Glassmorphism) */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Logo y Título */
+        .brand {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #fff, #00ffff, #00ff00, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 100%;
+            animation: gradientMove 5s infinite linear;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* Texto de información */
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+        }
+
+        /* Spinner de carga profesional */
+        .loader-wrapper {
+            margin: 30px auto;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .loader {
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: #00ffff;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loader::before {
+            content: "";
+            position: absolute;
+            top: 7px; left: 7px; right: 7px; bottom: 7px;
+            border: 3px solid transparent;
+            border-top-color: #ffff00;
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+
+        .loader::after {
+            content: "";
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 3px solid transparent;
+            border-top-color: #00ff00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Badge de estado */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container { padding: 30px 20px; }
+            h1 { font-size: 22px; }
+            p { font-size: 14px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;"> <div class="galaxy-bg"></div>
+    <div class="nebulosa neb-1"></div>
+    <div class="nebulosa neb-2"></div>
+    <div class="nebulosa neb-3"></div>
+
+    <main class="container">
+        <div class="brand">Blockvault</div>
+        <h1>Actualizando Sistema</h1>
+        
+        <div class="loader-wrapper">
+            <div class="loader"></div>
+        </div>
+
+        <p>
+            Espere un momento, la plataforma está haciendo cambios actualmente por lo que puede durar un poco. 
+            Cuando la plataforma esté completamente lista, se mostrará la nueva interfaz mejorada.
+        </p>
+
+        <p style="font-size: 13px; color: rgba(255,255,255,0.5);">
+            Esta actualización incluye una estructura renovada, temas personalizables y mayor rendimiento.
+        </p>
+
+        <div class="status-badge">DESPLIEGUE EN CURSO</div>
+    </main>
+
+    <script>
+        // Bloquear F12, Ctrl+Shift+I, Ctrl+U, etc.
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false; // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        };
+
+        // Prevenir el arrastre de imágenes o elementos si los hubiera
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
