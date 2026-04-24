@@ -263,9 +263,9 @@
         <div class="url-hint" id="nombre-hint" style="display:none"></div>
       </div>
       <div class="form-group">
-        <label>URL de Descarga * (cuty.io)</label>
-        <input type="text" id="addon-url" placeholder="https://cuty.io/..." oninput="validateUrl(this)" inputmode="url"/>
-        <div class="url-hint" id="url-hint">Solo se permiten enlaces de cuty.io</div>
+        <label>URL de Descarga *</label>
+        <input type="text" id="addon-url" placeholder="https://..." oninput="validateUrl(this)" inputmode="url"/>
+        <div class="url-hint" id="url-hint">Ingresa el enlace de descarga directo (Mediafire, etc.)</div>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -580,7 +580,7 @@ function clearForm(){
   document.getElementById('addon-cat').value='';
   document.getElementById('img-preview').style.display='none';
   document.getElementById('img-file-input').value='';
-  document.getElementById('url-hint').textContent='Solo se permiten enlaces de cuty.io';
+  document.getElementById('url-hint').textContent='Ingresa el enlace de descarga directo (Mediafire, etc.)';
   document.getElementById('url-hint').className='url-hint';
   ['nombre-hint','desc-hint'].forEach(id=>document.getElementById(id).style.display='none');
   switchImgTab('upload');
@@ -597,7 +597,7 @@ async function submitAddon(){
   const imgUrl=document.getElementById('addon-img-url').value.trim();
   if(!nombre){toast('El nombre es obligatorio','err');return}
   if(!url){toast('La URL de descarga es obligatoria','err');return}
-  if(!isCutyUrl(url)){toast('Solo se permiten URLs de cuty.io','err');return}
+  if(!url.startsWith('http')){toast('Ingresa una URL válida (http/https)','err');return}
   if(!cat){toast('Selecciona una categoría','err');return}
   if(!desc){toast('La descripción es obligatoria','err');return}
   const btn=document.getElementById('modal-submit-btn');
@@ -658,12 +658,11 @@ function handleImgFile(input){
 }
 
 /* ══════════════════════════════════════════════ URL VAL ══ */
-function isCutyUrl(url){return/^https?:\/\/(www\.)?cuty\.io\/.+/.test(url)}
 function validateUrl(input){
   const h=document.getElementById('url-hint'),val=input.value.trim();
-  if(!val){h.textContent='Solo se permiten enlaces de cuty.io';h.className='url-hint';return}
-  if(isCutyUrl(val)){h.textContent='✓ URL válida de cuty.io';h.className='url-hint ok'}
-  else{h.textContent='✗ Solo cuty.io (ej: https://cuty.io/...)';h.className='url-hint err'}
+  if(!val){h.textContent='Ingresa el enlace de descarga directo (Mediafire, etc.)';h.className='url-hint';return}
+  if(val.startsWith('http')){h.textContent='✓ URL válida';h.className='url-hint ok'}
+  else{h.textContent='✗ Ingresa una URL válida (ej: https://mediafire.com/...)';h.className='url-hint err'}
 }
 
 /* ══════════════════════════════════════════════ MODALS ══ */

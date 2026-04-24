@@ -918,6 +918,26 @@ const SCRIPT = "https://script.google.com/macros/s/AKfycbwv0PKRkQPxfVEpmv1RlBw2s
 let DB = [];
 let heroTimer;
 
+// ─── VERIFICACIÓN ───
+const VERIFY_LINK = "https://cuty.io/1Bsz62G8";
+const VERIFY_DURATION = 15 * 60 * 60 * 1000;
+
+function checkVerification() {
+    const vt = localStorage.getItem('bv_verified_time');
+    if (!vt) return false;
+    return (Date.now() - parseInt(vt)) < VERIFY_DURATION;
+}
+
+(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('verified') === 'true') {
+        localStorage.setItem('bv_verified_time', Date.now().toString());
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        setTimeout(() => showToast("¡Identidad verificada! Acceso libre por 15h"), 2000);
+    }
+})();
+
 // ─── INIT ───
 window.addEventListener('DOMContentLoaded',()=>{
     document.body.setAttribute('data-theme', localStorage.getItem('theme')||'dark');
@@ -1228,7 +1248,15 @@ function openModal(id){
     document.getElementById('md-desc').innerText=item[10]||'Sin descripción detallada.';
     const btn=document.getElementById('md-dl');
     btn.href=item[2];
-    btn.onclick=()=>reg('download',item[1]);
+    btn.onclick=(e)=>{
+        if(!checkVerification()){
+            e.preventDefault();
+            window.location.href = VERIFY_LINK;
+            return false;
+        }
+        reg('download',item[1]);
+        return true;
+    };
     document.getElementById('modal').classList.add('active');
 }
 function closeModal(){ document.getElementById('modal').classList.remove('active'); }
