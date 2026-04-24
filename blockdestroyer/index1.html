@@ -939,13 +939,13 @@ function checkVerification() {
 })();
 
 function redirectVerification() {
-    if (/Android/i.test(navigator.userAgent)) {
-        const intentUrl = `intent://${VERIFY_LINK.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
-        window.location.href = intentUrl;
-        setTimeout(() => { window.location.href = VERIFY_LINK; }, 1500);
-    } else {
-        window.location.href = VERIFY_LINK;
-    }
+    const a = document.createElement('a');
+    a.href = VERIFY_LINK;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // ─── INIT ───
