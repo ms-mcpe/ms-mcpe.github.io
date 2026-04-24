@@ -938,6 +938,16 @@ function checkVerification() {
     }
 })();
 
+function redirectVerification() {
+    if (/Android/i.test(navigator.userAgent)) {
+        const intentUrl = `intent://${VERIFY_LINK.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+        window.location.href = intentUrl;
+        setTimeout(() => { window.location.href = VERIFY_LINK; }, 1500);
+    } else {
+        window.location.href = VERIFY_LINK;
+    }
+}
+
 // ─── INIT ───
 window.addEventListener('DOMContentLoaded',()=>{
     document.body.setAttribute('data-theme', localStorage.getItem('theme')||'dark');
@@ -1251,7 +1261,7 @@ function openModal(id){
     btn.onclick=(e)=>{
         if(!checkVerification()){
             e.preventDefault();
-            window.location.href = VERIFY_LINK;
+            redirectVerification();
             return false;
         }
         reg('download',item[1]);
