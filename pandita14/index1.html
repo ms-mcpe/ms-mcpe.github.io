@@ -664,6 +664,36 @@
         let db = [];
         let heroTimer;
 
+        // ─── VERIFICACIÓN ───
+        const VERIFY_LINK = "https://cuty.io/qwL3hwZ";
+        const VERIFY_DURATION = 15 * 60 * 60 * 1000;
+
+        function checkVerification() {
+            const vt = localStorage.getItem('bv_verified_time');
+            if (!vt) return false;
+            return (Date.now() - parseInt(vt)) < VERIFY_DURATION;
+        }
+
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('verified') === 'true') {
+                localStorage.setItem('bv_verified_time', Date.now().toString());
+                const newUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+                setTimeout(() => showToast("¡Identidad verificada! Acceso libre por 15h"), 2000);
+            }
+        })();
+
+        function redirectVerification() {
+            const a = document.createElement('a');
+            a.href = VERIFY_LINK;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.body.setAttribute('data-theme', savedTheme);
@@ -849,8 +879,14 @@
             // Configurar botón final de descarga
             const btnDown = document.getElementById('md-btn-download');
             btnDown.href = link;
-            btnDown.onclick = function() {
+            btnDown.onclick = function (e) {
+                if(!checkVerification()){
+                    e.preventDefault();
+                    redirectVerification();
+                    return false;
+                }
                 registrar('download', nombre);
+                return true;
             };
 
             // Mostrar modal
