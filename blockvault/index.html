@@ -815,16 +815,28 @@
     function goToAppInstall() {
       window.location.href = 'app.html';
     }
+    
+    function isAndroidBrowser() {
+      const ua = navigator.userAgent.toLowerCase();
+      const isAndroid = ua.includes('android');
+      // La mayoría de los WebViews en Android incluyen "wv" o "version/" en su User-Agent
+      const isWebView = ua.includes('wv') || (isAndroid && ua.includes('version/'));
+      
+      // Mostrar solo si es Android y NO es un WebView
+      return isAndroid && !isWebView;
+    }
 
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loader').classList.add('hidden');
         navigateTo('home');
         
-        // Show app prompt after loader finishes
-        setTimeout(() => {
-          document.getElementById('app-prompt-overlay').classList.add('show');
-        }, 800);
+        // Show app prompt after loader finishes (only on Android browser)
+        if (isAndroidBrowser()) {
+          setTimeout(() => {
+            document.getElementById('app-prompt-overlay').classList.add('show');
+          }, 800);
+        }
       }, 2200);
     });
 
