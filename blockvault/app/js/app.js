@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await checkMaintenance();
 });
 
-const VERIFY_LINK = 'https://cuty.io/m8uEHt1ws';
+const VERIFY_LINK = 'https://cuty.io/bY5SE4ORJ';
 const VERIFY_DURATION = 15 * 60 * 60 * 1000;
 
 function checkUrlParams() {
