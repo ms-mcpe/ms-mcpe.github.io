@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await checkMaintenance();
 });
 
-const VERIFY_LINK = 'https://cuty.io/bY5SE4ORJ';
+const VERIFY_LINK = 'https://cuty.io/m8uEHt1ws';
 const VERIFY_DURATION = 15 * 60 * 60 * 1000;
 
 function checkUrlParams() {
@@ -200,8 +200,37 @@ function initSidebar() {
   const sidebarLinks = document.querySelectorAll('.sidebar-item');
   sidebarLinks.forEach(link => {
     link.addEventListener('click', (e) => {
+      // Si tiene un submenú o el ID es tools-toggle, no navegar aquí directamente
+      if (link.id === 'tools-toggle') return;
+
       e.preventDefault();
       const targetPage = link.getAttribute('data-target');
+      if (targetPage) {
+        navigateTo(targetPage);
+      }
+    });
+  });
+  
+  // Submenú Herramientas Toggle
+  const toolsToggle = document.getElementById('tools-toggle');
+  const toolsSubmenu = document.getElementById('tools-submenu');
+  if (toolsToggle && toolsSubmenu) {
+    toolsToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toolsSubmenu.classList.toggle('active');
+      const icon = toolsToggle.querySelector('.toggle-icon');
+      if (icon) {
+        icon.style.transform = toolsSubmenu.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    });
+  }
+
+  // Enlaces del submenú
+  const subItems = document.querySelectorAll('.sidebar-subitem');
+  subItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetPage = item.getAttribute('data-target');
       if (targetPage) {
         navigateTo(targetPage);
       }

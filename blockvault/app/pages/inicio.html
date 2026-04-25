@@ -43,6 +43,16 @@
       <div style="color:var(--text-muted); font-size:0.8rem;">Cargando más gustados...</div>
     </div>
 
+    <!-- CREADORES DESTACADOS -->
+    <section class="home-section" id="section-creators">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fa-solid fa-trophy" style="color:#ffd700;"></i> Creadores Elite</h2>
+      </div>
+      <div class="creators-grid" id="creators-container">
+        <!-- Cargado por JS -->
+      </div>
+    </section>
+
     <!-- Todo el contenido -->
     <h2 class="section-title" id="todo-title">Todo el contenido</h2>
     
@@ -147,6 +157,7 @@
         
         renderPopular();
         renderLiked();
+        renderEliteCreators(data.slice(1));
         renderContent(allAddons);
 
       } catch (error) {
@@ -211,6 +222,60 @@
       if(addons.length === 0) {
         container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 20px; color: var(--text-muted);">No se encontraron resultados.</p>';
       }
+    }
+
+    function renderEliteCreators(addons) {
+      const container = document.getElementById('creators-container');
+      if (!container) return;
+
+      const creatorsData = {};
+      addons.forEach(a => {
+        const c = a[8];
+        if (!creatorsData[c]) creatorsData[c] = { name: c, count: 0, likes: 0, downloads: 0, topAddon: a };
+        creatorsData[c].count++;
+        creatorsData[c].likes += (parseInt(a[5]) || 0);
+        creatorsData[c].downloads += (parseInt(a[6]) || 0);
+        if ((parseInt(a[6]) || 0) > (parseInt(creatorsData[c].topAddon[6]) || 0)) creatorsData[c].topAddon = a;
+      });
+
+      const list = Object.values(creatorsData);
+      
+      // Top 3 categorías
+      const mostAddons = [...list].sort((a,b) => b.count - a.count)[0];
+      const mostLikes = [...list].sort((a,b) => b.likes - a.likes)[0];
+      const mostDownloads = [...list].sort((a,b) => b.downloads - a.downloads)[0];
+
+      const elites = [
+        { ...mostAddons, label: 'Más Prolífico', icon: 'fa-box-open', val: mostAddons.count + ' addons' },
+        { ...mostLikes, label: 'Más Amado', icon: 'fa-heart', val: mostLikes.likes + ' likes' },
+        { ...mostDownloads, label: 'Más Popular', icon: 'fa-download', val: mostDownloads.downloads + ' descargas' }
+      ];
+
+      // Eliminar duplicados si un creador es top en varias cosas
+      const uniqueElites = [];
+      const seen = new Set();
+      elites.forEach(e => {
+        if (!seen.has(e.name)) {
+          uniqueElites.push(e);
+          seen.add(e.name);
+        }
+      });
+
+      container.innerHTML = uniqueElites.map(e => `
+        <div class="creator-mini-card" onclick="filterByCreator('${e.name}')">
+          <div class="creator-badge-type">${e.label}</div>
+          <div class="creator-mini-avatar">${e.name.charAt(0).toUpperCase()}</div>
+          <div class="creator-mini-name">${e.name}</div>
+          <div class="creator-mini-stat"><i class="fa-solid ${e.icon}"></i> ${e.val}</div>
+        </div>
+      `).join('');
+    }
+
+    function filterByCreator(name) {
+      const searchInput = document.getElementById('addon-search');
+      searchInput.value = name;
+      filterAddons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function openDetails(encodedName) {

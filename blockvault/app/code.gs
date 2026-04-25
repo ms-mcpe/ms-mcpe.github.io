@@ -106,9 +106,7 @@ function doPost(e) {
       const dataUsers = sheetSesion.getDataRange().getValues();
       for (let i = 0; i < dataUsers.length; i++) {
         if (dataUsers[i][1] === res.nombre) {
-          // Estado va en columna D (índice 3), pero debemos encontrar su posición real
-          // Buscamos el índice de la columna Estado en la fila de encabezado
-          let estadoCol = 4; // default columna D (1-indexed)
+          let estadoCol = 4; 
           const headers = dataUsers[0];
           for (let j = 0; j < headers.length; j++) {
             if (String(headers[j]).toLowerCase() === 'estado') { estadoCol = j + 1; break; }
@@ -118,6 +116,34 @@ function doPost(e) {
         }
       }
       return ContentService.createTextOutput("USER_NOT_FOUND");
+    }
+
+    // ─── DELETE USER ACCOUNT (Cascada) ──────────────────────
+    if (action === "deleteUserAccount") {
+      if (res.rol !== "Admin") return ContentService.createTextOutput("UNAUTHORIZED");
+      const dataUsers = sheetSesion.getDataRange().getValues();
+      const userName = res.nombre;
+      
+      // 1. Eliminar de Sesion
+      for (let i = 1; i < dataUsers.length; i++) {
+        if (dataUsers[i][1] === userName) {
+          sheetSesion.deleteRow(i + 1);
+          break;
+        }
+      }
+      
+      // 2. Eliminar Addons e Imágenes
+      const dataAddons = sheetMain.getDataRange().getValues();
+      // Recorremos de abajo hacia arriba para no alterar índices al borrar
+      for (let i = dataAddons.length - 1; i >= 1; i--) {
+        if (dataAddons[i][8] === userName) {
+          const imgUrl = dataAddons[i][3];
+          if (imgUrl) enviarAPapelera(imgUrl);
+          sheetMain.deleteRow(i + 1);
+        }
+      }
+      
+      return ContentService.createTextOutput("USER_DELETED_FULL");
     }
 
     // ─── RENAME USER ─────────────────────────────────────────

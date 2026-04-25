@@ -3,312 +3,747 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Creador</title>
+  <title>Panel de Creador — BlockVault</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/pages.css">
   <style>
-    /* Estilos específicos del panel */
+    :root {
+      --panel-sidebar-w: 240px;
+    }
+    
     .panel-container {
-      padding: 20px;
-      padding-bottom: 80px;
+      padding: 0;
+      min-height: 100vh;
       color: var(--text-main);
       font-family: var(--font-family);
     }
     
-    .panel-header {
+    /* Panel Sidebar */
+    .panel-sidebar {
+      width: var(--panel-sidebar-w);
+      background: rgba(var(--bg-panel-rgb, 30,30,30), 0.8);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid var(--border-color);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      transition: transform 0.3s;
     }
     
-    .panel-header h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-    }
-    
-    .btn-logout {
-      background: transparent;
-      border: 1px solid #ef4444;
-      color: #ef4444;
-      padding: 6px 12px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-logout:hover {
-      background: rgba(239, 68, 68, 0.1);
-    }
-
-    /* Auth Box */
-    .auth-box {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-neon);
-      box-shadow: 0 0 20px var(--neon-glow);
-      border-radius: var(--radius-lg);
-      padding: 30px;
-      max-width: 400px;
-      margin: 40px auto;
+    .panel-sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
       text-align: center;
     }
-    .auth-box input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      background: var(--bg-app);
-      color: var(--text-main);
-      outline: none;
+    
+    .user-info {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border-color);
     }
-    .auth-box input:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 5px var(--neon-glow);
-    }
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
+    
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       background: var(--primary-color);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 0 10px var(--neon-glow);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
+      color: #fff;
       box-shadow: 0 0 15px var(--neon-glow);
     }
-
-    /* Dashboard Stats */
+    
+    .user-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .panel-nav {
+      flex: 1;
+      padding: 20px 0;
+    }
+    
+    .panel-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      font-size: 0.95rem;
+      border-left: 3px solid transparent;
+    }
+    
+    .panel-nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+    }
+    
+    .panel-nav-item.active {
+      background: rgba(var(--primary-color-rgb), 0.1);
+      color: var(--primary-color);
+      border-left-color: var(--primary-color);
+    }
+    
+    .panel-nav-item i {
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Main Content Area */
+    .panel-main {
+      flex: 1;
+      margin-left: var(--panel-sidebar-w);
+      padding: 30px;
+      padding-bottom: 100px;
+    }
+    
+    .panel-section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    .panel-section.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .section-header {
+      margin-bottom: 30px;
+    }
+    
+    .section-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    
+    /* Stats Cards */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
     }
+    
     .stat-card {
       background: var(--bg-panel);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 16px;
-      text-align: center;
-      transition: all 0.2s;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: transform 0.3s;
     }
+    
     .stat-card:hover {
+      transform: translateY(-5px);
       border-color: var(--primary-color);
-      box-shadow: 0 0 10px var(--neon-glow);
     }
-    .stat-card i {
-      font-size: 1.5rem;
-      color: var(--primary-color);
-      margin-bottom: 8px;
-    }
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: bold;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    .stat-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* Admin Section */
-    .admin-section {
-      display: none; /* Se muestra por JS */
-      background: rgba(239, 68, 68, 0.05);
-      border: 1px solid #ef4444;
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-    .admin-title {
-      color: #ef4444;
-      font-weight: bold;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Addon List */
-    .addon-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .addon-list-item {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .item-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .item-info img {
+    
+    .stat-icon {
       width: 50px;
       height: 50px;
+      border-radius: 12px;
+      background: rgba(var(--primary-color-rgb), 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+    
+    .stat-info .value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .stat-info .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    /* Addon List Management */
+    .mgmt-header {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .mgmt-search {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
+    }
+    
+    .mgmt-search input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      color: var(--text-main);
+      outline: none;
+    }
+    
+    .mgmt-search i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    
+    .addon-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-panel);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    
+    .addon-table th, .addon-table td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .addon-table th {
+      background: rgba(255,255,255,0.03);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+    
+    .addon-row-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .addon-row-info img {
+      width: 40px;
+      height: 40px;
       border-radius: 8px;
       object-fit: cover;
     }
-    .item-actions button {
-      background: transparent;
+    
+    .action-btn {
+      padding: 8px;
+      border-radius: 8px;
       border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px;
-      border-radius: 6px;
+      background: transparent;
+      color: var(--text-muted);
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .item-actions button.btn-delete:hover {
+    
+    .action-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+    }
+    
+    .action-btn.delete:hover {
       border-color: #ef4444;
       color: #ef4444;
+    }
+    
+    /* Forms */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      color: var(--text-main);
+      outline: none;
+      font-family: inherit;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
+    
+    /* Ranking Table */
+    .ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 24px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+    }
+    
+    .rank-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      width: 40px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .rank-1 .rank-number { color: #ffd700; font-size: 2rem; }
+    .rank-2 .rank-number { color: #c0c0c0; }
+    .rank-3 .rank-number { color: #cd7f32; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .panel-sidebar {
+        transform: translateX(-100%);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+      }
+      .panel-main {
+        margin-left: 0;
+        padding: 60px 15px 100px; /* Más padding arriba para el botón */
+      }
+      .panel-layout.sidebar-open .panel-sidebar {
+        transform: translateX(0);
+      }
+    }
+
+    @media (min-width: 769px) {
+      .panel-layout:not(.sidebar-open) .panel-sidebar {
+        transform: translateX(-100%);
+      }
+      .panel-layout:not(.sidebar-open) .panel-main {
+        margin-left: 0;
+      }
+    }
+
+    .panel-layout {
+      transition: all 0.3s;
+    }
+
+    /* Auth Screen Overlay */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-app);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+    /* Toggle Sidebar Button */
+    .panel-toggle-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .panel-toggle-btn:hover {
+      background: var(--bg-panel);
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+
+    @media (min-width: 769px) {
+      .panel-toggle-btn {
+        display: none; /* Opcional: ocultar en desktop si prefieres que sea fijo */
+      }
     }
   </style>
 </head>
 <body>
-  
-  <div class="panel-container">
-    
-    <!-- PANTALLA DE LOGIN/REGISTRO -->
-    <div id="auth-section" class="auth-box">
-      <h2 class="neon-text" style="margin-bottom:20px; font-family:'Space Grotesk', sans-serif;">Acceso de Creador</h2>
-      <input type="text" id="auth-user" placeholder="Usuario">
-      <input type="password" id="auth-pass" placeholder="Contraseña">
-      <button class="btn-primary" onclick="login()" style="margin-bottom:12px;">Iniciar Sesión</button>
-      <button class="btn-primary" onclick="register()" style="background:transparent; border:1px solid var(--primary-color); color:var(--primary-color); box-shadow:none;">Registrarse</button>
-      <div id="auth-msg" style="margin-top:12px; font-size:0.8rem; color:#ef4444;"></div>
-    </div>
 
-    <!-- PANTALLA PRINCIPAL DEL PANEL -->
-    <div id="dashboard-section" style="display: none;">
-      <div class="panel-header">
-        <h2><i class="fa-solid fa-chess-knight neon-text"></i> Panel</h2>
-        <div style="display:flex; align-items:center; gap:12px;">
-          <span id="user-role-badge" style="background:var(--primary-color); color:#fff; padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:bold;">User</span>
-          <button class="btn-logout" onclick="logout()">Salir</button>
-        </div>
+  <!-- PANTALLA DE ACCESO -->
+  <div id="auth-overlay">
+    <div class="auth-card">
+      <h1 class="neon-text" style="font-family:'Space Grotesk', sans-serif; margin-bottom:10px;">BlockVault</h1>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:30px;">Panel de Control para Creadores</p>
+      
+      <div class="form-group">
+        <input type="text" id="auth-user" class="form-control" placeholder="Usuario">
       </div>
-
-      <!-- Estadísticas -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <i class="fa-solid fa-users"></i>
-          <div class="stat-value" id="stat-creators">0</div>
-          <div class="stat-label">Creadores</div>
-        </div>
-        <div class="stat-card">
-          <i class="fa-solid fa-puzzle-piece"></i>
-          <div class="stat-value" id="stat-addons">0</div>
-          <div class="stat-label">Addons Totales</div>
-        </div>
-        <div class="stat-card">
-          <i class="fa-solid fa-eye"></i>
-          <div class="stat-value" id="stat-views">0</div>
-          <div class="stat-label">Visitas Globales</div>
-        </div>
-      </div>
-
-      <!-- Herramientas de Administrador -->
-      <div class="admin-section" id="admin-tools">
-        <div class="admin-title"><i class="fa-solid fa-shield-halved"></i> Herramientas de Admin</div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.85rem; color:var(--text-muted);">Modo Mantenimiento (Bloquea accesos de usuarios)</span>
-          <button id="btn-maint" class="btn-primary" style="width:auto; padding:6px 12px; background:#ef4444;" onclick="toggleMaintenance()">Activar</button>
-        </div>
-        <div style="margin-top:16px;">
-          <button class="btn-primary" style="background:transparent; border:1px solid #ef4444; color:#ef4444; box-shadow:none;" onclick="alert('Función de listar y banear usuarios en desarrollo.')">Gestionar Usuarios (Banear)</button>
-        </div>
-      </div>
-
-      <!-- Lista de Addons del Usuario (o todos si es admin) -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h3 style="font-size:1.1rem;">Gestor de Contenido</h3>
-        <button class="btn-primary" style="width:auto; padding:8px 16px;" onclick="alert('Formulario de subida en modal pronto.')"><i class="fa-solid fa-plus"></i> Subir</button>
+      <div class="form-group">
+        <input type="password" id="auth-pass" class="form-control" placeholder="Contraseña">
       </div>
       
-      <div class="addon-list" id="my-addons-list">
-        <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">Cargando contenido...</div>
-      </div>
+      <button class="cat-btn active" style="width:100%; margin-bottom:12px; justify-content:center;" onclick="login()">
+        <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+      </button>
+      <button class="cat-btn" style="width:100%; justify-content:center; background:transparent; border:1px solid var(--primary-color); color:var(--primary-color);" onclick="register()">
+        <i class="fa-solid fa-user-plus"></i> Crear Cuenta
+      </button>
+      
+      <div id="auth-msg" style="margin-top:20px; font-size:0.85rem; color:#ef4444;"></div>
     </div>
-
   </div>
 
+  <!-- ESTRUCTURA DEL PANEL -->
+  <div class="panel-container">
+    
+    <button class="panel-toggle-btn" id="p-toggle-btn" onclick="toggleSidebar()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    
+    <div class="panel-layout sidebar-open" id="panel-layout" style="display:none;">
+    
+    <!-- Sidebar Izquierdo -->
+    <aside class="panel-sidebar">
+      <div class="panel-sidebar-header">
+        <div class="app-title neon-text">BlockVault</div>
+      </div>
+      
+      <div class="user-info">
+        <div class="user-avatar" id="avatar-initial">U</div>
+        <div class="user-name" id="display-user">Usuario</div>
+        <span id="user-role" style="font-size:0.7rem; background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:10px;">Creador</span>
+      </div>
+      
+      <nav class="panel-nav">
+        <div class="panel-nav-item active" onclick="switchSection('dashboard', this)">
+          <i class="fa-solid fa-chart-line"></i> Dashboard
+        </div>
+        <div class="panel-nav-item" onclick="switchSection('mis-addons', this)">
+          <i class="fa-solid fa-puzzle-piece"></i> Mis Addons
+        </div>
+        <div class="panel-nav-item" onclick="switchSection('subir', this)">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Subir Addon
+        </div>
+        <div class="panel-nav-item" onclick="switchSection('ranking', this)">
+          <i class="fa-solid fa-trophy"></i> Ranking
+        </div>
+        
+        <div id="admin-nav" style="display:none; margin-top:20px; border-top:1px solid var(--border-color); padding-top:20px;">
+          <div class="panel-nav-item" onclick="switchSection('admin', this)" style="color:#ef4444;">
+            <i class="fa-solid fa-shield-halved"></i> Administración
+          </div>
+        </div>
+      </nav>
+      
+      <div class="panel-sidebar-footer" style="padding:20px;">
+        <button class="btn-logout" style="width:100%;" onclick="logout()">
+          <i class="fa-solid fa-power-off"></i> Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="panel-main">
+      
+      <!-- SECCIÓN: DASHBOARD -->
+      <section id="sec-dashboard" class="panel-section active">
+        <div class="section-header">
+          <h2>Hola de nuevo, <span class="neon-text" id="welcome-name">Creador</span></h2>
+          <p style="color:var(--text-muted);">Aquí tienes el resumen actual de la plataforma.</p>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div>
+            <div class="stat-info">
+              <div class="value" id="dash-total-addons">0</div>
+              <div class="label">Addons Publicados</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+              <div class="value" id="dash-total-users">0</div>
+              <div class="label">Creadores</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
+            <div class="stat-info">
+              <div class="value" id="dash-total-views">0</div>
+              <div class="label">Visitas Totales</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background:var(--bg-panel); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:30px; text-align:center;">
+          <h3 style="margin-bottom:10px;">¿Listo para compartir algo nuevo?</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">Tu creatividad ayuda a expandir el universo de Minecraft para todos.</p>
+          <button class="cat-btn active" onclick="switchSection('subir', document.querySelectorAll('.panel-nav-item')[2])">Subir mi primer Addon</button>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: MIS ADDONS -->
+      <section id="sec-mis-addons" class="panel-section">
+        <div class="section-header">
+          <h2>Gestor de Contenido</h2>
+          <p style="color:var(--text-muted);">Administra, edita o elimina tus publicaciones.</p>
+        </div>
+        
+        <div class="mgmt-header">
+          <div class="mgmt-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="mgmt-search-input" placeholder="Buscar entre mis addons..." oninput="filterMyAddons()">
+          </div>
+        </div>
+        
+        <div style="overflow-x:auto;">
+          <table class="addon-table">
+            <thead>
+              <tr>
+                <th>Addon</th>
+                <th>Categoría</th>
+                <th>Estadísticas</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="my-addons-tbody">
+              <!-- Cargado por JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: SUBIR -->
+      <section id="sec-subir" class="panel-section">
+        <div class="section-header">
+          <h2>Subir Nuevo Addon</h2>
+          <p style="color:var(--text-muted);">Completa la información para publicar tu contenido.</p>
+        </div>
+        
+        <div style="background:var(--bg-panel); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:30px; max-width:700px;">
+          <form id="upload-form" onsubmit="event.preventDefault(); submitAddon();">
+            <div class="form-group">
+              <label>Nombre del Addon</label>
+              <input type="text" id="up-nombre" class="form-control" required placeholder="Ej: Super Swords Pack">
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label>Categoría</label>
+                <select id="up-cat" class="form-control">
+                  <option>Addons</option>
+                  <option>Mapas</option>
+                  <option>Texturas</option>
+                  <option>Skins</option>
+                  <option>DLC</option>
+                  <option>Popurris</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Versión</label>
+                <input type="text" id="up-ver" class="form-control" placeholder="Ej: v1.0.2">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Enlace de Descarga</label>
+              <input type="url" id="up-link" class="form-control" required placeholder="https://mediafire.com/...">
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea id="up-desc" class="form-control" style="height:120px;" placeholder="Explica de qué trata tu addon..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Imagen de Portada (PNG/JPG)</label>
+              <input type="file" id="up-img" class="form-control" accept="image/*" onchange="previewImage(this)">
+              <img id="up-preview" style="display:none; width:100px; height:60px; object-fit:cover; margin-top:10px; border-radius:8px; border:1px solid var(--border-color);">
+            </div>
+            
+            <button type="submit" id="btn-submit-addon" class="cat-btn active" style="width:100%; justify-content:center; margin-top:20px;">
+              <i class="fa-solid fa-paper-plane"></i> Publicar Ahora
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: RANKING -->
+      <section id="sec-ranking" class="panel-section">
+        <div class="section-header">
+          <h2>Ranking de Creadores</h2>
+          <p style="color:var(--text-muted);">Los arquitectos más prolíficos de la comunidad.</p>
+        </div>
+        
+        <div class="ranking-list" id="ranking-container">
+          <!-- Cargado por JS -->
+          <div style="text-align:center; padding:40px; color:var(--text-muted);">Cargando ranking mundial...</div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN: ADMIN -->
+      <section id="sec-admin" class="panel-section">
+        <div class="section-header">
+          <h2>Panel de Administración</h2>
+          <p style="color:var(--text-muted);">Control global del ecosistema BlockVault.</p>
+        </div>
+        
+        <div class="creators-tabs" style="justify-content:flex-start; border-bottom:1px solid var(--border-color); padding-bottom:0;">
+          <button class="tab-btn active" id="tab-adm-addons" onclick="switchAdminTab('addons')">Gestión de Addons</button>
+          <button class="tab-btn" id="tab-adm-users" onclick="switchAdminTab('users')">Gestión de Usuarios</button>
+          <button class="tab-btn" id="tab-adm-system" onclick="switchAdminTab('system')">Sistema</button>
+        </div>
+
+        <!-- Admin: Addons -->
+        <div id="adm-sec-addons" class="admin-sub-sec active" style="margin-top:25px;">
+          <div class="mgmt-header">
+            <div class="mgmt-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="adm-search-addons" placeholder="Buscar en todas las publicaciones..." oninput="filterAdminAddons()">
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="addon-table">
+              <thead>
+                <tr>
+                  <th>Addon</th>
+                  <th>Autor</th>
+                  <th>Stats</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adm-addons-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin: Usuarios -->
+        <div id="adm-sec-users" class="admin-sub-sec" style="display:none; margin-top:25px;">
+          <div class="mgmt-header">
+            <div class="mgmt-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="adm-search-users" placeholder="Buscar creadores por nombre..." oninput="filterAdminUsers()">
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="addon-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Registro</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adm-users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin: Sistema -->
+        <div id="adm-sec-system" class="admin-sub-sec" style="display:none; margin-top:25px;">
+          <div style="background:rgba(239, 68, 68, 0.05); border:1px solid #ef4444; border-radius:var(--radius-lg); padding:30px;">
+            <h3 style="color:#ef4444; margin-bottom:20px;"><i class="fa-solid fa-triangle-exclamation"></i> Acciones Críticas</h3>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel); padding:20px; border-radius:var(--radius);">
+              <div>
+                <div style="font-weight:bold;">Modo Mantenimiento</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">Solo Admins podrán entrar a la app.</div>
+              </div>
+              <button id="btn-maint" class="cat-btn" style="background:#ef4444; color:#fff;" onclick="toggleMaintenance()">Activar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../js/security.js"></script>
   <script>
-    let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
     let currentUser = null;
     let currentRole = null;
+    let allAddons = [];
+    let allUsers = [];
     let isMaintenance = false;
 
-    window.addEventListener('message', e => {
-      const d = e.data;
-      if (!d) return;
-      if (d.type === 'init-data') {
-        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
-        if (d.color) {
-          document.documentElement.style.setProperty('--primary-color', d.color);
-          document.documentElement.style.setProperty('--border-neon', d.color);
-          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
-        }
-      }
-    });
-
-    // Comprobar sesión
+    // --- SESIÓN ---
     window.onload = () => {
       const savedUser = localStorage.getItem('bv_user');
       const savedPass = localStorage.getItem('bv_pass');
-      const savedRole = localStorage.getItem('bv_role');
       if(savedUser && savedPass) {
         currentUser = savedUser;
-        currentRole = savedRole || 'User';
-        showDashboard();
+        currentRole = localStorage.getItem('bv_role') || 'User';
+        initPanel();
       }
-    }
+    };
 
     async function login() {
       const u = document.getElementById('auth-user').value.trim();
       const p = document.getElementById('auth-pass').value.trim();
       const msg = document.getElementById('auth-msg');
-      if(!u || !p) { msg.textContent = "Llene los campos."; return; }
-      
-      msg.textContent = "Conectando...";
+      if(!u || !p) { msg.textContent = "Campos obligatorios."; return; }
+      msg.textContent = "Validando...";
       try {
         const res = await fetch(SCRIPT_URL, {
           method: 'POST',
           body: JSON.stringify({ action: 'login', user: u, pass: p })
         });
         const data = await res.json();
-        
         if(data.status === 'LOGIN_OK') {
           currentUser = u;
           currentRole = data.rol;
           localStorage.setItem('bv_user', u);
           localStorage.setItem('bv_pass', p);
-          localStorage.setItem('bv_role', currentRole);
-          showDashboard();
-        } else {
-          msg.textContent = "Credenciales incorrectas.";
-        }
-      } catch (e) {
-        msg.textContent = "Error de conexión.";
-      }
+          localStorage.setItem('bv_role', data.rol);
+          initPanel();
+        } else { msg.textContent = "Usuario o clave incorrecta."; }
+      } catch (e) { msg.textContent = "Error de conexión."; }
     }
 
     async function register() {
       const u = document.getElementById('auth-user').value.trim();
       const p = document.getElementById('auth-pass').value.trim();
       const msg = document.getElementById('auth-msg');
-      if(!u || !p) { msg.textContent = "Llene los campos."; return; }
-      
+      if(!u || !p) { msg.textContent = "Campos obligatorios."; return; }
       msg.textContent = "Registrando...";
       try {
         const res = await fetch(SCRIPT_URL, {
@@ -316,111 +751,301 @@
           body: JSON.stringify({ action: 'register', user: u, pass: p })
         });
         const text = await res.text();
-        
-        if(text.includes('REGISTER_OK')) {
-          login(); // Auto login
-        } else if(text.includes('USER_EXISTS')) {
-          msg.textContent = "El usuario ya existe.";
-        } else {
-          msg.textContent = "Error al registrar.";
-        }
-      } catch (e) {
-        msg.textContent = "Error de conexión.";
-      }
-    }
-
-    function showDashboard() {
-      document.getElementById('auth-section').style.display = 'none';
-      document.getElementById('dashboard-section').style.display = 'block';
-      document.getElementById('user-role-badge').textContent = currentRole;
-      
-      if(currentRole === 'Admin' || currentRole === 'Owner') {
-        document.getElementById('admin-tools').style.display = 'block';
-        document.getElementById('user-role-badge').style.background = '#ef4444';
-      }
-      
-      loadDashboardData();
+        if(text.includes('REGISTER_OK')) { login(); }
+        else if(text.includes('USER_EXISTS')) { msg.textContent = "El nombre de usuario ya está en uso."; }
+      } catch (e) { msg.textContent = "Error de servidor."; }
     }
 
     function logout() {
-      localStorage.removeItem('bv_user');
-      localStorage.removeItem('bv_pass');
-      localStorage.removeItem('bv_role');
-      currentUser = null;
-      currentRole = null;
-      document.getElementById('auth-section').style.display = 'block';
-      document.getElementById('dashboard-section').style.display = 'none';
+      localStorage.clear();
+      window.location.reload();
     }
 
-    async function loadDashboardData() {
+    // --- PANEL ---
+    async function initPanel() {
+      // Verificar si está baneado antes de mostrar nada
       try {
-        // Cargar stats
-        const resStats = await fetch(`${SCRIPT_URL}?action=getStats`);
-        const stats = await resStats.json();
-        document.getElementById('stat-addons').textContent = stats.total_addons;
-        document.getElementById('stat-views').textContent = stats.total_vistas;
-        document.getElementById('stat-creators').textContent = stats.total_usuarios;
-        
-        isMaintenance = stats.mantenimiento;
-        updateMaintBtn();
-
-        // Cargar Addons
-        const resAddons = await fetch(`${SCRIPT_URL}?action=read`);
-        const addons = await resAddons.json();
-        
-        const list = document.getElementById('my-addons-list');
-        list.innerHTML = '';
-        
-        let filtered = addons;
-        if(currentRole !== 'Admin' && currentRole !== 'Owner') {
-          // Si es user, solo ver los suyos (Índice 8 es SubidoPor)
-          filtered = addons.filter(a => a[8] === currentUser);
-        }
-
-        if(filtered.length === 0) {
-          list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">No tienes contenido subido.</div>';
-          return;
-        }
-
-        filtered.forEach(a => {
-          list.innerHTML += `
-            <div class="addon-list-item">
-              <div class="item-info">
-                <img src="${a[3] || '../assets/placeholder.png'}">
-                <div>
-                  <div style="font-weight:bold; font-size:0.9rem;">${a[1]}</div>
-                  <div style="font-size:0.7rem; color:var(--text-muted);">${a[8]} • ${a[4]}</div>
-                </div>
-              </div>
-              <div class="item-actions">
-                <button title="Editar"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn-delete" title="Eliminar" onclick="deleteAddon('${a[1]}', '${a[8]}')"><i class="fa-solid fa-trash"></i></button>
-              </div>
+        const resCheck = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${currentUser}`);
+        const dataStatus = await resCheck.json();
+        if (dataStatus.estado === 'Baneado') {
+          document.body.innerHTML = `
+            <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#ff4444; text-align:center; padding:30px;">
+              <i class="fa-solid fa-user-slash" style="font-size:5rem; margin-bottom:20px;"></i>
+              <h1 style="font-family:'Space Grotesk', sans-serif; font-size:2.5rem; margin-bottom:15px;">CUENTA SUSPENDIDA</h1>
+              <p style="font-size:1.1rem; max-width:500px; color:#aaa;">Has sido baneado por incumplir las normas de BlockVault. No puedes acceder al panel de creadores.</p>
+              <button onclick="localStorage.clear(); window.location.reload();" class="cat-btn active" style="margin-top:30px;">Volver</button>
             </div>
           `;
-        });
+          return;
+        }
+      } catch(e) {}
 
-      } catch(e) {
-        console.error("Error cargando dashboard", e);
+      document.getElementById('auth-overlay').style.display = 'none';
+      document.getElementById('panel-layout').style.display = 'flex';
+      document.getElementById('display-user').textContent = currentUser;
+      document.getElementById('welcome-name').textContent = currentUser;
+      document.getElementById('avatar-initial').textContent = currentUser.charAt(0).toUpperCase();
+      
+      if(currentRole === 'Admin' || currentRole === 'Owner') {
+        document.getElementById('admin-nav').style.display = 'block';
+        document.getElementById('user-role').textContent = currentRole;
+        document.getElementById('user-role').style.background = '#ef4444';
       }
+
+      loadData();
+    }
+
+    function switchSection(sectionId, el) {
+      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('sec-' + sectionId).classList.add('active');
+      document.querySelectorAll('.panel-nav-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    async function loadData() {
+      try {
+        // Stats
+        const resStats = await fetch(`${SCRIPT_URL}?action=getStats`);
+        const stats = await resStats.json();
+        document.getElementById('dash-total-addons').textContent = stats.total_addons;
+        document.getElementById('dash-total-users').textContent = stats.total_usuarios;
+        document.getElementById('dash-total-views').textContent = stats.total_vistas;
+        isMaintenance = stats.mantenimiento;
+        updateMaintUI();
+
+        // Addons
+        const resAddons = await fetch(`${SCRIPT_URL}?action=read`);
+        allAddons = await resAddons.json();
+        
+        // Users
+        const resUsers = await fetch(`${SCRIPT_URL}?action=getUsers`);
+        allUsers = await resUsers.json();
+        
+        renderMyAddons();
+        renderRanking();
+        renderAdminAddons();
+        renderAdminUsers();
+      } catch(e) { console.error(e); }
+    }
+
+    function switchAdminTab(tab) {
+      document.querySelectorAll('.admin-sub-sec').forEach(s => s.style.display = 'none');
+      document.getElementById('adm-sec-' + tab).style.display = 'block';
+      document.querySelectorAll('#sec-admin .tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-adm-' + tab).classList.add('active');
+    }
+
+    function renderAdminAddons() {
+      const tbody = document.getElementById('adm-addons-tbody');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+      allAddons.forEach(a => {
+        tbody.innerHTML += `
+          <tr class="adm-addon-row">
+            <td>
+              <div class="addon-row-info">
+                <img src="${a[3] || '../assets/placeholder.png'}">
+                <div class="adm-addon-name">${a[1]}</div>
+              </div>
+            </td>
+            <td class="adm-addon-author">${a[8]}</td>
+            <td><i class="fa-solid fa-heart" style="color:#ff4444;"></i> ${a[5]} | <i class="fa-solid fa-download" style="color:var(--primary-color);"></i> ${a[6]}</td>
+            <td>
+              <button class="action-btn delete" onclick="deleteAddon('${a[1]}', '${a[8]}')"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderAdminUsers() {
+      const tbody = document.getElementById('adm-users-tbody');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+      allUsers.slice(1).forEach(u => { // Saltar encabezado
+        const isBaneado = u[3] === 'Baneado';
+        tbody.innerHTML += `
+          <tr class="adm-user-row">
+            <td class="adm-user-name" style="font-weight:bold;">${u[1]}</td>
+            <td style="font-size:0.8rem; color:var(--text-muted);">${u[0]}</td>
+            <td>
+              <span class="badge-status" style="background:${isBaneado ? '#ff4444' : '#22c55e'}; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.7rem;">
+                ${u[3] || 'Activo'}
+              </span>
+            </td>
+            <td>
+              <div style="display:flex; gap:5px;">
+                <button class="cat-btn" style="padding:6px 10px; font-size:0.75rem; background:${isBaneado ? '#22c55e' : '#ffb000'}; color:#fff; border:none;" 
+                  onclick="toggleUserBan('${u[1]}', '${isBaneado ? 'Activo' : 'Baneado'}')">
+                  <i class="fa-solid ${isBaneado ? 'fa-user-check' : 'fa-user-slash'}"></i> ${isBaneado ? 'Desbanear' : 'Banear'}
+                </button>
+                <button class="action-btn delete" style="padding:6px 10px;" onclick="deleteUserAccount('${u[1]}')">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function filterAdminAddons() {
+      const val = document.getElementById('adm-search-addons').value.toLowerCase();
+      document.querySelectorAll('.adm-addon-row').forEach(row => {
+        const name = row.querySelector('.adm-addon-name').textContent.toLowerCase();
+        const author = row.querySelector('.adm-addon-author').textContent.toLowerCase();
+        row.style.display = (name.includes(val) || author.includes(val)) ? '' : 'none';
+      });
+    }
+
+    function filterAdminUsers() {
+      const val = document.getElementById('adm-search-users').value.toLowerCase();
+      document.querySelectorAll('.adm-user-row').forEach(row => {
+        const name = row.querySelector('.adm-user-name').textContent.toLowerCase();
+        row.style.display = name.includes(val) ? '' : 'none';
+      });
+    }
+
+    async function deleteUserAccount(nombre) {
+      if(!confirm(`⚠️ ADVERTENCIA CRÍTICA: ¿Estás seguro de eliminar la cuenta de "${nombre}"?\n\nEsto borrará permanentemente:\n- Su acceso al panel.\n- TODOS sus addons publicados.\n- Todas sus imágenes en Drive.\n\nEsta acción no se puede deshacer.`)) return;
+      
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'deleteUserAccount', nombre: nombre, rol: currentRole })
+        });
+        const text = await res.text();
+        if(text.includes('USER_DELETED_FULL')) {
+          alert("Cuenta y contenido eliminados con éxito.");
+          loadData();
+        }
+      } catch (e) { alert("Error al eliminar cuenta."); }
+    }
+
+    function renderMyAddons() {
+      const tbody = document.getElementById('my-addons-tbody');
+      tbody.innerHTML = '';
+      
+      let myAddons = allAddons.filter(a => a[8] === currentUser);
+      if(currentRole === 'Admin') myAddons = allAddons;
+
+      if(myAddons.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px;">No hay contenido.</td></tr>';
+        return;
+      }
+
+      myAddons.forEach(a => {
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <div class="addon-row-info">
+                <img src="${a[3] || '../assets/placeholder.png'}">
+                <div>
+                  <div style="font-weight:bold;">${a[1]}</div>
+                  <div style="font-size:0.7rem; color:var(--text-muted);">v${a[9] || '1.0'}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge-cat" style="font-size:0.6rem;">${a[4]}</span></td>
+            <td>
+              <div style="font-size:0.8rem;"><i class="fa-solid fa-heart" style="color:#ef4444;"></i> ${a[5]}</div>
+              <div style="font-size:0.8rem;"><i class="fa-solid fa-download" style="color:var(--primary-color);"></i> ${a[6]}</div>
+            </td>
+            <td>
+              <div style="display:flex; gap:8px;">
+                <button class="action-btn" onclick="editAddon('${a[1]}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="action-btn delete" onclick="deleteAddon('${a[1]}', '${a[8]}')"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderRanking() {
+      const container = document.getElementById('ranking-container');
+      container.innerHTML = '';
+
+      // Agrupar por creador
+      const counts = {};
+      allAddons.forEach(a => {
+        const creator = a[8];
+        counts[creator] = (counts[creator] || 0) + 1;
+      });
+
+      const ranking = Object.keys(counts).map(name => ({
+        name: name,
+        count: counts[name]
+      })).sort((a, b) => b.count - a.count);
+
+      ranking.forEach((r, index) => {
+        container.innerHTML += `
+          <div class="rank-item rank-${index + 1}">
+            <div class="rank-number">${index + 1}</div>
+            <div style="flex:1;">
+              <div style="font-weight:bold; font-size:1.1rem;">${r.name}</div>
+              <div style="font-size:0.8rem; color:var(--text-muted);">Miembro Destacado</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.2rem; font-weight:800; color:var(--primary-color);">${r.count}</div>
+              <div style="font-size:0.7rem; color:var(--text-muted);">Addons Publicados</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // --- ACCIONES ---
+    async function submitAddon() {
+      const btn = document.getElementById('btn-submit-addon');
+      const oldText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+
+      const addonData = {
+        action: 'add',
+        nombre: document.getElementById('up-nombre').value,
+        category: document.getElementById('up-cat').value,
+        version: document.getElementById('up-ver').value,
+        link: document.getElementById('up-link').value,
+        descripcion: document.getElementById('up-desc').value,
+        subidoPor: currentUser,
+        img: ""
+      };
+
+      const fileInput = document.getElementById('up-img');
+      if(fileInput.files[0]) {
+        addonData.img = await toBase64(fileInput.files[0]);
+      }
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(addonData)
+        });
+        const text = await res.text();
+        if(text.includes('OK')) {
+          alert("Addon enviado. Aparecerá cuando sea aprobado.");
+          document.getElementById('upload-form').reset();
+          switchSection('mis-addons', document.querySelectorAll('.panel-nav-item')[1]);
+          loadData();
+        }
+      } catch (e) { alert("Error al subir."); }
+      
+      btn.disabled = false;
+      btn.innerHTML = oldText;
     }
 
     async function deleteAddon(nombre, usuario) {
-      if(!confirm(`¿Eliminar addon "${nombre}"?`)) return;
+      if(!confirm(`¿Eliminar definitivamente "${nombre}"?`)) return;
       try {
         const res = await fetch(SCRIPT_URL, {
           method: 'POST',
           body: JSON.stringify({ action: 'delete', nombre: nombre, usuario: usuario, rol: currentRole })
         });
         const text = await res.text();
-        if(text.includes('DELETE_OK')) {
-          loadDashboardData();
-        } else {
-          alert("Error al eliminar.");
-        }
-      } catch(e) {
-        alert("Error de conexión.");
-      }
+        if(text.includes('OK')) loadData();
+      } catch (e) { alert("Error de conexión."); }
     }
 
     async function toggleMaintenance() {
@@ -431,26 +1056,77 @@
           body: JSON.stringify({ action: 'setMaintenance', estado: newState, rol: currentRole })
         });
         const text = await res.text();
-        if(text.includes('MAINTENANCE_UPDATED')) {
+        if(text.includes('UPDATED')) {
           isMaintenance = newState;
-          updateMaintBtn();
+          updateMaintUI();
         }
-      } catch(e) {
-        alert("Error de conexión.");
-      }
+      } catch (e) { alert("Error."); }
     }
 
-    function updateMaintBtn() {
+    function updateMaintUI() {
       const btn = document.getElementById('btn-maint');
       if(isMaintenance) {
         btn.textContent = "Desactivar";
-        btn.style.background = "#22c55e"; // Verde
+        btn.style.background = "#22c55e";
       } else {
         btn.textContent = "Activar";
-        btn.style.background = "#ef4444"; // Rojo
+        btn.style.background = "#ef4444";
       }
     }
+
+    function toggleSidebar() {
+      const layout = document.getElementById('panel-layout');
+      layout.classList.toggle('sidebar-open');
+      const btnIcon = document.querySelector('#p-toggle-btn i');
+      if (layout.classList.contains('sidebar-open')) {
+        btnIcon.classList.replace('fa-arrow-right', 'fa-bars');
+      } else {
+        btnIcon.classList.replace('fa-bars', 'fa-arrow-right');
+      }
+    }
+
+    function switchSection(sectionId, el) {
+      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('sec-' + sectionId);
+      if (target) target.classList.add('active');
+      
+      document.querySelectorAll('.panel-nav-item').forEach(i => i.classList.remove('active'));
+      if (el) el.classList.add('active');
+
+      // Cerrar sidebar automáticamente en móviles al navegar
+      if (window.innerWidth <= 768) {
+        const layout = document.getElementById('panel-layout');
+        if (!layout.classList.contains('sidebar-collapsed')) {
+          toggleSidebar();
+        }
+      }
+    }
+
+    // Helpers
+    const toBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+
+    function previewImage(input) {
+      const preview = document.getElementById('up-preview');
+      if(input.files[0]) {
+        preview.src = URL.createObjectURL(input.files[0]);
+        preview.style.display = 'block';
+      }
+    }
+
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', e.data.theme || 'dark');
+        if (e.data.color) {
+          document.documentElement.style.setProperty('--primary-color', e.data.color);
+          document.documentElement.style.setProperty('--border-neon', e.data.color);
+        }
+      }
+    });
   </script>
-  <script src="../js/security.js"></script>
 </body>
 </html>

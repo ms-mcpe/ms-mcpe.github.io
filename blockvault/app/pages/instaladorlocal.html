@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instalador Local — BlockVault</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    .tools-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .hero-tools {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-tools::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .hero-tools h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tools p {
+      font-size: 1rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .search-box {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 14px 20px 14px 50px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .file-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .file-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .file-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary-color);
+      transform: translateX(5px);
+    }
+
+    .file-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(var(--primary-color-rgb), 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+    }
+
+    .file-info {
+      flex: 1;
+    }
+
+    .file-name {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .file-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .scan-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--primary-color);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 15px var(--neon-glow);
+    }
+
+    .hidden-input {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="tools-container">
+    <div class="hero-tools">
+      <h1>Instalador Local</h1>
+      <p>Instala tus addons descargados directamente en Minecraft Bedrock.</p>
+    </div>
+
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="file-search" placeholder="Buscar en mis archivos descargados..." oninput="filterFiles()">
+    </div>
+
+    <div id="file-container" class="file-list">
+      <div class="empty-state">
+        <i class="fa-solid fa-folder-open"></i>
+        <h3>No hay archivos cargados</h3>
+        <p>Selecciona la carpeta donde guardas tus addons para listarlos aquí.</p>
+        <button class="scan-btn" onclick="triggerScan()">
+          <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
+          Escanear Carpeta Downloads/BlockVault
+        </button>
+      </div>
+    </div>
+
+    <input type="file" id="folder-input" class="hidden-input" multiple onchange="handleFiles(this.files)">
+  </div>
+
+  <script>
+    let currentFiles = [];
+
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', e.data.theme || 'dark');
+        if (e.data.color) {
+          document.documentElement.style.setProperty('--primary-color', e.data.color);
+          document.documentElement.style.setProperty('--border-neon', e.data.color);
+        }
+      }
+    });
+
+    function triggerScan() {
+      document.getElementById('folder-input').click();
+    }
+
+    function handleFiles(files) {
+      currentFiles = Array.from(files).filter(file => {
+        const name = file.name.toLowerCase();
+        return name.endsWith('.mcpack') || name.endsWith('.mcaddon') || name.endsWith('.zip') || name.endsWith('.mcworld');
+      });
+
+      renderFiles(currentFiles);
+    }
+
+    function renderFiles(files) {
+      const container = document.getElementById('file-container');
+
+      if (files.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <h3>No se encontraron addons</h3>
+            <p>Asegúrate de seleccionar archivos con extensión .mcpack o .mcaddon.</p>
+            <button class="scan-btn" onclick="triggerScan()">Reintentar escaneo</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = files.map((file, index) => {
+        const size = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+        let iconClass = 'fa-file-zipper';
+        if (file.name.includes('.mcpack')) iconClass = 'fa-box-open';
+        if (file.name.includes('.mcaddon')) iconClass = 'fa-puzzle-piece';
+
+        return `
+          <div class="file-card" onclick="openFile(${index})">
+            <div class="file-icon">
+              <i class="fa-solid ${iconClass}"></i>
+            </div>
+            <div class="file-info">
+              <div class="file-name">${file.name}</div>
+              <div class="file-meta">${size} • Listo para instalar</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterFiles() {
+      const term = document.getElementById('file-search').value.toLowerCase();
+      const filtered = currentFiles.filter(f => f.name.toLowerCase().includes(term));
+      renderFiles(filtered);
+    }
+
+    function openFile(index) {
+      const file = currentFiles[index];
+      const url = URL.createObjectURL(file);
+
+      // Intentar abrir el archivo. En Android, si el navegador tiene permisos,
+      // al descargar o abrir un Blob URL de un .mcpack, el sistema suele ofrecer abrir con Minecraft.
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Mostrar feedback
+      alert("Enviando '" + file.name + "' a Minecraft...\nSi no se abre automáticamente, búscalo en tu carpeta de descargas e ábrelo manualmente.");
+    }
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+
+</html>
