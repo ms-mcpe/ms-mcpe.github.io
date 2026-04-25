@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/layout.css">
 </head>
-<body>
+<body class="shell-body">
 
   <!-- HEADER -->
   <header class="app-header">
@@ -27,10 +27,8 @@
       </button>
       <div class="app-title neon-text">BlockVault</div>
     </div>
-    <div class="header-right">
-      <button class="search-btn">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
+    <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
+      <!-- Espacio reservado para iconos en el futuro -->
     </div>
   </header>
 
@@ -45,15 +43,15 @@
     </div>
     
     <div class="sidebar-content">
+      <a href="#" class="sidebar-item" data-target="pages/inicio.html">
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+      </a>
       <a href="#" class="sidebar-item" data-target="pages/ajustes.html">
         <i class="fa-solid fa-gear"></i>
-        <span>Ajustes y Temas</span>
+        <span>Ajustes</span>
       </a>
-      <a href="#" class="sidebar-item" data-target="pages/traductor.html">
-        <i class="fa-solid fa-language"></i>
-        <span>Idioma (Español)</span>
-      </a>
-      <!-- Aquí irán otros enlaces en el futuro (ej: Admin panel) -->
+      <!-- El traductor ahora está dentro de Ajustes -->
     </div>
     
     <div class="sidebar-footer">

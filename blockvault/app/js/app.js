@@ -8,10 +8,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Inicialización
   initTheme();
   initSidebar();
+  checkUrlParams(); // Nueva función para verificar parámetros de URL
   
   // Validar mantenimiento
   await checkMaintenance();
 });
+
+const VERIFY_LINK = 'https://cuty.io/m8uEHt1ws';
+const VERIFY_DURATION = 15 * 60 * 60 * 1000;
+
+function checkUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('verified') === 'true') {
+    localStorage.setItem('bv_verified_time', Date.now().toString());
+    // Limpiar la URL para que no diga ?verified=true permanentemente
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}
+
+function isVerified() {
+  const verifiedTime = localStorage.getItem('bv_verified_time');
+  if (!verifiedTime) return false;
+  return (Date.now() - parseInt(verifiedTime)) < VERIFY_DURATION;
+}
 
 async function checkMaintenance() {
   try {
@@ -91,6 +110,20 @@ window.addEventListener('message', (e) => {
   // Soporte para navegación solicitada desde el iframe
   if (e.data.type === 'navigate') {
     navigateTo(e.data.page);
+  }
+
+  // Solicitud de verificación desde el iframe
+  if (e.data.type === 'check-verify') {
+    const verified = isVerified();
+    const frame = document.getElementById('page-frame');
+    if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'verify-status', verified: verified }, '*');
+    }
+  }
+
+  // Redirigir a verificación
+  if (e.data.type === 'go-verify') {
+    window.location.href = VERIFY_LINK;
   }
 });
 

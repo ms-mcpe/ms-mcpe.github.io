@@ -8,54 +8,70 @@
   <link rel="stylesheet" href="../css/global.css">
   <link rel="stylesheet" href="../css/pages.css">
   <style>
+    .page-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
     .settings-section {
-      background: var(--bg-panel);
+      background: rgba(var(--bg-panel-rgb, 30, 30, 30), 0.6);
+      backdrop-filter: blur(10px);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     .settings-title {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.2rem;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .theme-options {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
     .theme-card {
-      flex: 1;
       border: 2px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 20px 16px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
+      background: var(--bg-card);
     }
     .theme-card.active {
       border-color: var(--primary-color);
-      background: rgba(139, 92, 246, 0.1);
+      background: rgba(var(--primary-color-rgb, 139, 92, 246), 0.1);
       box-shadow: 0 0 15px var(--neon-glow);
+      transform: translateY(-2px);
     }
     .theme-card i {
-      font-size: 2rem;
-      margin-bottom: 8px;
+      font-size: 2.5rem;
+      margin-bottom: 12px;
     }
     
+    .color-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
     .color-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 12px;
     }
     .color-btn {
-      width: 100%;
-      aspect-ratio: 1;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       border: 3px solid transparent;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .color-btn:hover {
       transform: scale(1.1);
@@ -64,37 +80,105 @@
       border-color: #fff;
       box-shadow: 0 0 15px currentColor;
     }
+    .custom-color-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+    .custom-color-picker {
+      width: 50px;
+      height: 50px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 0;
+      background: none;
+    }
+    .custom-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+    .custom-color-picker::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
+
+    /* Lang styles */
+    .lang-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: var(--font-family);
+      outline: none;
+      cursor: pointer;
+    }
+    .lang-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
   </style>
 </head>
 <body>
   
   <div class="page-container">
-    <h2 class="section-title"><i class="fa-solid fa-gear neon-text"></i> Ajustes de Apariencia</h2>
+    <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 30px;"><i class="fa-solid fa-sliders neon-text"></i> Configuración</h2>
     
     <div class="settings-section">
-      <div class="settings-title">Modo de Pantalla</div>
+      <div class="settings-title"><i class="fa-solid fa-moon"></i> Apariencia Visual</div>
       <div class="theme-options">
         <div class="theme-card" id="theme-light" onclick="setTheme('light')">
           <i class="fa-solid fa-sun" style="color: #f59e0b;"></i>
-          <div>Claro</div>
+          <div style="font-weight: bold; font-size: 1.1rem;">Claro</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Modo diurno</div>
         </div>
         <div class="theme-card active" id="theme-dark" onclick="setTheme('dark')">
           <i class="fa-solid fa-moon" style="color: #3b82f6;"></i>
-          <div>Oscuro</div>
+          <div style="font-weight: bold; font-size: 1.1rem;">Oscuro</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Modo nocturno</div>
         </div>
       </div>
     </div>
 
     <div class="settings-section">
-      <div class="settings-title">Color de Acento (Neón)</div>
-      <div class="color-grid">
-        <div class="color-btn" style="background-color: #8b5cf6;" onclick="setColor('#8b5cf6')"></div> <!-- Morado -->
-        <div class="color-btn" style="background-color: #06b6d4;" onclick="setColor('#06b6d4')"></div> <!-- Celeste -->
-        <div class="color-btn" style="background-color: #10b981;" onclick="setColor('#10b981')"></div> <!-- Verde -->
-        <div class="color-btn" style="background-color: #ef4444;" onclick="setColor('#ef4444')"></div> <!-- Rojo -->
-        <div class="color-btn" style="background-color: #f59e0b;" onclick="setColor('#f59e0b')"></div> <!-- Naranja -->
-        <div class="color-btn" style="background-color: #ec4899;" onclick="setColor('#ec4899')"></div> <!-- Rosa -->
+      <div class="settings-title"><i class="fa-solid fa-palette"></i> Tema Neón</div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">Elige un color de acento para iluminar la interfaz a tu gusto.</p>
+      
+      <div class="color-section">
+        <div class="color-grid">
+          <div class="color-btn" style="background-color: #8b5cf6;" onclick="setColor('#8b5cf6')"></div>
+          <div class="color-btn" style="background-color: #06b6d4;" onclick="setColor('#06b6d4')"></div>
+          <div class="color-btn" style="background-color: #10b981;" onclick="setColor('#10b981')"></div>
+          <div class="color-btn" style="background-color: #ef4444;" onclick="setColor('#ef4444')"></div>
+          <div class="color-btn" style="background-color: #f59e0b;" onclick="setColor('#f59e0b')"></div>
+          <div class="color-btn" style="background-color: #ec4899;" onclick="setColor('#ec4899')"></div>
+        </div>
+        
+        <div class="custom-color-wrapper">
+          <input type="color" id="custom-color" class="custom-color-picker" value="#ffffff" onchange="setColor(this.value)">
+          <div>
+            <div style="font-weight:bold;">Color Personalizado</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Toca el círculo para elegir tu propio color HEX</div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-title"><i class="fa-solid fa-language"></i> Idioma</div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">Selecciona el idioma de la plataforma.</p>
+      <select id="lang-selector" class="lang-select" onchange="setLanguage(this.value)">
+        <option value="es">🇪🇸 Español</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="pt">🇧🇷 Português</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="zh">🇨🇳 中文</option>
+      </select>
     </div>
   </div>
 
@@ -116,8 +200,17 @@
         // Actualizar UI
         updateThemeUI(theme);
         updateColorUI(color);
+        // Set lang
+        const lang = localStorage.getItem('bv_language') || 'es';
+        const langSelect = document.getElementById('lang-selector');
+        if(langSelect) langSelect.value = lang;
       }
     });
+
+    function setLanguage(langCode) {
+      localStorage.setItem('bv_language', langCode);
+      window.parent.postMessage({ type: 'language-change', lang: langCode }, '*');
+    }
 
     function setTheme(theme) {
       // Aplicar local
@@ -147,17 +240,26 @@
 
     function updateColorUI(color) {
       const btns = document.querySelectorAll('.color-btn');
+      let found = false;
       btns.forEach(btn => {
         btn.classList.remove('active');
-        // Comparar hex (simplificado)
-        if (btn.style.backgroundColor === hexToRgb(color)) {
+        if (btn.style.backgroundColor === hexToRgb(color) || btn.style.backgroundColor === color) {
           btn.classList.add('active');
+          found = true;
         }
       });
+      
+      // Update custom color picker input
+      const customPicker = document.getElementById('custom-color');
+      if (customPicker) {
+        customPicker.value = color;
+      }
     }
 
     // Helper para comparar hex con rgb string que devuelve backgroundColor
     function hexToRgb(hex) {
+      // Check if it's already rgb
+      if (hex.startsWith('rgb')) return hex;
       var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)})` : null;
     }

@@ -56,8 +56,22 @@ body {
   font-family: var(--font-family);
   background-color: var(--bg-app);
   color: var(--text-main);
-  overflow: hidden; /* El scroll lo manejará el iframe */
+  overflow-x: hidden;
+  overflow-y: auto; /* Permitir scroll vertical en las páginas */
   transition: background-color 0.3s, color 0.3s;
+}
+
+body.shell-body {
+  overflow: hidden; /* El shell principal no debe scrollear */
+}
+
+/* Ocultar barra de scroll globalmente */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+* {
+  scrollbar-width: none; /* Firefox */
 }
 
 /* ══════════════════════════════════════════════════
