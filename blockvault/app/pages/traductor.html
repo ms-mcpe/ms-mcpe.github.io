@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traductor de Idiomas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    .lang-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .lang-item {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .lang-item.active {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
+    .lang-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lang-flag {
+      font-size: 1.5rem;
+    }
+    .lang-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .lang-check {
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .lang-item.active .lang-check {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="page-container">
+    <h2 class="section-title"><i class="fa-solid fa-language neon-text"></i> Idioma de la App</h2>
+    <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 20px;">
+      Selecciona tu idioma preferido. La traducción se aplicará a la interfaz principal de la aplicación.
+    </p>
+
+    <div class="lang-list">
+      <!-- 1. Español (Por defecto) -->
+      <div class="lang-item active" onclick="setLanguage('es')">
+        <div class="lang-info">
+          <span class="lang-flag">🇪🇸</span>
+          <span class="lang-name">Español (Predeterminado)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+      
+      <!-- 2. Inglés -->
+      <div class="lang-item" onclick="setLanguage('en')">
+        <div class="lang-info">
+          <span class="lang-flag">🇺🇸</span>
+          <span class="lang-name">English (Inglés)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 3. Portugués -->
+      <div class="lang-item" onclick="setLanguage('pt')">
+        <div class="lang-info">
+          <span class="lang-flag">🇧🇷</span>
+          <span class="lang-name">Português (Portugués)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 4. Francés -->
+      <div class="lang-item" onclick="setLanguage('fr')">
+        <div class="lang-info">
+          <span class="lang-flag">🇫🇷</span>
+          <span class="lang-name">Français (Francés)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 5. Alemán -->
+      <div class="lang-item" onclick="setLanguage('de')">
+        <div class="lang-info">
+          <span class="lang-flag">🇩🇪</span>
+          <span class="lang-name">Deutsch (Alemán)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 6. Italiano -->
+      <div class="lang-item" onclick="setLanguage('it')">
+        <div class="lang-info">
+          <span class="lang-flag">🇮🇹</span>
+          <span class="lang-name">Italiano</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 7. Ruso -->
+      <div class="lang-item" onclick="setLanguage('ru')">
+        <div class="lang-info">
+          <span class="lang-flag">🇷🇺</span>
+          <span class="lang-name">Русский (Ruso)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 8. Japonés -->
+      <div class="lang-item" onclick="setLanguage('ja')">
+        <div class="lang-info">
+          <span class="lang-flag">🇯🇵</span>
+          <span class="lang-name">日本語 (Japonés)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 9. Coreano -->
+      <div class="lang-item" onclick="setLanguage('ko')">
+        <div class="lang-info">
+          <span class="lang-flag">🇰🇷</span>
+          <span class="lang-name">한국어 (Coreano)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+      <!-- 10. Chino -->
+      <div class="lang-item" onclick="setLanguage('zh')">
+        <div class="lang-info">
+          <span class="lang-flag">🇨🇳</span>
+          <span class="lang-name">中文 (Chino Simplificado)</span>
+        </div>
+        <i class="fa-solid fa-circle-check lang-check"></i>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
+        if (d.color) {
+          document.documentElement.style.setProperty('--primary-color', d.color);
+          document.documentElement.style.setProperty('--border-neon', d.color);
+          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
+        }
+      }
+    });
+
+    // En un sistema real, guardaríamos esto y el index.html actualizaría los textos mediante un diccionario JS
+    function setLanguage(langCode) {
+      alert("Idioma seleccionado: " + langCode + "\n(Esta función requerirá un diccionario de traducción en app.js para actualizar los textos de la interfaz)");
+      
+      // Actualizar UI
+      const items = document.querySelectorAll('.lang-item');
+      items.forEach(item => item.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      
+      // Guardar
+      localStorage.setItem('bv_language', langCode);
+      
+      // Notificar al shell para que actualice su interfaz también
+      window.parent.postMessage({ type: 'language-change', lang: langCode }, '*');
+    }
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+</html>

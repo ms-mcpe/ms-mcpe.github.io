@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Creador</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    /* Estilos específicos del panel */
+    .panel-container {
+      padding: 20px;
+      padding-bottom: 80px;
+      color: var(--text-main);
+      font-family: var(--font-family);
+    }
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .panel-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+    }
+    
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Auth Box */
+    .auth-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-neon);
+      box-shadow: 0 0 20px var(--neon-glow);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      max-width: 400px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .auth-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      background: var(--bg-app);
+      color: var(--text-main);
+      outline: none;
+    }
+    .auth-box input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 5px var(--neon-glow);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px var(--neon-glow);
+    }
+
+    /* Dashboard Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .stat-card:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
+    .stat-card i {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Admin Section */
+    .admin-section {
+      display: none; /* Se muestra por JS */
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid #ef4444;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .admin-title {
+      color: #ef4444;
+      font-weight: bold;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Addon List */
+    .addon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .addon-list-item {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .item-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .item-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .item-actions button {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .item-actions button.btn-delete:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="panel-container">
+    
+    <!-- PANTALLA DE LOGIN/REGISTRO -->
+    <div id="auth-section" class="auth-box">
+      <h2 class="neon-text" style="margin-bottom:20px; font-family:'Space Grotesk', sans-serif;">Acceso de Creador</h2>
+      <input type="text" id="auth-user" placeholder="Usuario">
+      <input type="password" id="auth-pass" placeholder="Contraseña">
+      <button class="btn-primary" onclick="login()" style="margin-bottom:12px;">Iniciar Sesión</button>
+      <button class="btn-primary" onclick="register()" style="background:transparent; border:1px solid var(--primary-color); color:var(--primary-color); box-shadow:none;">Registrarse</button>
+      <div id="auth-msg" style="margin-top:12px; font-size:0.8rem; color:#ef4444;"></div>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL DEL PANEL -->
+    <div id="dashboard-section" style="display: none;">
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-chess-knight neon-text"></i> Panel</h2>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span id="user-role-badge" style="background:var(--primary-color); color:#fff; padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:bold;">User</span>
+          <button class="btn-logout" onclick="logout()">Salir</button>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fa-solid fa-users"></i>
+          <div class="stat-value" id="stat-creators">0</div>
+          <div class="stat-label">Creadores</div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-puzzle-piece"></i>
+          <div class="stat-value" id="stat-addons">0</div>
+          <div class="stat-label">Addons Totales</div>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-eye"></i>
+          <div class="stat-value" id="stat-views">0</div>
+          <div class="stat-label">Visitas Globales</div>
+        </div>
+      </div>
+
+      <!-- Herramientas de Administrador -->
+      <div class="admin-section" id="admin-tools">
+        <div class="admin-title"><i class="fa-solid fa-shield-halved"></i> Herramientas de Admin</div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.85rem; color:var(--text-muted);">Modo Mantenimiento (Bloquea accesos de usuarios)</span>
+          <button id="btn-maint" class="btn-primary" style="width:auto; padding:6px 12px; background:#ef4444;" onclick="toggleMaintenance()">Activar</button>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn-primary" style="background:transparent; border:1px solid #ef4444; color:#ef4444; box-shadow:none;" onclick="alert('Función de listar y banear usuarios en desarrollo.')">Gestionar Usuarios (Banear)</button>
+        </div>
+      </div>
+
+      <!-- Lista de Addons del Usuario (o todos si es admin) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:1.1rem;">Gestor de Contenido</h3>
+        <button class="btn-primary" style="width:auto; padding:8px 16px;" onclick="alert('Formulario de subida en modal pronto.')"><i class="fa-solid fa-plus"></i> Subir</button>
+      </div>
+      
+      <div class="addon-list" id="my-addons-list">
+        <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">Cargando contenido...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+    let currentUser = null;
+    let currentRole = null;
+    let isMaintenance = false;
+
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
+        if (d.color) {
+          document.documentElement.style.setProperty('--primary-color', d.color);
+          document.documentElement.style.setProperty('--border-neon', d.color);
+          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
+        }
+      }
+    });
+
+    // Comprobar sesión
+    window.onload = () => {
+      const savedUser = localStorage.getItem('bv_user');
+      const savedPass = localStorage.getItem('bv_pass');
+      const savedRole = localStorage.getItem('bv_role');
+      if(savedUser && savedPass) {
+        currentUser = savedUser;
+        currentRole = savedRole || 'User';
+        showDashboard();
+      }
+    }
+
+    async function login() {
+      const u = document.getElementById('auth-user').value.trim();
+      const p = document.getElementById('auth-pass').value.trim();
+      const msg = document.getElementById('auth-msg');
+      if(!u || !p) { msg.textContent = "Llene los campos."; return; }
+      
+      msg.textContent = "Conectando...";
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'login', user: u, pass: p })
+        });
+        const data = await res.json();
+        
+        if(data.status === 'LOGIN_OK') {
+          currentUser = u;
+          currentRole = data.rol;
+          localStorage.setItem('bv_user', u);
+          localStorage.setItem('bv_pass', p);
+          localStorage.setItem('bv_role', currentRole);
+          showDashboard();
+        } else {
+          msg.textContent = "Credenciales incorrectas.";
+        }
+      } catch (e) {
+        msg.textContent = "Error de conexión.";
+      }
+    }
+
+    async function register() {
+      const u = document.getElementById('auth-user').value.trim();
+      const p = document.getElementById('auth-pass').value.trim();
+      const msg = document.getElementById('auth-msg');
+      if(!u || !p) { msg.textContent = "Llene los campos."; return; }
+      
+      msg.textContent = "Registrando...";
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'register', user: u, pass: p })
+        });
+        const text = await res.text();
+        
+        if(text.includes('REGISTER_OK')) {
+          login(); // Auto login
+        } else if(text.includes('USER_EXISTS')) {
+          msg.textContent = "El usuario ya existe.";
+        } else {
+          msg.textContent = "Error al registrar.";
+        }
+      } catch (e) {
+        msg.textContent = "Error de conexión.";
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('dashboard-section').style.display = 'block';
+      document.getElementById('user-role-badge').textContent = currentRole;
+      
+      if(currentRole === 'Admin' || currentRole === 'Owner') {
+        document.getElementById('admin-tools').style.display = 'block';
+        document.getElementById('user-role-badge').style.background = '#ef4444';
+      }
+      
+      loadDashboardData();
+    }
+
+    function logout() {
+      localStorage.removeItem('bv_user');
+      localStorage.removeItem('bv_pass');
+      localStorage.removeItem('bv_role');
+      currentUser = null;
+      currentRole = null;
+      document.getElementById('auth-section').style.display = 'block';
+      document.getElementById('dashboard-section').style.display = 'none';
+    }
+
+    async function loadDashboardData() {
+      try {
+        // Cargar stats
+        const resStats = await fetch(`${SCRIPT_URL}?action=getStats`);
+        const stats = await resStats.json();
+        document.getElementById('stat-addons').textContent = stats.total_addons;
+        document.getElementById('stat-views').textContent = stats.total_vistas;
+        document.getElementById('stat-creators').textContent = stats.total_usuarios;
+        
+        isMaintenance = stats.mantenimiento;
+        updateMaintBtn();
+
+        // Cargar Addons
+        const resAddons = await fetch(`${SCRIPT_URL}?action=read`);
+        const addons = await resAddons.json();
+        
+        const list = document.getElementById('my-addons-list');
+        list.innerHTML = '';
+        
+        let filtered = addons;
+        if(currentRole !== 'Admin' && currentRole !== 'Owner') {
+          // Si es user, solo ver los suyos (Índice 8 es SubidoPor)
+          filtered = addons.filter(a => a[8] === currentUser);
+        }
+
+        if(filtered.length === 0) {
+          list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:0.85rem;">No tienes contenido subido.</div>';
+          return;
+        }
+
+        filtered.forEach(a => {
+          list.innerHTML += `
+            <div class="addon-list-item">
+              <div class="item-info">
+                <img src="${a[3] || '../assets/placeholder.png'}">
+                <div>
+                  <div style="font-weight:bold; font-size:0.9rem;">${a[1]}</div>
+                  <div style="font-size:0.7rem; color:var(--text-muted);">${a[8]} • ${a[4]}</div>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button title="Editar"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-delete" title="Eliminar" onclick="deleteAddon('${a[1]}', '${a[8]}')"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          `;
+        });
+
+      } catch(e) {
+        console.error("Error cargando dashboard", e);
+      }
+    }
+
+    async function deleteAddon(nombre, usuario) {
+      if(!confirm(`¿Eliminar addon "${nombre}"?`)) return;
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'delete', nombre: nombre, usuario: usuario, rol: currentRole })
+        });
+        const text = await res.text();
+        if(text.includes('DELETE_OK')) {
+          loadDashboardData();
+        } else {
+          alert("Error al eliminar.");
+        }
+      } catch(e) {
+        alert("Error de conexión.");
+      }
+    }
+
+    async function toggleMaintenance() {
+      const newState = !isMaintenance;
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'setMaintenance', estado: newState, rol: currentRole })
+        });
+        const text = await res.text();
+        if(text.includes('MAINTENANCE_UPDATED')) {
+          isMaintenance = newState;
+          updateMaintBtn();
+        }
+      } catch(e) {
+        alert("Error de conexión.");
+      }
+    }
+
+    function updateMaintBtn() {
+      const btn = document.getElementById('btn-maint');
+      if(isMaintenance) {
+        btn.textContent = "Desactivar";
+        btn.style.background = "#22c55e"; // Verde
+      } else {
+        btn.textContent = "Activar";
+        btn.style.background = "#ef4444"; // Rojo
+      }
+    }
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+</html>

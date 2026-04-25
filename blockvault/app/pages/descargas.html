@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    .header-descargas {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header-descargas h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      margin: 0;
+    }
+    .btn-clear {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-clear:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .empty-state i {
+      font-size: 3rem;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="page-container">
+    <div class="header-descargas">
+      <h2><i class="fa-solid fa-download neon-text"></i> Descargas</h2>
+      <button class="btn-clear" onclick="clearDownloads()"><i class="fa-solid fa-trash-can"></i> Limpiar</button>
+    </div>
+
+    <div class="content-grid" id="descargas-container">
+      <!-- Los addons se cargarán aquí por JS -->
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
+        if (d.color) {
+          document.documentElement.style.setProperty('--primary-color', d.color);
+          document.documentElement.style.setProperty('--border-neon', d.color);
+          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
+        }
+      }
+    });
+
+    function loadDownloads() {
+      const container = document.getElementById('descargas-container');
+      const saved = localStorage.getItem('bv_descargas_recientes');
+      
+      if(!saved) {
+        showEmpty();
+        return;
+      }
+
+      try {
+        const downloads = JSON.parse(saved);
+        if(!Array.isArray(downloads) || downloads.length === 0) {
+          showEmpty();
+          return;
+        }
+
+        container.innerHTML = downloads.map(a => createGridCard(a)).join('');
+
+      } catch(e) {
+        console.error("Error al leer descargas", e);
+        showEmpty();
+      }
+    }
+
+    function showEmpty() {
+      const container = document.getElementById('descargas-container');
+      container.innerHTML = `
+        <div class="empty-state" style="grid-column: 1/-1;">
+          <i class="fa-solid fa-box-open"></i>
+          <p>No has descargado nada aún.</p>
+        </div>
+      `;
+    }
+
+    function clearDownloads() {
+      if(confirm("¿Estás seguro de eliminar el historial de descargas locales?")) {
+        localStorage.removeItem('bv_descargas_recientes');
+        loadDownloads();
+      }
+    }
+
+    function createGridCard(addon) {
+      let catColor = 'var(--primary-color)';
+      if(addon.categoria === 'Texturas') catColor = '#22c55e';
+      else if(addon.categoria === 'Mapas') catColor = '#eab308';
+      else if(addon.categoria === 'Skins') catColor = '#3b82f6';
+      else if(addon.categoria === 'DLC') catColor = '#a855f7';
+      else if(addon.categoria === 'Popurris') catColor = '#ec4899';
+      else if(addon.categoria === 'Addons') catColor = '#14b8a6';
+
+      return `
+        <div class="addon-card" onclick="openDetails('${encodeURIComponent(addon.nombre)}')">
+          <div class="card-img-wrapper">
+            <img src="${addon.img}" alt="${addon.nombre}" loading="lazy">
+            <span class="badge-cat" style="background:${catColor}">${addon.categoria}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${addon.nombre}</div>
+            <div class="card-desc">Descargado localmente</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openDetails(nombre) {
+      console.log("Abrir detalles de:", decodeURIComponent(nombre));
+    }
+
+    // Inicializar
+    loadDownloads();
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+</html>

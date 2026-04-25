@@ -1,0 +1,100 @@
+/* ══════════════════════════════════════════════════
+   VARIABLES GLOBALES (Temas y Neón)
+══════════════════════════════════════════════════ */
+:root {
+  /* Tema Oscuro por defecto */
+  --bg-app: #121212;
+  --bg-panel: #1e1e1e;
+  --bg-card: #252525;
+  --text-main: #ffffff;
+  --text-muted: #aaaaaa;
+  
+  /* Colores Neón Personalizables */
+  --primary-color: #8b5cf6; /* Morado por defecto */
+  --secondary-color: #06b6d4; /* Celeste */
+  --neon-glow: rgba(139, 92, 246, 0.4);
+  
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-neon: var(--primary-color);
+  
+  /* Tamaños */
+  --header-height: 60px;
+  --bottom-nav-height: 65px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  
+  /* Fuentes */
+  --font-family: 'Inter', system-ui, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg-app: #f5f5f5;
+  --bg-panel: #ffffff;
+  --bg-card: #ffffff;
+  --text-main: #121212;
+  --text-muted: #555555;
+  --border-color: rgba(0, 0, 0, 0.1);
+  /* Los colores neón se mantienen o se adaptan */
+}
+
+/* ══════════════════════════════════════════════════
+   RESET BÁSICO
+══════════════════════════════════════════════════ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; /* Anti-select global */
+}
+
+input, textarea {
+  user-select: auto; /* Permitir seleccionar texto en inputs */
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  overflow: hidden; /* El scroll lo manejará el iframe */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ══════════════════════════════════════════════════
+   CONTENEDOR PRINCIPAL Y IFRAME
+══════════════════════════════════════════════════ */
+#app-container {
+  position: fixed;
+  top: var(--header-height);
+  bottom: var(--bottom-nav-height);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: var(--bg-app);
+}
+
+#page-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  transition: opacity 0.3s ease;
+}
+
+#page-frame.loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════
+   UTILIDADES
+══════════════════════════════════════════════════ */
+.neon-border {
+  border: 1px solid var(--border-neon);
+  box-shadow: 0 0 10px var(--neon-glow);
+}
+
+.neon-text {
+  color: var(--primary-color);
+  text-shadow: 0 0 8px var(--neon-glow);
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuevos Mods</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    .header-nuevos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header-nuevos-title {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-nuevos-title h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 2px;
+    }
+    .header-nuevos-title span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .badge-new {
+      background: var(--secondary-color);
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="page-container">
+    <div class="header-nuevos">
+      <div class="header-nuevos-title">
+        <h2><span class="badge-new">NEW</span> Nuevos Mods</h2>
+        <span>Contenido agregado recientemente</span>
+      </div>
+      <i class="fa-solid fa-rotate-right" style="color: var(--text-muted); cursor:pointer;" onclick="fetchNuevos()"></i>
+    </div>
+
+    <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:12px;" id="count-nuevos">
+      Buscando contenido nuevo...
+    </div>
+
+    <div class="content-grid" id="nuevos-container">
+      <!-- Los addons se cargarán aquí por JS -->
+    </div>
+  </div>
+
+  <script>
+    let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
+        if (d.color) {
+          document.documentElement.style.setProperty('--primary-color', d.color);
+          document.documentElement.style.setProperty('--border-neon', d.color);
+          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
+        }
+      }
+    });
+
+    function parseDate(dateString) {
+      // Intenta parsear la fecha. El formato suele ser DD/MM/YYYY HH:MM:SS o similar dependiendo del local
+      // Una forma más segura si el formato es impredecible es intentar con Date.parse, o separar manualmente.
+      // Asumiendo que es MM/DD/YYYY, HH:MM:SS PM/AM o estándar de Google Sheets.
+      const parsed = new Date(dateString);
+      if(!isNaN(parsed.getTime())) return parsed;
+      
+      // Fallback simple: si no se puede parsear, devuelve una fecha muy vieja para que no cuente como nuevo
+      return new Date(0);
+    }
+
+    async function fetchNuevos() {
+      try {
+        document.getElementById('count-nuevos').textContent = 'Buscando contenido nuevo...';
+        document.getElementById('nuevos-container').innerHTML = '';
+
+        const res = await fetch(`${SCRIPT_URL}?action=read`);
+        const data = await res.json();
+        
+        const now = new Date();
+        const maxAgeHours = 15;
+
+        let nuevosAddons = [];
+
+        for(let i=0; i<data.length; i++) {
+          const row = data[i];
+          const dateStr = row[0]; // Fecha
+          const dateObj = parseDate(dateStr);
+          
+          const diffMs = now - dateObj;
+          const diffHours = diffMs / (1000 * 60 * 60);
+
+          if(diffHours <= maxAgeHours) {
+            nuevosAddons.push({
+              fecha: row[0],
+              nombre: row[1],
+              url: row[2],
+              img: row[3] || '../assets/placeholder.png',
+              categoria: row[4],
+              likes: parseInt(row[5]) || 0,
+              descargas: parseInt(row[6]) || 0,
+              creador: row[8],
+              version: row[9],
+              descripcion: row[10] || 'Sin descripción'
+            });
+          }
+        }
+
+        // Ordenar del más reciente al más antiguo (si se pudiera, en este caso los últimos suelen estar al final del array)
+        nuevosAddons.reverse();
+
+        document.getElementById('count-nuevos').textContent = `${nuevosAddons.length} mods nuevos (últimas 15h)`;
+
+        const container = document.getElementById('nuevos-container');
+        if(nuevosAddons.length === 0) {
+          container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 20px; color: var(--text-muted);">No hay contenido nuevo recientemente.</p>';
+        } else {
+          container.innerHTML = nuevosAddons.map(a => createGridCard(a)).join('');
+        }
+
+      } catch (error) {
+        console.error("Error cargando nuevos:", error);
+        document.getElementById('count-nuevos').textContent = 'Error al cargar';
+      }
+    }
+
+    function createGridCard(addon) {
+      let descTxt = addon.descargas >= 1000 ? (addon.descargas/1000).toFixed(1) + 'K' : addon.descargas;
+      
+      let catColor = 'var(--primary-color)';
+      if(addon.categoria === 'Texturas') catColor = '#22c55e';
+      else if(addon.categoria === 'Mapas') catColor = '#eab308';
+      else if(addon.categoria === 'Skins') catColor = '#3b82f6';
+      else if(addon.categoria === 'DLC') catColor = '#a855f7';
+      else if(addon.categoria === 'Popurris') catColor = '#ec4899';
+      else if(addon.categoria === 'Addons') catColor = '#14b8a6';
+
+      return `
+        <div class="addon-card" onclick="openDetails('${encodeURIComponent(addon.nombre)}')">
+          <div class="card-img-wrapper">
+            <img src="${addon.img}" alt="${addon.nombre}" loading="lazy">
+            <span class="badge-cat" style="background:${catColor}">${addon.categoria}</span>
+            <i class="fa-regular fa-heart badge-like"></i>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${addon.nombre}</div>
+            <div class="card-desc">${addon.descripcion}</div>
+            <div class="card-footer">
+              <span class="card-author">${addon.creador}</span>
+              <span><i class="fa-solid fa-download"></i> ${descTxt}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openDetails(nombre) {
+      console.log("Abrir detalles de:", decodeURIComponent(nombre));
+    }
+
+    fetchNuevos();
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+</html>

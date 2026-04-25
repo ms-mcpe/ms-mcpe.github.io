@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Políticas de Creador</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    .policy-container {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    .policy-container h3 {
+      color: var(--primary-color);
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+    .policy-container p, .policy-container li {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .btn-accept {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px var(--neon-glow);
+    }
+    .btn-accept:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--neon-glow);
+    }
+    .policy-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .policy-header i {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="page-container" style="display:flex; flex-direction:column; justify-content:center; min-height:80vh;">
+    
+    <div class="policy-header">
+      <i class="fa-solid fa-file-contract"></i>
+      <h2 class="neon-text" style="font-family:'Space Grotesk', sans-serif;">Conviértete en Creador</h2>
+      <p style="color:var(--text-muted); font-size:0.9rem;">Debes aceptar nuestras políticas antes de subir contenido.</p>
+    </div>
+
+    <div class="policy-container">
+      <h3>1. Contenido Permitido</h3>
+      <p>Solo se permite subir contenido original o con los permisos adecuados de sus respectivos creadores. El robo de contenido resultará en baneo permanente.</p>
+      
+      <h3>2. Palabras Prohibidas</h3>
+      <p>Nuestro sistema escanea automáticamente los títulos y descripciones. El uso de groserías, lenguaje ofensivo o promociones engañosas está estrictamente prohibido y quedará registrado.</p>
+      
+      <h3>3. Responsabilidad</h3>
+      <p>Al subir un archivo, garantizas que está libre de virus o software malicioso. Nos reservamos el derecho de eliminar cualquier archivo que consideremos dañino.</p>
+      
+      <h3>4. Roles y Moderación</h3>
+      <p>Los administradores pueden revisar, editar o eliminar el contenido de cualquier usuario para mantener la calidad de la plataforma. Como usuario normal (Creador), solo podrás gestionar tus propios addons.</p>
+    </div>
+
+    <button class="btn-accept" onclick="acceptPolicies()">Acepto las políticas</button>
+  </div>
+
+  <script>
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
+        if (d.color) {
+          document.documentElement.style.setProperty('--primary-color', d.color);
+          document.documentElement.style.setProperty('--border-neon', d.color);
+          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
+        }
+      }
+    });
+
+    function acceptPolicies() {
+      // Guardar que aceptó
+      localStorage.setItem('bv_policies_accepted', 'true');
+      
+      // Redirigir al panel de login/registro o al Userpanel si ya tiene sesión
+      const hasSession = localStorage.getItem('bv_session');
+      if (hasSession) {
+        window.parent.postMessage({ type: 'navigate', page: 'pages/panel.html' }, '*');
+      } else {
+        // Asumiendo que el Userpanel maneja su propio login, vamos hacia allá
+        window.parent.postMessage({ type: 'navigate', page: 'pages/panel.html' }, '*');
+      }
+    }
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+</html>

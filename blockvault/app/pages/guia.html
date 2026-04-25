@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía BlockVault</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <style>
+    .guide-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .guide-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    .guide-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .guide-section {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .guide-section h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+    .guide-section p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .guide-section ul {
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+    .guide-section li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .warning-box {
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 4px solid #ef4444;
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .warning-box strong {
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="page-container">
+    <div class="guide-header">
+      <h2 class="neon-text">Centro de Ayuda</h2>
+      <p>Todo lo que necesitas saber para instalar contenido en Minecraft Bedrock</p>
+    </div>
+
+    <!-- Sección 1: Cómo descargar -->
+    <div class="guide-section">
+      <h3><i class="fa-solid fa-download"></i> ¿Cómo descargar addons?</h3>
+      <p>Navega por la app y selecciona el addon que te guste. Presiona el botón de <strong>Descargar</strong>. Serás redirigido a una página de verificación rápida. Una vez verificado, tendrás acceso ilimitado para descargar cualquier archivo durante <strong>15 horas</strong>.</p>
+      <p>Todos los archivos que descargues desde BlockVault se guardarán automáticamente en tu carpeta: <code>Descargas/blockvault</code> o <code>Downloads/blockvault</code> de tu dispositivo.</p>
+    </div>
+
+    <!-- Sección 2: Tipos de Archivos -->
+    <div class="guide-section">
+      <h3><i class="fa-solid fa-file-code"></i> Tipos de Archivos de Minecraft</h3>
+      <p>Minecraft Bedrock utiliza diferentes formatos según el tipo de contenido:</p>
+      <ul>
+        <li><strong>.mcpack</strong>: Usado para <em>Texturas</em>, <em>Shaders</em> y <em>Skins</em>. Son paquetes de recursos que mejoran lo visual.</li>
+        <li><strong>.mcaddon</strong>: Usado para <em>Addons</em> y <em>Mods</em>. Contienen tanto recursos (visual) como comportamientos (código/mecánicas).</li>
+        <li><strong>.mcworld</strong> / <strong>.mctemplate</strong>: Usado para <em>Mapas</em> y <em>Mundos</em> listos para jugar.</li>
+      </ul>
+      <p>Para instalarlos, normalmente solo necesitas tocar el archivo descargado y seleccionar "Abrir con Minecraft".</p>
+    </div>
+
+    <!-- Sección 3: Solución de Problemas (.zip) -->
+    <div class="guide-section">
+      <h3><i class="fa-solid fa-wrench"></i> Problemas Comunes: Archivo ZIP no válido</h3>
+      <p>A veces, tu navegador o gestor de archivos descargará el archivo añadiéndole un <code>.zip</code> al final (por ejemplo: <em>mi_addon.mcaddon.zip</em>). Si esto ocurre, Minecraft no lo reconocerá directamente.</p>
+      <div class="warning-box">
+        <strong>Solución:</strong> Ve a tu gestor de archivos, busca el archivo descargado en la carpeta de <code>blockvault</code>, selecciona <strong>Renombrar</strong> y borra únicamente el <code>.zip</code> del final. El archivo debe terminar en <code>.mcaddon</code> o <code>.mcpack</code>. Tras hacerlo, al tocarlo se abrirá correctamente en el juego.
+      </div>
+    </div>
+
+    <!-- Sección 4: Instalación manual -->
+    <div class="guide-section">
+      <h3><i class="fa-solid fa-folder-tree"></i> Mi archivo no se abre con Minecraft</h3>
+      <p>Si al tocar el archivo `.mcaddon` o `.mcpack` no te da la opción de abrirlo con Minecraft, puedes instalarlo manualmente:</p>
+      <ol style="margin-left:20px; font-size:0.9rem; color:var(--text-muted);">
+        <li style="margin-bottom:6px;">Cambia la extensión del archivo a <code>.zip</code> (ej. <em>addon.zip</em>).</li>
+        <li style="margin-bottom:6px;">Extrae el contenido de ese ZIP en una carpeta.</li>
+        <li style="margin-bottom:6px;">Mueve esa carpeta extraída a: <code>Android/data/com.mojang.minecraftpe/files/games/com.mojang/</code> (en la subcarpeta <em>behavior_packs</em> o <em>resource_packs</em> según corresponda).</li>
+      </ol>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d) return;
+      if (d.type === 'init-data') {
+        document.documentElement.setAttribute('data-theme', d.theme || 'dark');
+        if (d.color) {
+          document.documentElement.style.setProperty('--primary-color', d.color);
+          document.documentElement.style.setProperty('--border-neon', d.color);
+          document.documentElement.style.setProperty('--neon-glow', d.color + '66');
+        }
+      }
+    });
+  </script>
+  <script src="../js/security.js"></script>
+</body>
+</html>
