@@ -1,1132 +1,2629 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Creador — BlockVault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BlockVault — Panel de Creador</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/pages.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
+    /* ═══════════════════════════ TOKENS & THEME ══════════════════════════ */
+    /* ═══════════════════════════ TOKENS & THEME ══════════════════════════ */
     :root {
-      --panel-sidebar-w: 240px;
+      --primary: #8b5cf6;
+      --primary-rgb: 139, 92, 246;
+      --primary-light: #a78bfa;
+      --primary-dark: #7c3aed;
+      --primary-glow: rgba(var(--primary-rgb), 0.35);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.25);
+
+      /* Dark Theme (Default - Platform Greys) */
+      --bg: #121212;
+      --bg-panel: #1e1e1e;
+      --bg-card: #252525;
+      --surface: #2a2a2a;
+      --surface-2: #333333;
+      --text: #ffffff;
+      --text-sec: #aaaaaa;
+      --text-muted: #777777;
+      
+      --border: rgba(var(--primary-rgb), 0.2);
+      --border-strong: rgba(var(--primary-rgb), 0.5);
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.5);
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.8);
+      
+      --radius: 12px;
+      --radius-sm: 10px;
+      --radius-xs: 6px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --header-h: 62px;
     }
-    
-    .panel-container {
-      padding: 0;
-      min-height: 100vh;
-      color: var(--text-main);
-      font-family: var(--font-family);
+
+    [data-theme="light"] {
+      --bg: #f5f5f5;
+      --bg-panel: #ffffff;
+      --bg-card: #ffffff;
+      --surface: #f0f0f0;
+      --surface-2: #e5e5e5;
+      --text: #121212;
+      --text-sec: #555555;
+      --text-muted: #888888;
+      
+      --border: rgba(var(--primary-rgb), 0.15);
+      --border-strong: rgba(var(--primary-rgb), 0.3);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
     }
-    
-    /* Panel Sidebar */
-    .panel-sidebar {
-      width: var(--panel-sidebar-w);
-      background: rgba(var(--bg-panel-rgb, 30,30,30), 0.8);
-      backdrop-filter: blur(10px);
-      border-right: 1px solid var(--border-color);
+
+    /* ════════════════════════ RESET & BASE ═══════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 99px;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+      font-family: inherit;
+    }
+
+    input,
+    textarea,
+    select {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    /* ══════════════════════════ LAYOUT ══════════════════════════════ */
+    .shell {
       display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      z-index: 100;
-      transition: transform 0.3s;
-    }
-    
-    .panel-sidebar-header {
-      padding: 24px;
-      border-bottom: 1px solid var(--border-color);
-      text-align: center;
-    }
-    
-    .user-info {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .user-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: var(--primary-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #fff;
-      box-shadow: 0 0 15px var(--neon-glow);
-    }
-    
-    .user-name {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-    
-    .panel-nav {
-      flex: 1;
-      padding: 20px 0;
-    }
-    
-    .panel-nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 24px;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      font-size: 0.95rem;
-      border-left: 3px solid transparent;
-    }
-    
-    .panel-nav-item:hover {
-      background: rgba(255,255,255,0.05);
-      color: var(--text-main);
-    }
-    
-    .panel-nav-item.active {
-      background: rgba(var(--primary-color-rgb), 0.1);
-      color: var(--primary-color);
-      border-left-color: var(--primary-color);
-    }
-    
-    .panel-nav-item i {
-      width: 20px;
-      text-align: center;
-    }
-    
-    /* Main Content Area */
-    .panel-main {
-      flex: 1;
-      margin-left: var(--panel-sidebar-w);
-      padding: 30px;
-      padding-bottom: 100px;
-    }
-    
-    .panel-section {
-      display: none;
-      animation: fadeIn 0.4s ease;
-    }
-    
-    .panel-section.active {
-      display: block;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .section-header {
-      margin-bottom: 30px;
-    }
-    
-    .section-header h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      margin-bottom: 8px;
-    }
-    
-    /* Stats Cards */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    
-    .stat-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      transition: transform 0.3s;
-    }
-    
-    .stat-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--primary-color);
-    }
-    
-    .stat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background: rgba(var(--primary-color-rgb), 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: var(--primary-color);
-    }
-    
-    .stat-info .value {
-      font-size: 1.6rem;
-      font-weight: 800;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    
-    .stat-info .label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    
-    /* Addon List Management */
-    .mgmt-header {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    
-    .mgmt-search {
-      flex: 1;
-      min-width: 250px;
+      height: 100vh;
+      overflow: hidden;
       position: relative;
     }
-    
-    .mgmt-search input {
-      width: 100%;
-      padding: 12px 16px 12px 44px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
+
+    /* ═══════════════════════════ HEADER ═════════════════════════════ */
+    .panel-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-h);
       background: var(--bg-panel);
-      color: var(--text-main);
-      outline: none;
-    }
-    
-    .mgmt-search i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
-    
-    .addon-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg-panel);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-    }
-    
-    .addon-table th, .addon-table td {
-      padding: 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .addon-table th {
-      background: rgba(255,255,255,0.03);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-    }
-    
-    .addon-row-info {
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
+      padding: 0 18px;
       gap: 12px;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
-    
-    .addon-row-info img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-    
-    .action-btn {
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: transparent;
-      color: var(--text-muted);
+
+    .hdr-menu-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
       cursor: pointer;
-      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: var(--transition);
+      flex-shrink: 0;
     }
-    
-    .action-btn:hover {
-      background: rgba(255,255,255,0.05);
-      color: var(--text-main);
+
+    .hdr-menu-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--primary);
     }
-    
-    .action-btn.delete:hover {
+
+    .hdr-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--primary);
+      letter-spacing: 0.3px;
+    }
+
+    .hdr-brand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .hdr-title-small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    .hdr-user-pill {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-sec);
+    }
+
+    .hdr-user-pill i {
+      color: var(--primary);
+    }
+
+    .hdr-logout-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .hdr-logout-btn:hover {
+      background: rgba(239, 68, 68, 0.12);
       border-color: #ef4444;
       color: #ef4444;
     }
-    
-    /* Forms */
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 12px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
+
+    /* ═══════════════════════════ SIDEBAR ════════════════════════════ */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100%;
       background: var(--bg-panel);
-      color: var(--text-main);
-      outline: none;
-      font-family: inherit;
-    }
-    
-    .form-control:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 10px var(--neon-glow);
-    }
-    
-    /* Ranking Table */
-    .ranking-list {
+      border-right: 1px solid var(--border);
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 2000;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      box-shadow: var(--shadow-lg);
     }
-    
-    .rank-item {
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sb-brand {
       display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 16px 24px;
-      background: var(--bg-panel);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-    }
-    
-    .rank-number {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      width: 40px;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    
-    .rank-1 .rank-number { color: #ffd700; font-size: 2rem; }
-    .rank-2 .rank-number { color: #c0c0c0; }
-    .rank-3 .rank-number { color: #cd7f32; }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      .panel-sidebar {
-        transform: translateX(-100%);
-        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-      }
-      .panel-main {
-        margin-left: 0;
-        padding: 60px 15px 100px; /* Más padding arriba para el botón */
-      }
-      .panel-layout.sidebar-open .panel-sidebar {
-        transform: translateX(0);
-      }
+      justify-content: space-between;
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
-    @media (min-width: 769px) {
-      .panel-layout:not(.sidebar-open) .panel-sidebar {
-        transform: translateX(-100%);
-      }
-      .panel-layout:not(.sidebar-open) .panel-main {
-        margin-left: 0;
-      }
+    .sb-brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .panel-layout {
-      transition: all 0.3s;
-    }
-
-    /* Auth Screen Overlay */
-    #auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-app);
-      z-index: 2000;
+    .sb-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.8rem;
+      box-shadow: 0 0 10px var(--primary-glow);
     }
-    
-    .auth-card {
-      width: 100%;
-      max-width: 400px;
-      padding: 40px;
-      background: var(--bg-panel);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+
+    .sb-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+
+    .sb-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .sb-close:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .sb-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .sb-section-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      padding: 10px 8px 5px;
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-sec);
+      font-size: 0.86rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .sb-item:hover,
+    .sb-item.active {
+      background: var(--surface);
+      color: var(--primary);
+    }
+
+    .sb-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      border-radius: 99px;
+      background: var(--primary);
+    }
+
+    .sb-item i {
+      width: 18px;
       text-align: center;
+      font-size: 0.88rem;
     }
-    /* Toggle Sidebar Button */
-    .panel-toggle-btn {
+
+    .sb-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 8px;
+    }
+
+    .sb-footer {
+      padding: 14px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sb-user-card {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.06));
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sb-user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      min-width: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .sb-user-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .sb-user-role {
+      font-size: 0.67rem;
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ═══════════════════════ OVERLAY ════════════════════════════════ */
+    .overlay {
       position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 1000;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ═══════════════════════ MAIN CONTENT ═══════════════════════════ */
+    .main-area {
+      margin-top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px 20px 40px;
+      scroll-behavior: smooth;
+    }
+
+    .content-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════ AUTH SCREENS ═══════════════════════════ */
+    .auth-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - var(--header-h) - 60px);
+    }
+
+    .auth-card {
       background: var(--bg-panel);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .auth-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .auth-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+
+    .auth-sub {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin: 0 0 26px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 22px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-sec);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .auth-tab.active {
+      background: var(--bg-panel);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ═══════════════════════ FORM FIELDS ════════════════════════════ */
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-sec);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+      display: block;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.88rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      border-color: var(--primary);
+      background: var(--bg-panel);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .field-select {
+      cursor: pointer;
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════ BUTTONS ════════════════════════════════ */
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 11px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-sec);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-danger {
+      padding: 8px 14px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.08);
+      color: #ef4444;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-danger:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-edit {
+      padding: 8px 14px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-edit:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* ═══════════════════ SECTION HEADER ═════════════════════════ */
+    .sec-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .sec-hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #fff;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+
+    .sec-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .sec-count {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════ ADDON CARDS ════════════════════════════ */
+    .addons-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .addons-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .addons-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .addon-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .addon-card:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--border-strong);
+    }
+
+    .addon-card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: var(--surface);
+      display: block;
+    }
+
+    .addon-card-body {
+      padding: 14px;
+    }
+
+    .addon-card-cat {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .addon-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .addon-card-desc {
+      font-size: 0.77rem;
+      color: var(--text-sec);
+      line-height: 1.5;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .addon-card-foot {
+      display: flex;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══════════════════ UPLOAD/EDIT FORM MODAL ═════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 7000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .modal-hdr-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sec);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-foot {
+      padding: 14px 20px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Image preview */
+    .img-preview-wrap {
+      width: 100%;
+      aspect-ratio: 16/7;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 2px dashed var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      margin-bottom: 16px;
     }
 
-    .panel-toggle-btn:hover {
+    .img-preview-wrap:hover {
+      border-color: var(--primary);
+      background: var(--surface-2);
+    }
+
+    .img-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .img-preview-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    .img-preview-label i {
+      font-size: 1.8rem;
+      color: var(--primary);
+      opacity: 0.6;
+    }
+
+    /* ═══════════════════ STATS BAR ══════════════════════════════ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
       background: var(--bg-panel);
-      color: var(--primary-color);
-      border-color: var(--primary-color);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      transition: var(--transition);
     }
 
-    @media (min-width: 769px) {
-      .panel-toggle-btn {
-        display: none; /* Opcional: ocultar en desktop si prefieres que sea fijo */
+    .stat-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ═══════════════════ BANNED SCREEN ═════════════════════════ */
+    #banned-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    #banned-screen.show {
+      display: flex;
+    }
+
+    .banned-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 22px;
+    }
+
+    .banned-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ef4444;
+      margin: 0 0 10px;
+    }
+
+    .banned-sub {
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+      margin: 0 0 28px;
+      max-width: 420px;
+    }
+
+    .banned-btn {
+      padding: 13px 32px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .banned-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* ═══════════════════ TOAST ══════════════════════════════════ */
+    #panel-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--bg-panel);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s;
+      z-index: 9980;
+      white-space: nowrap;
+      box-shadow: var(--shadow);
+    }
+
+    #panel-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #panel-toast.error {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    #panel-toast.success {
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+
+    /* ═══════════════════ LOADER ═════════════════════════════════ */
+    .loader-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 14px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
+    }
+
+    .spinner-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════ USUARIOS TABLE ════════════════════════ */
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .users-table th,
+    .users-table td {
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .users-table th {
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.68rem;
+    }
+
+    .users-table tr:hover td {
+      background: var(--surface);
+    }
+
+    .badge-active {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .badge-inactive {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-ban {
+      padding: 6px 12px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.08);
+      color: #ef4444;
+      font-size: 0.73rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-ban:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .btn-unban {
+      padding: 6px 12px;
+      border-radius: var(--radius-xs);
+      border: 1.5px solid rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.08);
+      color: #22c55e;
+      font-size: 0.73rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-unban:hover {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    /* ═══════════════════ EMPTY STATE ════════════════════════════ */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 14px;
+      display: block;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════ NOTICE BOX ════════════════════════════ */
+    .notice-box {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(6, 182, 212, 0.05));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .notice-box strong {
+      color: var(--primary);
+    }
+
+    /* btn-row */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* error box */
+    .err-msg {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .err-msg.show {
+      display: block;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- PANTALLA DE ACCESO -->
-  <div id="auth-overlay">
-    <div class="auth-card">
-      <h1 class="neon-text" style="font-family:'Space Grotesk', sans-serif; margin-bottom:10px;">BlockVault</h1>
-      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:30px;">Panel de Control para Creadores</p>
-      
-      <div class="form-group">
-        <input type="text" id="auth-user" class="form-control" placeholder="Usuario">
+  <!-- Banned screen -->
+  <div id="banned-screen">
+    <div class="banned-icon">🚫</div>
+    <h2 class="banned-title">Tu cuenta ha sido suspendida</h2>
+    <p class="banned-sub">Tu cuenta ha sido suspendida por un mal uso en la plataforma BlockVault. Si crees que es un
+      error, contacta con el administrador.</p>
+    <button class="banned-btn" onclick="volverAlInicio()"><i class="fas fa-home"></i> Volver al Inicio</button>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Header -->
+  <header class="panel-header" id="panel-header" style="display:none">
+    <button class="hdr-menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+    <div class="hdr-brand">
+      <div class="hdr-brand-icon">🔷</div>
+      <span>BlockVault</span>
+      <span class="hdr-title-small">/ Creator Panel</span>
+    </div>
+    <div class="hdr-user-pill">
+      <i class="fas fa-user-circle"></i>
+      <span id="hdr-user-name">—</span>
+    </div>
+    <button class="hdr-logout-btn" onclick="logout()" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i></button>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-left">
+        <div class="sb-logo">🔷</div>
+        <span class="sb-title">BlockVault</span>
       </div>
-      <div class="form-group">
-        <input type="password" id="auth-pass" class="form-control" placeholder="Contraseña">
+      <button class="sb-close" onclick="closeSidebar()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sb-body">
+      <div class="sb-section-label">Panel</div>
+      <div class="sb-item active" id="sb-dashboard" onclick="showView('dashboard')"><i class="fas fa-chart-bar"></i>
+        Dashboard</div>
+      <div class="sb-item" id="sb-mis-addons" onclick="showView('mis-addons')"><i class="fas fa-layer-group"></i> Mis
+        Addons</div>
+      <div class="sb-item" id="sb-subir" onclick="showView('subir')"><i class="fas fa-cloud-upload-alt"></i> Publicar
+        Addon</div>
+      <div class="sb-item" id="sb-ranking" onclick="showView('ranking')">
+        <i class="fas fa-trophy"></i>
+        <span>Ranking de Creadores</span>
       </div>
-      
-      <button class="cat-btn active" style="width:100%; margin-bottom:12px; justify-content:center;" onclick="login()">
-        <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
-      </button>
-      <button class="cat-btn" style="width:100%; justify-content:center; background:transparent; border:1px solid var(--primary-color); color:var(--primary-color);" onclick="register()">
-        <i class="fa-solid fa-user-plus"></i> Crear Cuenta
-      </button>
-      
-      <div id="auth-msg" style="margin-top:20px; font-size:0.85rem; color:#ef4444;"></div>
+      <div class="sb-item" id="sb-ajustes" onclick="showView('ajustes')">
+        <i class="fas fa-cog"></i>
+        <span>Ajustes de Perfil</span>
+      </div>
+
+      <div id="admin-group" style="display:none">
+        <div class="sb-divider"></div>
+        <div class="sb-section-label">Zona Administrativa</div>
+        <div class="sb-item" id="sb-adm-addons" onclick="showView('adm-addons')">
+          <i class="fas fa-puzzle-piece"></i>
+          <span>Todos los Addons</span>
+        </div>
+        <div class="sb-item" id="sb-adm-usuarios" onclick="showView('adm-usuarios')">
+          <i class="fas fa-user-shield"></i>
+          <span>Gestionar Usuarios</span>
+        </div>
+        <div class="sb-item" id="sb-adm-sistema" onclick="showView('adm-sistema')">
+          <i class="fas fa-server"></i>
+          <span>Sistema y Mantenimiento</span>
+        </div>
+      </div>
+      <div class="sb-divider"></div>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-user-card">
+        <div class="sb-user-avatar" id="sb-avatar">?</div>
+        <div>
+          <div class="sb-user-name" id="sb-user-name">—</div>
+          <div class="sb-user-role" id="sb-user-role">Creador</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-area" id="main-area" style="display:none">
+    <div class="content-wrap" id="view-container">
+      <!-- injected by JS -->
+    </div>
+  </main>
+
+  <!-- Auth wrapper -->
+  <div id="auth-wrapper">
+    <div class="main-area" style="display:block">
+      <div class="auth-center">
+        <div class="auth-card">
+          <div class="auth-icon">🔐</div>
+          <h2 class="auth-title">Panel de Creadores</h2>
+          <p class="auth-sub">Ingresa a tu cuenta para gestionar y publicar addons</p>
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar Sesión</button>
+            <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+          </div>
+
+          <!-- Login Form -->
+          <div id="form-login">
+            <div class="field-group">
+              <label class="field-label">Usuario</label>
+              <input class="field-input" id="login-user" type="text" placeholder="Tu nombre de usuario"
+                autocomplete="username">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contraseña</label>
+              <input class="field-input" id="login-pass" type="password" placeholder="Tu contraseña"
+                autocomplete="current-password">
+            </div>
+            <p class="err-msg" id="login-err">Usuario o contraseña incorrectos.</p>
+            <button class="btn-primary" id="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i>
+              Entrar</button>
+          </div>
+
+          <!-- Register Form -->
+          <div id="form-register" style="display:none">
+            <div class="field-group">
+              <label class="field-label">Nombre de Usuario</label>
+              <input class="field-input" id="reg-user" type="text" placeholder="Elige un nombre único"
+                autocomplete="username">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contraseña</label>
+              <input class="field-input" id="reg-pass" type="password" placeholder="Mínimo 6 caracteres"
+                autocomplete="new-password">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Confirmar Contraseña</label>
+              <input class="field-input" id="reg-pass2" type="password" placeholder="Repite tu contraseña"
+                autocomplete="new-password">
+            </div>
+            <p class="err-msg" id="reg-err">Error en el registro.</p>
+            <button class="btn-primary" id="reg-btn" onclick="doRegister()"><i class="fas fa-user-plus"></i> Crear
+              Cuenta</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ESTRUCTURA DEL PANEL -->
-  <div class="panel-container">
-    
-    <button class="panel-toggle-btn" id="p-toggle-btn" onclick="toggleSidebar()">
-      <i class="fa-solid fa-bars"></i>
-    </button>
-    
-    <div class="panel-layout sidebar-open" id="panel-layout" style="display:none;">
-    
-    <!-- Sidebar Izquierdo -->
-    <aside class="panel-sidebar">
-      <div class="panel-sidebar-header">
-        <div class="app-title neon-text">BlockVault</div>
+  <!-- Upload / Edit Modal -->
+  <div class="modal-overlay" id="upload-modal">
+    <div class="modal-box">
+      <div class="modal-hdr">
+        <div class="modal-hdr-title" id="modal-title">📦 Publicar Nuevo Addon</div>
+        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
       </div>
-      
-      <div class="user-info">
-        <div class="user-avatar" id="avatar-initial">U</div>
-        <div class="user-name" id="display-user">Usuario</div>
-        <span id="user-role" style="font-size:0.7rem; background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:10px;">Creador</span>
-      </div>
-      
-      <nav class="panel-nav">
-        <div class="panel-nav-item active" onclick="switchSection('dashboard', this)">
-          <i class="fa-solid fa-chart-line"></i> Dashboard
-        </div>
-        <div class="panel-nav-item" onclick="switchSection('mis-addons', this)">
-          <i class="fa-solid fa-puzzle-piece"></i> Mis Addons
-        </div>
-        <div class="panel-nav-item" onclick="switchSection('subir', this)">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Subir Addon
-        </div>
-        <div class="panel-nav-item" onclick="switchSection('ranking', this)">
-          <i class="fa-solid fa-trophy"></i> Ranking
-        </div>
-        
-        <div id="admin-nav" style="display:none; margin-top:20px; border-top:1px solid var(--border-color); padding-top:20px;">
-          <div class="panel-nav-item" onclick="switchSection('admin', this)" style="color:#ef4444;">
-            <i class="fa-solid fa-shield-halved"></i> Administración
+      <div class="modal-body">
+        <input type="hidden" id="modal-mode" value="create">
+        <input type="hidden" id="modal-original-name" value="">
+
+        <!-- Image -->
+        <!-- FIX APLICADO: se usa un label con ID forçado y opacidad oculta en vez de display: none para Android -->
+        <label for="img-input" class="img-preview-wrap" id="img-wrap">
+          <div class="img-preview-label" id="img-placeholder">
+            <i class="fas fa-image"></i>
+            <span>Clic para subir imagen de portada</span>
+            <small>JPG, PNG — máx 2MB</small>
           </div>
+          <img id="img-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
+        </label>
+        <input type="file" id="img-input" accept="image/*"
+          style="opacity:0; position:absolute; z-index:-1; width:0.1px; height:0.1px;" onchange="previewImg(this)">
+
+        <!-- URL de imagen alternativa -->
+        <div class="field-group">
+          <label class="field-label">URL de Imagen (alternativa a subir archivo)</label>
+          <input class="field-input" id="form-img-url" type="url" placeholder="https://...imagen.jpg">
         </div>
-      </nav>
-      
-      <div class="panel-sidebar-footer" style="padding:20px;">
-        <button class="btn-logout" style="width:100%;" onclick="logout()">
-          <i class="fa-solid fa-power-off"></i> Cerrar Sesión
+
+        <div class="field-group">
+          <label class="field-label">Nombre del Addon *</label>
+          <input class="field-input" id="form-nombre" type="text" placeholder="Ej: Ultra Combat Pack v2">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Categoría *</label>
+          <select class="field-select" id="form-cat">
+            <option value="">— Seleccionar —</option>
+            <option value="Addons">Addons</option>
+            <option value="Mapas">Mapas</option>
+            <option value="Texturas">Texturas</option>
+            <option value="Skins">Skins</option>
+            <option value="DLC">DLC</option>
+            <option value="Popurris">Popurris</option>
+            <option value="Versiones">Versiones (APK)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Versión</label>
+          <input class="field-input" id="form-version" type="text" placeholder="Ej: 1.21.0 o v2.5">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Link de Descarga * <small
+              style="color:var(--text-muted);font-weight:400">(cualquier URL válida)</small></label>
+          <input class="field-input" id="form-link" type="url" placeholder="https://...">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Descripción</label>
+          <textarea class="field-textarea" id="form-desc"
+            placeholder="Describe tu addon: características, compatibilidad, etc."></textarea>
+        </div>
+        <p class="err-msg" id="form-err">Completa todos los campos requeridos.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn-secondary" style="flex:1" onclick="closeModal()">Cancelar</button>
+        <button class="btn-primary" style="flex:2" id="modal-submit-btn" onclick="submitAddon()">
+          <i class="fas fa-paper-plane"></i> Publicar
         </button>
       </div>
-    </aside>
-
-    <!-- Contenido Principal -->
-    <main class="panel-main">
-      
-      <!-- SECCIÓN: DASHBOARD -->
-      <section id="sec-dashboard" class="panel-section active">
-        <div class="section-header">
-          <h2>Hola de nuevo, <span class="neon-text" id="welcome-name">Creador</span></h2>
-          <p style="color:var(--text-muted);">Aquí tienes el resumen actual de la plataforma.</p>
-        </div>
-        
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div>
-            <div class="stat-info">
-              <div class="value" id="dash-total-addons">0</div>
-              <div class="label">Addons Publicados</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-            <div class="stat-info">
-              <div class="value" id="dash-total-users">0</div>
-              <div class="label">Creadores</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon"><i class="fa-solid fa-chart-simple"></i></div>
-            <div class="stat-info">
-              <div class="value" id="dash-total-views">0</div>
-              <div class="label">Visitas Totales</div>
-            </div>
-          </div>
-        </div>
-        
-        <div style="background:var(--bg-panel); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:30px; text-align:center;">
-          <h3 style="margin-bottom:10px;">¿Listo para compartir algo nuevo?</h3>
-          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">Tu creatividad ayuda a expandir el universo de Minecraft para todos.</p>
-          <button class="cat-btn active" onclick="switchSection('subir', document.querySelectorAll('.panel-nav-item')[2])">Subir mi primer Addon</button>
-        </div>
-      </section>
-
-      <!-- SECCIÓN: MIS ADDONS -->
-      <section id="sec-mis-addons" class="panel-section">
-        <div class="section-header">
-          <h2>Gestor de Contenido</h2>
-          <p style="color:var(--text-muted);">Administra, edita o elimina tus publicaciones.</p>
-        </div>
-        
-        <div class="mgmt-header">
-          <div class="mgmt-search">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="mgmt-search-input" placeholder="Buscar entre mis addons..." oninput="filterMyAddons()">
-          </div>
-        </div>
-        
-        <div style="overflow-x:auto;">
-          <table class="addon-table">
-            <thead>
-              <tr>
-                <th>Addon</th>
-                <th>Categoría</th>
-                <th>Estadísticas</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="my-addons-tbody">
-              <!-- Cargado por JS -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- SECCIÓN: SUBIR -->
-      <section id="sec-subir" class="panel-section">
-        <div class="section-header">
-          <h2>Subir Nuevo Addon</h2>
-          <p style="color:var(--text-muted);">Completa la información para publicar tu contenido.</p>
-        </div>
-        
-        <div style="background:var(--bg-panel); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:30px; max-width:700px;">
-          <form id="upload-form" onsubmit="event.preventDefault(); submitAddon();">
-            <div class="form-group">
-              <label>Nombre del Addon</label>
-              <input type="text" id="up-nombre" class="form-control" required placeholder="Ej: Super Swords Pack">
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-              <div class="form-group">
-                <label>Categoría</label>
-                <select id="up-cat" class="form-control">
-                  <option>Addons</option>
-                  <option>Mapas</option>
-                  <option>Texturas</option>
-                  <option>Skins</option>
-                  <option>DLC</option>
-                  <option>Popurris</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Versión</label>
-                <input type="text" id="up-ver" class="form-control" placeholder="Ej: v1.0.2">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Enlace de Descarga</label>
-              <input type="url" id="up-link" class="form-control" required placeholder="https://mediafire.com/...">
-            </div>
-            <div class="form-group">
-              <label>Descripción</label>
-              <textarea id="up-desc" class="form-control" style="height:120px;" placeholder="Explica de qué trata tu addon..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>Imagen de Portada (PNG/JPG)</label>
-              <input type="file" id="up-img" class="form-control" accept="image/*" onchange="previewImage(this)">
-              <img id="up-preview" style="display:none; width:100px; height:60px; object-fit:cover; margin-top:10px; border-radius:8px; border:1px solid var(--border-color);">
-            </div>
-            
-            <button type="submit" id="btn-submit-addon" class="cat-btn active" style="width:100%; justify-content:center; margin-top:20px;">
-              <i class="fa-solid fa-paper-plane"></i> Publicar Ahora
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <!-- SECCIÓN: RANKING -->
-      <section id="sec-ranking" class="panel-section">
-        <div class="section-header">
-          <h2>Ranking de Creadores</h2>
-          <p style="color:var(--text-muted);">Los arquitectos más prolíficos de la comunidad.</p>
-        </div>
-        
-        <div class="ranking-list" id="ranking-container">
-          <!-- Cargado por JS -->
-          <div style="text-align:center; padding:40px; color:var(--text-muted);">Cargando ranking mundial...</div>
-        </div>
-      </section>
-
-      <!-- SECCIÓN: ADMIN -->
-      <section id="sec-admin" class="panel-section">
-        <div class="section-header">
-          <h2>Panel de Administración</h2>
-          <p style="color:var(--text-muted);">Control global del ecosistema BlockVault.</p>
-        </div>
-        
-        <div class="creators-tabs" style="justify-content:flex-start; border-bottom:1px solid var(--border-color); padding-bottom:0;">
-          <button class="tab-btn active" id="tab-adm-addons" onclick="switchAdminTab('addons')">Gestión de Addons</button>
-          <button class="tab-btn" id="tab-adm-users" onclick="switchAdminTab('users')">Gestión de Usuarios</button>
-          <button class="tab-btn" id="tab-adm-system" onclick="switchAdminTab('system')">Sistema</button>
-        </div>
-
-        <!-- Admin: Addons -->
-        <div id="adm-sec-addons" class="admin-sub-sec active" style="margin-top:25px;">
-          <div class="mgmt-header">
-            <div class="mgmt-search">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <input type="text" id="adm-search-addons" placeholder="Buscar en todas las publicaciones..." oninput="filterAdminAddons()">
-            </div>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="addon-table">
-              <thead>
-                <tr>
-                  <th>Addon</th>
-                  <th>Autor</th>
-                  <th>Stats</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="adm-addons-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Admin: Usuarios -->
-        <div id="adm-sec-users" class="admin-sub-sec" style="display:none; margin-top:25px;">
-          <div class="mgmt-header">
-            <div class="mgmt-search">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <input type="text" id="adm-search-users" placeholder="Buscar creadores por nombre..." oninput="filterAdminUsers()">
-            </div>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="addon-table">
-              <thead>
-                <tr>
-                  <th>Usuario</th>
-                  <th>Registro</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="adm-users-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Admin: Sistema -->
-        <div id="adm-sec-system" class="admin-sub-sec" style="display:none; margin-top:25px;">
-          <div style="background:rgba(239, 68, 68, 0.05); border:1px solid #ef4444; border-radius:var(--radius-lg); padding:30px;">
-            <h3 style="color:#ef4444; margin-bottom:20px;"><i class="fa-solid fa-triangle-exclamation"></i> Acciones Críticas</h3>
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel); padding:20px; border-radius:var(--radius);">
-              <div>
-                <div style="font-weight:bold;">Modo Mantenimiento</div>
-                <div style="font-size:0.8rem; color:var(--text-muted);">Solo Admins podrán entrar a la app.</div>
-              </div>
-              <button id="btn-maint" class="cat-btn" style="background:#ef4444; color:#fff;" onclick="toggleMaintenance()">Activar</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </main>
+    </div>
   </div>
 
-  <script src="../js/security.js"></script>
-  <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
-    let currentUser = null;
-    let currentRole = null;
-    let allAddons = [];
-    let allUsers = [];
-    let isMaintenance = false;
+  <!-- Toast -->
+  <div id="panel-toast">Mensaje</div>
 
-    // --- SESIÓN ---
-    window.onload = () => {
-      const savedUser = localStorage.getItem('bv_user');
-      const savedPass = localStorage.getItem('bv_pass');
-      if(savedUser && savedPass) {
-        currentUser = savedUser;
-        currentRole = localStorage.getItem('bv_role') || 'User';
-        initPanel();
+  <script>
+    // ═══════════════════════════════════════════════════
+    //   CONFIG
+    // ═══════════════════════════════════════════════════
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+    const ADMIN_USER = 'BlockVault';
+
+    // Palabras prohibidas
+    const BANNED_WORDS = [
+      'porn', 'porno', 'pornografia', 'pornography', 'xxx', 'sexy', 'nude', 'desnudo', 'sexo', 'sex',
+      'hack', 'hacker', 'crack', 'cracked', 'minecraft crack', 'apk crack', 'exploit', 'malware',
+      'virus', 'trojan', 'keylogger', 'phishing', 'scam', 'estafa', 'gore', 'snuff', 'violencia extrema',
+      'kill yourself', 'suicidio', 'pedofilia', 'pedofilo', 'loli', 'shota', 'child porn',
+      'droga', 'cocaine', 'fentanilo', 'marihuana free', 'weed', 'meth', 'narco', 'weapon illegal', 'bomb', 'bomba casera', 'terrorismo', 'piracy', 'torrent', 'warez', 'iso minecraft', 'full version free',
+      'negro de mierda', 'puta', 'prostituta', 'puto', 'maricon', 'racist', "jenny", "jennis",
+    ];
+
+    // ═══════════════════════════════════════════════════
+    //   ESTADO GLOBAL
+    // ═══════════════════════════════════════════════════
+    let currentUser = null;
+    let allAddons = [];
+    let allUsersMap = {}; // Mapa de usuarios para verificar estados
+    let editingItem = null;
+    let imgBase64 = null;
+    let currentView = 'dashboard';
+    let currentLang = localStorage.getItem('bv_language') || 'es';
+
+    const translations = {
+      es: {
+        "auth-title": "Panel de Creadores",
+        "auth-sub": "Ingresa a tu cuenta para gestionar y publicar addons",
+        "tab-login": "Iniciar Sesión",
+        "tab-register": "Registrarse",
+        "login-user-label": "Usuario",
+        "login-pass-label": "Contraseña",
+        "login-btn": "Entrar",
+        "reg-user-label": "Nombre de Usuario",
+        "reg-pass-label": "Contraseña",
+        "reg-pass2-label": "Confirmar Contraseña",
+        "reg-btn": "Crear Cuenta",
+        "sb-dashboard": "Dashboard",
+        "sb-mis-addons": "Mis Addons",
+        "sb-subir": "Publicar Addon",
+        "sb-ranking": "Ranking de Creadores",
+        "sb-ajustes": "Ajustes de Perfil",
+        "hdr-logout": "Cerrar sesión",
+        "modal-title-create": "📦 Publicar Nuevo Addon",
+        "modal-title-edit": "✏️ Editar Addon",
+        "form-img-label": "Clic para subir imagen de portada",
+        "form-img-url-label": "URL de Imagen (alternativa a subir archivo)",
+        "form-nombre-label": "Nombre del Addon *",
+        "form-cat-label": "Categoría *",
+        "form-version-label": "Versión",
+        "form-link-label": "Link de Descarga *",
+        "form-desc-label": "Descripción",
+        "btn-cancel": "Cancelar",
+        "btn-publish": "Publicar",
+        "btn-save": "Guardar Cambios",
+        "banned-title": "Tu cuenta ha sido suspendida",
+        "banned-sub": "Tu cuenta ha sido suspendida por un mal uso en la plataforma BlockVault. Si crees que es un error, contacta con el administrador.",
+        "banned-btn": "Volver al Inicio"
+      },
+      en: {
+        "auth-title": "Creators Panel",
+        "auth-sub": "Log in to your account to manage and publish addons",
+        "tab-login": "Log In",
+        "tab-register": "Register",
+        "login-user-label": "Username",
+        "login-pass-label": "Password",
+        "login-btn": "Login",
+        "reg-user-label": "Username",
+        "reg-pass-label": "Password",
+        "reg-pass2-label": "Confirm Password",
+        "reg-btn": "Create Account",
+        "sb-dashboard": "Dashboard",
+        "sb-mis-addons": "My Addons",
+        "sb-subir": "Publish Addon",
+        "sb-ranking": "Creators Ranking",
+        "sb-ajustes": "Profile Settings",
+        "hdr-logout": "Logout",
+        "modal-title-create": "📦 Publish New Addon",
+        "modal-title-edit": "✏️ Edit Addon",
+        "form-img-label": "Click to upload cover image",
+        "form-img-url-label": "Image URL (alternative to uploading file)",
+        "form-nombre-label": "Addon Name *",
+        "form-cat-label": "Category *",
+        "form-version-label": "Version",
+        "form-link-label": "Download Link *",
+        "form-desc-label": "Description",
+        "btn-cancel": "Cancel",
+        "btn-publish": "Publish",
+        "btn-save": "Save Changes",
+        "banned-title": "Your account has been suspended",
+        "banned-sub": "Your account has been suspended for misuse on the BlockVault platform. If you think this is an error, contact the administrator.",
+        "banned-btn": "Back to Home"
+      },
+      pt: {
+        "auth-title": "Painel de Criadores",
+        "auth-sub": "Entre na sua conta para gerenciar e publicar addons",
+        "tab-login": "Entrar",
+        "tab-register": "Registrar",
+        "login-user-label": "Usuário",
+        "login-pass-label": "Senha",
+        "login-btn": "Entrar",
+        "reg-user-label": "Nome de Usuário",
+        "reg-pass-label": "Senha",
+        "reg-pass2-label": "Confirmar Senha",
+        "reg-btn": "Criar Conta",
+        "sb-dashboard": "Painel",
+        "sb-mis-addons": "Meus Addons",
+        "sb-subir": "Publicar Addon",
+        "sb-ranking": "Ranking de Criadores",
+        "sb-ajustes": "Ajustes de Perfil",
+        "hdr-logout": "Sair",
+        "modal-title-create": "📦 Publicar Novo Addon",
+        "modal-title-edit": "✏️ Editar Addon",
+        "form-img-label": "Clique para enviar imagem de capa",
+        "form-img-url-label": "URL da Imagem (alternativa ao envio de arquivo)",
+        "form-nombre-label": "Nome do Addon *",
+        "form-cat-label": "Categoria *",
+        "form-version-label": "Versão",
+        "form-link-label": "Link de Download *",
+        "form-desc-label": "Descrição",
+        "btn-cancel": "Cancelar",
+        "btn-publish": "Publicar",
+        "btn-save": "Salvar Alterações",
+        "banned-title": "Sua conta foi suspensa",
+        "banned-sub": "Sua conta foi suspensa por uso indevido na plataforma BlockVault. Se você acredita que isso é um erro, entre em contato com o administrador.",
+        "banned-btn": "Voltar ao Início"
       }
     };
 
-    async function login() {
-      const u = document.getElementById('auth-user').value.trim();
-      const p = document.getElementById('auth-pass').value.trim();
-      const msg = document.getElementById('auth-msg');
-      if(!u || !p) { msg.textContent = "Campos obligatorios."; return; }
-      msg.textContent = "Validando...";
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'login', user: u, pass: p })
-        });
-        const data = await res.json();
-        if(data.status === 'LOGIN_OK') {
-          currentUser = u;
-          currentRole = data.rol;
-          localStorage.setItem('bv_user', u);
-          localStorage.setItem('bv_pass', p);
-          localStorage.setItem('bv_role', data.rol);
-          initPanel();
-        } else { msg.textContent = "Usuario o clave incorrecta."; }
-      } catch (e) { msg.textContent = "Error de conexión."; }
-    }
+    function translatePage() {
+      const lang = currentLang || 'es';
+      const dict = translations[lang] || translations['es'];
 
-    async function register() {
-      const u = document.getElementById('auth-user').value.trim();
-      const p = document.getElementById('auth-pass').value.trim();
-      const msg = document.getElementById('auth-msg');
-      if(!u || !p) { msg.textContent = "Campos obligatorios."; return; }
-      msg.textContent = "Registrando...";
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'register', user: u, pass: p })
-        });
-        const text = await res.text();
-        if(text.includes('REGISTER_OK')) { login(); }
-        else if(text.includes('USER_EXISTS')) { msg.textContent = "El nombre de usuario ya está en uso."; }
-      } catch (e) { msg.textContent = "Error de servidor."; }
-    }
-
-    function logout() {
-      localStorage.clear();
-      window.location.reload();
-    }
-
-    // --- PANEL ---
-    async function initPanel() {
-      // Verificar si está baneado antes de mostrar nada
-      try {
-        const resCheck = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${currentUser}`);
-        const dataStatus = await resCheck.json();
-        if (dataStatus.estado === 'Baneado') {
-          document.body.innerHTML = `
-            <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#ff4444; text-align:center; padding:30px;">
-              <i class="fa-solid fa-user-slash" style="font-size:5rem; margin-bottom:20px;"></i>
-              <h1 style="font-family:'Space Grotesk', sans-serif; font-size:2.5rem; margin-bottom:15px;">CUENTA SUSPENDIDA</h1>
-              <p style="font-size:1.1rem; max-width:500px; color:#aaa;">Has sido baneado por incumplir las normas de BlockVault. No puedes acceder al panel de creadores.</p>
-              <button onclick="localStorage.clear(); window.location.reload();" class="cat-btn active" style="margin-top:30px;">Volver</button>
-            </div>
-          `;
-          return;
-        }
-      } catch(e) {}
-
-      document.getElementById('auth-overlay').style.display = 'none';
-      document.getElementById('panel-layout').style.display = 'flex';
-      document.getElementById('display-user').textContent = currentUser;
-      document.getElementById('welcome-name').textContent = currentUser;
-      document.getElementById('avatar-initial').textContent = currentUser.charAt(0).toUpperCase();
-      
-      if(currentRole === 'Admin' || currentRole === 'Owner') {
-        document.getElementById('admin-nav').style.display = 'block';
-        document.getElementById('user-role').textContent = currentRole;
-        document.getElementById('user-role').style.background = '#ef4444';
-      }
-
-      loadData();
-    }
-
-    function switchSection(sectionId, el) {
-      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
-      document.getElementById('sec-' + sectionId).classList.add('active');
-      document.querySelectorAll('.panel-nav-item').forEach(i => i.classList.remove('active'));
-      el.classList.add('active');
-    }
-
-    async function loadData() {
-      try {
-        // Stats
-        const resStats = await fetch(`${SCRIPT_URL}?action=getStats`);
-        const stats = await resStats.json();
-        document.getElementById('dash-total-addons').textContent = stats.total_addons;
-        document.getElementById('dash-total-users').textContent = stats.total_usuarios;
-        document.getElementById('dash-total-views').textContent = stats.total_vistas;
-        isMaintenance = stats.mantenimiento;
-        updateMaintUI();
-
-        // Addons
-        const resAddons = await fetch(`${SCRIPT_URL}?action=read`);
-        allAddons = await resAddons.json();
-        
-        // Users
-        const resUsers = await fetch(`${SCRIPT_URL}?action=getUsers`);
-        allUsers = await resUsers.json();
-        
-        renderMyAddons();
-        renderRanking();
-        renderAdminAddons();
-        renderAdminUsers();
-      } catch(e) { console.error(e); }
-    }
-
-    function switchAdminTab(tab) {
-      document.querySelectorAll('.admin-sub-sec').forEach(s => s.style.display = 'none');
-      document.getElementById('adm-sec-' + tab).style.display = 'block';
-      document.querySelectorAll('#sec-admin .tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-adm-' + tab).classList.add('active');
-    }
-
-    function renderAdminAddons() {
-      const tbody = document.getElementById('adm-addons-tbody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
-      allAddons.forEach(a => {
-        tbody.innerHTML += `
-          <tr class="adm-addon-row">
-            <td>
-              <div class="addon-row-info">
-                <img src="${a[3] || '../assets/placeholder.png'}">
-                <div class="adm-addon-name">${a[1]}</div>
-              </div>
-            </td>
-            <td class="adm-addon-author">${a[8]}</td>
-            <td><i class="fa-solid fa-heart" style="color:#ff4444;"></i> ${a[5]} | <i class="fa-solid fa-download" style="color:var(--primary-color);"></i> ${a[6]}</td>
-            <td>
-              <button class="action-btn delete" onclick="deleteAddon('${a[1]}', '${a[8]}')"><i class="fa-solid fa-trash"></i></button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderAdminUsers() {
-      const tbody = document.getElementById('adm-users-tbody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
-      allUsers.slice(1).forEach(u => { // Saltar encabezado
-        const isBaneado = u[3] === 'Baneado';
-        tbody.innerHTML += `
-          <tr class="adm-user-row">
-            <td class="adm-user-name" style="font-weight:bold;">${u[1]}</td>
-            <td style="font-size:0.8rem; color:var(--text-muted);">${u[0]}</td>
-            <td>
-              <span class="badge-status" style="background:${isBaneado ? '#ff4444' : '#22c55e'}; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.7rem;">
-                ${u[3] || 'Activo'}
-              </span>
-            </td>
-            <td>
-              <div style="display:flex; gap:5px;">
-                <button class="cat-btn" style="padding:6px 10px; font-size:0.75rem; background:${isBaneado ? '#22c55e' : '#ffb000'}; color:#fff; border:none;" 
-                  onclick="toggleUserBan('${u[1]}', '${isBaneado ? 'Activo' : 'Baneado'}')">
-                  <i class="fa-solid ${isBaneado ? 'fa-user-check' : 'fa-user-slash'}"></i> ${isBaneado ? 'Desbanear' : 'Banear'}
-                </button>
-                <button class="action-btn delete" style="padding:6px 10px;" onclick="deleteUserAccount('${u[1]}')">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function filterAdminAddons() {
-      const val = document.getElementById('adm-search-addons').value.toLowerCase();
-      document.querySelectorAll('.adm-addon-row').forEach(row => {
-        const name = row.querySelector('.adm-addon-name').textContent.toLowerCase();
-        const author = row.querySelector('.adm-addon-author').textContent.toLowerCase();
-        row.style.display = (name.includes(val) || author.includes(val)) ? '' : 'none';
-      });
-    }
-
-    function filterAdminUsers() {
-      const val = document.getElementById('adm-search-users').value.toLowerCase();
-      document.querySelectorAll('.adm-user-row').forEach(row => {
-        const name = row.querySelector('.adm-user-name').textContent.toLowerCase();
-        row.style.display = name.includes(val) ? '' : 'none';
-      });
-    }
-
-    async function deleteUserAccount(nombre) {
-      if(!confirm(`⚠️ ADVERTENCIA CRÍTICA: ¿Estás seguro de eliminar la cuenta de "${nombre}"?\n\nEsto borrará permanentemente:\n- Su acceso al panel.\n- TODOS sus addons publicados.\n- Todas sus imágenes en Drive.\n\nEsta acción no se puede deshacer.`)) return;
-      
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'deleteUserAccount', nombre: nombre, rol: currentRole })
-        });
-        const text = await res.text();
-        if(text.includes('USER_DELETED_FULL')) {
-          alert("Cuenta y contenido eliminados con éxito.");
-          loadData();
-        }
-      } catch (e) { alert("Error al eliminar cuenta."); }
-    }
-
-    function renderMyAddons() {
-      const tbody = document.getElementById('my-addons-tbody');
-      tbody.innerHTML = '';
-      
-      let myAddons = allAddons.filter(a => a[8] === currentUser);
-      if(currentRole === 'Admin') myAddons = allAddons;
-
-      if(myAddons.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px;">No hay contenido.</td></tr>';
-        return;
-      }
-
-      myAddons.forEach(a => {
-        tbody.innerHTML += `
-          <tr>
-            <td>
-              <div class="addon-row-info">
-                <img src="${a[3] || '../assets/placeholder.png'}">
-                <div>
-                  <div style="font-weight:bold;">${a[1]}</div>
-                  <div style="font-size:0.7rem; color:var(--text-muted);">v${a[9] || '1.0'}</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="badge-cat" style="font-size:0.6rem;">${a[4]}</span></td>
-            <td>
-              <div style="font-size:0.8rem;"><i class="fa-solid fa-heart" style="color:#ef4444;"></i> ${a[5]}</div>
-              <div style="font-size:0.8rem;"><i class="fa-solid fa-download" style="color:var(--primary-color);"></i> ${a[6]}</div>
-            </td>
-            <td>
-              <div style="display:flex; gap:8px;">
-                <button class="action-btn" onclick="editAddon('${a[1]}')"><i class="fa-solid fa-pen"></i></button>
-                <button class="action-btn delete" onclick="deleteAddon('${a[1]}', '${a[8]}')"><i class="fa-solid fa-trash"></i></button>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderRanking() {
-      const container = document.getElementById('ranking-container');
-      container.innerHTML = '';
-
-      // Agrupar por creador
-      const counts = {};
-      allAddons.forEach(a => {
-        const creator = a[8];
-        counts[creator] = (counts[creator] || 0) + 1;
+      // Traducir por data-i18n o ID si existe en el diccionario
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
       });
 
-      const ranking = Object.keys(counts).map(name => ({
-        name: name,
-        count: counts[name]
-      })).sort((a, b) => b.count - a.count);
-
-      ranking.forEach((r, index) => {
-        container.innerHTML += `
-          <div class="rank-item rank-${index + 1}">
-            <div class="rank-number">${index + 1}</div>
-            <div style="flex:1;">
-              <div style="font-weight:bold; font-size:1.1rem;">${r.name}</div>
-              <div style="font-size:0.8rem; color:var(--text-muted);">Miembro Destacado</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:1.2rem; font-weight:800; color:var(--primary-color);">${r.count}</div>
-              <div style="font-size:0.7rem; color:var(--text-muted);">Addons Publicados</div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    // --- ACCIONES ---
-    async function submitAddon() {
-      const btn = document.getElementById('btn-submit-addon');
-      const oldText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
-
-      const addonData = {
-        action: 'add',
-        nombre: document.getElementById('up-nombre').value,
-        category: document.getElementById('up-cat').value,
-        version: document.getElementById('up-ver').value,
-        link: document.getElementById('up-link').value,
-        descripcion: document.getElementById('up-desc').value,
-        subidoPor: currentUser,
-        img: ""
+      // Mapeo manual de IDs importantes para no romper el HTML original
+      const mappings = {
+        ".auth-title": "auth-title",
+        ".auth-sub": "auth-sub",
+        "#tab-login": "tab-login",
+        "#tab-register": "tab-register",
+        "#login-btn": "login-btn",
+        "#reg-btn": "reg-btn",
+        "#sb-dashboard": "sb-dashboard",
+        "#sb-mis-addons": "sb-mis-addons",
+        "#sb-subir": "sb-subir",
+        "#sb-ranking span": "sb-ranking",
+        "#sb-ajustes span": "sb-ajustes",
+        ".hdr-logout-btn": "hdr-logout",
+        "#modal-title": editingItem ? "modal-title-edit" : "modal-title-create",
+        ".banned-title": "banned-title",
+        ".banned-sub": "banned-sub",
+        ".banned-btn": "banned-btn"
       };
 
-      const fileInput = document.getElementById('up-img');
-      if(fileInput.files[0]) {
-        addonData.img = await toBase64(fileInput.files[0]);
-      }
-
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify(addonData)
-        });
-        const text = await res.text();
-        if(text.includes('OK')) {
-          alert("Addon enviado. Aparecerá cuando sea aprobado.");
-          document.getElementById('upload-form').reset();
-          switchSection('mis-addons', document.querySelectorAll('.panel-nav-item')[1]);
-          loadData();
+      Object.entries(mappings).forEach(([selector, key]) => {
+        const el = document.querySelector(selector);
+        if (el && dict[key]) {
+            if (el.tagName === 'BUTTON' || el.tagName === 'SPAN' || el.tagName === 'DIV' || el.tagName === 'H2' || el.tagName === 'P') {
+                // Preservar iconos si existen
+                const icon = el.querySelector('i');
+                if (icon) {
+                    el.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE) node.textContent = ' ' + dict[key];
+                    });
+                } else {
+                    el.textContent = dict[key];
+                }
+            }
         }
-      } catch (e) { alert("Error al subir."); }
+      });
       
-      btn.disabled = false;
-      btn.innerHTML = oldText;
+      // Traducir labels de campos
+      document.querySelectorAll('.field-label').forEach(label => {
+          const text = label.textContent.trim();
+          if (text.includes('Usuario') || text.includes('Username')) label.textContent = dict['login-user-label'];
+          if (text.includes('Contraseña') || text.includes('Password')) label.textContent = dict['login-pass-label'];
+          if (text.includes('Confirmar') || text.includes('Confirm')) label.textContent = dict['reg-pass2-label'];
+      });
+
+      // Traducir placeholders
+      const placeholders = {
+          "#login-user": "login-user-label",
+          "#login-pass": "login-pass-label",
+          "#reg-user": "reg-user-label",
+          "#reg-pass": "reg-pass-label",
+          "#reg-pass2": "reg-pass2-label"
+      };
+      Object.entries(placeholders).forEach(([id, key]) => {
+          const el = document.querySelector(id);
+          if (el && dict[key]) el.placeholder = dict[key];
+      });
     }
 
-    async function deleteAddon(nombre, usuario) {
-      if(!confirm(`¿Eliminar definitivamente "${nombre}"?`)) return;
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'delete', nombre: nombre, usuario: usuario, rol: currentRole })
-        });
-        const text = await res.text();
-        if(text.includes('OK')) loadData();
-      } catch (e) { alert("Error de conexión."); }
-    }
-
-    async function toggleMaintenance() {
-      const newState = !isMaintenance;
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'setMaintenance', estado: newState, rol: currentRole })
-        });
-        const text = await res.text();
-        if(text.includes('UPDATED')) {
-          isMaintenance = newState;
-          updateMaintUI();
-        }
-      } catch (e) { alert("Error."); }
-    }
-
-    function updateMaintUI() {
-      const btn = document.getElementById('btn-maint');
-      if(isMaintenance) {
-        btn.textContent = "Desactivar";
-        btn.style.background = "#22c55e";
-      } else {
-        btn.textContent = "Activar";
-        btn.style.background = "#ef4444";
-      }
-    }
-
-    function toggleSidebar() {
-      const layout = document.getElementById('panel-layout');
-      layout.classList.toggle('sidebar-open');
-      const btnIcon = document.querySelector('#p-toggle-btn i');
-      if (layout.classList.contains('sidebar-open')) {
-        btnIcon.classList.replace('fa-arrow-right', 'fa-bars');
-      } else {
-        btnIcon.classList.replace('fa-bars', 'fa-arrow-right');
-      }
-    }
-
-    function switchSection(sectionId, el) {
-      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
-      const target = document.getElementById('sec-' + sectionId);
-      if (target) target.classList.add('active');
-      
-      document.querySelectorAll('.panel-nav-item').forEach(i => i.classList.remove('active'));
-      if (el) el.classList.add('active');
-
-      // Cerrar sidebar automáticamente en móviles al navegar
-      if (window.innerWidth <= 768) {
-        const layout = document.getElementById('panel-layout');
-        if (!layout.classList.contains('sidebar-collapsed')) {
-          toggleSidebar();
-        }
-      }
-    }
-
-    // Helpers
-    const toBase64 = file => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-
-    function previewImage(input) {
-      const preview = document.getElementById('up-preview');
-      if(input.files[0]) {
-        preview.src = URL.createObjectURL(input.files[0]);
-        preview.style.display = 'block';
-      }
-    }
-
+    // ═══════════════════════════════════════════════════
+    //   THEME SYNC (postMessage desde index.html)
+    // ═══════════════════════════════════════════════════
     window.addEventListener('message', e => {
-      if (e.data && e.data.type === 'init-data') {
-        document.documentElement.setAttribute('data-theme', e.data.theme || 'dark');
-        if (e.data.color) {
-          document.documentElement.style.setProperty('--primary-color', e.data.color);
-          document.documentElement.style.setProperty('--border-neon', e.data.color);
+      const d = e.data;
+      if (!d || !d.type) return;
+      if (d.type === 'init-data') {
+        if (d.theme) {
+          applyTheme(d.theme);
+        }
+        if (d.lang) {
+          currentLang = d.lang;
+          localStorage.setItem('bv_language', d.lang);
+          translatePage();
+        } else {
+          const savedLang = localStorage.getItem('bv_language') || 'es';
+          currentLang = savedLang;
+          translatePage();
+        }
+        if (d.color) {
+          const color = d.color;
+          const rgb = hexToRgb(color);
+          document.documentElement.style.setProperty('--primary', color);
+          if (rgb) {
+            document.documentElement.style.setProperty('--primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+            document.documentElement.style.setProperty('--primary-glow', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35)`);
+            // Generar variantes simples (un poco más claro/oscuro)
+            document.documentElement.style.setProperty('--primary-light', adjustColor(color, 20));
+            document.documentElement.style.setProperty('--primary-dark', adjustColor(color, -20));
+          }
         }
       }
+      
+      if (d.type === 'language-change') {
+        currentLang = d.lang;
+        localStorage.setItem('bv_language', d.lang);
+        translatePage();
+      }
     });
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    }
+
+    function adjustColor(hex, amt) {
+      let usePound = false;
+      if (hex[0] == "#") {
+        hex = hex.slice(1);
+        usePound = true;
+      }
+      let num = parseInt(hex, 16);
+      let r = (num >> 16) + amt;
+      if (r > 255) r = 255;
+      else if (r < 0) r = 0;
+      let b = ((num >> 8) & 0x00FF) + amt;
+      if (b > 255) b = 255;
+      else if (b < 0) b = 0;
+      let g = (num & 0x0000FF) + amt;
+      if (g > 255) g = 255;
+      else if (g < 0) g = 0;
+      return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+    }
+
+    function applyTheme(theme) {
+      if (!theme) return;
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('bv_theme', theme);
+    }
+
+    // Cargar tema guardado localmente como fallback
+    const savedTheme = localStorage.getItem('bv_theme') || 'dark';
+    applyTheme(savedTheme);
+
+    // ═══════════════════════════════════════════════════
+    //   SEGURIDAD
+    // ═══════════════════════════════════════════════════
+    document.addEventListener('contextmenu', e => {
+      if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'F12') { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) { e.preventDefault(); return false; }
+      if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return false; }
+    });
+
+    // ═══════════════════════════════════════════════════
+    //   AUTH - TABS
+    // ═══════════════════════════════════════════════════
+    function switchTab(tab) {
+      document.getElementById('form-login').style.display = tab === 'login' ? '' : 'none';
+      document.getElementById('form-register').style.display = tab === 'register' ? '' : 'none';
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      document.getElementById('login-err').classList.remove('show');
+      document.getElementById('reg-err').classList.remove('show');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   LOGIN
+    // ═══════════════════════════════════════════════════
+    async function doLogin() {
+      const user = document.getElementById('login-user').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      if (!user || !pass) { showErr('login-err', 'Completa todos los campos.'); return; }
+
+      const btn = document.getElementById('login-btn');
+      setLoading(btn, true);
+      try {
+        const res = await postData({ action: 'login', user, pass });
+        const data = JSON.parse(res);
+        
+        if (data.status === 'LOGIN_OK') {
+          // Verificar baneo
+          const statusRes = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${encodeURIComponent(user)}`);
+          const statusData = await statusRes.json();
+          if (statusData.estado === 'Baneado' || statusData.estado === 'Inactivo') {
+            showBanned();
+            return;
+          }
+
+          currentUser = user;
+          currentRole = data.rol;
+          localStorage.setItem('bv_panel_user', user);
+          localStorage.setItem('bv_panel_pass', pass);
+          localStorage.setItem('bv_panel_role', data.rol);
+          enterPanel();
+        } else {
+          showErr('login-err', 'Usuario o contraseña incorrectos.');
+        }
+      } catch (e) {
+        showErr('login-err', 'Error de conexión. Intenta de nuevo.');
+      } finally {
+        setLoading(btn, false);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //   REGISTER
+    // ═══════════════════════════════════════════════════
+    async function doRegister() {
+        const user = document.getElementById('reg-user').value.trim();
+        const pass = document.getElementById('reg-pass').value.trim();
+        const pass2 = document.getElementById('reg-pass2').value.trim();
+
+        if (!user || !pass || !pass2) { showErr('reg-err', 'Completa todos los campos.'); return; }
+        if (pass.length < 6) { showErr('reg-err', 'La contraseña debe tener mínimo 6 caracteres.'); return; }
+        if (pass !== pass2) { showErr('reg-err', 'Las contraseñas no coinciden.'); return; }
+        if (user.toLowerCase() === ADMIN_USER.toLowerCase()) { showErr('reg-err', 'Ese nombre no está disponible.'); return; }
+
+        const btn = document.getElementById('reg-btn');
+        setLoading(btn, true);
+        try {
+          const res = await postData({ action: 'register', user, pass });
+          if (res.includes('REGISTER_OK') || res.trim() === 'REGISTER_OK') {
+            toast('¡Cuenta creada! Ahora inicia sesión.', 'success');
+            switchTab('login');
+          } else if (res.includes('USER_EXISTS') || res.trim() === 'USER_EXISTS') {
+            showErr('reg-err', 'Ese nombre de usuario ya existe.');
+          } else {
+            showErr('reg-err', 'Error al registrar. Intenta de nuevo.');
+          }
+        } catch (e) {
+          showErr('reg-err', 'Error de conexión.');
+        } finally {
+          setLoading(btn, false);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   ENTER PANEL
+      // ═══════════════════════════════════════════════════
+      async function enterPanel() {
+        document.getElementById('auth-wrapper').style.display = 'none';
+        document.getElementById('panel-header').style.display = '';
+        document.getElementById('main-area').style.display = '';
+        
+        await loadAllUsers(); // Cargar mapa de usuarios primero
+        await loadAllAddons(); // Luego los addons
+        
+        const isVerificado = allUsersMap[currentUser] && allUsersMap[currentUser].verificado;
+        const verifyIcon = isVerificado ? ' <i class="fas fa-check-circle" style="color:#22c55e; font-size:0.85rem;" title="Usuario Verificado"></i>' : '';
+
+        document.getElementById('hdr-user-name').innerHTML = currentUser + verifyIcon;
+        document.getElementById('sb-user-name').innerHTML = currentUser + verifyIcon;
+        document.getElementById('sb-avatar').textContent = currentUser[0].toUpperCase();
+
+        const isAdmin = (currentRole === 'Admin' || currentRole === 'Owner' || currentUser === ADMIN_USER);
+        document.getElementById('admin-group').style.display = isAdmin ? '' : 'none';
+        document.getElementById('sb-user-role').textContent = isAdmin ? 'Administrador' : 'Creador';
+
+        showView('dashboard');
+      }
+
+      async function loadAllUsers() {
+        try {
+          const res = await fetch(`${SCRIPT_URL}?action=getUsers`);
+          const users = await res.json();
+          users.slice(1).forEach(u => {
+            allUsersMap[u[1]] = {
+              verificado: u[5] === 'Verificado'
+            };
+          });
+        } catch (e) { console.error("Error cargando usuarios:", e); }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   LOGOUT
+      // ═══════════════════════════════════════════════════
+      function logout() {
+        currentUser = null;
+        localStorage.removeItem('bv_panel_user');
+        document.getElementById('panel-header').style.display = 'none';
+        document.getElementById('main-area').style.display = 'none';
+        document.getElementById('auth-wrapper').style.display = '';
+        closeSidebar();
+      }
+
+      function volverAlInicio() {
+        window.parent.postMessage({ type: 'navigate', page: 'home', data: null }, '*');
+        if (window.parent === window) window.location.href = 'index.html';
+      }
+
+      function showBanned() {
+        document.getElementById('banned-screen').classList.add('show');
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   VIEWS
+      // ═══════════════════════════════════════════════════
+      function showView(view) {
+        currentView = view;
+        closeSidebar();
+        document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+        const sb = document.getElementById(`sb-${view}`);
+        if (sb) sb.classList.add('active');
+
+        const vc = document.getElementById('view-container');
+
+        if (view === 'dashboard') renderDashboard(vc);
+        else if (view === 'mis-addons') renderMisAddons(vc);
+        else if (view === 'subir') { openModal('create'); }
+        else if (view === 'ranking') renderRanking(vc);
+        else if (view === 'adm-addons') renderAdminAddons(vc);
+        else if (view === 'adm-usuarios') renderAdminUsers(vc);
+        else if (view === 'adm-sistema') renderAdminSistema(vc);
+        else if (view === 'ajustes') renderAjustes(vc);
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   LOAD ADDONS
+      // ═══════════════════════════════════════════════════
+      async function loadAllAddons() {
+        try {
+          const res = await fetch(`${SCRIPT_URL}?action=read`);
+          allAddons = await res.json();
+        } catch (e) { allAddons = []; }
+      }
+
+      function myAddons() {
+        return allAddons.filter(a => a[8] === currentUser);
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   DASHBOARD
+      // ═══════════════════════════════════════════════════
+      function renderDashboard(vc) {
+        const mine = myAddons();
+        const totalLikes = mine.reduce((s, a) => s + (parseInt(a[5]) || 0), 0);
+        const totalDls = mine.reduce((s, a) => s + (parseInt(a[6]) || 0), 0);
+        const isAdmin = currentUser === ADMIN_USER;
+
+        vc.innerHTML = `
+        <div style="margin-bottom:24px">
+          <div class="notice-box">
+            👋 Bienvenido al panel de creadores, <strong>${currentUser}</strong>. Aquí puedes gestionar todo tu contenido publicado en BlockVault.
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-val">${mine.length}</span>
+            <span class="stat-label">📦 Mis Addons</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val">${totalLikes}</span>
+            <span class="stat-label">❤️ Me Gusta</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val">${totalDls}</span>
+            <span class="stat-label">⬇️ Descargas</span>
+          </div>
+        </div>
+
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-fire"></i></div>
+            <div>
+              <div class="sec-title">Publicaciones Recientes</div>
+              <div class="sec-count">${mine.length} addons publicados</div>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:auto;padding:9px 18px;font-size:0.82rem" onclick="openModal('create')">
+            <i class="fas fa-plus"></i> Publicar
+          </button>
+        </div>
+
+        ${mine.length ? `
+          <div class="addons-grid">
+            ${mine.slice(-6).reverse().map(a => addonCardHTML(a)).join('')}
+          </div>
+        ` : `
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>Aún no tienes addons publicados.<br>¡Sube tu primer addon!</p>
+          </div>
+        `}
+      `;
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   MIS ADDONS VIEW
+      // ═══════════════════════════════════════════════════
+      function renderMisAddons(vc) {
+        const mine = myAddons();
+        vc.innerHTML = `
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-layer-group"></i></div>
+            <div>
+              <div class="sec-title">Mis Addons</div>
+              <div class="sec-count">${mine.length} publicaciones</div>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:auto;padding:9px 18px;font-size:0.82rem" onclick="openModal('create')">
+            <i class="fas fa-plus"></i> Nuevo
+          </button>
+        </div>
+        ${mine.length ? `<div class="addons-grid">${mine.map(a => addonCardHTML(a)).join('')}</div>`
+            : `<div class="empty-state"><i class="fas fa-layer-group"></i><p>No tienes addons publicados todavía.</p></div>`}
+      `;
+      }
+
+      function addonCardHTML(a) {
+        const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = a;
+        const safeId = (nombre || '').replace(/'/g, "\\'");
+        const isVerificado = allUsersMap[autor] && allUsersMap[autor].verificado;
+        
+        return `
+        <div class="addon-card">
+          <img class="addon-card-thumb" src="${img || ''}" alt="${nombre || ''}" loading="lazy"
+            onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'300\\' height=\\'170\\'><rect fill=\\'%231a1a2e\\' width=\\'300\\' height=\\'170\\'/><text x=\\'50%\\' y=\\'50%\\' fill=\\'%235a5a8a\\' text-anchor=\\'middle\\' dy=\\'.3em\\' font-size=\\'14\\'>IMG</text></svg>'">
+          <div class="addon-card-body">
+            <div class="addon-card-cat">${cat || '—'} ${version ? `· v${version}` : ''}</div>
+            <div class="addon-card-title">${nombre || 'Sin título'} ${isVerificado ? '<i class="fas fa-check-circle" style="color:#22c55e; font-size:0.9rem; margin-left:4px;" title="Creador Verificado"></i>' : ''}</div>
+            <div class="addon-card-desc">${desc || 'Sin descripción.'}</div>
+            <div class="addon-card-foot">
+              <button class="btn-edit" onclick="openEditModal('${safeId}')"><i class="fas fa-edit"></i> Editar</button>
+              <button class="btn-danger" onclick="deleteAddon('${safeId}')"><i class="fas fa-trash"></i> Borrar</button>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   UPLOAD / EDIT MODAL
+      // ═══════════════════════════════════════════════════
+      function openModal(mode) {
+        imgBase64 = null;
+        document.getElementById('modal-mode').value = mode;
+        document.getElementById('modal-title').textContent = mode === 'create' ? '📦 Publicar Nuevo Addon' : '✏️ Editar Addon';
+        document.getElementById('modal-submit-btn').innerHTML = mode === 'create'
+          ? '<i class="fas fa-paper-plane"></i> Publicar'
+          : '<i class="fas fa-save"></i> Guardar Cambios';
+        ['form-nombre', 'form-cat', 'form-link', 'form-version', 'form-desc', 'form-img-url'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        document.getElementById('img-preview').style.display = 'none';
+        document.getElementById('img-placeholder').style.display = '';
+        document.getElementById('form-err').classList.remove('show');
+        document.getElementById('upload-modal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function openEditModal(nombre) {
+        const item = allAddons.find(a => a[1] === nombre && a[8] === currentUser);
+        if (!item) return;
+        editingItem = item;
+        openModal('edit');
+        document.getElementById('modal-original-name').value = nombre;
+        document.getElementById('form-nombre').value = item[1] || '';
+        document.getElementById('form-cat').value = item[4] || '';
+        document.getElementById('form-link').value = item[2] || '';
+        document.getElementById('form-version').value = item[9] || '';
+        document.getElementById('form-desc').value = item[10] || '';
+        document.getElementById('form-img-url').value = item[3] || '';
+        if (item[3]) {
+          document.getElementById('img-preview').src = item[3];
+          document.getElementById('img-preview').style.display = '';
+          document.getElementById('img-placeholder').style.display = 'none';
+        }
+      }
+
+      function closeModal() {
+        document.getElementById('upload-modal').classList.remove('open');
+        document.body.style.overflow = '';
+        editingItem = null;
+        imgBase64 = null;
+        if (currentView === 'subir') showView('dashboard');
+      }
+
+      document.getElementById('upload-modal').addEventListener('click', function (e) {
+        if (e.target === this) closeModal();
+      });
+
+      // Esta función ya no es estrictamente necesaria porque al usar <label for="img-input">, el navegador hace clic automáticamente en el input type="file", pero se deja por si quisieras mantener la estructura vieja, aunque con el form de arriba basta.
+      // function triggerImgInput() { document.getElementById('img-input').click(); }
+
+      function previewImg(input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) { toast('La imagen supera los 2MB', 'error'); return; }
+        const reader = new FileReader();
+        reader.onload = ev => {
+          imgBase64 = ev.target.result;
+          document.getElementById('img-preview').src = imgBase64;
+          document.getElementById('img-preview').style.display = '';
+          document.getElementById('img-placeholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   BANNED WORDS CHECK
+      // ═══════════════════════════════════════════════════
+      function checkBannedWords(nombre, desc, link) {
+        const text = `${nombre} ${desc} ${link}`.toLowerCase();
+        return BANNED_WORDS.find(w => text.includes(w.toLowerCase()));
+      }
+
+      async function logBannedAttempt(nombre, desc, link, wordFound) {
+        try {
+          await postData({
+            action: 'logBanned',
+            usuario: currentUser,
+            nombre: nombre,
+            descripcion: desc,
+            link: link,
+            palabra: wordFound,
+            fecha: new Date().toLocaleString()
+          });
+        } catch (e) { /* silencioso */ }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   SUBMIT ADDON
+      // ═══════════════════════════════════════════════════
+      async function submitAddon() {
+        const mode = document.getElementById('modal-mode').value;
+        const nombre = document.getElementById('form-nombre').value.trim();
+        const cat = document.getElementById('form-cat').value;
+        const link = document.getElementById('form-link').value.trim();
+        const version = document.getElementById('form-version').value.trim();
+        const desc = document.getElementById('form-desc').value.trim();
+        const imgUrl = document.getElementById('form-img-url').value.trim();
+        const originalName = document.getElementById('modal-original-name').value;
+
+        if (!nombre || !cat || !link) {
+          showFormErr('Nombre, categoría y link de descarga son obligatorios.');
+          return;
+        }
+
+        // Validar URL del link
+        try { new URL(link); } catch { showFormErr('El link de descarga no es una URL válida.'); return; }
+
+        // Verificar palabras prohibidas
+        const badWord = checkBannedWords(nombre, desc, link);
+        if (badWord) {
+          await logBannedAttempt(nombre, desc, link, badWord);
+          showFormErr(`❌ Ese contenido está prohibido en BlockVault. Palabra detectada: "${badWord}"`);
+          return;
+        }
+
+        const btn = document.getElementById('modal-submit-btn');
+        setLoading(btn, true);
+
+        try {
+          const payload = {
+            action: mode === 'create' ? 'add' : 'edit',
+            nombre, link, category: cat, version, descripcion: desc,
+            subidoPor: currentUser,
+            img: imgBase64 || '',
+            imgUrl: imgUrl || ''
+          };
+
+          if (mode === 'edit') {
+            payload.action = 'edit';
+            payload.nombreOriginal = originalName;
+            payload.nuevoNombre = nombre;
+            payload.nuevaUrl = link;
+            payload.nuevaCategoria = cat;
+            payload.nuevaVersion = version;
+            payload.nuevaDescripcion = desc;
+            payload.nuevaImg = imgBase64 || '';
+            payload.usuario = currentUser;
+          }
+
+          const res = await postData(payload);
+
+          if (res.includes('OK')) {
+            toast(mode === 'create' ? '✅ Addon publicado con éxito.' : '✅ Addon actualizado.', 'success');
+            closeModal();
+            await loadAllAddons();
+            if (currentView === 'mis-addons') renderMisAddons(document.getElementById('view-container'));
+            else renderDashboard(document.getElementById('view-container'));
+          } else {
+            showFormErr('Error al guardar. Intenta de nuevo.');
+          }
+        } catch (e) {
+          showFormErr('Error de conexión.');
+        } finally {
+          setLoading(btn, false);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   DELETE
+      // ═══════════════════════════════════════════════════
+      async function deleteAddon(nombre) {
+        if (!confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) return;
+        try {
+          const res = await postData({ action: 'delete', nombre, usuario: currentUser });
+          if (res.includes('DELETE_OK') || res.trim() === 'DELETE_OK') {
+            toast('Addon eliminado.', 'success');
+            await loadAllAddons();
+            const vc = document.getElementById('view-container');
+            if (currentView === 'mis-addons') renderMisAddons(vc);
+            else renderDashboard(vc);
+          } else {
+            toast('No se pudo eliminar.', 'error');
+          }
+        } catch { toast('Error de conexión.', 'error'); }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   AJUSTES DE CUENTA
+      // ═══════════════════════════════════════════════════
+      function renderAjustes(vc) {
+        vc.innerHTML = `
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-cog"></i></div>
+            <div>
+              <div class="sec-title">Ajustes de Cuenta</div>
+              <div class="sec-count">Gestiona tu perfil</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Perfil actual -->
+        <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(6,182,212,.05));border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:22px">
+          <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#fff;flex-shrink:0" id="aj-avatar">${currentUser[0].toUpperCase()}</div>
+          <div>
+            <div style="font-size:.95rem;font-weight:700;color:var(--text)">${currentUser}</div>
+            <div style="font-size:.68rem;color:var(--primary);font-weight:600;text-transform:uppercase;letter-spacing:.5px">${currentUser === ADMIN_USER ? 'Administrador' : 'Creador'}</div>
+          </div>
+        </div>
+
+        <!-- Cambiar nombre -->
+        <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)">
+            <div style="width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;box-shadow:0 3px 10px var(--primary-glow);flex-shrink:0"><i class="fas fa-user-edit"></i></div>
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;color:var(--text)">Cambiar Nombre de Usuario</div>
+              <div style="font-size:.75rem;color:var(--text-muted)">El cambio se aplicará en todos tus addons publicados</div>
+            </div>
+          </div>
+          <div style="padding:20px">
+            <div class="field-group">
+              <label class="field-label">Nuevo nombre de usuario *</label>
+              <input class="field-input" id="aj-new-name" type="text" placeholder="Mínimo 3 caracteres">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contraseña actual (para confirmar) *</label>
+              <input class="field-input" id="aj-pass" type="password" placeholder="Tu contraseña">
+            </div>
+            <div id="aj-msg" style="display:none;padding:10px 14px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;margin-bottom:12px"></div>
+            <button class="btn-primary" id="aj-btn" onclick="doRenameUser()">
+              <i class="fas fa-save"></i> Guardar Nuevo Nombre
+            </button>
+          </div>
+        </div>
+
+        <!-- Cerrar sesión -->
+        <div style="background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.25);border-radius:var(--radius);padding:18px 20px">
+          <div style="display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:#ef4444;margin-bottom:6px">
+            <i class="fas fa-exclamation-triangle"></i> Zona de Peligro
+          </div>
+          <p style="font-size:.78rem;color:var(--text-muted);margin:0 0 14px;line-height:1.6">
+            Cerrar sesión eliminará tu sesión guardada. Tendrás que volver a iniciar sesión.
+          </p>
+          <button onclick="logout()" style="padding:9px 18px;border-radius:var(--radius-sm);border:1.5px solid rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:#ef4444;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:var(--transition)" onmouseover="this.style.background='#ef4444';this.style.color='#fff'" onmouseout="this.style.background='rgba(239,68,68,.08)';this.style.color='#ef4444'">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+          </button>
+        </div>
+      `;
+      }
+
+      async function doRenameUser() {
+        const newName = document.getElementById('aj-new-name').value.trim();
+        const pass = document.getElementById('aj-pass').value.trim();
+        const msgEl = document.getElementById('aj-msg');
+        const btn = document.getElementById('aj-btn');
+
+        const showMsg = (msg, ok) => {
+          msgEl.style.display = 'block';
+          msgEl.textContent = msg;
+          msgEl.style.background = ok ? 'rgba(34,197,94,.1)' : 'rgba(239,68,68,.1)';
+          msgEl.style.color = ok ? '#22c55e' : '#ef4444';
+          msgEl.style.border = ok ? '1px solid rgba(34,197,94,.3)' : '1px solid rgba(239,68,68,.3)';
+        };
+
+        if (!newName || !pass) { showMsg('⚠️ Completa todos los campos.', false); return; }
+        if (newName.length < 3) { showMsg('⚠️ El nombre debe tener al menos 3 caracteres.', false); return; }
+        if (newName === currentUser) { showMsg('⚠️ El nuevo nombre es igual al actual.', false); return; }
+        if (newName.toLowerCase() === ADMIN_USER.toLowerCase()) { showMsg('⚠️ Ese nombre no está disponible.', false); return; }
+
+        setLoading(btn, true);
+        msgEl.style.display = 'none';
+
+        try {
+          const res = await postData({ action: 'renameUser', user: currentUser, newName, pass });
+
+          if (res.includes('RENAME_OK')) {
+            localStorage.setItem('bv_panel_user', newName);
+            currentUser = newName;
+            // Actualizar UI
+            document.getElementById('hdr-user-name').textContent = newName;
+            document.getElementById('sb-user-name').textContent = newName;
+            document.getElementById('sb-avatar').textContent = newName[0].toUpperCase();
+            showMsg('✅ ¡Nombre cambiado con éxito!', true);
+            toast('¡Nombre actualizado correctamente!', 'success');
+            setTimeout(() => renderAjustes(document.getElementById('view-container')), 1500);
+          } else if (res.includes('NAME_TAKEN')) {
+            showMsg('❌ Ese nombre ya está en uso. Elige otro.', false);
+          } else if (res.includes('AUTH_ERROR')) {
+            showMsg('❌ Contraseña incorrecta.', false);
+          } else if (res.includes('FORBIDDEN')) {
+            showMsg('❌ Nombre no permitido.', false);
+          } else {
+            showMsg('❌ Error al cambiar nombre. Intenta de nuevo.', false);
+          }
+        } catch (e) {
+          showMsg('❌ Error de conexión.', false);
+        } finally {
+          setLoading(btn, false);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   RANKING
+      // ═══════════════════════════════════════════════════
+      function renderRanking(vc) {
+        vc.innerHTML = `<div class="sec-hdr"><div class="sec-hdr-left"><div class="sec-icon"><i class="fas fa-trophy"></i></div><div><div class="sec-title">Ranking de Creadores</div></div></div></div>`;
+
+        const counts = {};
+        allAddons.forEach(a => {
+          const creator = a[8];
+          counts[creator] = (counts[creator] || 0) + 1;
+        });
+
+        const ranking = Object.keys(counts).map(name => ({
+          name: name,
+          count: counts[name]
+        })).sort((a, b) => b.count - a.count);
+
+        let rows = ranking.map((r, i) => `
+        <div style="background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius-sm); padding:15px; display:flex; align-items:center; gap:15px; margin-bottom:10px;">
+          <div style="font-size:1.5rem; font-weight:800; color:var(--text-muted); width:40px;">#${i + 1}</div>
+          <div style="width:40px; height:40px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800;">${r.name[0].toUpperCase()}</div>
+          <div style="flex:1">
+            <div style="font-weight:700">${r.name}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted)">Arquitecto Prolífico</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:1.1rem; font-weight:800; color:var(--primary)">${r.count}</div>
+            <div style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase">Addons</div>
+          </div>
+        </div>
+      `).join('');
+
+        vc.innerHTML += rows;
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   ADMIN: ADDONS (Global)
+      // ═══════════════════════════════════════════════════
+      function renderAdminAddons(vc) {
+        vc.innerHTML = `
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-puzzle-piece"></i></div>
+            <div>
+              <div class="sec-title">Gestión Global de Addons</div>
+              <div class="sec-count">${allAddons.length} publicaciones totales</div>
+            </div>
+          </div>
+        </div>
+        <div class="field-group">
+          <input type="text" class="field-input" placeholder="🔍 Buscar por nombre o autor..." oninput="filterAdminAddons(this.value)">
+        </div>
+        <div class="addons-grid" id="adm-addons-grid">
+          ${allAddons.map(a => addonCardAdminHTML(a)).join('')}
+        </div>
+      `;
+      }
+
+      function addonCardAdminHTML(a) {
+        const [id, nombre, link, img, cat, likes, dls, seed, autor, version, desc] = a;
+        const safeId = (nombre || '').replace(/'/g, "\\'");
+        const isVerificado = allUsersMap[autor] && allUsersMap[autor].verificado;
+        
+        return `
+        <div class="addon-card adm-card-item">
+          <img class="addon-card-thumb" src="${img || ''}" loading="lazy">
+          <div class="addon-card-body">
+            <div class="addon-card-cat">${cat} · por <strong>${autor}</strong> ${isVerificado ? '<i class="fas fa-check-circle" style="color:#22c55e; font-size:0.75rem;"></i>' : ''}</div>
+            <div class="addon-card-title adm-title-text">${nombre}</div>
+            <div class="addon-card-foot">
+              <button class="btn-danger" style="width:100%" onclick="deleteAddon('${safeId}', '${autor}')"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      function filterAdminAddons(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.adm-card-item').forEach(card => {
+          const title = card.querySelector('.adm-title-text').textContent.toLowerCase();
+          const author = card.querySelector('.addon-card-cat').textContent.toLowerCase();
+          card.style.display = (title.includes(q) || author.includes(q)) ? '' : 'none';
+        });
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   ADMIN: USUARIOS
+      // ═══════════════════════════════════════════════════
+      async function renderAdminUsers(vc) {
+        vc.innerHTML = `<div class="loader-center"><div class="spinner"></div></div>`;
+        try {
+          const res = await fetch(`${SCRIPT_URL}?action=getUsers`);
+          allUsers = await res.json();
+
+          let rows = allUsers.slice(1).map(u => {
+            const [fecha, nombre, pass, estado, rol, verificacion] = u;
+            const isBaneado = estado === 'Baneado';
+            const isVerificado = verificacion === 'Verificado';
+            return `
+            <div class="adm-user-row-item" style="background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius-sm); padding:15px; display:flex; align-items:center; gap:15px; margin-bottom:10px;">
+              <div style="width:40px; height:40px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-weight:800; position:relative;">
+                ${nombre[0].toUpperCase()}
+                ${isVerificado ? '<i class="fas fa-check-circle" style="color:#22c55e; position:absolute; bottom:-2px; right:-2px; background:var(--bg-panel); border-radius:50%; font-size:0.8rem;"></i>' : ''}
+              </div>
+              <div style="flex:1">
+                <div class="adm-user-name" style="font-weight:700">${nombre}</div>
+                <div style="font-size:0.7rem; color:var(--text-muted)">Registrado: ${fecha}</div>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+                <span style="background:${isBaneado ? '#ef4444' : '#22c55e'}; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.6rem; font-weight:800; text-transform:uppercase;">
+                  ${estado || 'Activo'}
+                </span>
+                <span style="background:${isVerificado ? '#22c55e' : '#64748b'}; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.6rem; font-weight:800; text-transform:uppercase;">
+                  ${isVerificado ? 'Verificado' : 'No Verificado'}
+                </span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn-edit" title="${isVerificado ? 'Quitar Verificación' : 'Verificar Usuario'}" style="padding:6px 10px; background:${isVerificado ? '#64748b' : '#22c55e'}; color:#fff; border:none;" 
+                  onclick="setUserVerification('${nombre}', '${isVerificado ? 'No Verificado' : 'Verificado'}')">
+                  <i class="fas ${isVerificado ? 'fa-user-minus' : 'fa-user-check'}"></i>
+                </button>
+                <button class="btn-edit" title="${isBaneado ? 'Desbanear' : 'Banear'}" style="padding:6px 10px; background:${isBaneado ? '#22c55e' : '#ffb000'}; color:#fff; border:none;" 
+                  onclick="setUserStatus('${nombre}', '${isBaneado ? 'Activo' : 'Baneado'}')">
+                  <i class="fas ${isBaneado ? 'fa-check' : 'fa-ban'}"></i>
+                </button>
+                <button class="btn-danger" style="padding:6px 10px;" onclick="deleteUserAccount('${nombre}')">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          }).join('');
+
+          vc.innerHTML = `
+          <div class="sec-hdr">
+            <div class="sec-hdr-left">
+              <div class="sec-icon"><i class="fas fa-user-shield"></i></div>
+              <div>
+                <div class="sec-title">Gestión de Usuarios</div>
+                <div class="sec-count">${allUsers.length - 1} creadores en total</div>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <input type="text" class="field-input" placeholder="🔍 Buscar creador por nombre..." oninput="filterAdminUsers(this.value)">
+          </div>
+          <div id="adm-users-list">${rows}</div>
+        `;
+        } catch (e) { vc.innerHTML = 'Error al cargar usuarios.'; }
+      }
+
+      async function setUserStatus(nombre, estado) {
+        if (!confirm(`¿Cambiar estado de "${nombre}" a ${estado}?`)) return;
+        try {
+          const res = await postData({ action: 'setUserStatus', nombre, estado, rol: currentRole });
+          if (res.includes('STATUS_OK')) {
+            toast(`${nombre} ahora está ${estado}`, 'success');
+            renderAdminUsers(document.getElementById('view-container'));
+          }
+        } catch { toast('Error de conexión.', 'error'); }
+      }
+
+      async function setUserVerification(nombre, verificacion) {
+        if (!confirm(`¿Cambiar verificación de "${nombre}" a ${verificacion}?`)) return;
+        try {
+          const res = await postData({ action: 'setUserVerification', nombre, verificacion, rol: currentRole });
+          if (res.includes('VERIFICATION_OK')) {
+            toast(`${nombre} ahora está ${verificacion}`, 'success');
+            loadAllUsers(); // Actualizar mapa
+            renderAdminUsers(document.getElementById('view-container'));
+          }
+        } catch { toast('Error de conexión.', 'error'); }
+      }
+
+      function filterAdminUsers(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.adm-user-row-item').forEach(row => {
+          const name = row.querySelector('.adm-user-name').textContent.toLowerCase();
+          row.style.display = name.includes(q) ? '' : 'none';
+        });
+      }
+
+      async function deleteUserAccount(nombre) {
+        if (!confirm(`⚠️ ADVERTENCIA CRÍTICA: ¿Estás seguro de eliminar permanentemente a "${nombre}"?\n\nSe borrará su cuenta, todos sus addons y todas sus imágenes en Drive.`)) return;
+        try {
+          const res = await postData({ action: 'deleteUserAccount', nombre, rol: currentRole });
+          if (res.includes('USER_DELETED_FULL')) {
+            toast('Cuenta eliminada con éxito.', 'success');
+            renderAdminUsers(document.getElementById('view-container'));
+          }
+        } catch { toast('Error de conexión.', 'error'); }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   ADMIN: SISTEMA
+      // ═══════════════════════════════════════════════════
+      async function renderAdminSistema(vc) {
+        const res = await fetch(`${SCRIPT_URL}?action=getStats`);
+        const stats = await res.json();
+        isMaintenance = stats.mantenimiento;
+
+        vc.innerHTML = `
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <div class="sec-icon"><i class="fas fa-server"></i></div>
+            <div class="sec-title">Estado del Sistema</div>
+          </div>
+        </div>
+        <div style="background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius); padding:25px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <div style="font-weight:800; font-size:1.1rem;">Modo Mantenimiento</div>
+              <div style="color:var(--text-muted); font-size:0.8rem;">Bloquea el acceso a usuarios no administradores.</div>
+            </div>
+            <button class="btn-primary" style="width:auto; padding:10px 25px; background:${isMaintenance ? '#22c55e' : '#ef4444'}" onclick="toggleMaintenance()">
+              ${isMaintenance ? 'Desactivar' : 'Activar'}
+            </button>
+          </div>
+          <div class="sb-divider"></div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-top:20px;">
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">${stats.total_addons}</div>
+              <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;">Addons</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">${stats.total_usuarios}</div>
+              <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;">Usuarios</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem; font-weight:800; color:var(--primary);">${stats.total_vistas}</div>
+              <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;">Visitas</div>
+            </div>
+          </div>
+        </div>
+      `;
+      }
+
+      async function toggleMaintenance() {
+        const newState = !isMaintenance;
+        try {
+          const res = await postData({ action: 'setMaintenance', estado: newState, rol: currentRole });
+          if (res.includes('UPDATED')) {
+            isMaintenance = newState;
+            renderAdminSistema(document.getElementById('view-container'));
+            toast('Mantenimiento actualizado.', 'success');
+          }
+        } catch { toast('Error.', 'error'); }
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   SIDEBAR
+      // ═══════════════════════════════════════════════════
+      function openSidebar() {
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('overlay').classList.add('visible');
+      }
+      function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('visible');
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   UTILITIES
+      // ═══════════════════════════════════════════════════
+      async function postData(payload) {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        return await res.text();
+      }
+
+      function showErr(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.classList.add('show');
+      }
+
+      function showFormErr(msg) {
+        const el = document.getElementById('form-err');
+        el.textContent = msg;
+        el.classList.add('show');
+      }
+
+      function toast(msg, type = '') {
+        const el = document.getElementById('panel-toast');
+        el.textContent = msg;
+        el.className = `${type}`;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show', type), 3500);
+      }
+
+      function setLoading(btn, on) {
+        btn.disabled = on;
+        if (on) btn.dataset.orig = btn.innerHTML;
+        btn.innerHTML = on
+          ? '<i class="fas fa-spinner fa-spin"></i> Procesando…'
+          : btn.dataset.orig || btn.innerHTML;
+      }
+
+      // ═══════════════════════════════════════════════════
+      //   INIT — Auto-login si hay sesión guardada
+      // ═══════════════════════════════════════════════════
+      window.addEventListener('DOMContentLoaded', async () => {
+        // Inicializar Idioma y Tema
+        translatePage();
+        applyTheme(localStorage.getItem('bv_theme') || 'dark');
+
+        const saved = localStorage.getItem('bv_panel_user');
+        if (saved) {
+          // Verificar que la cuenta no está baneada
+          try {
+            const res = await fetch(`${SCRIPT_URL}?action=checkStatus&user=${encodeURIComponent(saved)}`);
+            const data = await res.json();
+            if (data.estado === 'Baneado' || data.estado === 'Inactivo') { showBanned(); return; }
+            currentUser = saved;
+            currentRole = localStorage.getItem('bv_panel_role') || 'User';
+            await loadAllAddons();
+            enterPanel();
+          } catch {
+            // En caso de error de red, dejar que haga login manual
+            localStorage.removeItem('bv_panel_user');
+          }
+        }
+      });
   </script>
 </body>
+
 </html>

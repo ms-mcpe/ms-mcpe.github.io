@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await checkMaintenance();
 });
 
-const VERIFY_LINK = 'https://cuty.io/bY5SE4ORJ';
+const VERIFY_LINK = 'https://cuty.io/m8uEHt1ws';
 const VERIFY_DURATION = 15 * 60 * 60 * 1000;
 
 function checkUrlParams() {
@@ -90,6 +90,11 @@ window.addEventListener('message', (e) => {
   if (e.data.type === 'theme-change') {
     localStorage.setItem('bv_theme', e.data.theme);
     document.documentElement.setAttribute('data-theme', e.data.theme);
+    // Notificar al iframe
+    const frame = document.getElementById('page-frame');
+    if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'init-data', theme: e.data.theme, color: localStorage.getItem('bv_primary_color') }, '*');
+    }
   }
   
   if (e.data.type === 'color-change') {
@@ -97,10 +102,14 @@ window.addEventListener('message', (e) => {
     document.documentElement.style.setProperty('--primary-color', e.data.color);
     document.documentElement.style.setProperty('--border-neon', e.data.color);
     document.documentElement.style.setProperty('--neon-glow', e.data.color + '66');
+    // Notificar al iframe
+    const frame = document.getElementById('page-frame');
+    if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'init-data', theme: localStorage.getItem('bv_theme') || 'dark', color: e.data.color }, '*');
+    }
   }
   
   if (e.data.type === 'language-change') {
-    // Reenviar a los iframes si están abiertos
     const frame = document.getElementById('page-frame');
     if(frame && frame.contentWindow) {
        frame.contentWindow.postMessage(e.data, '*');

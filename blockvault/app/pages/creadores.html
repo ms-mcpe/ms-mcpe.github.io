@@ -220,8 +220,19 @@
   <script>
     let allAddons = [];
     let creatorsData = [];
+    let verifiedCreators = new Set();
     let currentCriteria = 'quantity';
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+
+    async function fetchVerifiedUsers() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getUsers`);
+        const data = await res.json();
+        data.slice(1).forEach(u => {
+          if (u[5] === 'Verificado') verifiedCreators.add(u[1]);
+        });
+      } catch (e) {}
+    }
 
     window.addEventListener('message', e => {
       if (e.data && e.data.type === 'init-data') {
@@ -235,6 +246,7 @@
     });
 
     async function loadCreators() {
+      await fetchVerifiedUsers();
       try {
         const res = await fetch(`${SCRIPT_URL}?action=read`);
         allAddons = await res.json();
@@ -308,7 +320,7 @@
       let html = `
         <div class="hero-creator">
           <div class="hero-avatar">${top1.name.charAt(0).toUpperCase()}</div>
-          <div class="hero-name">${top1.name}</div>
+          <div class="hero-name">${top1.name} ${verifiedCreators.has(top1.name) ? '<i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:1.2rem;"></i>' : ''}</div>
           <div class="hero-stat">${top1[currentCriteria].toLocaleString()}</div>
           <div class="hero-label">${label}</div>
           <div style="margin-top:15px; font-size:0.85rem; background:rgba(0,0,0,0.2); padding:8px 15px; border-radius:20px; display:inline-block; border:1px solid rgba(255,255,255,0.1);">
@@ -325,7 +337,7 @@
             <div class="row-rank">#${i + 2}</div>
             <div class="row-avatar">${c.name.charAt(0).toUpperCase()}</div>
             <div class="row-info">
-              <div class="row-name">${c.name}</div>
+              <div class="row-name">${c.name} ${verifiedCreators.has(c.name) ? '<i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:0.85rem;"></i>' : ''}</div>
               <div class="row-val">Top Addon: <span style="color:var(--text-main)">${c.topAddonName}</span></div>
             </div>
             <div style="text-align:right;">

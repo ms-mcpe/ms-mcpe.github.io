@@ -30,6 +30,15 @@ function initSheets() {
         for (let i = 2; i <= lastRow; i++) sheetSesion.getRange(i, col).setValue("User");
       }
     }
+    const headers3 = sheetSesion.getRange(1, 1, 1, sheetSesion.getLastColumn()).getValues()[0];
+    if (!headers3.includes("Verificacion")) {
+      const col = sheetSesion.getLastColumn() + 1;
+      sheetSesion.getRange(1, col).setValue("Verificacion");
+      const lastRow = sheetSesion.getLastRow();
+      if (lastRow > 1) {
+        for (let i = 2; i <= lastRow; i++) sheetSesion.getRange(i, col).setValue("No Verificado");
+      }
+    }
   }
 
   // Hoja Proibido — crear si no existe
@@ -113,6 +122,26 @@ function doPost(e) {
           }
           sheetSesion.getRange(i + 1, estadoCol).setValue(res.estado);
           return ContentService.createTextOutput("STATUS_OK");
+        }
+      }
+      return ContentService.createTextOutput("USER_NOT_FOUND");
+    }
+
+    // ─── SET USER VERIFICATION ──────────────────────────────
+    if (action === "setUserVerification") {
+      const dataUsers = sheetSesion.getDataRange().getValues();
+      const nombre = res.nombre;
+      const verificacion = res.verificacion;
+      
+      for (let i = 1; i < dataUsers.length; i++) {
+        if (dataUsers[i][1] === nombre) {
+          let veriCol = 6; 
+          const headers = dataUsers[0];
+          for (let j = 0; j < headers.length; j++) {
+            if (String(headers[j]).toLowerCase() === 'verificacion') { veriCol = j + 1; break; }
+          }
+          sheetSesion.getRange(i + 1, veriCol).setValue(verificacion);
+          return ContentService.createTextOutput("VERIFICATION_OK");
         }
       }
       return ContentService.createTextOutput("USER_NOT_FOUND");
@@ -439,9 +468,21 @@ function doGet(e) {
     const headers = data[0] || [];
     let estadoColIdx = headers.findIndex(h => String(h).toLowerCase() === 'estado');
     if (estadoColIdx === -1) estadoColIdx = 3;
-    // Normalizar: devolver [fecha, nombre, pass, estado]
+    let rolColIdx = headers.findIndex(h => String(h).toLowerCase() === 'rol');
+    if (rolColIdx === -1) rolColIdx = 4;
+    let veriColIdx = headers.findIndex(h => String(h).toLowerCase() === 'verificacion');
+    if (veriColIdx === -1) veriColIdx = 5;
+
+    // Normalizar: devolver [fecha, nombre, pass, estado, rol, verificacion]
     const result = data.map((row, i) => {
-      return [row[0] || '', row[1] || '', row[2] || '', row[estadoColIdx] || (i === 0 ? 'Estado' : 'Activo')];
+      return [
+        row[0] || '', 
+        row[1] || '', 
+        row[2] || '', 
+        row[estadoColIdx] || (i === 0 ? 'Estado' : 'Activo'),
+        row[rolColIdx] || (i === 0 ? 'Rol' : 'User'),
+        row[veriColIdx] || (i === 0 ? 'Verificacion' : 'No Verificado')
+      ];
     });
     return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
   }

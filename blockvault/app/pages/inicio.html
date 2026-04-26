@@ -43,15 +43,7 @@
       <div style="color:var(--text-muted); font-size:0.8rem;">Cargando más gustados...</div>
     </div>
 
-    <!-- CREADORES DESTACADOS -->
-    <section class="home-section" id="section-creators">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fa-solid fa-trophy" style="color:#ffd700;"></i> Creadores Elite</h2>
-      </div>
-      <div class="creators-grid" id="creators-container">
-        <!-- Cargado por JS -->
-      </div>
-    </section>
+
 
     <!-- Todo el contenido -->
     <h2 class="section-title" id="todo-title">Todo el contenido</h2>
@@ -110,9 +102,6 @@
 
   <script src="../js/security.js"></script>
   <script>
-    let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
-    let allAddons = [];
-
     window.addEventListener('message', e => {
       const d = e.data;
       if (!d) return;
@@ -126,6 +115,10 @@
       }
     });
 
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAFKX9RRSEbp5-kqDFHQHi3Rk17mLhBmhBq9Y3I9oTlfhNfc1wFXwUgv6P5LZ5sBkV/exec';
+    let allAddons = [];
+    let verifiedCreators = new Set();
+
     const catBtns = document.querySelectorAll('.cat-btn');
     catBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -137,7 +130,19 @@
       });
     });
 
+
+    async function fetchVerifiedUsers() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getUsers`);
+        const data = await res.json();
+        data.slice(1).forEach(u => {
+          if (u[5] === 'Verificado') verifiedCreators.add(u[1]);
+        });
+      } catch (e) { console.error("Error al cargar verificados:", e); }
+    }
+
     async function fetchAddons() {
+      await fetchVerifiedUsers();
       try {
         const res = await fetch(`${SCRIPT_URL}?action=read`);
         const data = await res.json();
@@ -157,7 +162,7 @@
         
         renderPopular();
         renderLiked();
-        renderEliteCreators(data.slice(1));
+
         renderContent(allAddons);
 
       } catch (error) {
@@ -169,13 +174,15 @@
     function createHorizontalCard(addon) {
       let descTxt = addon.descargas >= 1000 ? (addon.descargas/1000).toFixed(1) + 'K' : addon.descargas;
       let catColor = 'var(--primary-color)';
+      const isVerificado = verifiedCreators.has(addon.creador);
+      
       return `
         <div class="addon-card-h" onclick="openDetails('${encodeURIComponent(addon.nombre)}')">
           <img src="${addon.img || '../assets/placeholder.png'}" alt="${addon.nombre}" loading="lazy">
           <span class="badge-cat" style="background:${catColor}">${addon.categoria}</span>
           <i class="fa-regular fa-heart badge-like"></i>
           <div class="info-overlay">
-            <div class="title">${addon.nombre}</div>
+            <div class="title">${addon.nombre} ${isVerificado ? '<i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:0.8rem; margin-left:2px;"></i>' : ''}</div>
             <div class="downloads"><i class="fa-solid fa-download"></i> ${descTxt} descargas</div>
           </div>
         </div>
@@ -185,6 +192,8 @@
     function createGridCard(addon) {
       let descTxt = addon.descargas >= 1000 ? (addon.descargas/1000).toFixed(1) + 'K' : addon.descargas;
       let catColor = 'var(--primary-color)';
+      const isVerificado = verifiedCreators.has(addon.creador);
+      
       return `
         <div class="addon-card" onclick="openDetails('${encodeURIComponent(addon.nombre)}')">
           <div class="card-img-wrapper">
@@ -196,7 +205,7 @@
             <div class="card-title">${addon.nombre}</div>
             <div class="card-desc">${addon.descripcion}</div>
             <div class="card-footer">
-              <span class="card-author">${addon.creador}</span>
+              <span class="card-author">${addon.creador} ${isVerificado ? '<i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:0.75rem;"></i>' : ''}</span>
               <span><i class="fa-solid fa-download"></i> ${descTxt}</span>
             </div>
           </div>
@@ -224,59 +233,7 @@
       }
     }
 
-    function renderEliteCreators(addons) {
-      const container = document.getElementById('creators-container');
-      if (!container) return;
 
-      const creatorsData = {};
-      addons.forEach(a => {
-        const c = a[8];
-        if (!creatorsData[c]) creatorsData[c] = { name: c, count: 0, likes: 0, downloads: 0, topAddon: a };
-        creatorsData[c].count++;
-        creatorsData[c].likes += (parseInt(a[5]) || 0);
-        creatorsData[c].downloads += (parseInt(a[6]) || 0);
-        if ((parseInt(a[6]) || 0) > (parseInt(creatorsData[c].topAddon[6]) || 0)) creatorsData[c].topAddon = a;
-      });
-
-      const list = Object.values(creatorsData);
-      
-      // Top 3 categorías
-      const mostAddons = [...list].sort((a,b) => b.count - a.count)[0];
-      const mostLikes = [...list].sort((a,b) => b.likes - a.likes)[0];
-      const mostDownloads = [...list].sort((a,b) => b.downloads - a.downloads)[0];
-
-      const elites = [
-        { ...mostAddons, label: 'Más Prolífico', icon: 'fa-box-open', val: mostAddons.count + ' addons' },
-        { ...mostLikes, label: 'Más Amado', icon: 'fa-heart', val: mostLikes.likes + ' likes' },
-        { ...mostDownloads, label: 'Más Popular', icon: 'fa-download', val: mostDownloads.downloads + ' descargas' }
-      ];
-
-      // Eliminar duplicados si un creador es top en varias cosas
-      const uniqueElites = [];
-      const seen = new Set();
-      elites.forEach(e => {
-        if (!seen.has(e.name)) {
-          uniqueElites.push(e);
-          seen.add(e.name);
-        }
-      });
-
-      container.innerHTML = uniqueElites.map(e => `
-        <div class="creator-mini-card" onclick="filterByCreator('${e.name}')">
-          <div class="creator-badge-type">${e.label}</div>
-          <div class="creator-mini-avatar">${e.name.charAt(0).toUpperCase()}</div>
-          <div class="creator-mini-name">${e.name}</div>
-          <div class="creator-mini-stat"><i class="fa-solid ${e.icon}"></i> ${e.val}</div>
-        </div>
-      `).join('');
-    }
-
-    function filterByCreator(name) {
-      const searchInput = document.getElementById('addon-search');
-      searchInput.value = name;
-      filterAddons();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
     function openDetails(encodedName) {
       const nombre = decodeURIComponent(encodedName);
@@ -286,7 +243,10 @@
       document.getElementById('modal-img').src = addon.img || '../assets/placeholder.png';
       document.getElementById('modal-title').textContent = addon.nombre;
       document.getElementById('modal-cat').textContent = addon.categoria;
-      document.getElementById('modal-author').textContent = addon.creador || 'Desconocido';
+      
+      const isVerificado = verifiedCreators.has(addon.creador);
+      document.getElementById('modal-author').innerHTML = addon.creador + (isVerificado ? ' <i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:0.9rem;"></i>' : '');
+      
       document.getElementById('modal-downloads').textContent = addon.descargas;
       document.getElementById('modal-likes').textContent = addon.likes;
       document.getElementById('modal-version').textContent = addon.version || '1.0';

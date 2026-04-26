@@ -88,7 +88,20 @@
       return new Date(0);
     }
 
+    let verifiedCreators = new Set();
+    
+    async function fetchVerifiedUsers() {
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getUsers`);
+        const data = await res.json();
+        data.slice(1).forEach(u => {
+          if (u[5] === 'Verificado') verifiedCreators.add(u[1]);
+        });
+      } catch (e) {}
+    }
+
     async function fetchNuevos() {
+      await fetchVerifiedUsers();
       try {
         document.getElementById('count-nuevos').textContent = 'Buscando contenido nuevo...';
         document.getElementById('nuevos-container').innerHTML = '';
@@ -154,6 +167,8 @@
       else if(addon.categoria === 'Popurris') catColor = '#ec4899';
       else if(addon.categoria === 'Addons') catColor = '#14b8a6';
 
+      const isVerificado = verifiedCreators.has(addon.creador);
+
       return `
         <div class="addon-card" onclick="openDetails('${encodeURIComponent(addon.nombre)}')">
           <div class="card-img-wrapper">
@@ -165,7 +180,7 @@
             <div class="card-title">${addon.nombre}</div>
             <div class="card-desc">${addon.descripcion}</div>
             <div class="card-footer">
-              <span class="card-author">${addon.creador}</span>
+              <span class="card-author">${addon.creador} ${isVerificado ? '<i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:0.75rem;"></i>' : ''}</span>
               <span><i class="fa-solid fa-download"></i> ${descTxt}</span>
             </div>
           </div>
