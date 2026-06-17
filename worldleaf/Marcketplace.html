@@ -12,8 +12,6 @@
       --bg-body: #0b1120;
       --bg-card: #111827;
       --bg-card2: #162032;
-      --bg-topbar: rgba(6,10,15,0.92);
-      --bg-sidebar: #0d1729;
 
       --primary: #22c55e;
       --primary-light: #4ade80;
@@ -59,14 +57,11 @@
       --radius: 14px;
       --radius-sm: 9px;
       --overlay: rgba(0,0,0,0.72);
-      --coin-glow: rgba(245,158,11,0.4);
+      --coin-glow: rgba(245, 158, 11, 0.4);
     }
     [data-theme="dark"] {
       --bg-body: #0b1120;
       --bg-card: #1e293b;
-      --bg-topbar: rgba(6,10,15,0.92);
-      --bg-bottombar: rgba(6,10,15,0.92);
-      --bg-sidebar: #0d1729;
       --primary: #22c55e;
       --primary-light: #4ade80;
       --primary-bg: rgba(34,197,94,0.09);
@@ -95,22 +90,145 @@
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
     ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
     body{
-      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-      background:var(--bg-body);min-height:100vh;color:var(--text);overflow-x:hidden;width:100%;max-width:100%;
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg-body);
+      min-height:100vh;
+      padding-top:76px;
+      padding-bottom:84px;
+      color:var(--text);
       transition:background-color 0.3s ease, color 0.3s ease;
+      overflow-x:hidden;
+      width:100%;
+      max-width:100%;
     }
-    body::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);background-size:28px 28px;opacity:0.35;}
-    body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);}
-    .page-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:4px;}
-    .page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:16px;font-weight:500;}
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+
+    .topbar{
+      position:fixed;top:0;left:0;right:0;height:60px;
+      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 20px;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:100;
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-left{display:flex;align-items:center;gap:10px;}
+    .hamburger{
+      background:none;border:none;font-size:24px;color:var(--primary);
+      cursor:pointer;padding:8px;border-radius:10px;
+      transition:all 0.2s ease;line-height:1;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .hamburger:hover{background:var(--primary-bg);transform:scale(1.05);}
+    .topbar-center{display:flex;align-items:center;justify-content:center;flex:1;}
+    .topbar-center img{height:34px;width:auto;object-fit:contain;}
+    .topbar-right{display:flex;align-items:center;}
+    .coin-display{
+      display:flex;align-items:center;gap:6px;
+      padding:6px 14px 6px 10px;border-radius:20px;
+      background:var(--primary-bg);
+      border:1.5px solid var(--primary);
+      font-size:13px;font-weight:700;color:var(--primary);
+      cursor:default;position:relative;
+      box-shadow:0 0 12px var(--coin-glow);
+    }
+    .coin-display img{width:20px;height:20px;object-fit:contain;}
+    .profile-circle{
+      width:38px;height:38px;border-radius:50%;
+      background:var(--primary-gradient);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:700;font-size:15px;
+      cursor:pointer;overflow:hidden;
+      border:2px solid var(--bg-card);
+      box-shadow:0 2px 8px rgba(0,0,0,.15);
+      transition:all 0.2s ease;
+    }
+    .profile-circle:hover{transform:scale(1.1);box-shadow:0 4px 12px var(--primary-bg);}
+    .profile-circle img{width:100%;height:100%;object-fit:cover;}
+    .sidebar-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--overlay);backdrop-filter:blur(4px);z-index:200;display:none;opacity:0;transition:opacity .3s;}
+    .sidebar-overlay.active{display:block;opacity:1;}
+    .sidebar{
+      position:fixed;top:0;left:-280px;bottom:0;width:280px;
+      background:var(--bg-sidebar);z-index:201;
+      transition:left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow:4px 0 24px var(--shadow-md);
+      display:flex;flex-direction:column;
+      border-right:1px solid var(--border);
+    }
+    .sidebar.open{left:0;}
+    .sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--border);}
+    .sidebar-header h2{font-size:20px;color:var(--primary);font-weight:800;letter-spacing:-0.5px;}
+    .sidebar-close{background:var(--bg-body);border:none;font-size:20px;color:var(--text-secondary);cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+    .sidebar-close:hover{background:var(--border);color:var(--text);}
+    .sidebar-menu{flex:1;overflow-y:auto;padding:12px 8px;}
+    .sidebar-item{display:flex;align-items:center;gap:12px;padding:12px 16px;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;transition:all 0.2s ease;border:none;border-radius:10px;background:none;width:100%;text-align:left;margin-bottom:4px;}
+    .sidebar-item:hover{background:var(--primary-bg);color:var(--primary);}
+    .sidebar-item .icon{font-size:20px;width:24px;text-align:center;color:var(--primary);}
+    .sidebar-item .arrow-sub{font-size:10px;margin-left:auto;color:var(--text-secondary);transition:transform .2s;}
+    .sidebar-item.open .arrow-sub{transform:rotate(180deg);}
+    .submenu{overflow:hidden;max-height:0;transition:max-height .25s ease;background:var(--bg-body);border-radius:8px;}
+    .submenu.open{max-height:120px;margin:2px 0 6px;}
+    .submenu-item{display:flex;align-items:center;gap:12px;padding:10px 16px 10px 48px;font-size:14px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;border-radius:8px;}
+    .submenu-item:hover{background:var(--primary-bg);color:var(--primary);}
+    .submenu-item .icon{font-size:16px;width:20px;text-align:center;color:var(--primary);}
+    .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted);font-weight:500;}
+
+    .bottombar{
+      position:fixed;bottom:0;left:0;right:0;height:64px;
+      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      display:flex;align-items:center;justify-content:space-around;
+      box-shadow:0 -2px 20px rgba(0,0,0,0.5);z-index:100;padding:0 8px;
+      border-top:1px solid var(--border);
+    }
+    .bottombar-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border:none;background:none;cursor:pointer;color:var(--text-muted);transition:all 0.2s ease;font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;text-transform:uppercase;letter-spacing:0.3px;min-width:64px;border-radius:10px;}
+    .bottombar-item:hover{color:var(--primary);background:var(--primary-bg);}
+    .bottombar-item.active{color:var(--primary);background:var(--primary-bg);}
+    .bottombar-item .icon{font-size:20px;line-height:1;transition:transform 0.2s ease;}
+    .bottombar-item:active .icon{transform:scale(0.9);}
+
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:4px;}
+    .section-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--text);}
+    .stat-number{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--primary);}
+    .badge-rol{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 11px;border-radius:20px;display:inline-flex;align-items:center;}
+    .badge-owner{background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,0.35);}
+    .badge-admin{background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.30);}
+    .badge-app{background:linear-gradient(135deg,#c084fc,#a855f7);color:#fff;box-shadow:0 2px 8px rgba(168,85,247,0.30);}
+    .btn-sm{
+      padding:5px 13px;border:none;border-radius:7px;
+      font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+      letter-spacing:0.4px;cursor:pointer;transition:all 0.2s;
+    }
+    input, textarea, select, .search-input, .add-word-form input{
+      padding:10px 14px;border:1px solid var(--border);border-radius:9px;
+      background:var(--bg-card2);color:var(--text);
+      font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all 0.2s;
+    }
+    input:focus, textarea:focus, select:focus, .search-input:focus, .add-word-form input:focus{
+      border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);
+    }
+    .msg-banner{
+      padding:11px 16px;border-radius:9px;font-size:13px;font-weight:600;
+      border-left:3px solid;display:none;margin-bottom:16px;animation:fadeIn 0.2s ease;
+    }
+    .msg-banner.show{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+    .content{padding:20px;max-width:800px;margin:0 auto;animation:fadeIn 0.4s ease-out;}
+    .page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-weight:500;}
     .page-sub .coin-inline{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-weight:700;}
     .page-sub .coin-inline img{width:16px;height:16px;object-fit:contain;}
-    .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+    .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
     .header-row-left{flex:1;}
     .header-row-right{position:relative;}
     .menu-dots{width:38px;height:38px;border-radius:50%;border:none;background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;box-shadow:var(--shadow);}
     .menu-dots:hover{background:var(--primary-bg);color:var(--primary);border-color:var(--primary-light);}
-    .dropdown-menu{position:absolute;top:46px;right:0;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-md);z-index:50;min-width:180px;display:none;overflow:hidden;animation:zoomIn 0.2s ease;}
+    .dropdown-menu{position:absolute;top:46px;right:0;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-md);z-index:50;min-width:200px;display:none;overflow:hidden;animation:zoomIn 0.2s ease;}
     @keyframes zoomIn{from{transform:scale(0.95);opacity:0;}to{transform:scale(1);opacity:1;}}
     .dropdown-menu.open{display:block;}
     .dropdown-item{display:flex;align-items:center;gap:12px;padding:12px 18px;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background 0.15s;}
@@ -118,6 +236,7 @@
     .dropdown-item .icon{font-size:16px;width:20px;text-align:center;color:var(--text-muted);}
     .dropdown-item.active{color:var(--primary);font-weight:700;}
     .dropdown-item.active .icon{color:var(--primary);}
+
     .cat-row{position:relative;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
     .cat-dropdown-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;}
     .cat-dropdown-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg);}
@@ -129,44 +248,156 @@
     .cat-item:hover{background:var(--primary-bg);color:var(--primary);}
     .cat-item.active{color:var(--primary);font-weight:700;background:var(--primary-bg);}
     .cat-active-label{font-size:13px;font-weight:700;color:var(--text);background:var(--primary-bg);color:var(--primary);padding:6px 14px;border-radius:20px;}
+
     .search-row{margin-bottom:16px;}
-    .search-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:9px;background:var(--bg-card2);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all 0.2s;}
+    .search-input{width:100%;}
     .search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);}
     .search-input::placeholder{color:var(--text-muted);}
-    .content{padding:20px;max-width:800px;margin:0 auto;animation:fadeIn 0.4s ease-out;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-    .addon-grid{display:grid;grid-template-columns:1fr;gap:20px;}
-    @media(min-width:600px){.addon-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(min-width:960px){.addon-grid{grid-template-columns:repeat(3,1fr);}}
+
     .card{
-      background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
-      box-shadow:var(--shadow);cursor:pointer;position:relative;
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--radius);overflow:hidden;margin-bottom:20px;
+      box-shadow:var(--shadow);cursor:pointer;
       transition:transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, background 0.3s;
+      position:relative;
     }
     .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary-gradient);z-index:1;}
     .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--primary-light);}
+    .card-full{grid-column:1/-1;cursor:default;}
+    .card-full:hover{transform:none;box-shadow:var(--shadow);border-color:var(--border);}
+    .card-full::before{display:none;}
+    .card-hdr{display:flex;align-items:center;gap:14px;padding:20px 24px;border-bottom:1px solid var(--border-light);}
+    .card-icon{width:44px;height:44px;border-radius:12px;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex-shrink:0;box-shadow:0 4px 12px var(--primary-glow);}
+    .card-hdr-text{min-width:0;word-break:break-word;overflow-wrap:break-word;}
+    .card-hdr-text h3{font-size:18px;font-weight:800;color:var(--text);margin:0 0 4px;letter-spacing:-0.5px;}
+    .card-hdr-text p{font-size:13px;color:var(--text-muted);margin:0;font-weight:500;}
+    .card-body{padding:24px;word-break:break-word;overflow-wrap:break-word;}
+
+    .addon-grid{display:grid;grid-template-columns:1fr;gap:20px;}
+    @media(min-width:600px){.addon-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(min-width:960px){.addon-grid{grid-template-columns:repeat(3,1fr);}}
+
     .card-cover{width:100%;max-width:100%;height:180px;object-fit:cover;display:block;background:var(--surface);}
-    .card-placeholder{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--text-light);background:var(--surface);}
-    .card-body{padding:20px;}
-    .card-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-0.3px;word-break:break-word;}
     .addon-desc{font-size:14px;color:var(--text-secondary);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px;font-weight:500;word-break:break-word;overflow-wrap:break-word;}
     .addon-meta{display:flex;gap:16px;font-size:13px;color:var(--text-muted);margin-bottom:16px;align-items:center;font-weight:600;flex-wrap:wrap;}
     .price-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;background:var(--primary-bg);color:var(--primary);font-weight:800;font-size:14px;}
     .price-tag img{width:16px;height:16px;object-fit:contain;}
-    .price-tag-free{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;background:var(--primary-bg);color:var(--primary);font-weight:800;font-size:14px;}
-    .addon-btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius-sm);background:var(--primary-gradient);color:#fff;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;box-shadow:0 4px 12px var(--primary-glow);}
-    .addon-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px var(--primary-glow);filter:brightness(1.05);}
-    .addon-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;filter:none;}
-    .addon-btn-own{background:linear-gradient(135deg,#4ade80,#22c55e);}
-    .card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light);}
     .like-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-muted);padding:0;display:inline-flex;align-items:center;gap:4px;font-family:inherit;transition:all 0.2s;}
     .like-btn:hover{color:#ef4444;transform:scale(1.05);}
     .like-btn.liked{color:#ef4444;font-weight:700;}
-    .user-link{font-size:11px;color:var(--text-muted);font-weight:500;text-decoration:none;cursor:pointer;}
-    .user-link:hover{color:var(--primary);text-decoration:underline;}
+    .addon-btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius-sm);background:var(--primary-gradient);color:#fff;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;box-shadow:0 4px 12px var(--primary-glow);}
+    .addon-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px var(--primary-glow);filter:brightness(1.05);}
+    .addon-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;filter:none;}
+    .addon-btn-buy{background:var(--primary-gradient);}
+    .addon-btn-own{background:linear-gradient(135deg,#4ade80,#22c55e);box-shadow:0 4px 12px rgba(34,197,94,0.3);}
+    .addon-btn-own:hover{box-shadow:0 6px 16px rgba(34,197,94,0.4);}
     .sin-addons{text-align:center;color:var(--text-light);font-size:15px;padding:60px 0;font-weight:500;}
+    .modal-overlay{
+      display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+      background:var(--overlay);backdrop-filter:blur(6px);z-index:200;
+      align-items:center;justify-content:center;padding:20px;
+    }
+    .modal-overlay.active{display:flex;}
+    .modal{
+      background:var(--bg-card);border-radius:20px;padding:32px 28px;
+      max-width:520px;width:100%;position:relative;
+      box-shadow:var(--shadow-lg);
+      border:1px solid var(--border);
+      max-height:90vh;overflow-y:auto;
+      animation:zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .modal-close{position:absolute;top:16px;right:16px;background:var(--bg-body);border:none;font-size:20px;cursor:pointer;color:var(--text-secondary);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+    .modal-close:hover{background:var(--border);color:var(--text);}
+    .modal h3{font-size:20px;font-weight:800;color:var(--text);margin-bottom:20px;letter-spacing:-0.5px;}
+    .modal .form-group{margin-bottom:20px;}
+    .modal .form-group label{display:block;font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;}
+    .modal .form-group input, .modal .form-group textarea, .modal .form-group select{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;font-family:inherit;background:var(--bg-body);}
+    .modal .form-group input:focus, .modal .form-group textarea:focus, .modal .form-group select:focus{border-color:var(--primary);background:var(--bg-card);box-shadow:0 0 0 4px var(--primary-glow);}
+    .modal .form-group textarea{resize:vertical;min-height:100px;}
+    .message{padding:14px 16px;border-radius:10px;font-size:14px;margin-bottom:20px;display:none;text-align:center;font-weight:500;}
+    .message.error{display:block;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
+    .message.success{display:block;background:rgba(245,158,11,0.1);color:var(--primary);border:1px solid rgba(245,158,11,0.2);}
 
+    .modal .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;}
+    .btn-modal{width:100%;padding:14px;border:none;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;background:var(--primary);color:#fff;}
+    .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+    .btn-modal:disabled{background:var(--text-light);cursor:not-allowed;opacity:0.6;}
+    .addon-imgs-row{display:flex;gap:10px;flex-wrap:wrap;}
+    .addon-img-slot{width:80px;height:80px;border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;transition:all 0.2s;background:var(--bg-body);}
+    .addon-img-slot:hover{border-color:var(--primary);background:var(--primary-bg);}
+    .addon-img-slot.has-img{border-style:solid;border-color:var(--primary);box-shadow:0 4px 8px var(--primary-glow);}
+    .addon-img-slot .slot-placeholder{font-size:24px;color:var(--text-muted);font-weight:500;}
+    .addon-img-slot .slot-placeholder.hide{display:none;}
+    .slot-preview{width:100%;height:100%;object-fit:cover;display:none;}
+    .slot-preview.show{display:block;}
+    .word-count{font-size:12px;color:var(--text-muted);font-weight:600;}
+
+    .addon-add-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;border:none;border-radius:10px;background:var(--primary-gradient);color:#fff;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 12px var(--primary-glow);}
+    .addon-add-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px var(--primary-glow);filter:brightness(1.05);}
+
+    @media(max-width:480px){
+      .sidebar{width:100%;left:-100%;}
+      .content{padding:14px;}
+      .page-title{font-size:20px;}
+      .page-sub{font-size:13px;margin-bottom:12px;}
+      .header-row{flex-wrap:wrap;gap:8px;}
+      .header-row-right{order:1;}
+      .addon-add-btn{padding:8px 14px;font-size:13px;white-space:nowrap;}
+      .card-cover{height:140px;}
+      .card-hdr{padding:14px 16px;}
+      .card-body{padding:16px;}
+      .cat-row{margin-bottom:12px;gap:8px;}
+      .search-row{margin-bottom:12px;}
+      .search-input{padding:10px 14px;font-size:13px;}
+      .addon-meta{font-size:12px;gap:10px;}
+      .addon-btn{padding:12px;font-size:13px;}
+      .addon-desc{font-size:13px;}
+      .card-hdr-text h3{font-size:15px;}
+      body{padding-top:60px;padding-bottom:72px;}
+      .topbar{height:52px;padding:0 12px;}
+      .bottombar{height:56px;}
+      .bottombar-item{min-width:48px;padding:4px;font-size:10px;}
+      .modal{padding:24px 16px;max-width:100%;border-radius:16px 16px 0 0;margin-top:auto;animation:slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;}
+      .modal-overlay{align-items:flex-end;padding:0;}
+      .modal .form-group input, .modal .form-group textarea, .modal .form-group select{padding:10px 12px;font-size:13px;}
+      .modal h3{font-size:18px;}
+      .addon-img-slot{width:64px;height:64px;}
+      .coin-display{padding:4px 10px 4px 8px;font-size:12px;}
+      .coin-display img{width:16px;height:16px;}
+      body{padding-top:60px;padding-bottom:72px;}
+      .topbar{height:52px;padding:0 12px;}
+      .bottombar{height:56px;}
+    }
+    @keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    @media(min-width:768px) {
+      body{padding-top:80px;padding-bottom:20px;}
+      .content{padding:24px;max-width:900px;}
+      .bottombar{top:0;bottom:auto;left:auto;right:20px;height:60px;background:transparent;border-top:none;box-shadow:none;width:auto;z-index:101;gap:12px;}
+      .bottombar-item{flex-direction:row;padding:8px 16px;gap:8px;font-size:13px;height:40px;min-width:auto;}
+      .topbar{padding:0 40px;}
+      .topbar-center{justify-content:flex-start;padding-left:20px;}
+      .topbar-right{margin-right:280px;}
+      .bottombar{background:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+    }
+    .blocked-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
+      background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:40px 24px;text-align:center;
+    }
+    .blocked-overlay .block-icon{font-size:72px;margin-bottom:16px;animation:pulseBlock 2s infinite;}
+    @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:0.8;}}
+    .blocked-overlay h2{font-size:24px;font-weight:800;color:#ef4444;margin-bottom:8px;}
+    .blocked-overlay p{font-size:15px;color:#cbd5e1;max-width:480px;line-height:1.6;margin-bottom:16px;}
+    .blocked-overlay .razones{text-align:left;color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:24px;}
+    .blocked-overlay .razones li{margin-bottom:4px;}
+    .blocked-overlay .btn-soporte{
+      display:inline-block;padding:14px 40px;border-radius:12px;
+      background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;
+      font-size:16px;font-weight:700;text-decoration:none;
+      transition:all 0.2s;box-shadow:0 4px 16px rgba(59,130,246,0.3);
+    }
+    .blocked-overlay .btn-soporte:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(59,130,246,0.5);}
     .mkt-menu-btn{width:28px;height:28px;position:absolute;top:8px;right:8px;border:none;background:rgba(0,0,0,0.5);color:#fff;border-radius:50%;cursor:pointer;z-index:2;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;}
     .mkt-menu-btn:hover{background:rgba(255,255,255,0.2);}
     .mkt-menu-dropdown{position:absolute;top:38px;right:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);display:none;z-index:3;min-width:130px;flex-direction:column;}
@@ -175,106 +406,90 @@
     .mkt-menu-dropdown button:hover{background:var(--primary-bg);color:var(--primary);}
     .mkt-menu-dropdown button:last-child{color:#ef4444;}
     .mkt-menu-dropdown button:last-child:hover{background:rgba(239,68,68,0.1);}
-
-    .fab{
-      position:fixed;bottom:24px;right:24px;z-index:100;
-      width:56px;height:56px;border-radius:50%;
-      background:var(--primary-gradient);border:none;color:#fff;
-      font-size:28px;font-weight:400;cursor:pointer;
-      box-shadow:0 6px 20px var(--primary-glow);
-      display:flex;align-items:center;justify-content:center;
-      transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .fab:hover{transform:scale(1.1);box-shadow:0 8px 24px var(--primary-glow);}
-    .fab:active{transform:scale(0.95);}
-
-    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--overlay);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;padding:20px;}
-    .modal-overlay.active{display:flex;}
-    .modal{background:var(--bg-card);border-radius:20px;padding:32px 28px;max-width:520px;width:100%;position:relative;box-shadow:var(--shadow-lg);border:1px solid var(--border);max-height:90vh;overflow-y:auto;animation:zoomIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;}
-    .modal-close{position:absolute;top:16px;right:16px;background:var(--bg-body);border:none;font-size:20px;cursor:pointer;color:var(--text-secondary);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
-    .modal-close:hover{background:var(--border);color:var(--text);}
-    .modal h3{font-size:20px;font-weight:800;color:var(--text);margin-bottom:20px;letter-spacing:-0.5px;}
-    .modal .form-group{margin-bottom:20px;}
-    .modal .form-group label{display:block;font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;}
-    .modal .form-group input,.modal .form-group textarea,.modal .form-group select{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;font-family:inherit;background:var(--bg-body);}
-    .modal .form-group input:focus,.modal .form-group textarea:focus,.modal .form-group select:focus{border-color:var(--primary);background:var(--bg-card);box-shadow:0 0 0 4px var(--primary-glow);}
-    .modal .form-group textarea{resize:vertical;min-height:100px;}
-    .btn-modal{width:100%;padding:14px;border:none;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;background:var(--primary);color:#fff;}
-    .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
-    .btn-modal:disabled{background:var(--text-light);cursor:not-allowed;opacity:0.6;}
-    .btn-modal-cancel{background:var(--text-muted);}
-    .btn-modal-cancel:hover{background:var(--text-light);box-shadow:none;}
-    .msg-banner{padding:11px 16px;border-radius:9px;font-size:13px;font-weight:600;border-left:3px solid;display:none;margin-bottom:16px;animation:fadeIn 0.2s ease;}
-    .msg-banner.show{display:block;}
-    .msg-banner.error{background:var(--danger-bg);border-color:var(--danger);color:var(--danger);}
-    .msg-banner.success{background:var(--success-bg);border-color:var(--success);color:var(--success);}
-    .message{padding:14px 16px;border-radius:10px;font-size:14px;margin-bottom:20px;display:none;text-align:center;font-weight:500;}
-    .message.error{display:block;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
-    .message.success{display:block;background:rgba(245,158,11,0.1);color:var(--primary);border:1px solid rgba(245,158,11,0.2);}
-    .word-count{font-size:12px;color:var(--text-muted);font-weight:600;}
     .edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;}
     .edit-modal-content{background:var(--bg-card);border-radius:12px;padding:24px;max-width:500px;width:90%;border:1px solid var(--border);}
-    .edit-modal-content textarea{width:100%;min-height:120px;background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:inherit;font-size:14px;outline:none;}
-    .edit-modal-content textarea:focus{border-color:var(--primary);}
+    .edit-modal-content textarea{width:100%;min-height:120px;background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:inherit;font-size:14px;}
     .edit-modal-btns{display:flex;gap:10px;margin-top:14px;}
-    .edit-modal-btns button{flex:1;padding:10px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Rajdhani';font-size:14px;}
-    .blocked-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
-    .blocked-overlay .block-icon{font-size:72px;margin-bottom:16px;animation:pulseBlock 2s infinite;}
-    @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:0.8;}}
-    .blocked-overlay h2{font-size:24px;font-weight:800;color:#ef4444;margin-bottom:8px;}
-    .blocked-overlay p{font-size:15px;color:#cbd5e1;max-width:480px;line-height:1.6;margin-bottom:16px;}
-    .blocked-overlay .razones{text-align:left;color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:24px;list-style:none;padding:0;}
-    .blocked-overlay .razones li{margin-bottom:4px;}
-    .blocked-overlay .btn-soporte{display:inline-block;padding:14px 40px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;font-size:16px;font-weight:700;text-decoration:none;transition:all 0.2s;box-shadow:0 4px 16px rgba(59,130,246,0.3);}
-    .blocked-overlay .btn-soporte:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(59,130,246,0.5);}
-    .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;padding:14px 28px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:var(--shadow-lg);animation:slideDown 0.3s ease;max-width:90vw;text-align:center;}
-    .toast.success{background:var(--success);color:#fff;}
-    .toast.error{background:var(--danger);color:#fff;}
-    @keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
-    @media(max-width:480px){
-      .content{padding:14px;}
-      .page-title{font-size:20px;}
-      .card-cover{height:140px;}
-      .card-body{padding:16px;}
-      .fab{bottom:16px;right:16px;width:52px;height:52px;font-size:24px;}
-      .modal{padding:24px 16px;max-width:100%;border-radius:16px 16px 0 0;margin-top:auto;animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;}
-      .modal-overlay{align-items:flex-end;padding:0;}
-    }
-    @keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    .edit-modal-btns button{flex:1;padding:10px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Rajdhani';}
   </style>
 </head>
 <body>
-  <div class="content" id="mainContent">
-    <div class="sin-addons" id="loadingMsg">Cargando marketplace...</div>
-  </div>
+  <div class="content" id="mainContent"></div>
 
-  <div class="modal-overlay" id="modalNewAddon">
+  <iframe id="uploadFrame" name="uploadFrame" style="display:none"></iframe>
+  <iframe id="marcketFrame" name="marcketFrame" style="display:none"></iframe>
+
+  <form id="marcketForm" action="https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec" method="POST" target="marcketFrame" style="display:none;">
+    <input type="hidden" name="action" value="addMarcketplaceAddon">
+    <input type="hidden" name="user" id="marcketFormUser">
+    <input type="hidden" name="pass" id="marcketFormPass">
+    <input type="hidden" name="nombre" id="marcketFormNombre">
+    <input type="hidden" name="categoria" id="marcketFormCategoria">
+    <input type="hidden" name="version" id="marcketFormVersion">
+    <input type="hidden" name="link" id="marcketFormLink">
+    <input type="hidden" name="descripcion" id="marcketFormDesc">
+    <input type="hidden" name="coins" id="marcketFormCoins">
+    <input type="hidden" name="img1" id="marcketFormImg1">
+    <input type="hidden" name="img2" id="marcketFormImg2">
+    <input type="hidden" name="img3" id="marcketFormImg3">
+    <input type="hidden" name="img4" id="marcketFormImg4">
+    <input type="hidden" name="img5" id="marcketFormImg5">
+    <input type="hidden" name="img6" id="marcketFormImg6">
+  </form>
+
+  <div class="modal-overlay" id="modalAddon">
     <div class="modal">
-      <button class="modal-close" onclick="cerrarModalNuevo()">&times;</button>
-      <h3 id="modalNewTitle">Publicar en Marketplace</h3>
-      <div id="modalNewMsg" class="message"></div>
+      <button class="modal-close" onclick="cerrarModalAddon()">&times;</button>
+      <h3>Publicar en Marketplace</h3>
+      <div id="addonModalMsg" class="message" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;"></div>
       <div class="form-group">
-        <label>Nombre del Addon <span style="color:var(--danger);">*</span></label>
-        <input id="inpNombre" placeholder="Ej: Mi Addon"><div style="font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="inpNombreCount">0</span>/10 palabras</div>
-      </div>
-      <div class="form-group">
-        <label>Descripci&oacute;n <span class="word-count">(<span id="inpDescCount">0</span>/700 palabras)</span></label>
-        <textarea id="inpDesc" placeholder="M&aacute;ximo 700 palabras..." rows="6"></textarea>
-      </div>
-      <div class="form-group">
-        <label>URL de imagen (opcional)</label>
-        <input id="inpImg" placeholder="https://...">
-      </div>
-      <div class="form-group">
-        <label>Precio en Coins <span style="color:var(--danger);">*</span></label>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:24px;height:24px;object-fit:contain;">
-          <input id="inpCoins" type="number" min="0" value="0" style="flex:1;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;font-family:inherit;background:var(--bg-body);">
+        <label>Im&aacute;genes (m&aacute;x 6, primera obligatoria)</label>
+        <div class="addon-imgs-row" id="addonImgRow">
+          <div class="addon-img-slot" data-idx="0" onclick="addonSlotClick(0)"><div class="slot-placeholder">+</div><img class="slot-preview" id="addonPreview0"></div>
+          <div class="addon-img-slot" data-idx="1" onclick="addonSlotClick(1)"><div class="slot-placeholder">+</div><img class="slot-preview" id="addonPreview1"></div>
+          <div class="addon-img-slot" data-idx="2" onclick="addonSlotClick(2)"><div class="slot-placeholder">+</div><img class="slot-preview" id="addonPreview2"></div>
+          <div class="addon-img-slot" data-idx="3" onclick="addonSlotClick(3)"><div class="slot-placeholder">+</div><img class="slot-preview" id="addonPreview3"></div>
+          <div class="addon-img-slot" data-idx="4" onclick="addonSlotClick(4)"><div class="slot-placeholder">+</div><img class="slot-preview" id="addonPreview4"></div>
+          <div class="addon-img-slot" data-idx="5" onclick="addonSlotClick(5)"><div class="slot-placeholder">+</div><img class="slot-preview" id="addonPreview5"></div>
         </div>
       </div>
+      <div class="form-group">
+        <label>Nombre del Addon <span class="req">*</span></label>
+        <input id="addonNombreInput" placeholder="Ej: Ultra HD Texture Pack"><div style="font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="nombreWordCount">0</span>/10 palabras</div>
+      </div>
+      <div class="form-group">
+        <label>Categor&iacute;a <span class="req">*</span></label>
+        <select id="addonCategoriaSelect">
+          <option value="addons">Addons</option>
+          <option value="mapas">Mapas</option>
+          <option value="texturas">Texturas</option>
+          <option value="skins">Skins</option>
+          <option value="shaders">Shaders</option>
+          <option value="script">Script</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Versi&oacute;n</label>
+        <input id="addonVersionInput" placeholder="1.0.0" value="1.0.0" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label>URL de descarga <span class="req">*</span></label>
+        <input id="addonUrlInput" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label>Precio en Coins <span class="req">*</span></label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:24px;height:24px;object-fit:contain;">
+          <input id="addonCoinsInput" type="number" min="0" value="0" placeholder="0" style="flex:1;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;font-family:inherit;background:var(--bg-body);">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripci&oacute;n <span class="word-count">(<span id="addonWordCount">0</span>/700 palabras)</span></label>
+        <textarea id="addonDescInput" placeholder="M&aacute;ximo 700 palabras..." rows="8"></textarea>
+      </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn-modal btn-modal-cancel" onclick="cerrarModalNuevo()">Cancelar</button>
-        <button class="btn-modal" id="btnPublicar" onclick="guardarPublicacion()">Publicar</button>
+        <button class="btn-modal" style="flex:1;background:var(--text-muted);" onclick="cerrarModalAddon()">Cancelar</button>
+        <button class="btn-modal" style="flex:1;" id="btnPublicarAddon" onclick="publicarAddon()">Publicar</button>
       </div>
     </div>
   </div>
@@ -293,48 +508,258 @@
 
     var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
 
+    function guardarCacheAddons() {
+      try { localStorage.setItem('marcketCache', JSON.stringify(addonsCache)); } catch(e) {}
+    }
+
+    function yaLike(a) {
+      if (!sessionUser || !a.likesUsers) return false;
+      return a.likesUsers.split(',').indexOf(sessionUser) !== -1;
+    }
+
+    function yaCompro(a) {
+      if (!sessionUser || !compradosCache) return false;
+      return compradosCache.indexOf(a.addonId) !== -1;
+    }
+
+    function actualizarVistaLike(a) {
+      var btn = document.querySelector('#mainContent .like-btn');
+      if (btn) {
+        var liked = yaLike(a);
+        btn.className = 'like-btn' + (liked ? ' liked' : '');
+        btn.innerHTML = (liked ? '&#10084;' : '&#9825;') + ' ' + (a.likes||0);
+      }
+    }
+
+    function doLikeAddon(a) {
+      if (!sessionUser || !sessionPass) return;
+      var liked = yaLike(a);
+      var users = a.likesUsers ? a.likesUsers.split(',') : [];
+      if (liked) {
+        a.likes = Math.max(0, (a.likes||0) - 1);
+        var idx = users.indexOf(sessionUser);
+        if (idx !== -1) users.splice(idx, 1);
+      } else {
+        a.likes = (a.likes||0) + 1;
+        users.push(sessionUser);
+      }
+      a.likesUsers = users.join(',');
+      guardarCacheAddons();
+      actualizarVistaLike(a);
+      renderAddons();
+      jsonp({ action:'likeMarcketplaceAddon', id:a.id, user:sessionUser, pass:sessionPass }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'MARCKET_LIKED') { a.likes = d.likes; a.likesUsers = d.likesUsers; guardarCacheAddons(); actualizarVistaLike(a); renderAddons(); } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function doDownloadAddon(a) {
+      a.descargas = (a.descargas||0) + 1;
+      guardarCacheAddons();
+      renderAddons();
+      jsonp({ action:'downloadMarcketplaceAddon', id:a.id }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'DOWNLOAD_OK') { a.descargas = d.descargas; guardarCacheAddons(); renderAddons(); } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function doBuyAddon(a) {
+      if (!sessionUser || !sessionPass) return;
+      if (_comprando) return;
+      _comprando = true;
+      var btn = document.querySelector('#mainContent .addon-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Comprando...'; }
+      jsonp({ action:'buyAddon', user:sessionUser, pass:sessionPass, addonId:a.addonId }).then(function(r) {
+        try {
+          var d = typeof r === 'string' ? JSON.parse(r) : r;
+          if (d.status === 'BUY_OK') {
+            userCoins = d.coins;
+            actualizarCoinsUI();
+            compradosCache.push(a.addonId);
+            guardarCompradosCache();
+            renderAddons();
+            mostrarAlerta('¡Addon comprado! Ya puedes descargarlo.', 'success');
+          } else if (d.status === 'ALREADY_BOUGHT') {
+            compradosCache.push(a.addonId);
+            guardarCompradosCache();
+            renderAddons();
+            mostrarAlerta('Ya hab&iacute;as comprado este addon.', 'success');
+          } else if (d.status === 'INSUFFICIENT_COINS') {
+            mostrarAlerta('No tienes suficientes Coins. Tienes ' + formatCoins(d.coins) + ', necesitas ' + formatCoins(d.needed) + '.', 'error');
+          } else if (d.status === 'AUTH_ERROR') {
+            mostrarAlerta('Error de autenticaci&oacute;n.', 'error');
+          } else {
+            mostrarAlerta('Error al comprar.', 'error');
+          }
+        } catch(e) { mostrarAlerta('Error al procesar compra.', 'error'); }
+        _comprando = false;
+      }).catch(function() {
+        mostrarAlerta('Error de conexi&oacute;n al comprar.', 'error');
+        _comprando = false;
+      });
+    }
+
     var sessionUser = localStorage.getItem('sessionUser');
     var sessionPass = localStorage.getItem('sessionPass');
-    if (!sessionUser || !sessionPass) { window.top.location.href = 'login.html'; }
+    if (!sessionUser || !sessionPass) window.location.href = 'login.html';
 
     var profileData = null;
     try { var s = localStorage.getItem('userProfile'); if (s) profileData = JSON.parse(s); } catch(e) {}
-    var userRole = profileData && profileData.rol ? profileData.rol : '';
+    function actualizarPerfilUI() {
+      var pi = document.getElementById('profileInitial');
+      if (profileData && profileData.fotoPerfil) { pi.innerHTML = '<img src="' + profileData.fotoPerfil + '" alt="Perfil">'; }
+      else { pi.textContent = sessionUser ? sessionUser.charAt(0).toUpperCase() : 'U'; }
+    }
+    actualizarPerfilUI();
+
+    var addonImgsB64 = ['','','','','',''];
+    var _subiendoAddon = false;
+    var _comprando = false;
+
+    function abrirModalAddon() {
+      document.getElementById('addonDescInput').value = '';
+      document.getElementById('addonNombreInput').value = '';
+      document.getElementById('addonVersionInput').value = '1.0.0';
+      document.getElementById('addonUrlInput').value = '';
+      document.getElementById('addonCoinsInput').value = 0;
+      document.getElementById('addonModalMsg').style.display = 'none';
+      document.getElementById('btnPublicarAddon').disabled = false;
+      document.getElementById('btnPublicarAddon').textContent = 'Publicar';
+      document.getElementById('nombreWordCount').textContent = '0';
+      document.getElementById('addonWordCount').textContent = '0';
+      addonImgsB64 = ['','','','','',''];
+      for (var i = 0; i < 6; i++) {
+        var slot = document.querySelector('.addon-img-slot[data-idx="' + i + '"]');
+        if (!slot) continue;
+        slot.classList.remove('has-img');
+        slot.querySelector('.slot-placeholder').classList.remove('hide');
+        document.getElementById('addonPreview' + i).className = 'slot-preview';
+        document.getElementById('addonPreview' + i).src = '';
+      }
+      document.getElementById('modalAddon').classList.add('active');
+    }
+
+    function cerrarModalAddon() {
+      document.getElementById('modalAddon').classList.remove('active');
+    }
+
+    function addonSlotClick(idx) {
+      if (addonImgsB64[idx]) {
+        addonImgsB64[idx] = '';
+        var slot = document.querySelector('.addon-img-slot[data-idx="' + idx + '"]');
+        slot.classList.remove('has-img');
+        slot.querySelector('.slot-placeholder').classList.remove('hide');
+        document.getElementById('addonPreview' + idx).className = 'slot-preview';
+        document.getElementById('addonPreview' + idx).src = '';
+        return;
+      }
+      var inp = document.createElement('input');
+      inp.type = 'file';
+      inp.accept = 'image/*';
+      inp.onchange = function(ev) {
+        var file = ev.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(e2) {
+          var full = e2.target.result;
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          var img = new Image();
+          img.onload = function() {
+            var maxW = 800, maxH = 800;
+            var w = img.width, h = img.height;
+            if (w > maxW || h > maxH) {
+              var r = Math.min(maxW / w, maxH / h);
+              w = Math.round(w * r); h = Math.round(h * r);
+            }
+            canvas.width = w; canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+            var b64Peq = canvas.toDataURL('image/jpeg', 0.8);
+            addonImgsB64[idx] = b64Peq;
+            var slot = document.querySelector('.addon-img-slot[data-idx="' + idx + '"]');
+            slot.classList.add('has-img');
+            slot.querySelector('.slot-placeholder').classList.add('hide');
+            var prev = document.getElementById('addonPreview' + idx);
+            prev.src = b64Peq;
+            prev.className = 'slot-preview show';
+          };
+          img.src = full;
+        };
+        reader.readAsDataURL(file);
+      };
+      inp.click();
+    }
+
+    function contarPalabras(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+
+    document.getElementById('addonNombreInput').addEventListener('input', function() {
+      var c = contarPalabras(this.value);
+      document.getElementById('nombreWordCount').textContent = c;
+    });
+    document.getElementById('addonDescInput').addEventListener('input', function() {
+      var c = contarPalabras(this.value);
+      document.getElementById('addonWordCount').textContent = c;
+    });
+    document.getElementById('marcketFrame').addEventListener('load', function() {
+      if (!_subiendoAddon) return;
+      _subiendoAddon = false;
+      document.getElementById('btnPublicarAddon').disabled = false;
+      document.getElementById('btnPublicarAddon').textContent = 'Publicar';
+      cerrarModalAddon();
+      setTimeout(function() {
+        init();
+        mostrarAlerta('Addon publicado en Marketplace correctamente.', 'success');
+      }, 2000);
+    });
+
+    function publicarAddon() {
+      if (_subiendoAddon) return;
+      var nombre = document.getElementById('addonNombreInput').value.trim();
+      var categoria = document.getElementById('addonCategoriaSelect').value;
+      var version = document.getElementById('addonVersionInput').value.trim();
+      var url = document.getElementById('addonUrlInput').value.trim();
+      var desc = document.getElementById('addonDescInput').value.trim();
+      var coins = parseInt(document.getElementById('addonCoinsInput').value) || 0;
+      var palabrasNombre = contarPalabras(nombre);
+      if (!nombre || palabrasNombre < 1) { mostrarAlerta('El nombre es obligatorio.', 'error'); return; }
+      if (palabrasNombre > 10) { mostrarAlerta('El nombre no puede tener m&aacute;s de 10 palabras. Actual: ' + palabrasNombre, 'error'); return; }
+      if (!url) { mostrarAlerta('La URL de descarga es obligatoria.', 'error'); return; }
+      if (url.indexOf('https://') !== 0) { mostrarAlerta('La URL debe comenzar con https://', 'error'); return; }
+      if (!/^[0-9.]+$/.test(version)) { mostrarAlerta('La versi&oacute;n solo permite n&uacute;meros y puntos.', 'error'); return; }
+      if (!addonImgsB64[0]) { mostrarAlerta('La primera imagen es obligatoria.', 'error'); return; }
+      if (contarPalabras(desc) > 700) { mostrarAlerta('La descripci&oacute;n no puede tener m&aacute;s de 700 palabras.', 'error'); return; }
+      if (coins < 0) { mostrarAlerta('El precio no puede ser negativo.', 'error'); return; }
+      if (isNaN(coins)) { mostrarAlerta('El precio debe ser un n&uacute;mero v&aacute;lido.', 'error'); return; }
+      _subiendoAddon = true;
+      document.getElementById('btnPublicarAddon').disabled = true;
+      document.getElementById('btnPublicarAddon').textContent = 'Publicando...';
+      document.getElementById('marcketFormUser').value = sessionUser;
+      document.getElementById('marcketFormPass').value = sessionPass;
+      document.getElementById('marcketFormNombre').value = nombre;
+      document.getElementById('marcketFormCategoria').value = categoria;
+      document.getElementById('marcketFormVersion').value = version || '1.0.0';
+      document.getElementById('marcketFormLink').value = url;
+      document.getElementById('marcketFormDesc').value = desc;
+      document.getElementById('marcketFormCoins').value = coins;
+      for (var i = 0; i < 6; i++) {
+        document.getElementById('marcketFormImg' + (i + 1)).value = addonImgsB64[i] || '';
+      }
+      document.getElementById('marcketForm').submit();
+    }
+
+    function mostrarAlerta(texto, tipo) {
+      var msg = document.getElementById('addonModalMsg');
+      msg.textContent = texto;
+      msg.className = 'message ' + (tipo === 'error' ? 'error' : 'success');
+      msg.style.display = 'block';
+    }
 
     var addonsCache = [];
     var compradosCache = [];
     var userCoins = 0;
+    var userRole = profileData && profileData.rol ? profileData.rol : '';
     var addonsLoaded = false;
     var filtroActual = 'recientes';
     var catActual = 'todos';
     var busqueda = '';
-
-    function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    function tiempoRelativo(f) {
-      if (!f) return '';
-      var t = new Date(f).getTime();
-      if (isNaN(t)) return '';
-      var d = Date.now() - t;
-      var s = Math.floor(d / 1000);
-      if (s < 60) return s + ' s';
-      var m = Math.floor(s / 60);
-      if (m < 60) return m + ' m';
-      var h = Math.floor(m / 60);
-      if (h < 24) return h + ' h';
-      var dia = Math.floor(h / 24);
-      if (dia < 30) return dia + ' d';
-      if (dia < 365) return Math.floor(dia / 30) + ' mes';
-      return Math.floor(dia / 365) + ' a';
-    }
-
-    function formatCoins(n) {
-      n = Number(n);
-      if (isNaN(n)) return '0';
-      if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'M';
-      if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'k';
-      return String(n);
-    }
 
     function jsonp(data) {
       return new Promise(function(resolve, reject) {
@@ -352,101 +777,82 @@
       });
     }
 
-    function yaLike(a) {
-      if (!sessionUser || !a.likesUsers) return false;
-      return a.likesUsers.split(',').indexOf(sessionUser) !== -1;
-    }
-
-    function yaCompro(a) {
-      if (!sessionUser || !compradosCache) return false;
-      return compradosCache.indexOf(a.addonId) !== -1;
-    }
-
-    function guardarCacheAddons() {
-      try { localStorage.setItem('marcketCache', JSON.stringify(addonsCache)); } catch(e) {}
-    }
-
     function guardarCompradosCache() {
       try { localStorage.setItem('compradosCache_' + sessionUser, JSON.stringify(compradosCache)); } catch(e) {}
     }
 
-    function mostrarCuentaInactiva() {
-      var o = document.createElement('div');
-      o.className = 'blocked-overlay';
-      o.innerHTML = '<div class="block-icon">&#128683;</div><h2>Cuenta Desactivada</h2><p>Tu cuenta ha sido desactivada. Esto pudo deberse a las siguientes razones:</p><ul class="razones"><li>1. Romper las reglas o pol&iacute;ticas de la plataforma.</li><li>2. No respetar a los usuarios de la plataforma.</li><li>3. Hacer spam de contenido.</li><li>4. Usar palabras obscenas.</li><li>5. Funar o difamar informaci&oacute;n falsa de otros usuarios.</li></ul><p style="font-weight:600;color:#f8fafc;">Para reactivar tu cuenta, comun&iacute;cate con soporte y cu&eacute;ntanos tu situaci&oacute;n.</p><a class="btn-soporte" href="https://soporte.com" target="_blank">Contactar Soporte</a>';
-      document.body.appendChild(o);
+    function formatCoins(n) {
+      n = Number(n);
+      if (isNaN(n)) return '0';
+      if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'k';
+      return String(n);
     }
 
-    function toast(texto, tipo) {
-      var prev = document.querySelector('.toast');
-      if (prev) prev.remove();
-      var t = document.createElement('div');
-      t.className = 'toast ' + (tipo || 'success');
-      t.textContent = texto;
-      document.body.appendChild(t);
-      setTimeout(function() { t.remove(); }, 4000);
+    function actualizarCoinsUI() {
+      document.getElementById('coinCount').textContent = formatCoins(userCoins);
+    }
+
+    function mostrarCuentaInactiva() {
+      var overlay = document.createElement('div');
+      overlay.className = 'blocked-overlay';
+      overlay.innerHTML = '<div class="block-icon">&#128683;</div>'
+        + '<h2>Cuenta Desactivada</h2>'
+        + '<p>Tu cuenta ha sido desactivada. Esto pudo deberse a las siguientes razones:</p>'
+        + '<ul class="razones">'
+        + '<li>1. Romper las reglas o pol&iacute;ticas de la plataforma.</li>'
+        + '<li>2. No respetar a los usuarios de la plataforma.</li>'
+        + '<li>3. Hacer spam de contenido.</li>'
+        + '<li>4. Usar palabras obscenas.</li>'
+        + '<li>5. Funar o difamar informaci&oacute;n falsa de otros usuarios.</li>'
+        + '</ul>'
+        + '<p style="font-weight:600;color:#f8fafc;">Para reactivar tu cuenta, comun&iacute;cate con soporte y cu&eacute;ntanos tu situaci&oacute;n.</p>'
+        + '<a class="btn-soporte" href="https://soporte.com" target="_blank">Contactar Soporte</a>';
+      document.body.appendChild(overlay);
+    }
+
+    function verificarCuenta() {
+      jsonp({ action:'checkAccount', user:sessionUser }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (!d.exists || d.exists === false) { localStorage.removeItem('sessionUser'); localStorage.removeItem('sessionPass'); localStorage.removeItem('userProfile'); window.location.href = 'login.html'; } else if (d.status === 'Inactivo') { mostrarCuentaInactiva(); } } catch(e) {}
+      }).catch(function(){});
+    }
+    verificarCuenta();
+
+    function cargarCoins() {
+      jsonp({ action:'getUserCoins', user:sessionUser }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (typeof d.coins === 'number') { userCoins = d.coins; actualizarCoinsUI(); } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function fetchRole() {
+      if (profileData && profileData.rol) { userRole = profileData.rol; return; }
+      jsonp({ action:'getProfile', user:sessionUser, pass:sessionPass }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'PROFILE_OK' && d.profile) { userRole = d.profile.rol || ''; } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function tiempoRelativo(f) {
+      if (!f) return '';
+      var t = new Date(f).getTime();
+      if (isNaN(t)) return '';
+      var d = Date.now() - t;
+      var s = Math.floor(d / 1000);
+      if (s < 60) return s + ' s';
+      var m = Math.floor(s / 60);
+      if (m < 60) return m + ' m';
+      var h = Math.floor(m / 60);
+      if (h < 24) return h + ' h';
+      var dia = Math.floor(h / 24);
+      if (dia < 30) return dia + ' d';
+      if (dia < 365) return Math.floor(dia / 30) + ' mes';
+      return Math.floor(dia / 365) + ' a';
     }
 
     function toggleMktMenu(id) {
       var el = document.getElementById('mktMenu_' + id);
       if (!el) return;
       el.classList.toggle('open');
-    }
-
-    function doLikeAddon(a) {
-      if (!sessionUser || !sessionPass) return;
-      var liked = yaLike(a);
-      var users = a.likesUsers ? a.likesUsers.split(',') : [];
-      if (liked) {
-        a.likes = Math.max(0, (a.likes||0) - 1);
-        var idx = users.indexOf(sessionUser);
-        if (idx !== -1) users.splice(idx, 1);
-      } else {
-        a.likes = (a.likes||0) + 1;
-        users.push(sessionUser);
-      }
-      a.likesUsers = users.join(',');
-      guardarCacheAddons();
-      renderCards();
-      jsonp({ action:'likeMarcketplaceAddon', id:a.id, user:sessionUser, pass:sessionPass }).then(function(r) {
-        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'MARCKET_LIKED') { a.likes = d.likes; a.likesUsers = d.likesUsers; guardarCacheAddons(); renderCards(); } } catch(e) {}
-      }).catch(function(){});
-    }
-
-    function doBuyAddon(a) {
-      if (!sessionUser || !sessionPass) { toast('Inicia sesi&oacute;n para comprar.', 'error'); return; }
-      if (yaCompro(a)) { toast('Ya tienes este addon.', 'success'); return; }
-      var btn = document.querySelector('.addon-btn[data-addonid="' + a.addonId + '"]');
-      if (btn) { btn.disabled = true; btn.textContent = 'Comprando...'; }
-      jsonp({ action:'buyAddon', user:sessionUser, pass:sessionPass, addonId:a.addonId }).then(function(r) {
-        try {
-          var d = typeof r === 'string' ? JSON.parse(r) : r;
-          if (d.status === 'BUY_OK') {
-            userCoins = d.coins;
-            compradosCache.push(a.addonId);
-            guardarCompradosCache();
-            renderCards();
-            toast('¡Addon comprado! Ya puedes descargarlo.', 'success');
-          } else if (d.status === 'ALREADY_BOUGHT') {
-            compradosCache.push(a.addonId);
-            guardarCompradosCache();
-            renderCards();
-            toast('Ya hab&iacute;as comprado este addon.', 'success');
-          } else if (d.status === 'INSUFFICIENT_COINS') {
-            toast('No tienes suficientes Coins. Tienes ' + formatCoins(d.coins) + ', necesitas ' + formatCoins(d.needed) + '.', 'error');
-            if (btn) { btn.disabled = false; btn.innerHTML = a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis'; }
-          } else if (d.status === 'AUTH_ERROR') {
-            toast('Error de autenticaci&oacute;n.', 'error');
-            if (btn) { btn.disabled = false; btn.innerHTML = a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis'; }
-          } else {
-            toast('Error al comprar.', 'error');
-            if (btn) { btn.disabled = false; btn.innerHTML = a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis'; }
-          }
-        } catch(e) { toast('Error al procesar compra.', 'error'); if (btn) { btn.disabled = false; btn.innerHTML = a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis'; } }
-      }).catch(function() {
-        toast('Error de conexi&oacute;n al comprar.', 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis'; }
-      });
     }
 
     function eliminarMktPropio(id) {
@@ -457,11 +863,12 @@
           if (d.status === 'OK') {
             addonsCache = addonsCache.filter(function(a) { return a.addonId !== id; });
             guardarCacheAddons();
-            renderCards();
-            toast('Addon eliminado.', 'success');
-          } else { toast('Error al eliminar.', 'error'); }
-        } catch(e) { toast('Error al eliminar.', 'error'); }
-      }).catch(function() { toast('Error de conexi&oacute;n.', 'error'); });
+            renderAddons();
+          } else {
+            alert('Error al eliminar');
+          }
+        } catch(e) { alert('Error al eliminar'); }
+      }).catch(function() { alert('Error de conexi&oacute;n'); });
     }
 
     function editarMktPropio(id) {
@@ -470,129 +877,157 @@
         if (addonsCache[j].addonId === id) { item = addonsCache[j]; break; }
       }
       if (!item) return;
-      editandoId = id;
-      document.getElementById('modalNewTitle').textContent = 'Editar Addon';
-      document.getElementById('inpNombre').value = item.nombre || '';
-      document.getElementById('inpDesc').value = item.descripcion || '';
-      document.getElementById('inpImg').value = item.imagen || '';
-      document.getElementById('inpCoins').value = item.coins || 0;
-      document.getElementById('btnPublicar').textContent = 'Guardar';
-      document.getElementById('inpNombreCount').textContent = contarPalabras(item.nombre || '');
-      document.getElementById('inpDescCount').textContent = contarPalabras(item.descripcion || '');
-      document.getElementById('modalNewMsg').style.display = 'none';
-      document.getElementById('btnPublicar').disabled = false;
-      document.getElementById('modalNewAddon').classList.add('active');
+      var overlay = document.createElement('div');
+      overlay.className = 'edit-modal-overlay';
+      overlay.id = 'editMktModal';
+      overlay.onclick = function(e) { if (e.target === this) cerrarEditModal(); };
+      overlay.innerHTML = '<div class="edit-modal-content">'
+        + '<h3 style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:14px;">Editar descripci&oacute;n</h3>'
+        + '<textarea id="editMktTextarea">' + escHtml(item.descripcion) + '</textarea>'
+        + '<div class="edit-modal-btns">'
+        + '<button onclick="cerrarEditModal()">Cancelar</button>'
+        + '<button onclick="guardarEdicionMkt(\'' + id + '\')" style="background:var(--primary);color:#fff;">Guardar</button>'
+        + '</div>'
+        + '</div>';
+      document.body.appendChild(overlay);
     }
 
-    var editandoId = null;
-
-    function contarPalabras(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
-
-    document.getElementById('inpNombre').addEventListener('input', function() {
-      document.getElementById('inpNombreCount').textContent = contarPalabras(this.value);
-    });
-    document.getElementById('inpDesc').addEventListener('input', function() {
-      document.getElementById('inpDescCount').textContent = contarPalabras(this.value);
-    });
-
-    function abrirModalNuevo() {
-      editandoId = null;
-      document.getElementById('modalNewTitle').textContent = 'Publicar en Marketplace';
-      document.getElementById('inpNombre').value = '';
-      document.getElementById('inpDesc').value = '';
-      document.getElementById('inpImg').value = '';
-      document.getElementById('inpCoins').value = 0;
-      document.getElementById('btnPublicar').textContent = 'Publicar';
-      document.getElementById('inpNombreCount').textContent = '0';
-      document.getElementById('inpDescCount').textContent = '0';
-      document.getElementById('modalNewMsg').style.display = 'none';
-      document.getElementById('btnPublicar').disabled = false;
-      document.getElementById('modalNewAddon').classList.add('active');
+    function cerrarEditModal() {
+      var el = document.getElementById('editMktModal');
+      if (el) el.remove();
     }
 
-    function cerrarModalNuevo() {
-      document.getElementById('modalNewAddon').classList.remove('active');
-    }
-
-    function guardarPublicacion() {
-      var nombre = document.getElementById('inpNombre').value.trim();
-      var desc = document.getElementById('inpDesc').value.trim();
-      var img = document.getElementById('inpImg').value.trim();
-      var coins = parseInt(document.getElementById('inpCoins').value) || 0;
-      var palabrasNombre = contarPalabras(nombre);
-      if (!nombre || palabrasNombre < 1) { document.getElementById('modalNewMsg').textContent = 'El nombre es obligatorio.'; document.getElementById('modalNewMsg').className = 'message error'; return; }
-      if (palabrasNombre > 10) { document.getElementById('modalNewMsg').textContent = 'El nombre no puede tener m&aacute;s de 10 palabras.'; document.getElementById('modalNewMsg').className = 'message error'; return; }
-      if (contarPalabras(desc) > 700) { document.getElementById('modalNewMsg').textContent = 'La descripci&oacute;n no puede tener m&aacute;s de 700 palabras.'; document.getElementById('modalNewMsg').className = 'message error'; return; }
-      if (isNaN(coins) || coins < 0) { document.getElementById('modalNewMsg').textContent = 'El precio debe ser un n&uacute;mero v&aacute;lido.'; document.getElementById('modalNewMsg').className = 'message error'; return; }
-      document.getElementById('btnPublicar').disabled = true;
-      document.getElementById('btnPublicar').textContent = 'Publicando...';
-
-      if (editandoId) {
-        jsonp({ action:'editPublicacion', user:sessionUser, pass:sessionPass, tipo:'marcketplace', id:editandoId, contenido:desc }).then(function(r) {
-          try {
-            var d = typeof r === 'string' ? JSON.parse(r) : r;
-            if (d.status === 'OK') {
-              for (var j = 0; j < addonsCache.length; j++) {
-                if (addonsCache[j].addonId === editandoId) {
-                  addonsCache[j].nombre = nombre;
-                  addonsCache[j].descripcion = desc;
-                  addonsCache[j].imagen = img;
-                  addonsCache[j].coins = coins;
-                  break;
-                }
-              }
-              guardarCacheAddons();
-              editandoId = null;
-              cerrarModalNuevo();
-              renderCards();
-              toast('Addon actualizado.', 'success');
-            } else { toast('Error al guardar.', 'error'); document.getElementById('btnPublicar').disabled = false; document.getElementById('btnPublicar').textContent = 'Guardar'; }
-          } catch(e) { toast('Error al guardar.', 'error'); document.getElementById('btnPublicar').disabled = false; document.getElementById('btnPublicar').textContent = 'Guardar'; }
-        }).catch(function() { toast('Error de conexi&oacute;n.', 'error'); document.getElementById('btnPublicar').disabled = false; document.getElementById('btnPublicar').textContent = 'Guardar'; });
-      } else {
-        jsonp({ action:'publicar', user:sessionUser, pass:sessionPass, nombre:nombre, descripcion:desc, imagen:img, coins:coins, tipo:'marcketplace' }).then(function(r) {
-          try {
-            var d = typeof r === 'string' ? JSON.parse(r) : r;
-            if (d.status === 'OK') {
-              cerrarModalNuevo();
-              toast('Addon publicado.', 'success');
-              init();
-            } else {
-              document.getElementById('modalNewMsg').textContent = d.message || 'Error al publicar.';
-              document.getElementById('modalNewMsg').className = 'message error';
-              document.getElementById('btnPublicar').disabled = false;
-              document.getElementById('btnPublicar').textContent = 'Publicar';
+    function guardarEdicionMkt(id) {
+      var newDesc = document.getElementById('editMktTextarea').value.trim();
+      jsonp({ action:'editPublicacion', user:sessionUser, pass:sessionPass, tipo:'marcketplace', id:id, contenido:newDesc }).then(function(r) {
+        try {
+          var d = typeof r === 'string' ? JSON.parse(r) : r;
+          if (d.status === 'OK') {
+            for (var j = 0; j < addonsCache.length; j++) {
+              if (addonsCache[j].addonId === id) { addonsCache[j].descripcion = newDesc; break; }
             }
-          } catch(e) { document.getElementById('modalNewMsg').textContent = 'Error al publicar.'; document.getElementById('modalNewMsg').className = 'message error'; document.getElementById('btnPublicar').disabled = false; document.getElementById('btnPublicar').textContent = 'Publicar'; }
-        }).catch(function() { document.getElementById('modalNewMsg').textContent = 'Error de conexi&oacute;n.'; document.getElementById('modalNewMsg').className = 'message error'; document.getElementById('btnPublicar').disabled = false; document.getElementById('btnPublicar').textContent = 'Publicar'; });
-      }
+            guardarCacheAddons();
+            cerrarEditModal();
+            renderAddons();
+          } else {
+            alert('Error al guardar');
+          }
+        } catch(e) { alert('Error al guardar'); }
+      }).catch(function() { alert('Error de conexi&oacute;n'); });
     }
 
-    function buscar(val) { busqueda = val; renderCards(); }
-    function cambiarFiltro(id) {
-      filtroActual = id;
+    function init() {
+      mostrarExplorar();
+      cargarCoins();
+      fetchRole();
+      // Cargar comprados
+      try { var c = localStorage.getItem('compradosCache_' + sessionUser); if (c) compradosCache = JSON.parse(c); } catch(e) {}
+      // Cache-then-network for addons
+      var cacheStr = localStorage.getItem('marcketCache');
+      try { if (cacheStr) { addonsCache = JSON.parse(cacheStr); addonsLoaded = true; renderAddons(); } } catch(e) {}
+      jsonp({ action:'getMarcketplaceAddons' }).then(function(resp) {
+        try {
+          var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.status === 'MARCKETPLACE_OK') {
+            var nuevo = d.addons || [];
+            var nuevoStr = JSON.stringify(nuevo);
+            if (nuevoStr !== cacheStr) {
+              addonsCache = nuevo;
+              guardarCacheAddons();
+              renderAddons();
+            }
+          }
+        } catch(e) {}
+        addonsLoaded = true;
+      }).catch(function() {
+        addonsLoaded = true;
+        document.getElementById('addonsList').innerHTML = '<div class="sin-addons">Error al conectar. <button onclick="init()" style="background:none;border:none;color:var(--primary);cursor:pointer;text-decoration:underline;font-family:inherit;font-size:inherit;">Reintentar</button></div>';
+      });
+      // Sync comprados from server
+      if (profileData && profileData.userId) {
+        jsonp({ action:'getComprados', userId:profileData.userId }).then(function(r) {
+          try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.addons) { compradosCache = d.addons; guardarCompradosCache(); renderAddons(); } } catch(e) {}
+        }).catch(function(){});
+      } else {
+        // Try to get userId from profile
+        jsonp({ action:'getProfile', user:sessionUser, pass:sessionPass }).then(function(r) {
+          try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'PROFILE_OK' && d.profile) { profileData = d.profile; actualizarPerfilUI(); if (profileData.userId) { jsonp({ action:'getComprados', userId:profileData.userId }).then(function(r2) { try { var d2 = typeof r2 === 'string' ? JSON.parse(r2) : r2; if (d2.addons) { compradosCache = d2.addons; guardarCompradosCache(); renderAddons(); } } catch(e) {} }).catch(function(){}); } } } catch(e) {}
+        }).catch(function(){});
+      }
+      var panelBtn = document.querySelector('.sidebar-item[onclick*="paneladmin"]');
+      if (panelBtn && !esAdmin()) panelBtn.style.display = 'none';
+    }
+
+    document.addEventListener('click', function(e) {
       var dd = document.getElementById('sortDropdown');
-      if (dd) dd.classList.remove('open');
-      renderCards();
-    }
-    function cambiarCategoria(c) {
-      catActual = c;
+      if (dd && !e.target.closest('.header-row-right')) dd.classList.remove('open');
       var cd = document.getElementById('catDropdown');
-      if (cd) cd.classList.remove('open');
-      var cb = document.querySelector('.cat-dropdown-btn');
-      if (cb) cb.classList.remove('open');
-      var cl = document.getElementById('catLabel');
-      if (cl) cl.textContent = c.charAt(0).toUpperCase() + c.slice(1);
-      renderCards();
-    }
+      if (cd && !e.target.closest('.cat-row')) { cd.classList.remove('open'); document.querySelector('.cat-dropdown-btn').classList.remove('open'); }
+      var mo = document.getElementById('modalAddon');
+      if (mo && e.target === mo) cerrarModalAddon();
+      document.querySelectorAll('.mkt-menu-dropdown.open').forEach(function(m) {
+        if (!e.target.closest('.mkt-menu-btn') && !e.target.closest('.mkt-menu-dropdown')) m.classList.remove('open');
+      });
+      var emo = document.getElementById('editMktModal');
+      if (emo && e.target === emo) cerrarEditModal();
+    });
+
+    function esAdmin() { return userRole === 'Owner' || userRole === 'Admin' || userRole === 'App'; }
     function toggleDropdown() { document.getElementById('sortDropdown').classList.toggle('open'); }
     function toggleCatDropdown() { document.getElementById('catDropdown').classList.toggle('open'); document.querySelector('.cat-dropdown-btn').classList.toggle('open'); }
 
-    function cats() { return ['todos','addons','mapas','texturas','skins','shaders','script']; }
-    function catLabel(c) { return { todos:'Todos', addons:'Addons', mapas:'Mapas', texturas:'Texturas', skins:'Skins', shaders:'Shaders', script:'Script' }[c] || c; }
-    function catIcon(c) { return { addons:'&#9889;', mapas:'&#127758;', texturas:'&#127912;', skins:'&#128129;', shaders:'&#127774;', script:'&#128187;' }[c] || '&#9889;'; }
+    function mostrarExplorar() {
+      var cats = ['todos','addons','mapas','texturas','skins','shaders','script'];
+      var labels = { todos:'Todos', addons:'Addons', mapas:'Mapas', texturas:'Texturas', skins:'Skins', shaders:'Shaders', script:'Script' };
+      var h = '<div class="header-row"><div class="header-row-left"><h1 class="page-title">Marketplace</h1><p class="page-sub">Compra y vende addons con <span class="coin-inline"><img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" alt="">Coins</span></p></div>'
+        + '<div style="display:flex;align-items:center;gap:8px;">' + (userRole === 'Owner' ? '<button class="addon-add-btn" onclick="abrirModalAddon()">+ Vender</button>' : '')
+        + '<div class="header-row-right"><button class="menu-dots" onclick="toggleDropdown()">&#8942;</button>'
+        + '<div class="dropdown-menu" id="sortDropdown">'
+        + '<button class="dropdown-item' + (filtroActual === 'recientes' ? ' active' : '') + '" onclick="cambiarFiltro(\'recientes\')"><span class="icon">&#9201;</span> Mas recientes</button>'
+        + '<button class="dropdown-item' + (filtroActual === 'antiguos' ? ' active' : '') + '" onclick="cambiarFiltro(\'antiguos\')"><span class="icon">&#9199;</span> Mas antiguos</button>'
+        + '<button class="dropdown-item' + (filtroActual === 'megustas' ? ' active' : '') + '" onclick="cambiarFiltro(\'megustas\')"><span class="icon">&#128077;</span> Mas populares</button>'
+        + '<button class="dropdown-item' + (filtroActual === 'menosgustas' ? ' active' : '') + '" onclick="cambiarFiltro(\'menosgustas\')"><span class="icon">&#128078;</span> Menos populares</button>'
+        + '<button class="dropdown-item' + (filtroActual === 'masdesc' ? ' active' : '') + '" onclick="cambiarFiltro(\'masdesc\')"><span class="icon">&#128229;</span> Mas descargados</button>'
+        + '<button class="dropdown-item' + (filtroActual === 'menosdesc' ? ' active' : '') + '" onclick="cambiarFiltro(\'menosdesc\')"><span class="icon">&#128230;</span> Menos descargados</button>'
+        + '<button class="dropdown-item' + (filtroActual === 'precio' ? ' active' : '') + '" onclick="cambiarFiltro(\'precio\')"><span class="icon">&#128176;</span> Menor precio</button>'
+        + '</div></div></div>'
+        + '<div class="cat-row"><span class="cat-active-label">Categor&iacute;a:</span>'
+        + '<button class="cat-dropdown-btn" onclick="toggleCatDropdown()"><span id="catLabel">' + (labels[catActual] || catActual) + '</span> <span class="arrow">&#9660;</span></button>'
+        + '<div class="cat-dropdown" id="catDropdown">' + cats.map(function(c) {
+          return '<button class="cat-item' + (catActual === c ? ' active' : '') + '" onclick="cambiarCategoria(\'' + c + '\')">' + (labels[c] || c) + '</button>';
+        }).join('') + '</div></div>'
+        + '<div class="search-row"><input class="search-input" id="searchInput" type="text" placeholder="Buscar addon..." value="' + escHtml(busqueda) + '" oninput="buscar(this.value)"></div>'
+        + '<div id="addonsList"><div class="sin-addons" id="loadingMsg">Cargando marketplace...</div></div>';
+      document.getElementById('mainContent').innerHTML = h;
+      renderAddons();
+    }
 
-    function renderCards() {
+    function catIcon(cat) {
+      var m = { addons:'&#9889;', mapas:'&#127758;', texturas:'&#127912;', skins:'&#128129;', shaders:'&#127774;', script:'&#128187;' };
+      return m[cat] || '&#9889;';
+    }
+
+    function buscar(val) {
+      busqueda = val;
+      renderAddons();
+    }
+
+    function cambiarFiltro(id) {
+      filtroActual = id;
+      document.getElementById('sortDropdown').classList.remove('open');
+      renderAddons();
+    }
+
+    function cambiarCategoria(c) {
+      catActual = c;
+      document.getElementById('catDropdown').classList.remove('open');
+      document.querySelector('.cat-dropdown-btn').classList.remove('open');
+      document.getElementById('catLabel').textContent = c.charAt(0).toUpperCase() + c.slice(1);
+      document.querySelectorAll('.cat-item').forEach(function(el) { el.classList.toggle('active', el.getAttribute('onclick').indexOf("'" + c + "'") !== -1); });
+      renderAddons();
+    }
+
+    function renderAddons() {
       var list = document.getElementById('addonsList');
       if (!list) return;
       if (!addonsLoaded) { list.innerHTML = '<div class="sin-addons">Cargando marketplace...</div>'; return; }
@@ -603,30 +1038,35 @@
         items = items.filter(function(a) { return (a.nombre||'').toLowerCase().indexOf(q) !== -1 || (a.descripcion||'').toLowerCase().indexOf(q) !== -1; });
       }
       if (filtroActual === 'recientes') items.sort(function(a,b) { return new Date(b.fecha||0).getTime() - new Date(a.fecha||0).getTime(); });
+      else if (filtroActual === 'antiguos') items.sort(function(a,b) { return new Date(a.fecha||0).getTime() - new Date(b.fecha||0).getTime(); });
+      else if (filtroActual === 'megustas') items.sort(function(a,b) { return (b.likes||0) - (a.likes||0); });
+      else if (filtroActual === 'menosgustas') items.sort(function(a,b) { return (a.likes||0) - (b.likes||0); });
+      else if (filtroActual === 'masdesc') items.sort(function(a,b) { return (b.descargas||0) - (a.descargas||0); });
+      else if (filtroActual === 'menosdesc') items.sort(function(a,b) { return (a.descargas||0) - (b.descargas||0); });
       else if (filtroActual === 'precio') items.sort(function(a,b) { return (a.coins||0) - (b.coins||0); });
       if (items.length === 0) { list.innerHTML = '<div class="sin-addons">No hay addons en el marketplace.</div>'; return; }
       var html = '<div class="addon-grid">';
       for (var i = 0; i < items.length; i++) {
         var a = items[i];
         var imgs = a.imagen ? a.imagen.split('|') : [];
-        var imgHtml = imgs.length && imgs[0] ? '<img class="card-cover" src="' + escHtml(imgs[0]) + '" alt="' + escHtml(a.nombre) + '" loading="lazy">' : '<div class="card-placeholder">' + catIcon(a.categoria) + '</div>';
+        var imgHtml = imgs.length && imgs[0] ? '<img class="card-cover" src="' + escHtml(imgs[0]) + '" alt="' + escHtml(a.nombre) + '" loading="lazy">' : '<div class="card-cover" style="background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--text-light);">' + catIcon(a.categoria) + '</div>';
         var liked = yaLike(a);
         var comprado = yaCompro(a);
-        var puedeComprar = userCoins >= (a.coins || 0);
         var btnHtml = '';
         if (comprado) {
-          btnHtml = '<button class="addon-btn addon-btn-own" data-addonid="' + a.addonId + '" onclick="event.stopPropagation();doDownloadAddon(addonsCache[' + i + '])">&#128229; Descargar</button>';
+          btnHtml = '<button class="addon-btn addon-btn-own" onclick="doDownloadAddon(items[' + i + '])">&#128229; Descargar</button>';
         } else {
-          btnHtml = '<button class="addon-btn addon-btn-buy" data-addonid="' + a.addonId + '" onclick="event.stopPropagation();doBuyAddon(addonsCache[' + i + '])"' + (!puedeComprar && (a.coins||0) > 0 ? ' disabled' : '') + '>' + (a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis') + '</button>';
+          var puedeComprar = userCoins >= (a.coins || 0);
+          btnHtml = '<button class="addon-btn addon-btn-buy" onclick="doBuyAddon(items[' + i + '])"' + (!puedeComprar && (a.coins||0) > 0 ? ' disabled' : '') + '>' + (a.coins > 0 ? '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;">Comprar por ' + formatCoins(a.coins) : 'Gratis') + '</button>';
         }
         if (!puedeComprar && !comprado && (a.coins||0) > 0) {
           btnHtml += '<div style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:6px;font-weight:600;">No tienes suficientes Coins</div>';
         }
         html += '<div class="card" onclick="abrirDetalle(' + i + ')">'
           + imgHtml
-          + (a.subidoPor === sessionUser ? '<button class="mkt-menu-btn" onclick="event.stopPropagation();toggleMktMenu(\'' + a.addonId + '\')">&#8942;</button><div class="mkt-menu-dropdown" id="mktMenu_' + a.addonId + '"><button onclick="event.stopPropagation();editarMktPropio(\'' + a.addonId + '\')">&#9998; Editar</button><button onclick="event.stopPropagation();eliminarMktPropio(\'' + a.addonId + '\')">&#128465; Eliminar</button></div>' : '')
+          + (a.subidoPor === sessionUser ? '<button class="mkt-menu-btn" onclick="event.stopPropagation();toggleMktMenu(\'' + a.addonId + '\')">&#8942;</button><div class="mkt-menu-dropdown" id="mktMenu_' + a.addonId + '"><button onclick="event.stopPropagation();editarMktPropio(\'' + a.addonId + '\')">&#9998; Editar descripci&oacute;n</button><button onclick="event.stopPropagation();eliminarMktPropio(\'' + a.addonId + '\')">&#128465; Eliminar</button></div>' : '')
           + '<div class="card-body">'
-          + '<div class="card-title">' + escHtml(a.nombre) + '</div>'
+          + '<h3 style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-0.3px;word-break:break-word;">' + escHtml(a.nombre) + '</h3>'
           + '<div class="addon-desc">' + escHtml(a.descripcion) + '</div>'
           + '<div class="addon-meta">'
           + '<span class="price-tag"><img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png">' + formatCoins(a.coins||0) + '</span>'
@@ -634,24 +1074,15 @@
           + '<span>&#128229; ' + (a.descargas||0) + '</span>'
           + '</div>'
           + btnHtml
-          + '<div class="card-footer">'
-          + '<button class="like-btn' + (liked ? ' liked' : '') + '" onclick="event.stopPropagation();doLikeAddon(addonsCache[' + i + '])">' + (liked ? '&#10084;' : '&#9825;') + ' ' + (a.likes||0) + '</button>'
-          + '<span style="font-size:11px;font-weight:500;display:flex;align-items:center;gap:4px;"><a class="user-link" href="perfil_publico.html?user=' + encodeURIComponent(a.subidoPor||'') + '" target="_blank" onclick="event.stopPropagation();">' + escHtml(a.subidoPor || 'An&oacute;nimo') + '</a> &middot; ' + tiempoRelativo(a.fecha) + '</span>'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-light);">'
+          + '<button class="like-btn' + (liked ? ' liked' : '') + '" onclick="event.stopPropagation();doLikeAddon(items[' + i + '])">' + (liked ? '&#10084;' : '&#9825;') + ' ' + (a.likes||0) + '</button>'
+          + '<span style="font-size:11px;color:var(--text-muted);font-weight:500;">' + escHtml(a.subidoPor || 'An&oacute;nimo') + ' &middot; ' + tiempoRelativo(a.fecha) + '</span>'
           + '</div>'
           + '</div>'
           + '</div>';
       }
       html += '</div>';
       list.innerHTML = html;
-    }
-
-    function doDownloadAddon(a) {
-      a.descargas = (a.descargas||0) + 1;
-      guardarCacheAddons();
-      renderCards();
-      jsonp({ action:'downloadMarcketplaceAddon', id:a.id }).then(function(r) {
-        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'DOWNLOAD_OK') { a.descargas = d.descargas; guardarCacheAddons(); renderCards(); } } catch(e) {}
-      }).catch(function(){});
     }
 
     function abrirDetalle(idx) {
@@ -686,11 +1117,11 @@
         + '<button class="modal-close" onclick="document.getElementById(\'modalDetalle\').classList.remove(\'active\')">&times;</button>'
         + carouselHtml
         + '<h3 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;">' + escHtml(a.nombre) + '</h3>'
-        + '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;"><span style="padding:4px 12px;border-radius:20px;background:var(--primary-bg);color:var(--primary);font-weight:700;font-size:13px;">' + (a.categoria || 'addons') + '</span><span class="price-tag"><img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png">' + formatCoins(a.coins||0) + '</span></div>'
+        + '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;"><span style="padding:4px 12px;border-radius:20px;background:var(--primary-bg);color:var(--primary);font-weight:700;font-size:13px;">' + (a.categoria || 'addons') + '</span><span style="padding:4px 12px;border-radius:20px;background:var(--primary-bg);color:var(--primary);font-weight:700;font-size:13px;">v' + escHtml(a.version || '1.0.0') + '</span><span class="price-tag"><img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png">' + formatCoins(a.coins||0) + '</span></div>'
         + '<p style="font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;white-space:pre-wrap;">' + escHtml(a.descripcion) + '</p>'
         + '<div style="display:flex;gap:20px;font-size:14px;color:var(--text-muted);margin-bottom:20px;font-weight:500;">'
         + '<span>&#128229; ' + (a.descargas||0) + ' descargas</span>'
-        + '<span>&#128100; <a href="perfil_publico.html?user=' + encodeURIComponent(a.subidoPor||'') + '" target="_blank" style="color:var(--primary);text-decoration:none;">' + escHtml(a.subidoPor || 'An&oacute;nimo') + '</a></span>'
+        + '<span>&#128100; ' + escHtml(a.subidoPor || 'An&oacute;nimo') + '</span>'
         + '<span>&#128197; ' + tiempoRelativo(a.fecha) + '</span>'
         + '</div>'
         + '<div style="display:flex;gap:10px;">'
@@ -700,105 +1131,6 @@
         + '</div>';
       document.body.appendChild(detalle);
     }
-
-    function mostrarExplorar() {
-      var cs = cats();
-      var h = '<div class="header-row">'
-        + '<div class="header-row-left">'
-        + '<h1 class="page-title">Marketplace</h1>'
-        + '<p class="page-sub">Compra y vende addons con <span class="coin-inline"><img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" alt="">Coins</span></p>'
-        + '</div>'
-        + '<div class="header-row-right">'
-        + '<button class="menu-dots" onclick="toggleDropdown()">&#8942;</button>'
-        + '<div class="dropdown-menu" id="sortDropdown">'
-        + '<button class="dropdown-item' + (filtroActual === 'recientes' ? ' active' : '') + '" onclick="cambiarFiltro(\'recientes\')"><span class="icon">&#9201;</span> M&aacute;s recientes</button>'
-        + '<button class="dropdown-item' + (filtroActual === 'precio' ? ' active' : '') + '" onclick="cambiarFiltro(\'precio\')"><span class="icon">&#128176;</span> Menor precio</button>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
-        + '<div class="cat-row">'
-        + '<span class="cat-active-label">Categor&iacute;a:</span>'
-        + '<button class="cat-dropdown-btn" onclick="toggleCatDropdown()"><span id="catLabel">' + catLabel(catActual) + '</span> <span class="arrow">&#9660;</span></button>'
-        + '<div class="cat-dropdown" id="catDropdown">'
-        + cs.map(function(c) { return '<button class="cat-item' + (catActual === c ? ' active' : '') + '" onclick="cambiarCategoria(\'' + c + '\')">' + catLabel(c) + '</button>'; }).join('')
-        + '</div>'
-        + '</div>'
-        + '<div class="search-row"><input class="search-input" id="searchInput" type="text" placeholder="Buscar addon..." value="' + escHtml(busqueda) + '" oninput="buscar(this.value)"></div>'
-        + '<div id="addonsList"><div class="sin-addons" id="loadingMsg">Cargando marketplace...</div></div>';
-      document.getElementById('mainContent').innerHTML = h;
-      if (userRole === 'Owner') {
-        var fab = document.createElement('button');
-        fab.className = 'fab';
-        fab.id = 'fabBtn';
-        fab.innerHTML = '+';
-        fab.onclick = abrirModalNuevo;
-        document.body.appendChild(fab);
-      }
-      renderCards();
-    }
-
-    function verificarCuenta() {
-      jsonp({ action:'checkAccount', user:sessionUser }).then(function(r) {
-        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (!d.exists || d.exists === false) { localStorage.removeItem('sessionUser'); localStorage.removeItem('sessionPass'); localStorage.removeItem('userProfile'); window.top.location.href = 'login.html'; } else if (d.status === 'Inactivo') { mostrarCuentaInactiva(); } } catch(e) {}
-      }).catch(function(){});
-    }
-
-    function cargarCoins() {
-      jsonp({ action:'getUserCoins', user:sessionUser }).then(function(r) {
-        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (typeof d.coins === 'number') { userCoins = d.coins; } } catch(e) {}
-      }).catch(function(){});
-    }
-
-    function init() {
-      mostrarExplorar();
-      cargarCoins();
-      verificarCuenta();
-      try { var c = localStorage.getItem('compradosCache_' + sessionUser); if (c) compradosCache = JSON.parse(c); } catch(e) {}
-      var cacheStr = localStorage.getItem('marcketCache');
-      try { if (cacheStr) { addonsCache = JSON.parse(cacheStr); addonsLoaded = true; renderCards(); } } catch(e) {}
-      jsonp({ action:'getMarcketplaceAddons' }).then(function(resp) {
-        try {
-          var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
-          if (d.status === 'MARCKETPLACE_OK') {
-            var nuevo = d.addons || [];
-            var nuevoStr = JSON.stringify(nuevo);
-            if (nuevoStr !== cacheStr) {
-              addonsCache = nuevo;
-              guardarCacheAddons();
-              renderCards();
-            }
-          }
-        } catch(e) {}
-        addonsLoaded = true;
-      }).catch(function() {
-        addonsLoaded = true;
-        var el = document.getElementById('addonsList');
-        if (el) el.innerHTML = '<div class="sin-addons">Error al conectar. <button onclick="init()" style="background:none;border:none;color:var(--primary);cursor:pointer;text-decoration:underline;font-family:inherit;font-size:inherit;">Reintentar</button></div>';
-      });
-      if (profileData && profileData.userId) {
-        jsonp({ action:'getComprados', userId:profileData.userId }).then(function(r) {
-          try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.addons) { compradosCache = d.addons; guardarCompradosCache(); renderCards(); } } catch(e) {}
-        }).catch(function(){});
-      } else {
-        jsonp({ action:'getProfile', user:sessionUser, pass:sessionPass }).then(function(r) {
-          try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (d.status === 'PROFILE_OK' && d.profile) { profileData = d.profile; if (profileData.userId) { jsonp({ action:'getComprados', userId:profileData.userId }).then(function(r2) { try { var d2 = typeof r2 === 'string' ? JSON.parse(r2) : r2; if (d2.addons) { compradosCache = d2.addons; guardarCompradosCache(); renderCards(); } } catch(e) {} }).catch(function(){}); } } } catch(e) {}
-        }).catch(function(){});
-      }
-    }
-
-    document.addEventListener('click', function(e) {
-      var dd = document.getElementById('sortDropdown');
-      if (dd && !e.target.closest('.header-row-right')) dd.classList.remove('open');
-      var cd = document.getElementById('catDropdown');
-      if (cd && !e.target.closest('.cat-row')) { cd.classList.remove('open'); var cb = document.querySelector('.cat-dropdown-btn'); if (cb) cb.classList.remove('open'); }
-      var mo = document.getElementById('modalNewAddon');
-      if (mo && e.target === mo) cerrarModalNuevo();
-      document.querySelectorAll('.mkt-menu-dropdown.open').forEach(function(m) {
-        if (!e.target.closest('.mkt-menu-btn') && !e.target.closest('.mkt-menu-dropdown')) m.classList.remove('open');
-      });
-      var ep = document.querySelector('.edit-modal-overlay');
-      if (ep && e.target === ep) ep.remove();
-    });
 
     init();
   </script>
