@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Worldleaf — Addons Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-void:    #05070f;
+      --bg-surface: #0a0d1a;
+      --bg-raised:  #0f1528;
+      --bg-glass:   rgba(15, 21, 40, 0.78);
+ 
+      --teal-900: #011c1a;
+      --teal-700: #0a4a45;
+      --teal-500: #0e7a72;
+      --teal-400: #1ab5aa;
+      --teal-300: #3fdad0;
+      --teal-100: #b6f0ed;
+ 
+      --violet-700: #1e1452;
+      --violet-500: #3730a3;
+      --violet-400: #6366f1;
+      --violet-300: #a5b4fc;
+ 
+      --amber-400: #fbbf24;
+      --amber-300: #fde68a;
+ 
+      --text-primary:   #f0f4ff;
+      --text-secondary: #8892b0;
+      --text-muted:     #4a5568;
+ 
+      --border-subtle:  rgba(255,255,255,0.06);
+      --border-mid:     rgba(255,255,255,0.12);
+      --border-accent:  rgba(26,181,170,0.35);
+ 
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+ 
+      --font-display: 'Space Grotesk', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+ 
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+ 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    html { scroll-behavior: smooth; }
+ 
+    body {
+      min-height: 100svh;
+      background-color: var(--bg-void);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,181,170,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(99,102,241,0.08) 0%, transparent 50%);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+ 
+    /* ─── GRID NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='1' height='1' fill='rgba(255,255,255,0.012)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+ 
+    /* ─── LAYOUT ─── */
+    .shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100svh;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+ 
+    /* ─── HEADER ─── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0 24px;
+      gap: 16px;
+    }
+ 
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+ 
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border-mid);
+      flex-shrink: 0;
+      background: var(--bg-raised);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+ 
+    .brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+ 
+    .brand-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+ 
+    .brand-name span {
+      color: var(--teal-400);
+    }
+ 
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px 8px 12px;
+      border-radius: 100px;
+      background: var(--bg-raised);
+      border: 1px solid var(--border-accent);
+      color: var(--teal-300);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: background 0.25s var(--ease-smooth), border-color 0.25s, transform 0.2s var(--ease-spring);
+    }
+ 
+    .header-cta:hover {
+      background: rgba(26,181,170,0.1);
+      border-color: var(--teal-400);
+      transform: translateY(-1px);
+    }
+ 
+    .header-cta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal-400);
+      animation: pulse-dot 2.5s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+ 
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+ 
+    /* ─── MAIN STAGE ─── */
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0 32px;
+      gap: 0;
+    }
+ 
+    /* ─── STAGE CARD ─── */
+    .stage {
+      width: 100%;
+      position: relative;
+      border-radius: var(--radius-xl);
+      background: var(--bg-glass);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 40px 80px rgba(0,0,0,0.5);
+    }
+ 
+    /* Top accent line */
+    .stage::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 5%, var(--teal-500) 30%, var(--violet-400) 70%, transparent 95%);
+      opacity: 0.6;
+      z-index: 2;
+    }
+ 
+    /* ─── IMAGE AREA ─── */
+    .stage-body {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+      padding: 40px 32px 32px;
+    }
+ 
+    .image-frame {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 720px;
+      min-height: 320px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border-subtle);
+      transition: opacity 0.45s var(--ease-smooth), transform 0.45s var(--ease-smooth);
+    }
+ 
+    .image-frame.is-loading {
+      opacity: 0;
+      transform: scale(0.985);
+    }
+ 
+    .preview-img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: contain;
+      border-radius: calc(var(--radius-lg) - 1px);
+      display: block;
+    }
+ 
+    /* corner accent marks */
+    .corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .corner-tl { top: 10px; left: 10px; border-top: 2px solid var(--teal-400); border-left: 2px solid var(--teal-400); border-radius: 3px 0 0 0; opacity: 0.6; }
+    .corner-tr { top: 10px; right: 10px; border-top: 2px solid var(--teal-400); border-right: 2px solid var(--teal-400); border-radius: 0 3px 0 0; opacity: 0.6; }
+    .corner-bl { bottom: 10px; left: 10px; border-bottom: 2px solid var(--teal-400); border-left: 2px solid var(--teal-400); border-radius: 0 0 0 3px; opacity: 0.6; }
+    .corner-br { bottom: 10px; right: 10px; border-bottom: 2px solid var(--teal-400); border-right: 2px solid var(--teal-400); border-radius: 0 0 3px 0; opacity: 0.6; }
+ 
+    /* ─── STAGE FOOTER ─── */
+    .stage-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px 24px;
+      border-top: 1px solid var(--border-subtle);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+ 
+    .addon-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+ 
+    .addon-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--teal-400);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+ 
+    .addon-name {
+      font-size: clamp(1rem, 2.2vw, 1.3rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity 0.3s var(--ease-smooth);
+    }
+ 
+    .addon-name.is-fading { opacity: 0.2; }
+ 
+    /* ─── PROGRESS BAR ─── */
+    .progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    }
+ 
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal-500), var(--teal-300));
+      border-radius: 2px;
+      transform-origin: left;
+      transition: none;
+    }
+ 
+    .progress-fill.animate {
+      transition: width 20s linear;
+    }
+ 
+    /* ─── CONTROLS ─── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+ 
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--border-mid);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s var(--ease-spring);
+      flex-shrink: 0;
+    }
+ 
+    .btn-icon:hover {
+      background: rgba(26,181,170,0.12);
+      border-color: var(--border-accent);
+      color: var(--teal-300);
+      transform: scale(1.06);
+    }
+ 
+    .btn-icon:active { transform: scale(0.95); }
+ 
+    .btn-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
+ 
+    .btn-icon.is-paused .icon-pause { display: none; }
+    .btn-icon.is-paused .icon-play  { display: block; }
+    .btn-icon:not(.is-paused) .icon-play  { display: none; }
+    .btn-icon:not(.is-paused) .icon-pause { display: block; }
+ 
+    /* ─── COUNTER BADGE ─── */
+    .counter-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+ 
+    /* ─── SKELETON ─── */
+    .skeleton-text {
+      display: inline-block;
+      background: rgba(255,255,255,0.06);
+      border-radius: 6px;
+      color: transparent;
+      overflow: hidden;
+      position: relative;
+    }
+ 
+    .skeleton-text::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+      animation: shimmer 1.6s infinite;
+    }
+ 
+    @keyframes shimmer { to { transform: translateX(100%); } }
+ 
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 24px 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+ 
+    .footer-logo {
+      width: 100%;
+      max-width: 380px;
+      height: auto;
+      opacity: 0.35;
+      filter: saturate(0);
+      transition: opacity 0.3s, filter 0.3s;
+    }
+ 
+    .footer-logo:hover {
+      opacity: 0.6;
+      filter: saturate(1);
+    }
+ 
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .shell { padding: 0 14px; }
+      .stage-body { padding: 28px 20px 24px; min-height: 300px; }
+      .stage-footer { padding: 14px 20px 20px; }
+      .header-cta span.url-text { display: none; }
+    }
+ 
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+ 
+    <header>
+      <a href="https://ms-mcpe.github.io/worldleaf" class="brand" target="_blank" rel="noopener">
+        <div class="brand-icon">
+          <img src="https://i.ibb.co/RGXjGGnz/Background-Eraser-20260531-010716913.png" alt="Worldleaf" onerror="this.style.display='none'" />
+        </div>
+        <span class="brand-name">World<span>leaf</span></span>
+      </a>
+ 
+      <a href="https://ms-mcpe.github.io/worldleaf" class="header-cta" target="_blank" rel="noopener">
+        <div class="header-cta-dot" aria-hidden="true"></div>
+        <span>Descargar app</span>
+        <span class="url-text" style="color:var(--text-muted); font-weight:400; margin-left:-2px"> · ms-mcpe.github.io</span>
+      </a>
+    </header>
+ 
+    <main>
+      <div class="stage" id="stage">
+        <div class="stage-body">
+          <div class="corner corner-tl" aria-hidden="true"></div>
+          <div class="corner corner-tr" aria-hidden="true"></div>
+          <div class="corner corner-bl" aria-hidden="true"></div>
+          <div class="corner corner-br" aria-hidden="true"></div>
+ 
+          <div class="image-frame is-loading" id="imageFrame">
+            <img class="preview-img" id="previewImg" src="" alt="Addon preview" />
+          </div>
+        </div>
+ 
+        <div class="stage-footer">
+          <div class="addon-meta">
+            <span class="addon-label">Addon destacado</span>
+            <h1 class="addon-name" id="addonName">
+              <span class="skeleton-text">Cargando contenido...</span>
+            </h1>
+          </div>
+ 
+          <div class="controls" role="group" aria-label="Controles de reproducción">
+            <button class="btn-icon" id="btnPrev" aria-label="Anterior">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="btn-icon" id="btnPlayPause" aria-label="Pausar rotación">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <line class="icon-pause" x1="10" y1="15" x2="10" y2="9"></line>
+                <line class="icon-pause" x1="14" y1="15" x2="14" y2="9"></line>
+                <polygon class="icon-play" points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+            <button class="btn-icon" id="btnNext" aria-label="Siguiente">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+ 
+            <div class="counter-badge" id="counterBadge" aria-live="polite" aria-atomic="true">— / —</div>
+          </div>
+        </div>
+ 
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </main>
+ 
+    <footer>
+      <img
+        class="footer-logo"
+        src="https://i.ibb.co/1GtKgjvP/Background-Eraser-20260531-013208695.png"
+        alt="Worldleaf"
+        onerror="this.remove()"
+      />
+    </footer>
+ 
+  </div><!-- .shell -->
+ 
+  <script>
+  (() => {
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyI52B-s7qz8wPMfRXLHaYRDuy1Lq_NfpzEA6IrxcQfKDTXA_TsWmDrfwS6b4L8m7oE9g/exec?action=read';
+    const INTERVAL  = 20000;
+ 
+    const $ = id => document.getElementById(id);
+    const imageFrame   = $('imageFrame');
+    const previewImg   = $('previewImg');
+    const addonName    = $('addonName');
+    const counterBadge = $('counterBadge');
+    const progressFill = $('progressFill');
+    const btnPrev      = $('btnPrev');
+    const btnNext      = $('btnNext');
+    const btnPlayPause = $('btnPlayPause');
+ 
+    let entries      = [];
+    let currentIndex = -1;
+    let timer        = null;
+    let paused       = false;
+    let progressStart = null;
+    let progressRaf  = null;
+ 
+    /* ── Parseo idéntico al original ─────────── */
+    function extractValidUrl(cell) {
+      if (!cell) return null;
+      const potentialUrl = String(cell).split('|')[0].trim();
+      try { new URL(potentialUrl); return potentialUrl; } catch { return null; }
+    }
+ 
+    function getPrimaryImage(row) {
+      // Mismas prioridades que el original: 3, 0, 2, 1
+      for (const idx of [3, 0, 2, 1]) {
+        const url = extractValidUrl(row[idx]);
+        if (url) return url;
+      }
+      return null;
+    }
+ 
+    /* ── Progress bar ────────────────────────── */
+    function startProgress() {
+      cancelAnimationFrame(progressRaf);
+      progressFill.style.width = '0%';
+      progressStart = performance.now();
+      function tick(now) {
+        if (paused) return;
+        const pct = Math.min(((now - progressStart) / INTERVAL) * 100, 100);
+        progressFill.style.width = pct + '%';
+        if (pct < 100) progressRaf = requestAnimationFrame(tick);
+      }
+      progressRaf = requestAnimationFrame(tick);
+    }
+ 
+    /* ── Mostrar entrada ─────────────────────── */
+    function showEntry(index) {
+      if (!entries.length) return;
+      currentIndex = ((index % entries.length) + entries.length) % entries.length;
+      const entry = entries[currentIndex];
+ 
+      imageFrame.classList.add('is-loading');
+      addonName.classList.add('is-fading');
+ 
+      // Pre-cargar imagen igual que el original
+      const tmp = new Image();
+      tmp.src = entry.url;
+ 
+      tmp.onload = () => {
+        previewImg.src = entry.url;
+        previewImg.alt = 'Minecraft Addon: ' + entry.name;
+        addonName.textContent = entry.name;
+        counterBadge.textContent = (currentIndex + 1) + ' / ' + entries.length;
+        imageFrame.classList.remove('is-loading');
+        addonName.classList.remove('is-fading');
+        startProgress();
+      };
+ 
+      tmp.onerror = () => {
+        console.warn('Error cargando imagen para: ' + entry.name + '. Saltando...');
+        entries.splice(currentIndex, 1);
+        if (entries.length) setTimeout(() => showEntry(currentIndex), 500);
+      };
+    }
+ 
+    function nextRandom() {
+      if (entries.length <= 1) { showEntry(0); return; }
+      let next;
+      do { next = Math.floor(Math.random() * entries.length); }
+      while (next === currentIndex);
+      showEntry(next);
+    }
+ 
+    /* ── Timer ───────────────────────────────── */
+    function startTimer() {
+      clearTimeout(timer);
+      timer = setTimeout(() => { nextRandom(); if (!paused) startTimer(); }, INTERVAL);
+    }
+    function stopTimer() { clearTimeout(timer); cancelAnimationFrame(progressRaf); }
+ 
+    /* ── Controles ───────────────────────────── */
+    btnNext.addEventListener('click', () => { stopTimer(); nextRandom(); if (!paused) startTimer(); });
+    btnPrev.addEventListener('click', () => { stopTimer(); showEntry(currentIndex - 1); if (!paused) startTimer(); });
+ 
+    btnPlayPause.addEventListener('click', () => {
+      paused = !paused;
+      btnPlayPause.classList.toggle('is-paused', paused);
+      btnPlayPause.setAttribute('aria-label', paused ? 'Reanudar rotación' : 'Pausar rotación');
+      if (paused) {
+        stopTimer();
+      } else {
+        progressStart = performance.now() - (parseFloat(progressFill.style.width || 0) / 100) * INTERVAL;
+        startTimer();
+        (function tick(now) {
+          if (paused) return;
+          const pct = Math.min(((now - progressStart) / INTERVAL) * 100, 100);
+          progressFill.style.width = pct + '%';
+          if (pct < 100) progressRaf = requestAnimationFrame(tick);
+        })(performance.now());
+      }
+    });
+ 
+    /* ── Init ────────────────────────────────── */
+    async function init() {
+      try {
+        const res = await fetch(SHEET_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const rows = await res.json();
+        if (!Array.isArray(rows) || !rows.length) throw new Error('Estructura de datos inválida.');
+ 
+        entries = rows
+          .map(row => ({
+            url:  getPrimaryImage(row),
+            name: String(row[1] || row[0] || 'Addon sin nombre').trim(),
+            color: row[2]
+          }))
+          .filter(e => e.url);
+ 
+        if (!entries.length) throw new Error('No se encontraron imágenes válidas.');
+ 
+        nextRandom();
+        startTimer();
+ 
+      } catch (err) {
+        console.error('Worldleaf init failed:', err);
+        addonName.textContent = 'No se pudieron cargar los addons en este momento.';
+        addonName.style.color = '#ef4444';
+        counterBadge.textContent = 'Error';
+      }
+    }
+ 
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><title>Test</title>
+<script src="config.js"></script>
+<style>
+body{background:#111;color:#eee;font-family:sans-serif;padding:20px}
+button{display:block;margin:10px 0;padding:10px;background:#06f;color:#fff;border:none;border-radius:6px;cursor:pointer;width:100%;text-align:left}
+h3{color:#0af}
+pre{background:#222;padding:10px;border-radius:6px;overflow:auto;font-size:12px}
+</style>
+</head>
+<body>
+<h2>Test Encuestas</h2>
+<div id="status">Cargando...</div>
+<div id="polls"></div>
+<div id="detail"></div>
+
+<script>
+var URL = typeof APP_SCRIPT_URL !== 'undefined' ? APP_SCRIPT_URL : '';
+
+function llamarAPI(accion, datos, cb) {
+  datos.action = accion;
+  fetch(URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(datos)
+  })
+  .then(function(r){ return r.text(); })
+  .then(function(t){
+    document.getElementById("status").textContent = "Respuesta cruda (primeros 200 chars): " + t.substring(0,200);
+    try {
+      var j = JSON.parse(t);
+      cb(j);
+    } catch(e) {
+      document.getElementById("status").textContent = "ERROR parse JSON: " + e.message + " | texto: " + t.substring(0,100);
+    }
+  })
+  .catch(function(e){
+    document.getElementById("status").textContent = "ERROR conexion: " + e.message;
+  });
+}
+
+llamarAPI("listarEncuestas", {}, function(res){
+  var html = "<h3>Encuestas (" + (res.encuestas||[]).length + ")</h3>";
+  (res.encuestas||[]).forEach(function(e){
+    html += "<button onclick='verDetalle(\"" + e.id + "\")'><strong>" + e.titulo + "</strong> (" + e.tipo + ", " + e.estado + ")</button>";
+  });
+  document.getElementById("polls").innerHTML = html;
+  
+  window._encuestas = res.encuestas || [];
+  document.getElementById("detail").innerHTML = "<pre>Datos crudos:\n" + JSON.stringify(res.encuestas, null, 2) + "</pre>";
+});
+
+function verDetalle(id) {
+  var e = null;
+  for(var i=0; i<window._encuestas.length; i++) {
+    if(window._encuestas[i].id === id) { e = window._encuestas[i]; break; }
+  }
+  if(!e) { document.getElementById("detail").innerHTML = "<p>No encontrada</p>"; return; }
+  
+  var ops = e.opciones;
+  var info = "<h3>" + e.titulo + "</h3>";
+  info += "<p>Tipo opciones: " + typeof ops + "</p>";
+  info += "<p>Array.isArray: " + Array.isArray(ops) + "</p>";
+  info += "<p>JSON: " + JSON.stringify(ops) + "</p>";
+  info += "<p>Length: " + (Array.isArray(ops) ? ops.length : 'N/A') + "</p>";
+  
+  if(Array.isArray(ops) && ops.length > 0) {
+    info += "<h4>Opciones:</h4><ul>";
+    for(var i=0; i<ops.length; i++) {
+      info += "<li>" + ops[i] + "</li>";
+    }
+    info += "</ul>";
+  } else {
+    info += "<p style='color:#f44'>NO HAY OPCIONES</p>";
+  }
+  
+  document.getElementById("detail").innerHTML = info;
+}
+</script>
+</body>
+</html>

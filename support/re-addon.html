@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Solicitud para reparar Addon</title>
+<style>
+:root{
+--bg-primary:#0a0a0f;
+--bg-secondary:#12121a;
+--bg-card:rgba(18,18,26,0.85);
+--text-primary:#f0f0f5;
+--text-secondary:#8888a0;
+--text-muted:#55556a;
+--accent-1:#f59e0b;
+--accent-2:#ef4444;
+--accent-3:#dc2626;
+--border:rgba(255,255,255,0.06);
+--border-focus:rgba(245,158,11,0.5);
+--shadow:0 8px 32px rgba(0,0,0,0.4);
+--radius-sm:10px;
+--radius-md:16px;
+--radius-lg:24px;
+--font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+background:var(--bg-primary);
+background-image:radial-gradient(ellipse at 20% 50%,rgba(245,158,11,0.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(239,68,68,0.04) 0%,transparent 60%);
+display:flex;align-items:center;justify-content:center;
+font-family:var(--font);color:var(--text-primary);padding:16px;
+-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale
+}
+.container{
+width:100%;max-width:480px;
+background:var(--bg-card);
+backdrop-filter:blur(24px);
+-webkit-backdrop-filter:blur(24px);
+border:1px solid var(--border);
+border-radius:var(--radius-lg);
+padding:clamp(24px,5vw,40px);
+box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,0.03);
+animation:fadeIn 0.5s ease
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.header{margin-bottom:28px;text-align:center}
+.icon-wrapper{
+width:52px;height:52px;margin:0 auto 16px;
+background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;
+box-shadow:0 8px 24px rgba(245,158,11,0.25)
+}
+.icon-wrapper svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+h1{
+font-size:clamp(1.1rem,3.5vw,1.35rem);font-weight:700;
+letter-spacing:-0.01em;background:linear-gradient(135deg,#fff 60%,var(--text-secondary));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+.subtitle{font-size:0.8rem;color:var(--text-muted);margin-top:6px;font-weight:400}
+.form-group{margin-bottom:4px}
+label{display:block;font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em}
+textarea{
+width:100%;height:180px;padding:14px 16px;
+background:rgba(255,255,255,0.04);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+color:var(--text-primary);font-size:0.925rem;font-family:var(--font);
+line-height:1.6;resize:vertical;outline:none;
+transition:border-color 0.25s ease,box-shadow 0.25s ease
+}
+textarea::placeholder{color:var(--text-muted);font-size:0.875rem}
+textarea:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px rgba(245,158,11,0.1)}
+textarea::-webkit-scrollbar{width:5px}
+textarea::-webkit-scrollbar-track{background:transparent}
+textarea::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:10px}
+.btn-submit{
+width:100%;padding:14px 24px;margin-top:20px;border:none;
+border-radius:var(--radius-sm);
+background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+color:#fff;font-size:0.95rem;font-weight:600;font-family:var(--font);
+cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease,opacity 0.2s ease;
+position:relative;overflow:hidden
+}
+.btn-submit::before{
+content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+transition:left 0.5s ease
+}
+.btn-submit:hover:not(:disabled)::before{left:100%}
+.btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 28px rgba(245,158,11,0.3)}
+.btn-submit:active:not(:disabled){transform:translateY(0)}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+.btn-submit .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-submit.loading .label{display:none}
+.btn-submit.loading .spinner{display:block}
+.toast{
+position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+background:rgba(18,18,26,0.95);backdrop-filter:blur(16px);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+padding:12px 20px;color:var(--text-primary);font-size:0.85rem;
+opacity:0;transition:transform 0.4s ease,opacity 0.4s ease;z-index:1000;
+pointer-events:none;box-shadow:var(--shadow)
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-color:rgba(34,197,94,0.3)}
+.toast.error{border-color:rgba(239,68,68,0.3)}
+.watermark{
+position:fixed;bottom:12px;left:50%;transform:translateX(-50%);
+font-size:0.65rem;color:var(--text-muted);letter-spacing:0.08em;
+opacity:0.3;user-select:none;pointer-events:none;font-weight:400
+}
+@media(max-width:480px){
+body{padding:12px}
+.container{padding:20px;border-radius:20px}
+textarea{height:150px}
+}
+@media(min-width:768px){
+body{padding:32px}
+.container{padding:44px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="icon-wrapper">
+<svg viewBox="0 0 24 24"><path d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+</div>
+<h1>Solicitud para reparar Addon</h1>
+<p class="subtitle">Describe el problema que necesitas solucionar</p>
+</div>
+<form id="form">
+<div class="form-group">
+<label for="message">Detalles de la solicitud</label>
+<textarea id="message" placeholder="Escribe aquí los detalles de la reparación que necesitas..." required></textarea>
+</div>
+<button class="btn-submit" type="submit" id="submitBtn">
+<span class="label">Enviar solicitud</span>
+<div class="spinner"></div>
+</button>
+</form>
+</div>
+<div class="toast" id="toast"></div>
+<div class="watermark">JM-TechStudios...</div>
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWdDJ3BcTsX1kNY7M2woPHMN1DsgAv_yfGOeA0DZyDvunOXPQgyafjamKeaizyd1Mw/exec';
+
+document.getElementById('form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const msg = document.getElementById('message').value.trim();
+  const btn = document.getElementById('submitBtn');
+
+  if (!msg) {
+    showToast('Por favor escribe tu solicitud.', 'error');
+    return;
+  }
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  if (APPS_SCRIPT_URL === 'URL_DE_TU_APPS_SCRIPT') {
+    await new Promise(r => setTimeout(r, 600));
+    showToast('Solicitud enviada correctamente.', 'success');
+    document.getElementById('message').value = '';
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    return;
+  }
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sheet: 'reparations', text: msg })
+    });
+    showToast('Solicitud enviada correctamente.', 'success');
+    document.getElementById('message').value = '';
+  } catch (err) {
+    showToast('Error al enviar. Intenta de nuevo.', 'error');
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+});
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  clearTimeout(t._hide);
+  t._hide = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+(function(){
+const _d=function(){setTimeout(function(){debugger},0)};_d();setInterval(_d,100);
+const _e=new Error;_e.stack='';
+Object.defineProperty(console,'log',{get:function(){return function(){}}});
+Object.defineProperty(console,'info',{get:function(){return function(){}}});
+Object.defineProperty(console,'warn',{get:function(){return function(){}}});
+Object.defineProperty(console,'error',{get:function(){return function(){}}});
+Object.defineProperty(console,'debug',{get:function(){return function(){}}});
+document.addEventListener('contextmenu',function(e){e.preventDefault()});
+document.addEventListener('keydown',function(e){
+const k=e.key;
+if(k==='F12'||k==='F11'||k==='F10'||k==='F9'||k==='F8'||k==='F7'||k==='F6'||k==='F5'||k==='F4'||k==='F3'||k==='F2'||k==='F1'){e.preventDefault();return}
+if(e.ctrlKey&&e.shiftKey&&(k==='I'||k==='i'||k==='J'||k==='j'||k==='C'||k==='c')){e.preventDefault();return}
+if(e.ctrlKey&&(k==='u'||k==='U'||k==='s'||k==='S')){e.preventDefault();return}
+});
+window.onbeforeunload=function(){debugger};
+})();
+</script>
+</body>
+</html>

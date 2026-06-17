@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WORLDLEAF Add-on</title>
+  <style>
+    :root {
+      --primary: #1aff7a;
+      --secondary: #021010;
+      --text-light: #e0ffe0;
+      --text-muted: #9cffc9;
+      --shadow: rgba(0, 255, 128, 0.6);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Minecraftia', monospace;
+      background: radial-gradient(circle at top, var(--secondary) 0%, #000 100%);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 600px;
+      background: linear-gradient(145deg, #021010 0%, #043020 100%);
+      border-radius: 20px;
+      box-shadow: 0 0 40px var(--shadow);
+      padding: 24px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .logo {
+      width: 380px;
+      height: 100px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 20px var(--shadow);
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--text-light);
+      text-shadow: 0 0 10px var(--primary);
+    }
+
+    .title span {
+      color: var(--primary);
+      position: relative;
+    }
+
+    .frame {
+      margin: 20px auto;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      background: #000;
+      box-shadow: 0 0 25px var(--shadow);
+      border: 3px solid var(--primary);
+      overflow: hidden;
+      position: relative;
+    }
+
+    #previewImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.6s ease;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+
+    .download {
+      display: inline-block;
+      background: linear-gradient(145deg, #021010 0%, #043020 100%);
+      border: 2px solid var(--primary);
+      border-radius: 999px;
+      padding: 12px 24px;
+      color: var(--text-light);
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 0 0 18px var(--shadow);
+      margin-top: 10px;
+    }
+
+    .link {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 1.8rem;
+      }
+      .logo {
+        width: 80px;
+        height: 80px;
+      }
+      .frame {
+        border-width: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <img src="https://ms-mcpe.github.io/worldleaf/icon-192.png" alt="WORLDLEAF Icon" class="logo">
+    <div class="subtitle">&gt; Nuevo Complemento Agregado</div>
+    <div class="title" id="addonName">WORLD<span>LEAF</span></div>
+
+    <div class="frame" id="imageBox">
+      <img id="previewImage" src="" alt="Vista previa aleatoria">
+    </div>
+
+    <a href="https://ms-mcpe.github.io/worldleaf" class="download" target="_blank">Descarga Aquí</a>
+    <a href="https://ms-mcpe.github.io/worldleaf" class="link" target="_blank">https://ms-mcpe.github.io/worldleaf</a>
+  </div>
+
+  <!-- Script adaptado con tu lógica -->
+  <script>
+    (() => {
+      const CONFIG = {
+        sheetUrl: 'https://script.google.com/macros/s/AKfycbyI52B-s7qz8wPMfRXLHaYRDuy1Lq_NfpzEA6IrxcQfKDTXA_TsWmDrfwS6b4L8m7oE9g/exec?action=read',
+        rotationInterval: 20000,
+        fallbackColor: 'rgba(15, 23, 42, 0.72)'
+      };
+
+      const DOM = {
+        previewImage: document.getElementById('previewImage'),
+        addonName: document.getElementById('addonName'),
+        card: document.getElementById('card'),
+        imageBox: document.getElementById('imageBox')
+      };
+
+      let globalEntries = [];
+      let currentIndex = -1;
+      let rotationTimer = null;
+
+      function parseColor(val) {
+        if (!val) return CONFIG.fallbackColor;
+        const clean = String(val).trim();
+        return (clean.startsWith('#') || clean.startsWith('rgb') || clean.startsWith('hsl')) ? clean : `#${clean}`;
+      }
+
+      function extractValidUrl(cell) {
+        if (!cell) return null;
+        const potentialUrl = String(cell).split('|')[0].trim();
+        return URL.canParse(potentialUrl) ? potentialUrl : null;
+      }
+
+      function getPrimaryImage(row) {
+        const priorityIndexes = [3, 0, 2, 1];
+        for (const idx of priorityIndexes) {
+          const url = extractValidUrl(row[idx]);
+          if (url) return url;
+        }
+        return null;
+      }
+
+      function getNextRandomIndex() {
+        if (globalEntries.length <= 1) return 0;
+        let nextIdx;
+        do {
+          nextIdx = Math.floor(Math.random() * globalEntries.length);
+        } while (nextIdx === currentIndex);
+        return nextIdx;
+      }
+
+      async function updateDisplay(index) {
+        if (index < 0 || index >= globalEntries.length) return;
+        currentIndex = index;
+        const entry = globalEntries[index];
+
+        DOM.imageBox.classList.add('fade-out');
+        DOM.addonName.style.opacity = '0.3';
+
+        const tempImg = new Image();
+        tempImg.src = entry.url;
+
+        const processChange = () => {
+          DOM.previewImage.src = entry.url;
+          DOM.previewImage.alt = `Minecraft Addon: ${entry.name}`;
+          DOM.addonName.textContent = entry.name;
+          DOM.card.style.backgroundColor = parseColor(entry.color);
+          DOM.imageBox.classList.remove('fade-out');
+          DOM.addonName.style.opacity = '1';
+        };
+
+        tempImg.onload = processChange;
+        tempImg.onerror = () => setTimeout(rotateToNext, 500);
+      }
+
+      function rotateToNext() {
+        if (!globalEntries.length) return;
+        updateDisplay(getNextRandomIndex());
+      }
+
+      function startRotationLoop() {
+        if (rotationTimer) clearInterval(rotationTimer);
+        rotationTimer = setInterval(rotateToNext, CONFIG.rotationInterval);
+      }
+
+      async function init() {
+        try {
+          const response = await fetch(CONFIG.sheetUrl);
+          if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+          const rows = await response.json();
+          if (!Array.isArray(rows) || !rows.length) throw new Error('Estructura de datos inválida.');
+
+          globalEntries = rows
+            .map(row => ({
+              url: getPrimaryImage(row),
+              name: String(row[1] || row[0] || 'Addon sin nombre').trim(),
+              color: row[2]
+            }))
+            .filter(entry => entry.url);
+
+          if (!globalEntries.length) throw new Error('No se encontraron imágenes válidas.');
+
+          rotateToNext();
+          startRotationLoop();
+
+        } catch (error) {
+          console.error("Initialization failed:", error);
+          DOM.previewImage.style.display = 'none';
+          DOM.addonName.textContent = 'No se pudieron cargar los addons.';
+          DOM.addonName.style.color = '#ef4444';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>

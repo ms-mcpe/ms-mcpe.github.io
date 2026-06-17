@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Addon Image - Premium</title>
+  <style>
+    :root {
+      --bg-dark: #090a10;
+      --bg-light: #0c1220;
+      --text: #ffffff;
+      --text-muted: #cbd5e1;
+      --accent: linear-gradient(135deg, #1fdac8, #0d9aa0);
+      --card-bg: rgba(15, 23, 42, 0.72);
+      --border-glow: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.07), transparent 40%),
+                  linear-gradient(180deg, var(--bg-light) 0%, var(--bg-dark) 100%);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(100%, 1200px);
+      padding: 32px 24px;
+      display: grid;
+      gap: 24px;
+    }
+
+    /* --- HERO/ROW AREA --- */
+    .hero-row {
+      display: grid;
+      grid-template-columns: minmax(100px, 140px) minmax(260px, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .hero-icon-card,
+    .hero-cta-card {
+      border-radius: 24px;
+      background: rgba(10, 34, 46, 0.85);
+      border: 1px solid var(--border-glow);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 110px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-icon-card {
+      background: linear-gradient(180deg, rgba(21, 56, 81, 0.9), rgba(6, 26, 37, 0.9));
+    }
+
+    .hero-icon {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      border-radius: 16px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .hero-icon-card:hover .hero-icon {
+      transform: scale(1.05);
+    }
+
+    .hero-cta-card {
+      gap: 16px;
+      padding: 16px 24px;
+      text-decoration: none;
+      color: var(--text);
+      justify-content: flex-start;
+      transition: border-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .hero-cta-card:hover {
+      border-color: rgba(31, 218, 200, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .hero-cta-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('https://i.ibb.co/hxfWvYQj/Background-Eraser-20260601-081844025.png') center/cover no-repeat;
+      opacity: 0.1;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-cta-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: var(--accent);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .hero-cta-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      z-index: 1;
+    }
+
+    .hero-cta-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-cta-url {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* --- CARD / VISUALIZER --- */
+    .card {
+      position: relative;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 460px;
+      border-radius: 32px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glow);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .image-box {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      max-width: 800px;
+      min-height: 340px;
+      padding: 16px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+      animation: rgbPulse 8s ease-in-out infinite alternate;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* Efecto Transición Suave en Rotación */
+    .image-box.fade-out {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+
+    .preview-image {
+      width: 100%;
+      max-height: 550px;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+      transition: transform 0.5s ease;
+    }
+
+    .preview-image:hover {
+      transform: scale(1.015);
+    }
+
+    .addon-name {
+      margin: 24px 0 0;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: -0.02em;
+      transition: opacity 0.3s ease;
+    }
+
+    /* --- SKELETON LOADING (UX Mejorada) --- */
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.05) !important;
+      border-color: transparent !important;
+    }
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      animation: loading 1.5s infinite;
+    }
+
+    /* --- LOGO ROW --- */
+    .logo-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .worldleaf-logo {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      opacity: 0.8;
+    }
+
+    /* --- ANIMACIONES --- */
+    @keyframes loading {
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes rgbPulse {
+      0% { box-shadow: inset 0 0 40px rgba(255, 0, 120, 0.1), 0 0 30px rgba(0, 255, 200, 0.08); }
+      50% { box-shadow: inset 0 0 40px rgba(0, 255, 255, 0.15), 0 0 40px rgba(255, 60, 180, 0.1); }
+      100% { box-shadow: inset 0 0 35px rgba(120, 0, 255, 0.1), 0 0 45px rgba(0, 180, 255, 0.12); }
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 720px) {
+      .page { padding: 16px; gap: 18px; }
+      .hero-row { grid-template-columns: 1fr; gap: 12px; }
+      .hero-cta-card, .hero-icon-card { min-height: auto; padding: 14px; }
+      .card { padding: 20px; min-height: 380px; }
+      .image-box { min-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero-row">
+      <div class="hero-icon-card">
+        <a href="https://ibb.co/GfZHffwc" target="_blank" rel="noopener noreferrer" aria-label="Icono principal">
+          <img src="https://i.ibb.co/RGXjGGnz/Background-Eraser-20260531-010716913.png" alt="" class="hero-icon" onerror="this.remove()" />
+        </a>
+      </div>
+      <a href="https://ms-mcpe.github.io/worldleaf" target="_blank" rel="noopener noreferrer" class="hero-cta-card">
+        <div class="hero-cta-icon" aria-hidden="true">↙</div>
+        <div class="hero-cta-copy">
+          <span class="hero-cta-title">Descarga Aquí</span>
+          <span class="hero-cta-url">ms-mcpe.github.io/worldleaf</span>
+        </div>
+      </a>
+    </section>
+
+    <section class="card" id="card">
+      <div class="image-box skeleton" id="imageBox">
+        <img class="preview-image" id="previewImage" src="" alt="Cargando contenido..." style="display: none;" />
+      </div>
+      <h2 class="addon-name" id="addonName">Buscando addons...</h2>
+    </section>
+
+    <section class="logo-row">
+      <img class="worldleaf-logo" src="https://i.ibb.co/1GtKgjvP/Background-Eraser-20260531-013208695.png" alt="Worldleaf Logo" onerror="this.remove()" />
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const CONFIG = {
+        sheetUrl: 'https://script.google.com/macros/s/AKfycbyI52B-s7qz8wPMfRXLHaYRDuy1Lq_NfpzEA6IrxcQfKDTXA_TsWmDrfwS6b4L8m7oE9g/exec?action=read',
+        rotationInterval: 20000,
+        fallbackColor: 'rgba(15, 23, 42, 0.72)'
+      };
+
+      const DOM = {
+        previewImage: document.getElementById('previewImage'),
+        addonName: document.getElementById('addonName'),
+        card: document.getElementById('card'),
+        imageBox: document.getElementById('imageBox')
+      };
+
+      let globalEntries = [];
+      let currentIndex = -1;
+      let rotationTimer = null;
+
+      function parseColor(val) {
+        if (!val) return CONFIG.fallbackColor;
+        const clean = String(val).trim();
+        return (clean.startsWith('#') || clean.startsWith('rgb') || clean.startsWith('hsl')) ? clean : `#${clean}`;
+      }
+
+      function extractValidUrl(cell) {
+        if (!cell) return null;
+        // Dividir si tiene múltiples enlaces mediante '|' y agarrar el primero
+        const potentialUrl = String(cell).split('|')[0].trim();
+        return URL.canParse(potentialUrl) ? potentialUrl : null;
+      }
+
+      function getPrimaryImage(row) {
+        // Prioridades ordenadas de columnas según tu diseño: index 3, 0, 2, 1
+        const priorityIndexes = [3, 0, 2, 1];
+        for (const idx of priorityIndexes) {
+          const url = extractValidUrl(row[idx]);
+          if (url) return url;
+        }
+        return null;
+      }
+
+      function getNextRandomIndex() {
+        if (globalEntries.length <= 1) return 0;
+        let nextIdx;
+        do {
+          nextIdx = Math.floor(Math.random() * globalEntries.length);
+        } while (nextIdx === currentIndex);
+        return nextIdx;
+      }
+
+      async function updateDisplay(index) {
+        if (index < 0 || index >= globalEntries.length) return;
+        currentIndex = index;
+        const entry = globalEntries[index];
+
+        // 1. Iniciar animación de salida (Fade Out)
+        DOM.imageBox.classList.add('fade-out');
+        DOM.addonName.style.opacity = '0.3';
+
+        // Pre-cargar la imagen en memoria para un cambio suave y sin parpadeos blancos
+        const tempImg = new Image();
+        tempImg.src = entry.url;
+
+        const processChange = () => {
+          DOM.previewImage.src = entry.url;
+          DOM.previewImage.alt = `Minecraft Addon: ${entry.name}`;
+          DOM.previewImage.style.display = 'block';
+          DOM.addonName.textContent = entry.name;
+          DOM.card.style.backgroundColor = parseColor(entry.color);
+          
+          // Quitar esqueletos de carga inicial si existen
+          DOM.imageBox.classList.remove('skeleton');
+          
+          // Re-activar visibilidad (Fade In)
+          DOM.imageBox.classList.remove('fade-out');
+          DOM.addonName.style.opacity = '1';
+        };
+
+        tempImg.onload = processChange;
+        
+        // Manejo de errores por si el link de la imagen está caído
+        tempImg.onerror = () => {
+          console.warn(`Error cargando imagen para: ${entry.name}. Saltando...`);
+          // Pasar inmediatamente al siguiente sin romper el flujo
+          setTimeout(rotateToNext, 500);
+        };
+      }
+
+      function rotateToNext() {
+        if (!globalEntries.length) return;
+        updateDisplay(getNextRandomIndex());
+      }
+
+      function startRotationLoop() {
+        if (rotationTimer) clearInterval(rotationTimer);
+        rotationTimer = setInterval(rotateToNext, CONFIG.rotationInterval);
+      }
+
+      async function init() {
+        try {
+          const response = await fetch(CONFIG.sheetUrl);
+          if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+          
+          const rows = await response.json();
+          if (!Array.isArray(rows) || !rows.length) throw new Error('Estructura de datos inválida.');
+
+          // Filtrar y mapear filas eficientemente
+          globalEntries = rows
+            .map(row => ({
+              url: getPrimaryImage(row),
+              name: String(row[1] || row[0] || 'Addon sin nombre').trim(),
+              color: row[2]
+            }))
+            .filter(entry => entry.url);
+
+          if (!globalEntries.length) throw new Error('No se encontraron imágenes válidas.');
+
+          // Carga inicial exitosa
+          rotateToNext();
+          startRotationLoop();
+
+        } catch (error) {
+          console.error("Initialization failed:", error);
+          DOM.imageBox.classList.remove('skeleton');
+          DOM.previewImage.style.display = 'none';
+          DOM.addonName.textContent = 'No se pudieron cargar los addons en este momento.';
+          DOM.addonName.style.color = '#ef4444';
+        }
+      }
+
+      // Ejecutar la app de forma segura
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>

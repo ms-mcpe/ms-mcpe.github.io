@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Panel de Revision - Solicitudes</title>
+<style>
+:root{
+--bg-primary:#0a0a0f;
+--bg-secondary:#12121a;
+--bg-card:rgba(18,18,26,0.85);
+--text-primary:#f0f0f5;
+--text-secondary:#8888a0;
+--text-muted:#55556a;
+--accent-blue:#6c63ff;
+--accent-purple:#a855f7;
+--accent-amber:#f59e0b;
+--accent-red:#ef4444;
+--accent-green:#22c55e;
+--border:rgba(255,255,255,0.06);
+--border-focus:rgba(108,99,255,0.5);
+--shadow:0 8px 32px rgba(0,0,0,0.4);
+--radius-sm:10px;
+--radius-md:16px;
+--radius-lg:24px;
+--font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+background:var(--bg-primary);
+background-image:radial-gradient(ellipse at 20% 50%,rgba(108,99,255,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(168,85,247,0.03) 0%,transparent 60%);
+font-family:var(--font);color:var(--text-primary);padding:16px;min-height:100vh;
+-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale
+}
+.app{max-width:900px;margin:0 auto;padding:clamp(16px,4vw,32px) 0}
+.app-header{text-align:center;margin-bottom:32px;animation:fadeIn 0.5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.app-header h1{
+font-size:clamp(1.25rem,4vw,1.6rem);font-weight:700;
+letter-spacing:-0.02em;background:linear-gradient(135deg,#fff 50%,var(--text-secondary));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+.app-header p{font-size:0.85rem;color:var(--text-muted);margin-top:6px}
+.stats{
+display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap
+}
+.stat{
+background:var(--bg-card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+padding:10px 18px;display:flex;align-items:center;gap:8px;font-size:0.8rem
+}
+.stat .num{font-weight:700;font-size:1.1rem}
+.stat.blue .num{color:var(--accent-blue)}
+.stat.amber .num{color:var(--accent-amber)}
+.tabs{
+display:flex;gap:4px;margin-bottom:24px;background:var(--bg-card);
+backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px;
+overflow-x:auto;-webkit-overflow-scrolling:touch
+}
+.tab{
+flex:1;padding:10px 16px;border:none;background:transparent;
+color:var(--text-muted);font-size:0.8rem;font-weight:500;font-family:var(--font);
+cursor:pointer;border-radius:calc(var(--radius-sm) - 4px);
+transition:all 0.2s ease;white-space:nowrap
+}
+.tab:hover{color:var(--text-secondary)}
+.tab.active{background:rgba(108,99,255,0.15);color:var(--accent-blue)}
+.tab.amber.active{background:rgba(245,158,11,0.15);color:var(--accent-amber)}
+.empty-state{
+text-align:center;padding:60px 20px;color:var(--text-muted)
+}
+.empty-state svg{width:48px;height:48px;stroke:var(--text-muted);fill:none;stroke-width:1.5;margin-bottom:16px;opacity:0.4}
+.empty-state p{font-size:0.9rem}
+.list{display:flex;flex-direction:column;gap:12px}
+.card{
+background:var(--bg-card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+border:1px solid var(--border);border-radius:var(--radius-md);
+padding:18px 20px;transition:border-color 0.2s ease,transform 0.2s ease;
+animation:cardIn 0.3s ease;position:relative
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{border-color:rgba(255,255,255,0.1);transform:translateY(-1px)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.card-badge{
+font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;
+padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0
+}
+.card-badge.blue{background:rgba(108,99,255,0.12);color:var(--accent-blue)}
+.card-badge.amber{background:rgba(245,158,11,0.12);color:var(--accent-amber)}
+.card-time{font-size:0.7rem;color:var(--text-muted)}
+.card-text{
+font-size:0.9rem;line-height:1.6;color:var(--text-secondary);
+word-break:break-word
+}
+.card-actions{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.btn-icon{
+padding:6px 14px;border:none;border-radius:8px;font-size:0.75rem;
+font-weight:500;font-family:var(--font);cursor:pointer;
+transition:all 0.2s ease;display:flex;align-items:center;gap:5px
+}
+.btn-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-delete{background:rgba(239,68,68,0.1);color:var(--accent-red)}
+.btn-delete:hover{background:rgba(239,68,68,0.2)}
+.btn-delete.confirming{background:var(--accent-red);color:#fff}
+.toast{
+position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+background:rgba(18,18,26,0.95);backdrop-filter:blur(16px);
+border:1px solid var(--border);border-radius:var(--radius-sm);
+padding:12px 20px;color:var(--text-primary);font-size:0.85rem;
+opacity:0;transition:transform 0.4s ease,opacity 0.4s ease;z-index:1000;
+pointer-events:none;box-shadow:var(--shadow)
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-color:rgba(34,197,94,0.3)}
+.toast.error{border-color:rgba(239,68,68,0.3)}
+.watermark{
+position:fixed;bottom:12px;left:50%;transform:translateX(-50%);
+font-size:0.65rem;color:var(--text-muted);letter-spacing:0.08em;
+opacity:0.2;user-select:none;pointer-events:none;font-weight:400;z-index:0
+}
+@media(max-width:480px){
+body{padding:10px}
+.app{padding:8px 0}
+.card{padding:14px 16px}
+.stats{gap:8px}.stat{padding:8px 14px;font-size:0.75rem}
+}
+.loading-spinner{
+display:flex;justify-content:center;padding:60px 0
+}
+.loading-spinner div{
+width:32px;height:32px;border:3px solid var(--border);
+border-top-color:var(--accent-blue);border-radius:50%;
+animation:spin 0.7s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="app-header">
+<h1>Panel de Revisión</h1>
+<p>Todas las solicitudes recibidas</p>
+<div class="stats">
+<div class="stat blue">
+<span class="num" id="countActual">0</span>
+<span style="color:var(--text-secondary)">Actualizaciones</span>
+</div>
+<div class="stat amber">
+<span class="num" id="countRepa">0</span>
+<span style="color:var(--text-secondary)">Reparaciones</span>
+</div>
+</div>
+</div>
+
+<div class="tabs" id="tabs">
+<button class="tab active" data-filter="all">Todas</button>
+<button class="tab blue" data-filter="actualizations">Actualizaciones</button>
+<button class="tab amber" data-filter="reparations">Reparaciones</button>
+</div>
+
+<div id="content">
+<div class="loading-spinner"><div></div></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="watermark">JM-TechStudios...</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwO_KpbIBnXTiyY-JrOosGcQFNpMV24fVBtIeWdx5xdZx3qdAq1eM1HGyMQgHNXmsnr/exec';
+let allData = { actualizations: [], reparations: [] };
+let currentFilter = 'all';
+let confirmingId = null;
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    if (this.dataset.filter === 'reparations') this.classList.add('amber','active');
+    else if (this.dataset.filter === 'actualizations') this.classList.add('active');
+    else this.classList.add('active');
+    currentFilter = this.dataset.filter;
+    confirmingId = null;
+    render();
+  });
+});
+
+async function loadData() {
+  const el = document.getElementById('content');
+
+  if (APPS_SCRIPT_URL === 'URL_DE_TU_APPS_SCRIPT') {
+    allData = {
+      actualizations: [
+        { id: 'demo-1', timestamp: '16/05/2026, 10:30:00', text: 'Agregar soporte para nuevas texturas en la versión 1.21', sheet: 'actualizations' },
+        { id: 'demo-2', timestamp: '16/05/2026, 11:15:00', text: 'Actualizar sistema de partículas para optimizar rendimiento', sheet: 'actualizations' },
+        { id: 'demo-3', timestamp: '16/05/2026, 12:00:00', text: 'Implementar nuevos comandos de administración', sheet: 'actualizations' }
+      ],
+      reparations: [
+        { id: 'demo-4', timestamp: '16/05/2026, 09:45:00', text: 'Error al cargar texturas en dispositivos Android 12', sheet: 'reparations' },
+        { id: 'demo-5', timestamp: '16/05/2026, 14:20:00', text: 'El sonido de los pasos no se reproduce correctamente', sheet: 'reparations' }
+      ]
+    };
+    render();
+    updateStats();
+    el.querySelector('.loading-spinner')?.remove();
+    return;
+  }
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=getData');
+    if (!res.ok) throw new Error('Error al cargar');
+    allData = await res.json();
+    render();
+    updateStats();
+  } catch (err) {
+    el.innerHTML = '<div class="empty-state"><p>Error al cargar datos. Verifica la conexión.</p></div>';
+  }
+}
+
+function updateStats() {
+  document.getElementById('countActual').textContent = allData.actualizations.length;
+  document.getElementById('countRepa').textContent = allData.reparations.length;
+}
+
+function render() {
+  const el = document.getElementById('content');
+  let items = [];
+
+  if (currentFilter === 'all') {
+    items = [...allData.actualizations, ...allData.reparations];
+  } else {
+    items = allData[currentFilter] || [];
+  }
+
+  if (items.length === 0) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><polyline points="16 21 16 13 8 13 8 21"/></svg>
+        <p>No hay solicitudes ${currentFilter === 'all' ? '' : 'en esta categoría'}</p>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = '<div class="list">' + items.map(item => `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-badge ${item.sheet === 'actualizations' ? 'blue' : 'amber'}">
+          ${item.sheet === 'actualizations' ? 'Actualización' : 'Reparación'}
+        </span>
+        <span class="card-time">${item.timestamp}</span>
+      </div>
+      <div class="card-text">${escapeHtml(item.text)}</div>
+      <div class="card-actions">
+        <button class="btn-icon btn-delete" data-id="${item.id}" data-sheet="${item.sheet}" onclick="handleDelete(this)">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function handleDelete(btn) {
+  const id = btn.dataset.id;
+
+  if (confirmingId === id) {
+    performDelete(btn);
+    return;
+  }
+
+  confirmingId = id;
+  btn.classList.add('confirming');
+  btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Confirmar';
+
+  document.querySelectorAll('.btn-delete').forEach(b => {
+    if (b !== btn) { b.classList.remove('confirming'); b.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar'; }
+  });
+
+  setTimeout(() => {
+    if (confirmingId === id) {
+      confirmingId = null;
+      btn.classList.remove('confirming');
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar';
+    }
+  }, 4000);
+}
+
+async function performDelete(btn) {
+  const id = btn.dataset.id;
+  const sheet = btn.dataset.sheet;
+
+  if (APPS_SCRIPT_URL === 'URL_DE_TU_APPS_SCRIPT') {
+    allData[sheet] = allData[sheet].filter(x => x.id !== id);
+    render();
+    updateStats();
+    showToast('Eliminado correctamente.', 'success');
+    confirmingId = null;
+    return;
+  }
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', sheet, id })
+    });
+    const result = await res.json();
+    if (result.success) {
+      allData[sheet] = allData[sheet].filter(x => x.id !== id);
+      render();
+      updateStats();
+      showToast('Eliminado correctamente.', 'success');
+    } else {
+      showToast('Error al eliminar.', 'error');
+    }
+  } catch (err) {
+    showToast('Error de conexión.', 'error');
+  }
+  confirmingId = null;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  clearTimeout(t._hide);
+  t._hide = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+loadData();
+
+(function(){
+const _d=function(){setTimeout(function(){debugger},0)};_d();setInterval(_d,100);
+const _e=new Error;_e.stack='';
+Object.defineProperty(console,'log',{get:function(){return function(){}}});
+Object.defineProperty(console,'info',{get:function(){return function(){}}});
+Object.defineProperty(console,'warn',{get:function(){return function(){}}});
+Object.defineProperty(console,'error',{get:function(){return function(){}}});
+Object.defineProperty(console,'debug',{get:function(){return function(){}}});
+document.addEventListener('contextmenu',function(e){e.preventDefault()});
+document.addEventListener('keydown',function(e){
+const k=e.key;
+if(k==='F12'||k==='F11'||k==='F10'||k==='F9'||k==='F8'||k==='F7'||k==='F6'||k==='F5'||k==='F4'||k==='F3'||k==='F2'||k==='F1'){e.preventDefault();return}
+if(e.ctrlKey&&e.shiftKey&&(k==='I'||k==='i'||k==='J'||k==='j'||k==='C'||k==='c')){e.preventDefault();return}
+if(e.ctrlKey&&(k==='u'||k==='U'||k==='s'||k==='S')){e.preventDefault();return}
+});
+window.onbeforeunload=function(){debugger};
+})();
+</script>
+</body>
+</html>
