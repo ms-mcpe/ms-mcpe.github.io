@@ -93,27 +93,6 @@
       background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
     }
 
-    /* ══════════════ TOPBAR ══════════════ */
-    .topbar{
-      position:fixed;top:0;left:0;right:0;height:60px;
-      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 20px;box-shadow:0 2px 20px rgba(0,0,0,0.5);z-index:100;
-      border-bottom:1px solid var(--border);
-    }
-    .topbar-left{display:flex;align-items:center;gap:10px;}
-    .hamburger{
-      background:none;border:none;color:var(--primary);
-      cursor:pointer;padding:7px;border-radius:8px;
-      font-size:20px;line-height:1;
-      display:flex;align-items:center;justify-content:center;
-      transition:background 0.15s,transform 0.15s;
-    }
-    .hamburger:hover{background:var(--primary-bg);transform:scale(1.08);}
-    .topbar-center{flex:1;display:flex;align-items:center;justify-content:center;}
-    .topbar-center img{height:32px;width:auto;object-fit:contain;}
-    .topbar-right{display:flex;align-items:center;gap:10px;}
-
     /* Badges rol */
     .badge-rol{
       display:inline-flex;align-items:center;
@@ -124,129 +103,6 @@
     .badge-owner{background:var(--owner-gradient);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,0.35);}
     .badge-admin{background:var(--admin-gradient);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.30);}
     .badge-app{background:var(--app-gradient);color:#fff;box-shadow:0 2px 8px rgba(168,85,247,0.30);}
-
-    /* Avatar */
-    .profile-circle{
-      width:36px;height:36px;border-radius:50%;
-      background:var(--primary-gradient);
-      display:flex;align-items:center;justify-content:center;
-      color:#fff;font-weight:800;font-size:14px;
-      cursor:pointer;overflow:hidden;
-      border:2px solid rgba(34,197,94,0.4);
-      box-shadow:0 0 12px var(--primary-glow);
-      transition:box-shadow 0.2s,transform 0.2s;
-    }
-    .profile-circle:hover{transform:scale(1.08);box-shadow:0 0 20px var(--primary-glow);}
-    .profile-circle img{width:100%;height:100%;object-fit:cover;}
-
-    /* ══════════════ SIDEBAR ══════════════ */
-    .sidebar-overlay{
-      position:fixed;inset:0;background:var(--overlay);
-      backdrop-filter:blur(4px);z-index:200;
-      display:none;opacity:0;transition:opacity .25s;
-    }
-    .sidebar-overlay.active{display:block;opacity:1;}
-    .sidebar{
-      position:fixed;top:0;left:-290px;bottom:0;width:272px;
-      background:var(--bg-sidebar);
-      border-right:1px solid var(--border);
-      box-shadow:4px 0 32px rgba(0,0,0,0.6);
-      z-index:201;
-      display:flex;flex-direction:column;
-      transition:left 0.3s cubic-bezier(0.16,1,0.3,1);
-    }
-    .sidebar.open{left:0;}
-
-    .sidebar-header{
-      padding:18px 20px;
-      border-bottom:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;
-    }
-    .sidebar-brand{
-      display:flex;align-items:center;gap:10px;
-    }
-    .sidebar-brand-icon{
-      width:34px;height:34px;border-radius:8px;
-      background:var(--primary-gradient);
-      display:flex;align-items:center;justify-content:center;
-      font-size:18px;box-shadow:0 0 14px var(--primary-glow);
-    }
-    .sidebar-brand-text{
-      font-family:'Rajdhani',sans-serif;
-      font-size:18px;font-weight:700;color:var(--primary);
-      letter-spacing:0.5px;
-    }
-    .sidebar-brand-sub{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;}
-    .sidebar-close{
-      background:var(--surface);border:none;
-      color:var(--text-secondary);cursor:pointer;
-      width:30px;height:30px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      font-size:16px;transition:background 0.15s,color 0.15s;
-    }
-    .sidebar-close:hover{background:var(--border);color:var(--text);}
-
-    /* Separador de sección en sidebar */
-    .sidebar-sep{
-      font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-      color:var(--text-muted);padding:14px 20px 6px;
-    }
-    .sidebar-menu{flex:1;overflow-y:auto;padding:8px;}
-    .sidebar-item{
-      display:flex;align-items:center;gap:12px;
-      padding:11px 14px;font-size:14px;font-weight:600;
-      color:var(--text-secondary);cursor:pointer;
-      transition:all 0.18s;border:none;border-radius:10px;
-      background:none;width:100%;text-align:left;margin-bottom:3px;
-      position:relative;
-      font-family:'Rajdhani',sans-serif;
-    }
-    .sidebar-item .icon{
-      font-size:18px;width:26px;text-align:center;
-      flex-shrink:0;transition:transform 0.18s;
-    }
-    .sidebar-item:hover{background:var(--surface);color:var(--text);}
-    .sidebar-item:hover .icon{transform:scale(1.15);}
-    .sidebar-item.active{
-      background:var(--primary-bg);color:var(--primary);
-      box-shadow:inset 3px 0 0 var(--primary);
-    }
-    .sidebar-item.active .icon{filter:drop-shadow(0 0 6px var(--primary));}
-
-    .sidebar-footer{
-      padding:14px 20px;border-top:1px solid var(--border);
-      font-size:11px;color:var(--text-muted);font-weight:600;
-      display:flex;align-items:center;gap:8px;
-    }
-    .sidebar-footer::before{
-      content:'';width:6px;height:6px;border-radius:50%;
-      background:var(--primary);flex-shrink:0;
-      box-shadow:0 0 8px var(--primary);
-    }
-
-    /* ══════════════ BOTTOMBAR ══════════════ */
-    .bottombar{
-      position:fixed;bottom:0;left:0;right:0;height:64px;
-      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-      display:flex;align-items:center;justify-content:space-around;
-      box-shadow:0 -2px 20px rgba(0,0,0,0.5);z-index:100;padding:0 8px;
-      border-top:1px solid var(--border);
-    }
-    .bottombar-item{
-      display:flex;flex-direction:column;align-items:center;gap:3px;
-      padding:7px 10px;border:none;background:none;
-      cursor:pointer;color:var(--text-muted);
-      transition:all 0.18s;font-size:10px;font-weight:700;
-      min-width:60px;border-radius:10px;
-      letter-spacing:0.3px;text-transform:uppercase;
-      font-family:'Rajdhani',sans-serif;
-    }
-    .bottombar-item .icon{font-size:20px;line-height:1;transition:transform 0.18s;}
-    .bottombar-item:hover{color:var(--primary);background:var(--primary-bg);}
-    .bottombar-item:hover .icon{transform:translateY(-2px);}
-    .bottombar-item.active{color:var(--primary);}
-    .bottombar-item.active .icon{filter:drop-shadow(0 0 6px var(--primary));}
-    .bottombar-item:active .icon{transform:scale(0.88);}
 
     /* ══════════════ CONTENT ══════════════ */
     .content{
@@ -522,27 +378,13 @@
       .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
       .stat-card{padding:16px 12px;}
       .stat-number{font-size:26px;}
-      body{padding-top:58px;padding-bottom:72px;}
-      .topbar{height:54px;padding:0 12px;}
-      .bottombar{height:58px;}
+      body{padding-top:0;padding-bottom:0;}
       th,td{padding:10px 12px;}
       .search-input{max-width:100%;}
       .search-wrap{max-width:100%;}
     }
     @media(min-width:768px){
-      body{padding-top:80px;padding-bottom:20px;}
       .content{padding:24px;max-width:1100px;}
-      .bottombar{
-        top:0;bottom:auto;left:auto;right:20px;
-        height:60px;background:transparent !important;
-        backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
-        border-top:none;box-shadow:none;width:auto;z-index:101;gap:12px;
-      }
-      .bottombar-item{flex-direction:row;padding:8px 16px;gap:7px;font-size:12px;height:38px;min-width:auto;}
-      .bottombar-item .icon{font-size:18px;}
-      .topbar{padding:0 40px;}
-      .topbar-center{justify-content:flex-start;padding-left:16px;}
-      .topbar-right{margin-right:260px;}
     }
   </style>
 </head>
@@ -625,16 +467,17 @@
 
     function actualizarPerfilUI() {
       var pi = document.getElementById('profileInitial');
-      if (profileData && profileData.fotoPerfil) {
-        pi.innerHTML = '<img src="' + profileData.fotoPerfil + '" alt="Perfil">';
-      } else {
-        pi.textContent = sessionUser ? sessionUser.charAt(0).toUpperCase() : 'U';
+      if (pi) {
+        if (profileData && profileData.fotoPerfil) { pi.innerHTML = '<img src="' + profileData.fotoPerfil + '" alt="Perfil">'; }
+        else { pi.textContent = sessionUser ? sessionUser.charAt(0).toUpperCase() : 'U'; }
       }
       var rb = document.getElementById('rolBadge');
-      if (userRole === 'Owner') rb.className = 'badge-rol badge-owner';
-      else if (userRole === 'App') rb.className = 'badge-rol badge-app';
-      else rb.className = 'badge-rol badge-admin';
-      rb.textContent = userRole || 'Admin';
+      if (rb) {
+        if (userRole === 'Owner') rb.className = 'badge-rol badge-owner';
+        else if (userRole === 'App') rb.className = 'badge-rol badge-app';
+        else rb.className = 'badge-rol badge-admin';
+        rb.textContent = userRole || 'Admin';
+      }
     }
 
     function esAdmin() { return userRole === 'Owner' || userRole === 'Admin' || userRole === 'App'; }
