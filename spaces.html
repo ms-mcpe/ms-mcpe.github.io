@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando...</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; -o-user-drag: none; -webkit-touch-callout: none; }
+        input, textarea, select, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e17; color: #e0e6f0;
+            min-height: 100vh; font-size: clamp(13px, 1.1vw, 15px);
+            transition: background 0.3s, color 0.3s;
+        }
+        .watermark-bg {
+            position: fixed; inset: 0; pointer-events: none;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0.06; z-index: 0;
+        }
+        .watermark-bg img {
+            width: 300px; height: 300px; border-radius: 40px; object-fit: cover;
+        }
+        .brand-bottom {
+            position: fixed; bottom: 20px; left: 0; right: 0;
+            text-align: center; z-index: 1;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 13px; color: rgba(224,230,240,0.25);
+        }
+        .brand-bottom img {
+            width: 22px; height: 22px; border-radius: 5px; object-fit: cover;
+        }
+        .brand-bottom .bn { font-weight: 600; }
+        /* Top bar */
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0; height: 52px;
+            display: flex; align-items: center; padding: 0 16px;
+            background: rgba(0,0,0,0.4); z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+        .menu-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: #e0e6f0; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .menu-btn:hover { background: rgba(255,255,255,0.1); }
+        .topbar-title {
+            margin-left: 12px; font-size: 15px; font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        /* Sidebar */
+        .sidebar {
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 200;
+            backdrop-filter: blur(16px); border-right: 1px solid rgba(255,255,255,0.06);
+            transition: left 0.3s ease; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .sidebar-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            object-fit: cover; flex-shrink: 0;
+        }
+        .sidebar-name {
+            font-size: 15px; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        /* Overlay */
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); z-index: 199;
+            display: none;
+        }
+        .sidebar-overlay.open { display: block; }
+        /* Category nav items */
+        .nav-list { padding: 8px 0; flex: 1; }
+        .nav-item { margin: 0; }
+        .nav-btn {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; padding: 10px 16px;
+            background: none; border: none; color: rgba(224,230,240,0.7);
+            font-size: 14px; font-weight: 500; cursor: pointer;
+            transition: background 0.15s; text-align: left;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.04); color: #e0e6f0; }
+        .nav-btn .arrow {
+            margin-left: auto; font-size: 12px; transition: transform 0.2s;
+        }
+        .nav-btn .arrow.open { transform: rotate(90deg); }
+        .submenu {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.25s ease;
+        }
+        .submenu.open { max-height: 200px; }
+        .sub-btn {
+            display: block; width: 100%; padding: 8px 16px 8px 42px;
+            background: none; border: none; color: rgba(224,230,240,0.45);
+            font-size: 13px; cursor: pointer; text-align: left;
+            transition: background 0.15s, color 0.15s;
+        }
+        .sub-btn:hover { background: rgba(255,255,255,0.03); color: rgba(224,230,240,0.8); }
+        /* Main content */
+        .main-content {
+            padding: 80px 20px 40px; max-width: 800px; margin: 0 auto;
+            text-align: center;
+        }
+        .space-icon { width: 80px; height: 80px; border-radius: 18px; object-fit: cover; margin: 0 auto 16px; display: block; }
+        .space-name { font-size: 28px; font-weight: 800; }
+        .loading, .error {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; font-size: 15px;
+        }
+        .loading { opacity: 0.5; flex-direction: column; gap: 16px; }
+        .loading-icon { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
+        .error { color: #ef4444; }
+        @media (max-width: 768px) {
+            .sidebar { width: 260px; left: -260px; }
+            .main-content { padding: 72px 16px 32px; }
+            .space-name { font-size: 24px; }
+            .space-icon { width: 64px; height: 64px; }
+        }
+        @media (max-width: 480px) {
+            .sidebar { width: 85vw; left: -85vw; }
+            .main-content { padding: 64px 12px 40px; }
+            .space-name { font-size: clamp(18px, 5vw, 24px); }
+            .space-icon { width: 56px; height: 56px; border-radius: 14px; }
+            .topbar { height: 44px; padding: 0 10px; }
+            .topbar-title { font-size: 13px; margin-left: 8px; }
+            .menu-btn { width: 32px; height: 32px; font-size: 16px; }
+            .sidebar-header { padding: 12px 14px; }
+            .sidebar-icon { width: 32px; height: 32px; border-radius: 8px; }
+            .sidebar-name { font-size: 13px; }
+            .nav-btn { padding: 8px 14px; font-size: 13px; }
+            .sub-btn { padding: 6px 14px 6px 36px; font-size: 12px; }
+            .brand-bottom { font-size: 11px; bottom: 12px; gap: 5px; }
+            .brand-bottom img { width: 18px; height: 18px; border-radius: 4px; }
+            .watermark-bg img { width: 180px; height: 180px; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .main-content { max-width: 600px; }
+            .space-name { font-size: 26px; }
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .nav-btn, .sub-btn, .menu-btn { cursor: default; }
+            .nav-btn:active, .sub-btn:active { background: rgba(255,255,255,0.08); }
+        }
+
+        /* === ADDONS SECTION === */
+        #addonsSection { margin-top: 28px; text-align: left; }
+        #addonsSection.hidden { display: none; }
+        .addons-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+        }
+        .addons-header h3 {
+            font-size: 16px; font-weight: 700;
+        }
+        .addons-header .cat-label {
+            font-size: 12px; color: #c4a87c; font-weight: 600;
+            background: rgba(196,168,124,0.1);
+            padding: 4px 12px; border-radius: 20px;
+        }
+        .addon-search-wrap { margin-bottom: 14px; }
+        .addon-search {
+            width: 100%; box-sizing: border-box;
+            padding: 10px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: #e0e6f0; font-size: 14px; outline: none;
+            transition: border-color 0.2s;
+        }
+        .addon-search:focus { border-color: #c4a87c; }
+        .addon-search::placeholder { color: rgba(224,230,240,0.25); }
+        .addons-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+        @media (min-width: 600px) {
+            .addons-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 900px) {
+            .addons-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .addon-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .addon-card:hover {
+            border-color: rgba(196,168,124,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .addon-card-thumb-wrap {
+            position: relative; display: block;
+        }
+        .addon-card-thumb {
+            width: 100%; aspect-ratio: 16/9;
+            object-fit: cover; background: rgba(0,0,0,0.3);
+            display: block;
+        }
+        .addon-card-thumb.hidden { display: none; }
+        .play-badge {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.3);
+            color: #fff; font-size: 28px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .addon-card-video:hover .play-badge {
+            background: rgba(0,0,0,0.15);
+            transform: scale(1.1);
+        }
+        .play-badge i {
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+        }
+        .addon-card-body { padding: 14px; }
+        .addon-card-cat {
+            font-size: 0.62rem; font-weight: 700;
+            letter-spacing: 0.6px; text-transform: uppercase;
+            color: #c4a87c; margin-bottom: 4px;
+        }
+        .addon-card-title {
+            font-size: 0.9rem; font-weight: 700;
+            color: #e0e6f0; margin-bottom: 6px; line-height: 1.3;
+        }
+        .addon-card-desc {
+            font-size: 0.77rem; color: rgba(224,230,240,0.55);
+            line-height: 1.5; margin-bottom: 10px;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .addon-card-foot {
+            display: flex; gap: 8px; padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            align-items: center; justify-content: space-between;
+        }
+        .addon-card-foot .addon-link {
+            font-size: 12px; color: #c4a87c; text-decoration: none;
+            font-weight: 500; display: inline-flex; align-items: center; gap: 4px;
+            cursor: pointer;
+        }
+        .addon-card-foot .addon-link:hover { text-decoration: underline; }
+        .addon-card-foot .addon-date {
+            font-size: 10px; color: rgba(224,230,240,0.25);
+        }
+        .empty-addons {
+            text-align: center; padding: 40px 20px;
+            color: rgba(224,230,240,0.25); font-size: 14px;
+            grid-column: 1 / -1;
+        }
+
+        /* === ADDON DETAIL MODAL === */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.7);
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; backdrop-filter: blur(4px);
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: #111827; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; max-width: 560px; width: 100%;
+            max-height: 90vh; overflow-y: auto;
+            padding: 0; position: relative;
+            animation: modalIn 0.2s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-close-btn {
+            position: absolute; top: 12px; right: 12px; z-index: 10;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(0,0,0,0.5); border: none;
+            color: #fff; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close-btn:hover { background: rgba(239,68,68,0.7); }
+        .modal-video {
+            width: 100%; aspect-ratio: 16/9;
+            display: block; border: none; background: #000;
+        }
+        .modal-img {
+            width: 100%; aspect-ratio: 16/9;
+            object-fit: cover; display: block;
+            background: rgba(0,0,0,0.3);
+        }
+        .modal-img-gallery {
+            display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px 6px;
+            scrollbar-width: thin;
+        }
+        .modal-img-gallery img {
+            width: 60px; height: 45px; border-radius: 6px;
+            object-fit: cover; cursor: pointer; flex-shrink: 0;
+            border: 2px solid transparent; transition: border-color 0.2s;
+        }
+        .modal-img-gallery img:hover,
+        .modal-img-gallery img.active { border-color: #c4a87c; }
+        .modal-body { padding: 16px; }
+        .modal-body .m-category {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.6px;
+            text-transform: uppercase; color: #c4a87c; margin-bottom: 4px;
+        }
+        .modal-body .m-title {
+            font-size: 1.2rem; font-weight: 800; color: #e0e6f0;
+            margin-bottom: 4px; line-height: 1.3;
+        }
+        .modal-body .m-meta {
+            font-size: 12px; color: rgba(224,230,240,0.35);
+            margin-bottom: 14px;
+        }
+        .modal-body .m-desc {
+            font-size: 14px; color: rgba(224,230,240,0.7);
+            line-height: 1.6; margin-bottom: 18px;
+            white-space: pre-wrap;
+        }
+        .modal-body .m-download {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #c4a87c, #a08050);
+            color: #0a0e17; font-weight: 700; font-size: 14px;
+            border-radius: 10px; text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .modal-body .m-download:hover { opacity: 0.9; }
+        @media (max-width: 480px) {
+            .modal { max-width: 100%; border-radius: 12px; }
+            .modal-body { padding: 14px; }
+            .modal-body .m-title { font-size: 1rem; }
+        }
+
+        /* === CUSTOM SCROLLBARS === */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(196,168,124,0.25);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(196,168,124,0.4); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(196,168,124,0.25) transparent; }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loadingState">
+        <img class="loading-icon" id="loadingIcon" src="" alt="" style="display:none">
+        <span id="loadingText">Cargando espacio...</span>
+    </div>
+    <div class="error" id="errorState" style="display:none">Espacio no encontrado.</div>
+
+    <!-- Watermark background -->
+    <div class="watermark-bg" id="watermarkBg" style="display:none">
+        <img id="watermarkImg" src="" alt="">
+    </div>
+
+    <!-- Brand bottom bar -->
+    <div class="brand-bottom" id="brandBottom" style="display:none">
+        <img id="brandBottomIcon" src="" alt="">
+        <span class="bn" id="brandBottomName"></span>
+        <span id="brandBottomBy"></span>
+    </div>
+
+    <!-- Top bar -->
+    <div class="topbar" id="topbar" style="display:none">
+        <button class="menu-btn" id="menuToggle">☰</button>
+        <span class="topbar-title" id="topbarTitle">Espacio</span>
+    </div>
+
+    <!-- Sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img class="sidebar-icon" id="sidebarIcon" src="" alt="">
+            <span class="sidebar-name" id="sidebarName">Nombre</span>
+        </div>
+        <div class="nav-list" id="navList"></div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <div id="spaceContent" style="display:none">
+            <img class="space-icon" id="spaceIcon" src="" alt="">
+            <div class="space-name" id="spaceName"></div>
+            <p id="spaceUser" style="opacity:0.4;font-size:14px;margin-top:4px"></p>
+        </div>
+
+        <div id="addonsSection" class="hidden">
+            <div class="addons-header">
+                <h3>Addons <span id="addonCatLabel" class="cat-label"></span></h3>
+                <span id="addonCountLabel" style="font-size:12px;color:rgba(224,230,240,0.3)"></span>
+            </div>
+            <div class="addon-search-wrap">
+                <input type="text" id="addonSearch" class="addon-search" placeholder="Buscar addon..." oninput="buscarAddones()">
+            </div>
+            <div class="addons-grid" id="addonsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Addon detail modal -->
+    <div class="modal-overlay" id="addonModal" onclick="if(event.target===this)cerrarModal()">
+        <div class="modal">
+            <button class="modal-close-btn" onclick="cerrarModal()">&times;</button>
+            <div id="modalMediaContainer"></div>
+            <div class="modal-img-gallery" id="modalGallery"></div>
+            <div class="modal-body">
+                <div class="m-category" id="modalCategoria"></div>
+                <div class="m-title" id="modalTitulo"></div>
+                <div class="m-meta" id="modalMeta"></div>
+                <div class="m-desc" id="modalDescripcion"></div>
+                <a class="m-download" id="modalLink" href="#" target="_blank" rel="noopener">
+                    <i class="fas fa-download"></i> Descargar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var API_URL = 'https://script.google.com/macros/s/AKfycbx7yl9hxkU2MYE6ijNKDZDvLyDkZHI7oBt5LOzGGFn4RDtLoFpXijl07JBoQ3W7KFNk/exec';
+        var SUBMENU_ITEMS = ["Mas recientes","Mas viejos","Mas descargados","Mas populares"];
+
+        function getParam(name) {
+            var p = new URLSearchParams(window.location.search);
+            return p.get(name) || '';
+        }
+
+        var user = getParam('user');
+        var nombrePlataforma = getParam('nombrePlataforma');
+        var lookupParam = nombrePlataforma ? 'nombrePlataforma=' + encodeURIComponent(nombrePlataforma) : 'username=' + encodeURIComponent(user);
+
+        if (!user && !nombrePlataforma) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'flex';
+            document.getElementById('errorState').textContent = 'No se especifico usuario o plataforma.';
+        } else {
+            // Show space name in loading text immediately
+            var espacio = nombrePlataforma || user + "'s Space";
+            document.getElementById('loadingText').textContent = espacio + ' cargando...';
+
+            // Fire space request
+            var cb = 'spc_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            var url = API_URL + '?action=getSpace&' + lookupParam + '&callback=' + cb;
+            window[cb] = function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK' && data.space) {
+                        renderSpace(data.space);
+                        // Use the exact nombrePlataforma from the server (matches what panel saves)
+                        var espacioReal = data.space.nombrePlataforma || espacio;
+                        cargarAddonsEspacio(espacioReal);
+                    } else showError();
+                } catch(e) { showError(); }
+                delete window[cb];
+                if (script.parentNode) script.parentNode.removeChild(script);
+            };
+            var script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() { showError(); };
+            document.body.appendChild(script);
+            setTimeout(function() {
+                if (window[cb]) { delete window[cb]; showError(); }
+            }, 15000);
+        }
+
+        function renderSpace(space) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('topbar').style.display = 'flex';
+            document.title = space.nombrePlataforma || space.usuario + "'s Space";
+            document.body.style.background = space.colorFondo || '#0a0e17';
+            document.body.style.color = space.colorTexto || '#e0e6f0';
+            var accent = space.colorAcento || '#c4a87c';
+            document.documentElement.style.setProperty('--accent', accent);
+
+            // Topbar
+            document.getElementById('topbarTitle').textContent = space.nombrePlataforma || space.usuario;
+
+            // Config
+            var config = {};
+            try { config = JSON.parse(space.config || '{}'); } catch(e) {}
+            var showTop = config.showTop !== false;
+            var showIcon = config.showIcon !== false;
+            var showName = config.showName !== false;
+            var showUser = config.showUser !== false;
+            var showBrand = config.showBrand !== false;
+            var brandPosition = config.brandPosition || 'watermark';
+            var brandByText = config.brandByText || 'by @' + (space.usuario || '');
+
+            // Show/hide main content (top section)
+            document.getElementById('spaceContent').style.display = showTop ? 'block' : 'none';
+
+            // Icon - main content (based on toggles)
+            var iconUrl = space.iconoURL || '';
+            var iconEls = ['spaceIcon','sidebarIcon'];
+            iconEls.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (showTop && showIcon && iconUrl) { el.src = iconUrl; el.style.display = ''; }
+                else { el.style.display = 'none'; }
+            });
+
+            // Name & user - main content (always visible based on toggles)
+            var nameEl = document.getElementById('spaceName');
+            nameEl.textContent = showName ? (space.nombrePlataforma || space.usuario + "'s Space") : '';
+            nameEl.style.display = showName ? '' : 'none';
+            var userEl = document.getElementById('spaceUser');
+            userEl.textContent = showUser ? ('@' + space.usuario) : '';
+            userEl.style.display = showUser ? '' : 'none';
+            document.getElementById('sidebarName').textContent = space.nombrePlataforma || space.usuario;
+
+            // Branding - additional placement (watermark or bottom credit)
+            if (showBrand) {
+                aplicarBranding(space, config, iconUrl, brandPosition, brandByText, showIcon, showName, showUser);
+            }
+
+            // Show space icon in loading state
+            if (iconUrl) {
+                document.getElementById('loadingIcon').src = iconUrl;
+                document.getElementById('loadingIcon').style.display = '';
+            }
+
+            // Categories
+            var categorias = [];
+            try { categorias = JSON.parse(space.categorias || '[]'); } catch(e) {}
+            if (!categorias.length) categorias = [];
+            renderNav(categorias, accent);
+        }
+
+        function aplicarBranding(space, config, iconUrl, brandPosition, brandByText, showIcon, showName, showUser) {
+            var wm = document.getElementById('watermarkBg');
+            var wmImg = document.getElementById('watermarkImg');
+            var bb = document.getElementById('brandBottom');
+            var bbIcon = document.getElementById('brandBottomIcon');
+            var bbName = document.getElementById('brandBottomName');
+            var bbBy = document.getElementById('brandBottomBy');
+
+            // Reset
+            wm.style.display = 'none';
+            bb.style.display = 'none';
+
+            if (brandPosition === 'watermark') {
+                if (iconUrl && showIcon) {
+                    wmImg.src = iconUrl;
+                    wm.style.display = 'flex';
+                }
+            } else {
+                bbIcon.src = iconUrl || '';
+                bbIcon.style.display = (iconUrl && showIcon && (brandPosition === 'bottom-full' || brandPosition === 'bottom-icon-user')) ? '' : 'none';
+                bbName.style.display = (showName && space.nombrePlataforma && (brandPosition === 'bottom-full' || brandPosition === 'bottom-name-user')) ? '' : 'none';
+                bbName.textContent = space.nombrePlataforma || '';
+                var byText = showUser ? (' ' + (brandByText || 'by @' + space.usuario)) : '';
+                bbBy.textContent = byText;
+                bb.style.display = 'flex';
+            }
+        }
+
+        function renderNav(categorias, accent) {
+            var list = document.getElementById('navList');
+            list.innerHTML = '';
+
+            // Fixed "Filtros" with submenu
+            var filtrosItem = document.createElement('div');
+            filtrosItem.className = 'nav-item';
+
+            var filtrosBtn = document.createElement('button');
+            filtrosBtn.className = 'nav-btn';
+            filtrosBtn.innerHTML = '<span>Filtros</span><span class="arrow">›</span>';
+            filtrosBtn.addEventListener('click', function() {
+                toggleFiltros();
+            });
+
+            var filtrosSub = document.createElement('div');
+            filtrosSub.className = 'submenu';
+            filtrosSub.id = 'sub_filtros';
+            SUBMENU_ITEMS.forEach(function(s) {
+                var sb = document.createElement('button');
+                sb.className = 'sub-btn';
+                sb.textContent = s;
+                sb.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (s === 'Mas recientes') ordenarAddons('recent');
+                    else if (s === 'Mas viejos') ordenarAddons('oldest');
+                    else if (s === 'Mas descargados') ordenarAddons('downloads');
+                    else if (s === 'Mas populares') ordenarAddons('popular');
+                });
+                filtrosSub.appendChild(sb);
+            });
+
+            filtrosItem.appendChild(filtrosBtn);
+            filtrosItem.appendChild(filtrosSub);
+            list.appendChild(filtrosItem);
+
+            // "Todos" button - show all addons
+            var todosItem = document.createElement('div');
+            todosItem.className = 'nav-item';
+            var todosBtn = document.createElement('button');
+            todosBtn.className = 'nav-btn';
+            todosBtn.innerHTML = '<span>Todos</span>';
+            todosBtn.addEventListener('click', function() {
+                mostrarTodosAddons();
+                closeMenu();
+            });
+            todosItem.appendChild(todosBtn);
+            list.appendChild(todosItem);
+
+            // Configurable categories - simple items, no submenu
+            categorias.forEach(function(cat) {
+                var item = document.createElement('div');
+                item.className = 'nav-item';
+
+                var btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.innerHTML = escHtml(cat);
+                btn.addEventListener('click', function() {
+                    filtrarPorCategoria(cat);
+                    closeMenu();
+                });
+
+                item.appendChild(btn);
+                list.appendChild(item);
+            });
+        }
+
+        // ── Addons data ──
+        var allSpaceAddons = [];
+        var currentCategory = null;
+        var currentSort = 'recent';
+
+        function cargarAddonsEspacio(espacio) {
+            var cb = 'sad_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            var url = API_URL + '?action=getSpaceAddons&espacio=' + encodeURIComponent(espacio) + '&callback=' + cb;
+            window[cb] = function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data && data.status === 'OK' && data.addons) {
+                        allSpaceAddons = data.addons;
+                    }
+                } catch(e) {}
+                delete window[cb];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                mostrarTodosAddons();
+            };
+            var script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() {
+                delete window[cb];
+                mostrarTodosAddons();
+            };
+            document.body.appendChild(script);
+            setTimeout(function() {
+                if (window[cb]) { delete window[cb]; mostrarTodosAddons(); }
+            }, 10000);
+        }
+
+        function mostrarTodosAddons() {
+            currentCategory = null;
+            document.getElementById('addonCatLabel').textContent = 'Todas las categorías';
+            document.getElementById('addonSearch').value = '';
+            renderAddons(allSpaceAddons);
+        }
+
+        function buscarAddones() {
+            var term = document.getElementById('addonSearch').value.trim().toLowerCase();
+            var list = term
+                ? allSpaceAddons.filter(function(a) { return (a.nombre || '').toLowerCase().indexOf(term) !== -1; })
+                : allSpaceAddons;
+            if (currentCategory) {
+                list = list.filter(function(a) { return a.categoria === currentCategory; });
+            }
+            renderAddons(list);
+        }
+
+        function filtrarPorCategoria(cat) {
+            currentCategory = cat;
+            document.getElementById('addonCatLabel').textContent = cat;
+            document.getElementById('addonSearch').value = '';
+            var filtrados = allSpaceAddons.filter(function(a) { return a.categoria === cat; });
+            renderAddons(filtrados);
+        }
+
+        function ordenarAddons(tipo) {
+            currentSort = tipo;
+            var list = currentCategory
+                ? allSpaceAddons.filter(function(a) { return a.categoria === currentCategory; })
+                : allSpaceAddons.slice();
+            if (tipo === 'recent') {
+                list.sort(function(a, b) { return (b.fecha || '').localeCompare(a.fecha || ''); });
+            } else if (tipo === 'oldest') {
+                list.sort(function(a, b) { return (a.fecha || '').localeCompare(b.fecha || ''); });
+            }
+            renderAddons(list);
+        }
+
+        function renderAddons(addons) {
+            var section = document.getElementById('addonsSection');
+            var grid = document.getElementById('addonsGrid');
+            var countLabel = document.getElementById('addonCountLabel');
+
+            if (!addons || !addons.length) {
+                section.classList.remove('hidden');
+                grid.innerHTML = '<div class="empty-addons">No hay addons en esta categoría.</div>';
+                countLabel.textContent = '0 addons';
+                return;
+            }
+
+            section.classList.remove('hidden');
+            countLabel.textContent = addons.length + ' addon' + (addons.length !== 1 ? 's' : '');
+            grid.innerHTML = '';
+
+            addons.forEach(function(item) {
+                var imgs = item.imagenes ? item.imagenes.split('|') : [];
+                var firstImg = imgs.length ? imgs[0] : '';
+                var safeName = escHtml(item.nombre);
+
+                // Use YouTube thumbnail if the first image is a YouTube link
+                var thumbSrc = firstImg && isYouTubeUrl(firstImg) ? getYouTubeThumb(firstImg) : firstImg;
+
+                var isVideo = firstImg && isYouTubeUrl(firstImg);
+                var itemStr = JSON.stringify(item).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                var html = '<div class="addon-card' + (isVideo ? ' addon-card-video' : '') + '" style="cursor:pointer" onclick="abrirModal(' + itemStr + ')">';
+                if (thumbSrc) {
+                    html += '<div class="addon-card-thumb-wrap">';
+                    html += '<img class="addon-card-thumb" src="' + escHtml(thumbSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.classList.add(\'hidden\')">';
+                    if (isVideo) html += '<span class="play-badge"><i class="fas fa-play"></i></span>';
+                    html += '</div>';
+                }
+                html += '<div class="addon-card-body">';
+                html += '<div class="addon-card-cat">' + escHtml(item.categoria || '—') + (item.version ? ' &middot; v' + escHtml(item.version) : '') + '</div>';
+                html += '<div class="addon-card-title">' + safeName + '</div>';
+                html += '<div class="addon-card-desc">' + escHtml(item.descripcion || 'Sin descripción.') + '</div>';
+                html += '<div class="addon-card-foot">';
+                if (item.link) {
+                    var linkAttr = (item.link || '').replace(/'/g, "\\'");
+                    html += '<span class="addon-link" onclick="event.stopPropagation();verificarDescarga(\'' + linkAttr + '\')"><i class="fas fa-download"></i> Descargar</span>';
+                } else {
+                    html += '<span></span>';
+                }
+                html += (item.fecha ? '<span class="addon-date">' + new Date(item.fecha).toLocaleDateString() + '</span>' : '');
+                html += '</div></div></div>';
+
+                var div = document.createElement('div');
+                div.innerHTML = html;
+                grid.appendChild(div.firstElementChild);
+            });
+        }
+
+        function isYouTubeUrl(url) {
+            return /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/.test(url);
+        }
+
+        function getYouTubeEmbedUrl(url) {
+            var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+            return m ? 'https://www.youtube.com/embed/' + m[1] + '?autoplay=1&rel=0' : null;
+        }
+
+        function getYouTubeThumb(url) {
+            var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+            return m ? 'https://img.youtube.com/vi/' + m[1] + '/mqdefault.jpg' : null;
+        }
+
+        // ── Addon detail modal ──
+        function abrirModal(item) {
+            var mediaUrls = item.imagenes ? item.imagenes.split('|') : [];
+            var container = document.getElementById('modalMediaContainer');
+            var gallery = document.getElementById('modalGallery');
+            gallery.innerHTML = '';
+            container.innerHTML = '';
+
+            function mostrarMedia(url) {
+                container.innerHTML = '';
+                if (isYouTubeUrl(url)) {
+                    var iframe = document.createElement('iframe');
+                    iframe.className = 'modal-video';
+                    iframe.src = getYouTubeEmbedUrl(url);
+                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                    iframe.allowFullscreen = true;
+                    container.appendChild(iframe);
+                } else {
+                    var img = document.createElement('img');
+                    img.className = 'modal-img';
+                    img.src = url;
+                    container.appendChild(img);
+                }
+            }
+
+            if (mediaUrls.length) {
+                mostrarMedia(mediaUrls[0]);
+                mediaUrls.forEach(function(url, i) {
+                    var thumb = document.createElement('img');
+                    thumb.src = isYouTubeUrl(url) ? getYouTubeThumb(url) : url;
+                    thumb.className = i === 0 ? 'active' : '';
+                    thumb.style.cursor = 'pointer';
+                    thumb.onclick = function() {
+                        mostrarMedia(url);
+                        gallery.querySelectorAll('img').forEach(function(t) { t.classList.remove('active'); });
+                        thumb.classList.add('active');
+                    };
+                    gallery.appendChild(thumb);
+                });
+            }
+
+            document.getElementById('modalCategoria').textContent = item.categoria || '—';
+            document.getElementById('modalTitulo').textContent = item.nombre || 'Sin título';
+            document.getElementById('modalMeta').textContent =
+                (item.version ? 'v' + item.version : '') +
+                (item.version && item.fecha ? ' \u00B7 ' : '') +
+                (item.fecha ? new Date(item.fecha).toLocaleDateString() : '');
+            document.getElementById('modalDescripcion').textContent = item.descripcion || 'Sin descripción.';
+            var linkEl = document.getElementById('modalLink');
+            if (item.link) {
+                linkEl.href = item.link;
+                linkEl.setAttribute('data-link', item.link);
+                linkEl.onclick = function(e) {
+                    e.preventDefault();
+                    window.open(this.getAttribute('data-link'), '_blank');
+                };
+                linkEl.style.display = 'inline-flex';
+            } else {
+                linkEl.onclick = null;
+                linkEl.style.display = 'none';
+            }
+
+            document.getElementById('addonModal').classList.add('open');
+        }
+
+        function cerrarModal() {
+            document.getElementById('addonModal').classList.remove('open');
+        }
+
+        function toggleFiltros() {
+            var sub = document.getElementById('sub_filtros');
+            if (!sub) return;
+            var isOpen = sub.classList.contains('open');
+            document.querySelectorAll('.submenu').forEach(function(s) { s.classList.remove('open'); });
+            document.querySelectorAll('.nav-btn .arrow').forEach(function(a) { a.classList.remove('open'); });
+            if (!isOpen) {
+                sub.classList.add('open');
+                var arrow = sub.parentElement.querySelector('.nav-btn .arrow');
+                if (arrow) arrow.classList.add('open');
+            }
+        }
+
+        // Menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            toggleMenu();
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            closeMenu();
+        });
+
+        function toggleMenu() {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+            var open = sidebar.classList.toggle('open');
+            overlay.classList.toggle('open', open);
+        }
+        function closeMenu() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('open');
+        }
+
+        function showError() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'flex';
+        }
+        function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+        // ============================================================
+        // DOWNLOAD (direct, no verification)
+        // ============================================================
+        function verificarDescarga(url) {
+            if (!url) return;
+            window.open(url, '_blank');
+        }
+
+        // Security
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+        function isEditable3(el) { return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable); }
+        document.addEventListener('copy', function(e) { if (!isEditable3(e.target)) { e.preventDefault(); return false; } });
+        document.addEventListener('cut', function(e) { if (!isEditable3(e.target)) { e.preventDefault(); return false; } });
+        document.addEventListener('paste', function(e) { if (!isEditable3(e.target)) { e.preventDefault(); return false; } });
+        document.addEventListener('keydown', function(e) {
+            if (isEditable3(e.target)) return;
+            var mod = e.ctrlKey || e.metaKey;
+            if (mod) {
+                if (e.key === 'c' || e.key === 'C') { e.preventDefault(); return false; }
+                if (e.key === 'u' || e.key === 'U') { e.preventDefault(); return false; }
+                if (e.key === 's' || e.key === 'S') { e.preventDefault(); return false; }
+                if (e.key === 'p' || e.key === 'P') { e.preventDefault(); return false; }
+            }
+            if (e.key === 'F12') { e.preventDefault(); return false; }
+        });
+        document.addEventListener('dragstart', function(e) { if (e.target.tagName === 'IMG') { e.preventDefault(); return false; } });
+        document.addEventListener('drop', function(e) { e.preventDefault(); return false; });
+        document.addEventListener('dragover', function(e) { e.preventDefault(); return false; });
+        console.log('%cWorldLeaf Space v2.0', 'color: #c4a87c; font-size: 14px; font-weight: bold;');
+        console.log('%cEntorno protegido', 'color: #666; font-size: 11px;');
+    </script>
+</body>
+</html>

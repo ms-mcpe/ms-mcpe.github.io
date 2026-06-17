@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página No Encontrada | WorldLeaf</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00d4ff;
+            --secondary-color: #5b3ff0;
+            --bg-dark: #050810;
+            --glass-bg: rgba(11, 13, 28, 0.75);
+            --glass-border: rgba(91, 63, 240, 0.25);
+            --text-primary: #eef2ff;
+            --text-secondary: #8892b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient glowing background blobs */
+        .background-blobs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(120px);
+            border-radius: 50%;
+            opacity: 0.35;
+            animation: moveBlobs 12s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            width: 350px;
+            height: 350px;
+            top: -50px;
+            left: -50px;
+            background: radial-gradient(circle, var(--primary-color), transparent);
+        }
+
+        .blob-2 {
+            width: 450px;
+            height: 450px;
+            bottom: -100px;
+            right: -50px;
+            background: radial-gradient(circle, var(--secondary-color), transparent);
+            animation-delay: -4s;
+        }
+
+        @keyframes moveBlobs {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 80px) scale(1.15); }
+        }
+
+        /* Modern Grid overlay */
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(91, 63, 240, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(91, 63, 240, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 40%, transparent 100%);
+        }
+
+        /* Card Container */
+        .card {
+            text-align: center;
+            padding: 3.5rem 2.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(91, 63, 240, 0.15);
+            max-width: 480px;
+            width: 90%;
+            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Brand Icon / Logo */
+        .brand-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(91, 63, 240, 0.4);
+            animation: iconFloat 4s ease-in-out infinite;
+        }
+
+        .brand-icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 30%, var(--primary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Countdown Loader Circle */
+        .timer-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 80px;
+            height: 80px;
+        }
+
+        .timer-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 6;
+        }
+
+        .timer-circle {
+            fill: none;
+            stroke: url(#timerGrad);
+            stroke-width: 6;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            animation: countdown 3s linear forwards;
+        }
+
+        @keyframes countdown {
+            from { stroke-dashoffset: 0; }
+            to { stroke-dashoffset: 220; }
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Button link override */
+        .btn-redirect {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, var(--secondary-color), #3d1fa3);
+            padding: 12px 36px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 24px rgba(91, 63, 240, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .btn-redirect:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(91, 63, 240, 0.5);
+            filter: brightness(1.1);
+        }
+
+        /* Watermark / Brand Signature */
+        .watermark {
+            position: absolute;
+            bottom: 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.12);
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="grid-overlay"></div>
+
+    <div class="card">
+        <div class="brand-icon">
+            <img src="icon.png" alt="WorldLeaf Logo" onerror="this.src='worldleaf/icon-192.png'">
+        </div>
+        <h1>404</h1>
+        <h2>Página no encontrada</h2>
+        <p>El recurso que buscas no existe o ha sido movido. Te redirigiremos automáticamente a nuestro sitio principal.</p>
+        
+        <div class="timer-container">
+            <svg class="timer-svg">
+                <defs>
+                    <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="var(--secondary-color)" />
+                        <stop offset="100%" stop-color="var(--primary-color)" />
+                    </linearGradient>
+                </defs>
+                <circle class="timer-circle-bg" cx="40" cy="40" r="35" />
+                <circle class="timer-circle" cx="40" cy="40" r="35" />
+            </svg>
+            <div class="timer-text" id="countdown-number">3</div>
+        </div>
+
+        <a href="https://ms-mcpe.github.io/worldleaf" class="btn-redirect">
+            Ir Ahora
+        </a>
+    </div>
+
+    <div class="watermark">WorldLeaf</div>
+
+    <script>
+        const targetUrl = "https://ms-mcpe.github.io/worldleaf";
+        let timeLeft = 3;
+        const countdownEl = document.getElementById("countdown-number");
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft >= 0) {
+                countdownEl.textContent = timeLeft;
+            }
+            if (timeLeft === 0) {
+                clearInterval(interval);
+                window.location.href = targetUrl;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

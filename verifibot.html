@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Verificación - Bot Minecraft</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --bg-dark: #0f172a;
+      --bg-darker: #020617;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --accent: #ec4899;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 50%, #1a1f35 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+    
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .star {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: twinkle 3s infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    .container {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      animation: slideIn 0.6s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .logo-container {
+      margin-bottom: 30px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .logo {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+    }
+    
+    h1 {
+      color: var(--text-primary);
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 30px;
+    }
+    
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 12px;
+      text-align: left;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .step.active {
+      opacity: 1;
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+    
+    .step.completed {
+      opacity: 1;
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    
+    .step-num {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step.completed .step-num {
+      background: linear-gradient(135deg, var(--success), #059669);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    
+    .step-title {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step .btn {
+      width: auto;
+      padding: 10px 20px;
+      font-size: 13px;
+      margin-top: 0;
+      display: inline-block;
+      text-decoration: none;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step-divider {
+      width: 2px;
+      height: 20px;
+      background: rgba(99, 102, 241, 0.3);
+      margin-left: 17px;
+      animation: expandHeight 0.6s ease-out;
+    }
+    
+    @keyframes expandHeight {
+      from {
+        height: 0;
+        opacity: 0;
+      }
+      to {
+        height: 20px;
+        opacity: 1;
+      }
+    }
+    
+    #form-group {
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 13px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      font-weight: 600;
+    }
+    
+    .verified-badge::before {
+      content: '✓';
+      font-weight: bold;
+    }
+    
+    .grupo-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Fira Code', monospace;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    
+    .grupo-input::placeholder {
+      color: var(--text-secondary);
+    }
+    
+    .grupo-input:focus {
+      border-color: var(--primary);
+      background: rgba(30, 41, 59, 0.8);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-top: 0;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: left 0.3s ease;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .resultado {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      display: none;
+      border-left: 4px solid;
+      animation: slideUp 0.4s ease-out;
+      backdrop-filter: blur(10px);
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .resultado.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border-color: var(--success);
+    }
+    
+    .resultado.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border-color: var(--error);
+    }
+    
+    .resultado.info {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .loader {
+      display: none;
+      width: 40px;
+      height: 40px;
+      margin: 20px auto;
+      position: relative;
+    }
+    
+    .loader::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(99, 102, 241, 0.3);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+      padding-top: 20px;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 40px 25px;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      .logo {
+        width: 50px;
+        height: 50px;
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="starsContainer"></div>
+  <div class="container">
+    <div class="logo-container">
+      <div class="logo">⚔️</div>
+      <h1>Verificación Grupo</h1>
+    </div>
+    <p class="subtitle">Obtén 24 horas de acceso premium al bot en tu grupo de WhatsApp</p>
+
+    <div class="steps">
+      <div class="step" id="step1">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Verificación Inicial</div>
+          <div class="step-desc">Completa la verificación en el acortador de enlaces</div>
+          <a id="btn-verificar-acortador" class="btn" href="https://cuty.io/fBy8IcyKcnt" target="_blank">Verificar Ahora</a>
+        </div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step" id="step2">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Registrar tu Grupo</div>
+          <div class="step-desc" id="step2-desc">Completa el paso 1 primero</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="form-group" style="display:none;">
+      <div class="verified-badge">Verificado</div>
+      <input type="text" id="groupId" class="grupo-input" placeholder="ID del grupo (ej: 1234567890@g.us)" autocomplete="off">
+      <button id="btn-enviar" class="btn" onclick="verificar()">Obtener 24 Horas</button>
+    </div>
+
+    <div class="loader" id="loader"></div>
+    <div class="resultado" id="resultado"></div>
+    <div class="footer">🎮 Worldleaf Bot - Sistema de Verificación Segura</div>
+  </div>
+
+  <script>
+    // ===== APLICACIÓN =====
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has('verified')) {
+        document.getElementById('step1').classList.add('completed');
+        document.getElementById('step2').classList.add('active');
+        document.getElementById('step2-desc').textContent = 'Pega la ID de tu grupo abajo';
+        document.getElementById('form-group').style.display = 'block';
+      }
+      
+      // Generar estrellas
+      crearEstrellas();
+    })();
+
+    function crearEstrellas() {
+      const container = document.getElementById('starsContainer');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        container.appendChild(star);
+      }
+    }
+
+    function mostrarResultado(tipo, mensaje) {
+      const r = document.getElementById('resultado');
+      r.className = 'resultado ' + tipo;
+      r.textContent = mensaje;
+      r.style.display = 'block';
+    }
+
+    function verificar() {
+      const input = document.getElementById('groupId');
+      const btn = document.getElementById('btn-enviar');
+      const loader = document.getElementById('loader');
+      let id = input.value.trim();
+
+      if (!id) {
+        mostrarResultado('error', '❌ Por favor ingresa la ID del grupo.');
+        input.focus();
+        return;
+      }
+
+      if (!id.includes('@g.us') && !id.includes('@')) {
+        id = id + '@g.us';
+      }
+
+      btn.disabled = true;
+      loader.style.display = 'block';
+      mostrarResultado('info', '⏳ Verificando tu grupo...');
+
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbyr9u5MgZTDSFTO04MHd38GFNSoCL7QFXqOfSxg7O1iQEeBQF42_g-eWPILgop8lFn16g/exec';
+
+      fetch(scriptUrl + '?action=agregar_horas&id=' + encodeURIComponent(id))
+        .then(res => res.json())
+        .then(data => {
+          loader.style.display = 'none';
+          btn.disabled = false;
+
+          if (data.status === 'success') {
+            mostrarResultado('success', '✅ 24 horas de acceso agregadas. ¡Ya puedes usar el bot!');
+          } else if (data.status === 'added') {
+            mostrarResultado('success', '✅ Grupo registrado con 24 horas de acceso. ¡Bienvenido!');
+          } else if (data.error) {
+            mostrarResultado('error', '❌ Error: ' + data.error);
+          } else {
+            mostrarResultado('error', '❌ Respuesta inesperada. Intenta nuevamente.');
+          }
+        })
+        .catch(err => {
+          loader.style.display = 'none';
+          btn.disabled = false;
+          mostrarResultado('error', '❌ Error de conexión. Verifica tu internet.');
+        });
+    }
+  </script>
+</body>
+</html>
