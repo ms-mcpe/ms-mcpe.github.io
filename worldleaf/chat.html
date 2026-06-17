@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Bedrock Community - WorldLeaf Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b;
+      --input-bg: #1e293b;
+      --input-text: #f8fafc;
+      --input-border: #334155;
+    }
+    [data-theme="dark"] {
+      --bg-body: #0b1120;
+      --bg-card: #1e293b;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-dark: #16a34a;
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --primary-glow: rgba(34,197,94,0.25);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+    }
+    [data-scheme="blue"] { --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59,130,246,0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6); }
+    [data-scheme="purple"] { --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139,92,246,0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6); }
+    [data-scheme="orange"] { --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249,115,22,0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316); }
+
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+    ::-webkit-scrollbar{width:5px;height:5px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+
+    html,body{height:100%;overflow:hidden;}
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg-body);
+      color:var(--text);
+      display:flex;flex-direction:column;
+      transition:background-color 0.3s ease, color 0.3s ease;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+
+    .chat-header{
+      position:fixed;top:0;left:0;right:0;z-index:50;
+      height:52px;
+      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      display:flex;align-items:center;padding:0 16px;gap:8px;
+      border-bottom:1px solid var(--border);
+    }
+    .chat-header .back-link{
+      background:none;border:none;color:var(--primary);cursor:pointer;
+      font-size:20px;padding:4px;display:flex;align-items:center;justify-content:center;
+      border-radius:8px;transition:all 0.2s;line-height:1;
+    }
+    .chat-header .back-link:hover{background:var(--primary-bg);}
+    .chat-header .chat-title{
+      font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+      color:var(--text);letter-spacing:-0.3px;
+    }
+    .chat-header .user-count{
+      font-family:'Rajdhani',sans-serif;font-size:13px;
+      background:var(--primary-bg);color:var(--primary);padding:2px 10px;
+      border-radius:20px;font-weight:700;margin-left:auto;
+      white-space:nowrap;display:flex;align-items:center;gap:4px;
+    }
+
+    .chat-messages{
+      flex:1;overflow-y:auto;padding:64px 12px 16px;
+      display:flex;flex-direction:column;gap:6px;
+    }
+
+    .msg-row{
+      display:flex;flex-direction:column;
+      animation:fadeInUp 0.2s ease both;
+    }
+    .msg-row.own{align-items:flex-end;}
+    .msg-row.other{align-items:flex-start;}
+
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+    .msg-bubble{
+      max-width:85%;min-width:120px;
+      border-radius:12px;padding:6px 12px 5px;
+      position:relative;word-wrap:break-word;overflow-wrap:break-word;
+      cursor:default;transition:box-shadow 0.15s;
+      line-height:1.45;
+    }
+    .msg-bubble:hover{box-shadow:0 2px 12px rgba(0,0,0,0.3);}
+    .msg-row.own .msg-bubble{
+      background:var(--primary);color:#fff;
+      border-bottom-right-radius:4px;
+      text-align:left;
+    }
+    .msg-row.own .msg-bubble.own-edit-mode{
+      background:var(--bg-card);border:1px solid var(--primary);
+    }
+    .msg-row.other .msg-bubble{
+      background:var(--bg-card);color:var(--text);
+      border-bottom-left-radius:4px;
+      border:1px solid var(--border);
+    }
+
+    .msg-user-row{
+      display:flex;align-items:center;gap:8px;margin-bottom:2px;
+    }
+    .msg-avatar{
+      width:26px;height:26px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      font-size:11px;font-weight:700;color:#fff;
+      overflow:hidden;background:var(--primary-gradient);
+    }
+    .msg-avatar img{width:100%;height:100%;object-fit:cover;}
+    .msg-username{
+      font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;
+      color:var(--primary);
+    }
+    .msg-row.own .msg-username{color:rgba(255,255,255,0.85);}
+    .msg-row.own .msg-avatar{display:none;}
+
+    .msg-reply-preview{
+      background:rgba(255,255,255,0.08);border-left:3px solid var(--primary-light);
+      padding:4px 8px;border-radius:6px;margin:2px 0 4px;font-size:12px;
+    }
+    .msg-row.other .msg-reply-preview{
+      background:var(--surface);border-left-color:var(--primary);
+    }
+    .msg-reply-preview .rp-user{font-weight:600;color:var(--primary);font-size:11px;}
+    .msg-reply-preview .rp-text{color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    .msg-text{font-size:14px;line-height:1.5;}
+    .msg-row.own .msg-text a{color:rgba(255,255,255,0.8);text-decoration:underline;}
+    .msg-row.other .msg-text a{color:var(--primary);text-decoration:underline;}
+
+    .msg-footer{
+      display:flex;align-items:center;gap:6px;
+      margin-top:2px;
+    }
+    .msg-time{font-size:10px;color:var(--text-muted);}
+    .msg-row.own .msg-time{color:rgba(255,255,255,0.6);}
+    .msg-edited{
+      font-size:9px;color:var(--text-muted);font-style:italic;
+    }
+    .msg-row.own .msg-edited{color:rgba(255,255,255,0.5);}
+
+    .edit-textarea{
+      width:100%;background:var(--input-bg);color:var(--input-text);
+      border:1px solid var(--input-border);border-radius:8px;
+      padding:8px 10px;font-family:'Inter',sans-serif;font-size:14px;
+      resize:vertical;min-height:40px;outline:none;
+    }
+    .edit-textarea:focus{border-color:var(--primary);}
+    .edit-actions{display:flex;gap:6px;margin-top:4px;justify-content:flex-end;}
+    .edit-actions button{
+      padding:4px 12px;border:none;border-radius:6px;
+      font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+      cursor:pointer;transition:all 0.2s;
+    }
+    .edit-save{background:var(--primary);color:#fff;}
+    .edit-save:hover{filter:brightness(1.1);}
+    .edit-cancel{background:var(--surface-2);color:var(--text-secondary);}
+    .edit-cancel:hover{background:var(--border);color:var(--text);}
+
+    .msg-actions-popup{
+      position:fixed;z-index:100;background:var(--bg-card);
+      border:1px solid var(--border);border-radius:12px;
+      box-shadow:var(--shadow-md);padding:6px;min-width:140px;
+      animation:fadeIn 0.12s ease;
+    }
+    .msg-actions-popup button{
+      display:flex;align-items:center;gap:10px;width:100%;
+      padding:10px 14px;border:none;background:none;border-radius:8px;
+      color:var(--text);font-family:'Inter',sans-serif;font-size:13px;
+      font-weight:500;cursor:pointer;transition:all 0.15s;
+    }
+    .msg-actions-popup button:hover{background:var(--primary-bg);color:var(--primary);}
+    .msg-actions-popup button.danger{color:var(--danger);}
+    .msg-actions-popup button.danger:hover{background:var(--danger-bg);color:var(--danger);}
+
+    .chat-input-area{
+      position:fixed;bottom:0;left:0;right:0;z-index:50;
+      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-top:1px solid var(--border);
+    }
+    .reply-bar{
+      display:none;align-items:center;gap:8px;
+      padding:6px 12px;background:var(--surface);
+      border-left:3px solid var(--primary);margin:0;
+    }
+    .reply-bar.show{display:flex;}
+    .reply-bar .reply-info{flex:1;overflow:hidden;}
+    .reply-bar .reply-user{font-size:11px;font-weight:700;color:var(--primary);}
+    .reply-bar .reply-text{font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .reply-bar .reply-cancel{
+      background:none;border:none;color:var(--text-muted);cursor:pointer;
+      font-size:18px;padding:2px;line-height:1;transition:color 0.15s;
+    }
+    .reply-bar .reply-cancel:hover{color:var(--danger);}
+
+    .input-row{
+      display:flex;align-items:center;gap:6px;
+      padding:8px 10px;
+    }
+    .input-row textarea{
+      flex:1;background:var(--input-bg);color:var(--input-text);
+      border:1px solid var(--input-border);border-radius:20px;
+      padding:9px 14px;font-family:'Inter',sans-serif;font-size:14px;
+      outline:none;resize:none;max-height:100px;line-height:1.4;
+      transition:border-color 0.2s;
+    }
+    .input-row textarea:focus{border-color:var(--primary);}
+    .input-row textarea::placeholder{color:var(--text-muted);}
+    .send-btn{
+      width:42px;height:42px;border-radius:50%;border:none;
+      background:var(--primary-gradient);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:all 0.2s;flex-shrink:0;
+      box-shadow:0 2px 8px var(--primary-glow);font-size:18px;
+    }
+    .send-btn:hover{transform:scale(1.05);filter:brightness(1.08);}
+    .send-btn:active{transform:scale(0.95);}
+    .send-btn:disabled{background:var(--text-light);cursor:not-allowed;transform:none;box-shadow:none;opacity:0.6;}
+    .send-btn .cooldown-text{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;}
+
+    .notif{
+      position:fixed;top:60px;left:50%;transform:translateX(-50%);
+      z-index:200;padding:10px 20px;border-radius:10px;
+      font-size:13px;font-weight:600;box-shadow:var(--shadow-md);
+      max-width:90%;text-align:center;pointer-events:none;
+      animation:notifIn 0.3s ease both;
+    }
+    .notif.error{background:var(--danger);color:#fff;}
+    .notif.success{background:var(--success);color:#fff;}
+    .notif.warning{background:var(--warning);color:#000;}
+    @keyframes notifIn{from{opacity:0;transform:translateX(-50%) translateY(-10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+    .msg-loading{
+      text-align:center;padding:20px;color:var(--text-muted);font-size:13px;
+    }
+
+    .confirm-overlay{
+      position:fixed;inset:0;z-index:300;background:var(--overlay);
+      backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+      display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    .confirm-overlay.active{display:flex;}
+    .confirm-box{
+      background:var(--bg-card);border-radius:16px;padding:28px 24px;
+      max-width:360px;width:100%;text-align:center;box-shadow:var(--shadow-md);
+      border:1px solid var(--border);animation:zoomIn 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .confirm-box h3{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text);}
+    .confirm-box p{font-size:14px;color:var(--text-secondary);margin-bottom:20px;line-height:1.5;}
+    .confirm-actions{display:flex;gap:10px;justify-content:center;}
+    .confirm-actions button{
+      padding:10px 24px;border:none;border-radius:10px;
+      font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;
+      cursor:pointer;transition:all 0.2s;min-width:90px;
+    }
+    .confirm-cancel{background:var(--surface-2);color:var(--text-secondary);}
+    .confirm-cancel:hover{background:var(--border);color:var(--text);}
+    .confirm-delete{background:var(--danger);color:#fff;}
+    .confirm-delete:hover{filter:brightness(1.1);}
+    @keyframes zoomIn{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+    @media(max-width:480px){
+      .msg-bubble{max-width:88%;}
+      .chat-header .chat-title{font-size:16px;}
+    }
+  </style>
+</head>
+<body>
+
+  <header class="chat-header">
+    <button class="back-link" onclick="window.parent.irA('explorar')" title="Volver">&#8592;</button>
+    <span class="chat-title">Bedrock Community</span>
+    <span class="user-count" id="userCount">&#128100; 0</span>
+  </header>
+
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <div class="chat-input-area" id="chatInputArea">
+    <div class="reply-bar" id="replyBar">
+      <div class="reply-info">
+        <div class="reply-user" id="replyUser"></div>
+        <div class="reply-text" id="replyText"></div>
+      </div>
+      <button class="reply-cancel" onclick="cancelReply()">&times;</button>
+    </div>
+    <div class="input-row">
+      <textarea id="msgInput" rows="1" placeholder="Escribe un mensaje..." maxlength="2000"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <span id="sendIcon">&#10148;</span>
+        <span class="cooldown-text" id="cooldownText" style="display:none;"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="confirm-overlay" id="confirmOverlay" onclick="if(event.target===this)closeConfirm()">
+    <div class="confirm-box">
+      <h3 id="confirmTitle">Eliminar mensaje</h3>
+      <p id="confirmText">Este mensaje se eliminar&aacute; permanentemente.</p>
+      <div class="confirm-actions">
+        <button class="confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+        <button class="confirm-delete" id="confirmDeleteBtn" onclick="confirmDeleteMsg()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="msg-actions-popup" id="msgActionsPopup" style="display:none;"></div>
+
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+      var cp = localStorage.getItem('colorPrimario');
+      if (cp) { document.documentElement.style.setProperty('--primary', cp); document.documentElement.style.setProperty('--primary-light', cp); }
+      var cf = localStorage.getItem('colorFondo');
+      if (cf) document.documentElement.style.setProperty('--bg-body', cf);
+    })();
+
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+    var sessionUser = localStorage.getItem('sessionUser');
+    var sessionPass = localStorage.getItem('sessionPass');
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
+
+    var profileData = null;
+    try { var s = localStorage.getItem('userProfile'); if (s) profileData = JSON.parse(s); } catch(e) {}
+    var userRole = profileData && profileData.rol ? profileData.rol : '';
+
+    function esAdmin() { return userRole === 'Owner' || userRole === 'Admin' || userRole === 'App'; }
+    function esOwner() { return userRole === 'Owner' || userRole === 'App'; }
+    function canSendHtml() { return userRole === 'App' || userRole === 'Owner'; }
+
+    var messages = [];
+    var lastFetch = null;
+    var sendCooldown = false;
+    var cooldownTimer = null;
+    var replyTo = null;
+    var editingMsgId = null;
+    var deleteTargetId = null;
+    var userCount = 0;
+
+    function escHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function sanitizeMsg(text) {
+      if (canSendHtml()) return text;
+      return String(text).replace(/<[^>]*>/g, '');
+    }
+
+    function containsBannedContent(text) {
+      return false;
+    }
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+        }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); resolve(resp); };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Error de conexi&oacute;n')); };
+        document.body.appendChild(script);
+        setTimeout(function() { if (window[cb]) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Tiempo de espera agotado')); } }, 60000);
+      });
+    }
+
+    function verificarCuenta() {
+      jsonp({ action:'checkAccount', user:sessionUser }).then(function(r) {
+        try {
+          var d = typeof r === 'string' ? JSON.parse(r) : r;
+          if (!d.exists || d.exists === false) {
+            localStorage.removeItem('sessionUser'); localStorage.removeItem('sessionPass');
+            localStorage.removeItem('userProfile'); window.top.location.href = 'login.html';
+          } else if (d.status === 'Inactivo') {
+            mostrarCuentaInactiva();
+          }
+        } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function mostrarCuentaInactiva() {
+      var ov = document.createElement('div');
+      ov.className = 'blocked-overlay';
+      ov.innerHTML = '<div class="block-icon">&#128683;</div>'
+        + '<h2>Cuenta Desactivada</h2>'
+        + '<p>Tu cuenta ha sido desactivada.</p>'
+        + '<a class="btn-soporte" href="https://soporte.com" target="_blank">Contactar Soporte</a>';
+      document.body.appendChild(ov);
+    }
+
+    function showNotif(text, type) {
+      var el = document.createElement('div');
+      el.className = 'notif ' + (type || 'error');
+      el.textContent = text;
+      document.body.appendChild(el);
+      setTimeout(function() { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300); }, 3000);
+    }
+
+    function scrollToBottom() {
+      var container = document.getElementById('chatMessages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function tiempoRelativo(fs) {
+      if (!fs) return '';
+      var d = new Date(fs);
+      if (isNaN(d.getTime())) return fs;
+      var seg = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (seg < 60) return 'hace ' + seg + 's';
+      var min = Math.floor(seg / 60);
+      if (min < 60) return 'hace ' + min + 'm';
+      var hor = Math.floor(min / 60);
+      if (hor < 24) return 'hace ' + hor + 'h';
+      var dia = Math.floor(hor / 24);
+      return 'hace ' + dia + 'd';
+    }
+
+    function formatTime(fs) {
+      if (!fs) return '';
+      var d = new Date(fs);
+      if (isNaN(d.getTime())) return fs;
+      return d.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function getAvatarHtml(user, foto) {
+      if (foto && foto !== '') {
+        return '<div class="msg-avatar"><img src="' + escHtml(foto) + '" alt=""></div>';
+      }
+      var initial = user ? user.charAt(0).toUpperCase() : '?';
+      var hue = (user.length * 37) % 360;
+      return '<div class="msg-avatar" style="background:linear-gradient(135deg,hsl(' + hue + ',70%,50%),hsl(' + ((hue + 60) % 360) + ',70%,50%))">' + escHtml(initial) + '</div>';
+    }
+
+    function createMessageBubble(msg) {
+      var isOwn = msg.user === sessionUser;
+      var div = document.createElement('div');
+      div.className = 'msg-row' + (isOwn ? ' own' : ' other');
+      div.setAttribute('data-msg-id', msg.id);
+      div.setAttribute('data-msg-user', msg.user);
+
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      if (editingMsgId === msg.id) bubble.classList.add('own-edit-mode');
+
+      if (isOwn) {
+        var uRow = document.createElement('div');
+        uRow.className = 'msg-user-row';
+        var un = document.createElement('span');
+        un.className = 'msg-username';
+        un.textContent = 'T&uacute;';
+        uRow.appendChild(un);
+        bubble.appendChild(uRow);
+      } else {
+        var uRow = document.createElement('div');
+        uRow.className = 'msg-user-row';
+        uRow.innerHTML = getAvatarHtml(msg.user, msg.fotoPerfil);
+        var un = document.createElement('span');
+        un.className = 'msg-username';
+        un.textContent = msg.user;
+        uRow.appendChild(un);
+        bubble.appendChild(uRow);
+      }
+
+      if (msg.replyTo && typeof msg.replyTo === 'object') {
+        var rp = document.createElement('div');
+        rp.className = 'msg-reply-preview';
+        rp.innerHTML = '<div class="rp-user">' + escHtml(msg.replyTo.user || '') + '</div><div class="rp-text">' + escHtml(msg.replyTo.msg || '') + '</div>';
+        bubble.appendChild(rp);
+      }
+
+      if (editingMsgId === msg.id) {
+        var ta = document.createElement('textarea');
+        ta.className = 'edit-textarea';
+        ta.value = msg.msg;
+        bubble.appendChild(ta);
+        var ea = document.createElement('div');
+        ea.className = 'edit-actions';
+        var sb = document.createElement('button');
+        sb.className = 'edit-save';
+        sb.textContent = 'Guardar';
+        var cb = document.createElement('button');
+        cb.className = 'edit-cancel';
+        cb.textContent = 'Cancelar';
+        ea.appendChild(sb);
+        ea.appendChild(cb);
+        bubble.appendChild(ea);
+        var self = this;
+        sb.onclick = function() { saveEdit(msg.id, ta.value); };
+        cb.onclick = function() { cancelEdit(); };
+      } else {
+        var txt = document.createElement('div');
+        txt.className = 'msg-text';
+        if (canSendHtml() && isOwn) {
+          txt.innerHTML = msg.msg;
+        } else {
+          txt.textContent = msg.msg;
+        }
+        bubble.appendChild(txt);
+      }
+
+      var footer = document.createElement('div');
+      footer.className = 'msg-footer';
+      var tm = document.createElement('span');
+      tm.className = 'msg-time';
+      tm.textContent = formatTime(msg.fecha);
+      footer.appendChild(tm);
+      if (msg.editado) {
+        var ed = document.createElement('span');
+        ed.className = 'msg-edited';
+        ed.textContent = 'editado';
+        footer.appendChild(ed);
+      }
+      bubble.appendChild(footer);
+
+      div.appendChild(bubble);
+
+      if (!isOwn || editingMsgId === msg.id) {
+        div.ondblclick = function(e) { handleDoubleClick(msg, e); };
+      } else {
+        div.ondblclick = function(e) { handleDoubleClick(msg, e); };
+      }
+
+      return div;
+    }
+
+    function renderMessages() {
+      var container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+      for (var i = 0; i < messages.length; i++) {
+        container.appendChild(createMessageBubble(messages[i]));
+      }
+      scrollToBottom();
+    }
+
+    function initChat() {
+      fetchMessages().then(function() {
+        scrollToBottom();
+      });
+      setInterval(fetchMessages, 3000);
+      fetchUserCount();
+      setInterval(fetchUserCount, 600000);
+      document.getElementById('msgInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      document.addEventListener('click', function(e) {
+        var popup = document.getElementById('msgActionsPopup');
+        if (popup.style.display !== 'none' && !popup.contains(e.target)) {
+          popup.style.display = 'none';
+        }
+      });
+    }
+
+    function fetchMessages() {
+      var params = { action:'getMessages', user:sessionUser, pass:sessionPass };
+      if (lastFetch) params.since = lastFetch;
+      return jsonp(params).then(function(resp) {
+        try {
+          var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (data.status === 'OK' && data.messages) {
+            var newMsgs = data.messages;
+            if (lastFetch) {
+              for (var i = 0; i < newMsgs.length; i++) {
+                var exists = false;
+                for (var j = 0; j < messages.length; j++) {
+                  if (messages[j].id === newMsgs[i].id) { exists = true; break; }
+                }
+                if (!exists) {
+                  if (newMsgs[i].replyTo && typeof newMsgs[i].replyTo === 'string') {
+                    try { newMsgs[i].replyTo = JSON.parse(newMsgs[i].replyTo); } catch(e) { newMsgs[i].replyTo = null; }
+                  }
+                  messages.push(newMsgs[i]);
+                }
+              }
+              if (newMsgs.length > 0) {
+                renderMessages();
+              }
+            } else {
+              messages = [];
+              for (var k = 0; k < newMsgs.length; k++) {
+                if (newMsgs[k].replyTo && typeof newMsgs[k].replyTo === 'string') {
+                  try { newMsgs[k].replyTo = JSON.parse(newMsgs[k].replyTo); } catch(e) { newMsgs[k].replyTo = null; }
+                }
+                messages.push(newMsgs[k]);
+              }
+              renderMessages();
+            }
+            if (newMsgs.length > 0) {
+              lastFetch = newMsgs[newMsgs.length - 1].fecha;
+            } else if (!lastFetch && messages.length > 0) {
+              lastFetch = messages[messages.length - 1].fecha;
+            }
+          }
+        } catch(e) { console.error('fetchMessages error', e); }
+      }).catch(function(err) {});
+    }
+
+    function sendMessage() {
+      if (sendCooldown) return;
+      var input = document.getElementById('msgInput');
+      var text = input.value.trim();
+      if (!text) return;
+      var sanitized = sanitizeMsg(text);
+      if (containsBannedContent(sanitized)) {
+        showNotif('Contenido no permitido en el mensaje.', 'error');
+        return;
+      }
+      var tempId = '_temp_' + Date.now() + Math.random().toString(36).substr(2,6);
+      var optMsg = {
+        id: tempId,
+        user: sessionUser,
+        msg: sanitized,
+        fecha: new Date().toISOString(),
+        editado: 'false',
+        replyTo: replyTo ? { user: replyTo.user, msg: replyTo.msg } : null
+      };
+      messages.push(optMsg);
+      renderMessages();
+      scrollToBottom();
+      input.value = '';
+      cancelReply();
+      lastFetch = null;
+      var data = { action:'sendMessage', user:sessionUser, pass:sessionPass, msg:sanitized };
+      if (replyTo) {
+        data.replyTo = JSON.stringify({ user:replyTo.user, msg:replyTo.msg });
+      }
+      var btn = document.getElementById('sendBtn');
+      btn.disabled = true;
+      jsonp(data).then(function(resp) {
+        try {
+          var r = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (r.status === 'OK') {
+            for (var oi = 0; oi < messages.length; oi++) {
+              if (messages[oi].id === tempId) { messages[oi].id = r.id; break; }
+            }
+            startSendCooldown(2.9);
+            btn.disabled = false;
+            return fetchMessages();
+          } else {
+            removeTempMessage(tempId);
+            if (r.status === 'CONTENT_BLOCKED') {
+              showNotif('Contenido bloqueado: ' + (r.motivo || 'no permitido'), 'error');
+            } else if (r.status === 'SPAM_WAIT') {
+              showNotif('Espera ' + r.seconds + ' segundo(s) antes de enviar.', 'warning');
+              startSendCooldown(r.seconds || 2.9);
+            } else if (r.status === 'AUTH_ERROR') {
+              showNotif('Sesi&oacute;n expirada, recarga la p&aacute;gina.', 'error');
+            } else {
+              showNotif('Error al enviar mensaje.', 'error');
+            }
+          }
+        } catch(e) { removeTempMessage(tempId); showNotif('Error al enviar mensaje.', 'error'); }
+        btn.disabled = false;
+      }).catch(function(err) {
+        removeTempMessage(tempId);
+        showNotif('Error de conexi&oacute;n.', 'error');
+        btn.disabled = false;
+      });
+    }
+
+    function removeTempMessage(tempId) {
+      for (var i = 0; i < messages.length; i++) {
+        if (messages[i].id === tempId) { messages.splice(i, 1); renderMessages(); break; }
+      }
+    }
+
+    function startSendCooldown(seconds) {
+      if (cooldownTimer) { clearInterval(cooldownTimer); cooldownTimer = null; }
+      sendCooldown = true;
+      var btn = document.getElementById('sendBtn');
+      var icon = document.getElementById('sendIcon');
+      var cdText = document.getElementById('cooldownText');
+      var remaining = seconds || 5;
+      icon.style.display = 'none';
+      cdText.style.display = 'inline';
+      cdText.textContent = remaining;
+      btn.disabled = true;
+      cooldownTimer = setInterval(function() {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(cooldownTimer);
+          cooldownTimer = null;
+          sendCooldown = false;
+          icon.style.display = 'inline';
+          cdText.style.display = 'none';
+          btn.disabled = false;
+        } else {
+          cdText.textContent = remaining;
+        }
+      }, 1000);
+    }
+
+    function handleDoubleClick(msg, event) {
+      closePopup();
+      if (msg.user === sessionUser) {
+        showOwnMsgActions(msg, event);
+      } else {
+        replyToMessage(msg);
+      }
+    }
+
+    function showOwnMsgActions(msg, event) {
+      var popup = document.getElementById('msgActionsPopup');
+      popup.innerHTML = '';
+      var editBtn = document.createElement('button');
+      editBtn.innerHTML = '&#9998; Editar';
+      editBtn.onclick = function() { popup.style.display = 'none'; editMessage(msg.id); };
+      popup.appendChild(editBtn);
+      var delBtn = document.createElement('button');
+      delBtn.className = 'danger';
+      delBtn.innerHTML = '&#128465; Eliminar';
+      delBtn.onclick = function() { popup.style.display = 'none'; promptDelete(msg.id); };
+      popup.appendChild(delBtn);
+      var x = event.clientX || event.pageX;
+      var y = event.clientY || event.pageY;
+      popup.style.left = Math.min(x, window.innerWidth - 160) + 'px';
+      popup.style.top = Math.min(y, window.innerHeight - 100) + 'px';
+      popup.style.display = 'block';
+    }
+
+    function closePopup() {
+      document.getElementById('msgActionsPopup').style.display = 'none';
+    }
+
+    function replyToMessage(msg) {
+      replyTo = { user:msg.user, msg:msg.msg };
+      document.getElementById('replyUser').textContent = replyTo.user;
+      document.getElementById('replyText').textContent = replyTo.msg;
+      document.getElementById('replyBar').classList.add('show');
+      document.getElementById('msgInput').focus();
+    }
+
+    function cancelReply() {
+      replyTo = null;
+      document.getElementById('replyBar').classList.remove('show');
+    }
+
+    function editMessage(msgId) {
+      editingMsgId = msgId;
+      closePopup();
+      renderMessages();
+    }
+
+    function cancelEdit() {
+      editingMsgId = null;
+      renderMessages();
+    }
+
+    function saveEdit(msgId, newText) {
+      var text = newText.trim();
+      if (!text) { showNotif('El mensaje no puede estar vac&iacute;o.', 'error'); return; }
+      var sanitized = sanitizeMsg(text);
+      if (containsBannedContent(sanitized)) {
+        showNotif('Contenido no permitido.', 'error');
+        return;
+      }
+      jsonp({ action:'editMessage', user:sessionUser, pass:sessionPass, msgId:msgId, newMsg:sanitized }).then(function(resp) {
+        try {
+          var r = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (r.status === 'OK') {
+            editingMsgId = null;
+            lastFetch = null;
+            fetchMessages();
+          } else {
+            showNotif('Error al editar mensaje.', 'error');
+          }
+        } catch(e) { showNotif('Error al editar mensaje.', 'error'); }
+      }).catch(function() { showNotif('Error de conexi&oacute;n.', 'error'); });
+    }
+
+    function promptDelete(msgId) {
+      deleteTargetId = msgId;
+      document.getElementById('confirmTitle').textContent = 'Eliminar mensaje';
+      document.getElementById('confirmText').textContent = 'Este mensaje se eliminar&aacute; permanentemente.';
+      document.getElementById('confirmOverlay').classList.add('active');
+    }
+
+    function closeConfirm() {
+      document.getElementById('confirmOverlay').classList.remove('active');
+      deleteTargetId = null;
+    }
+
+    function confirmDeleteMsg() {
+      if (!deleteTargetId) return;
+      jsonp({ action:'deleteMessage', user:sessionUser, pass:sessionPass, msgId:deleteTargetId }).then(function(resp) {
+        try {
+          var r = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (r.status === 'OK') {
+            closeConfirm();
+            lastFetch = null;
+            fetchMessages();
+          } else {
+            showNotif('Error al eliminar mensaje.', 'error');
+          }
+        } catch(e) { showNotif('Error al eliminar mensaje.', 'error'); }
+      }).catch(function() { showNotif('Error de conexi&oacute;n.', 'error'); });
+    }
+
+    function fetchUserCount() {
+      jsonp({ action:'getChatUsers' }).then(function(resp) {
+        try {
+          var r = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (r.status === 'OK' && typeof r.count === 'number') {
+            userCount = r.count;
+            document.getElementById('userCount').innerHTML = '&#128100; ' + userCount;
+          }
+        } catch(e) {}
+      }).catch(function(){});
+    }
+
+    initChat();
+    verificarCuenta();
+  </script>
+</body>
+</html>

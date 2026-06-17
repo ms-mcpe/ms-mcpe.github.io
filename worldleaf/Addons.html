@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Addons - WorldLeaf App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --amber: #f59e0b; --amber-light: #fbbf24; --amber-bg: rgba(245,158,11,0.10); --amber-glow: rgba(245,158,11,0.22);
+      --blue: #3b82f6; --blue-light: #60a5fa; --blue-bg: rgba(59,130,246,0.10);
+      --info: #06b6d4; --info-bg: rgba(6,182,212,0.10);
+      --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+      --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+      --shadow-glow: 0 0 24px var(--primary-glow);
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+      --viewer-bg: #090d16;
+      --viewer-body: #0f172a;
+      --viewer-text: #f8fafc;
+      --viewer-text-muted: #64748b;
+      --viewer-text-light: #cbd5e1;
+      --viewer-comment-bg: #1e293b;
+      --viewer-comment-text: #cbd5e1;
+      --viewer-border: #334155;
+      --viewer-btn-bg: rgba(255,255,255,0.1);
+      --viewer-btn-hover: rgba(255,255,255,0.2);
+      --viewer-primary: #22c55e;
+      --input-bg: #1e293b;
+      --input-text: #f8fafc;
+      --input-border: #334155;
+    }
+    [data-theme="dark"] {
+      --bg-body: #0b1120; --bg-card: #1e293b; --bg-topbar: rgba(6,10,15,0.92); --bg-sidebar: #0d1729;
+      --primary: #22c55e; --primary-light: #4ade80; --primary-bg: rgba(34,197,94,0.09); --primary-dark: #16a34a;
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e); --primary-glow: rgba(34,197,94,0.25);
+      --text: #f0f6ff; --text-secondary: #94a3b8; --text-muted: #4b5e78; --text-light: #2d3f57;
+      --border: #1e2f48; --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5); --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --surface: #162032; --surface-2: #1e2f48;
+    }
+    [data-scheme="blue"] { --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59,130,246,0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6); --viewer-primary: #60a5fa; --primary-glow: rgba(59,130,246,0.2); }
+    [data-scheme="purple"] { --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139,92,246,0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6); --viewer-primary: #a78bfa; --primary-glow: rgba(139,92,246,0.2); }
+    [data-scheme="orange"] { --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249,115,22,0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316); --viewer-primary: #fb923c; --primary-glow: rgba(249,115,22,0.2); }
+
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg-body);
+      min-height:100vh;
+      color:var(--text);
+      transition:background-color 0.3s ease, color 0.3s ease;
+      overflow-x:hidden;width:100%;max-width:100%;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+
+    .content{padding:20px;max-width:800px;margin:0 auto;animation:fadeIn 0.4s ease-out;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes zoomIn{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:6px;}
+    .page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:24px;font-weight:500;}
+
+    .filtros{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+    .filtro-btn{
+      padding:8px 16px;border:1.5px solid var(--border);border-radius:20px;
+      background:var(--bg-card);color:var(--text-secondary);font-size:13px;
+      font-weight:600;cursor:pointer;transition:all 0.2s ease;
+    }
+    .filtro-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg);}
+    .filtro-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 10px var(--primary-bg);}
+
+    .addon-grid{display:grid;grid-template-columns:1fr;gap:20px;}
+    @media(min-width:600px){.addon-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(min-width:960px){.addon-grid{grid-template-columns:repeat(3,1fr);}}
+
+    .addon-card{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);
+      overflow:hidden;position:relative;box-shadow:var(--shadow);
+      transition:transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.25s ease;
+      animation:cardSlideUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .addon-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary-gradient);z-index:1;}
+    .addon-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--primary-light);}
+    @keyframes cardSlideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+
+    .addon-cover{width:100%;height:180px;object-fit:cover;display:block;background:var(--surface);}
+
+    .addon-body{padding:16px 18px 18px;}
+
+    .addon-user{
+      font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;
+      transition:color 0.15s;text-decoration:none;
+    }
+    .addon-user:hover{color:var(--primary-dark);text-decoration:underline;}
+    .addon-date{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;}
+
+    .addon-title{
+      font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--text);
+      margin:8px 0 6px;line-height:1.3;
+    }
+
+    .addon-desc{
+      font-size:14px;color:var(--text-secondary);line-height:1.6;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+      overflow:hidden;margin-bottom:12px;font-weight:500;word-break:break-word;
+    }
+
+    .addon-stats{
+      display:flex;align-items:center;gap:16px;font-size:13px;color:var(--text-muted);
+      font-weight:600;margin-bottom:14px;
+    }
+    .addon-stats span{display:flex;align-items:center;gap:4px;}
+
+    .addon-dl-btn{
+      display:block;width:100%;padding:12px;border:none;border-radius:var(--radius-sm);
+      background:var(--primary-gradient);color:#fff;
+      font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;
+      cursor:pointer;text-align:center;transition:all 0.2s;
+      box-shadow:0 4px 12px var(--primary-glow);text-decoration:none;
+    }
+    .addon-dl-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px var(--primary-glow);filter:brightness(1.05);}
+
+    .addon-menu-btn{
+      position:absolute;top:10px;right:10px;z-index:5;
+      width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.35);border-radius:50%;cursor:pointer;
+      color:#fff;font-size:18px;line-height:1;transition:all 0.2s;
+      border:none;user-select:none;
+    }
+    .addon-menu-btn:hover{background:rgba(255,255,255,0.2);}
+    .addon-menu-dropdown{
+      position:absolute;top:40px;right:10px;z-index:10;
+      background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;
+      box-shadow:var(--shadow-md);min-width:140px;overflow:hidden;
+      display:none;flex-direction:column;
+    }
+    .addon-menu-dropdown.open{display:flex;}
+    .addon-menu-dropdown button{
+      padding:10px 16px;border:none;background:none;color:var(--text);
+      font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.15s;font-family:inherit;
+    }
+    .addon-menu-dropdown button:hover{background:var(--primary-bg);color:var(--primary);}
+    .addon-menu-dropdown button:last-child{color:var(--danger);}
+    .addon-menu-dropdown button:last-child:hover{background:var(--danger-bg);color:var(--danger);}
+
+    .sin-addons{text-align:center;color:var(--text-light);font-size:15px;padding:60px 0;font-weight:500;}
+    .skeleton{padding:60px 20px;text-align:center;color:var(--text-secondary);font-size:15px;}
+    .skeleton .spinner{width:32px;height:32px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+
+    .fab{
+      position:fixed;bottom:28px;right:24px;z-index:150;
+      width:60px;height:60px;border-radius:50%;
+      background:var(--primary-gradient);color:#fff;border:none;
+      font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 20px rgba(34,197,94,0.4);
+      transition:all 0.25s ease;
+    }
+    .fab:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(34,197,94,0.55);}
+    .fab:active{transform:scale(0.95);}
+
+    .crear-overlay{
+      display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;
+      background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);
+      align-items:center;justify-content:center;padding:20px;
+    }
+    .crear-overlay.active{display:flex;}
+    .crear-modal{
+      background:var(--bg-card);border-radius:20px;padding:28px 24px;
+      max-width:520px;width:100%;max-height:90vh;overflow-y:auto;
+      box-shadow:var(--shadow-lg);border:1px solid var(--border);
+      animation:zoomIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .crear-modal h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:18px;}
+    .crear-modal .form-group{margin-bottom:16px;}
+    .crear-modal .form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+    .crear-modal .form-group input,.crear-modal .form-group textarea{
+      width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;
+      background:var(--bg-card2);color:var(--text);font-size:14px;font-family:inherit;
+      outline:none;transition:border-color 0.2s;
+    }
+    .crear-modal .form-group input:focus,.crear-modal .form-group textarea:focus{border-color:var(--primary);}
+    .crear-modal .form-group textarea{resize:vertical;min-height:100px;}
+    .word-count{font-size:12px;color:var(--text-secondary);font-weight:400;}
+    .word-count.ok{color:var(--primary);}
+    .word-count.err{color:var(--danger);}
+    .crear-btns{display:flex;gap:10px;margin-top:8px;}
+    .crear-btns .btn-modal{
+      flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:700;
+      font-family:'Rajdhani',sans-serif;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s;
+    }
+    .crear-btns .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+    .crear-btns .btn-modal:disabled{opacity:0.6;cursor:not-allowed;}
+    .crear-btns .btn-cancel{background:var(--text-muted);}
+    .crear-btns .btn-cancel:hover{background:var(--text-secondary);box-shadow:none;}
+    .crear-msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;display:none;font-weight:500;}
+    .crear-msg.error{display:block;color:#ef4444;background:var(--danger-bg);border:1px solid rgba(239,68,68,0.2);}
+    .crear-msg.success{display:block;color:var(--primary);background:var(--primary-bg);border:1px solid var(--primary-glow);}
+
+    .file-input-hidden{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden;pointer-events:none;}
+
+    .edit-modal-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;
+      background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+      display:flex;align-items:center;justify-content:center;padding:20px;
+    }
+    .edit-modal-content{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:16px;
+      padding:24px;max-width:500px;width:100%;box-shadow:var(--shadow-lg);
+    }
+    .edit-modal-content h3{font-size:18px;font-weight:700;margin-bottom:14px;color:var(--text);}
+    .edit-modal-content textarea{
+      width:100%;min-height:120px;padding:12px;border:1px solid var(--border);
+      border-radius:10px;background:var(--bg-card2);color:var(--text);
+      font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-bottom:14px;
+    }
+    .edit-modal-content textarea:focus{border-color:var(--primary);}
+    .edit-modal-btns{display:flex;gap:10px;}
+    .edit-modal-btns .btn-modal{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s;}
+    .edit-modal-btns .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+    .edit-modal-btns .btn-cancel{background:var(--text-muted);}
+    .edit-modal-btns .btn-cancel:hover{background:var(--text-secondary);box-shadow:none;}
+
+    .blocked-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
+      background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:40px 24px;text-align:center;
+    }
+    .blocked-overlay .block-icon{font-size:72px;margin-bottom:16px;animation:pulseBlock 2s infinite;}
+    @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:0.8;}}
+    .blocked-overlay h2{font-size:24px;font-weight:800;color:#ef4444;margin-bottom:8px;}
+    .blocked-overlay p{font-size:15px;color:#cbd5e1;max-width:480px;line-height:1.6;margin-bottom:16px;}
+    .blocked-overlay .razones{text-align:left;color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:24px;}
+    .blocked-overlay .razones li{margin-bottom:4px;}
+    .blocked-overlay .btn-soporte{
+      display:inline-block;padding:14px 40px;border-radius:12px;
+      background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;
+      font-size:16px;font-weight:700;text-decoration:none;
+      transition:all 0.2s;box-shadow:0 4px 16px rgba(59,130,246,0.3);
+    }
+    .blocked-overlay .btn-soporte:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(59,130,246,0.5);}
+
+    .img-preview-wrap{
+      margin-top:8px;display:none;
+    }
+    .img-preview-wrap.show{display:block;}
+    .img-preview-wrap img{
+      max-width:100%;max-height:200px;border-radius:8px;
+      border:1px solid var(--border);object-fit:contain;
+    }
+
+    @media(max-width:480px){
+      .content{padding:14px;}
+      .page-title{font-size:24px;}
+      .page-sub{font-size:13px;margin-bottom:16px;}
+      .addon-cover{height:140px;}
+      .addon-body{padding:12px 14px 14px;}
+      .addon-title{font-size:16px;}
+      .addon-desc{font-size:13px;}
+      .addon-stats{font-size:12px;gap:10px;}
+      .addon-dl-btn{padding:10px;font-size:13px;}
+      .crear-modal{padding:24px 16px;max-width:100%;border-radius:16px 16px 0 0;margin-top:auto;animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;}
+      .crear-overlay{align-items:flex-end;padding:0;}
+      @keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+      .fab{bottom:20px;right:16px;width:54px;height:54px;font-size:26px;}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content" id="mainContent">
+    <h1 class="page-title">Addons</h1>
+    <p class="page-sub">Complementos creados por la comunidad</p>
+    <div class="filtros" id="filtrosBar"></div>
+    <div id="addonList"><div class="skeleton"><div class="spinner"></div>Cargando addons...</div></div>
+  </div>
+
+  <button class="fab" id="fabBtn" onclick="abrirModalAddon()" title="Publicar addon">+</button>
+
+  <iframe id="addonFrame" name="addonFrame" style="display:none;"></iframe>
+  <form id="addonForm" action="https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec" method="POST" target="addonFrame" style="display:none;">
+    <input type="hidden" name="action" value="addAddon">
+    <input type="hidden" name="user" id="addonFormUser">
+    <input type="hidden" name="pass" id="addonFormPass">
+    <input type="hidden" name="nombre" id="addonFormNombre">
+    <input type="hidden" name="descripcion" id="addonFormDesc">
+    <input type="hidden" name="imagen" id="addonFormImg">
+    <input type="hidden" name="link" id="addonFormLink">
+  </form>
+
+  <input type="file" id="addonFileInput" class="file-input-hidden" accept="image/*">
+
+  <div class="crear-overlay" id="crearOverlay">
+    <div class="crear-modal">
+      <h3>Publicar Addon</h3>
+      <div id="crearMsg" class="crear-msg"></div>
+      <div class="form-group">
+        <label>Nombre del addon <span style="color:var(--danger)">*</span></label>
+        <input id="addonNombreInput" placeholder="Ej: WorldCraft Tools" maxlength="80">
+      </div>
+      <div class="form-group">
+        <label>Descripci&oacute;n <span id="crearWordCount" class="word-count">0/700</span></label>
+        <textarea id="addonDescInput" placeholder="Describe tu addon (m&aacute;x 700 palabras)..." rows="6"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Imagen (URL o archivo)</label>
+        <input id="addonImgUrlInput" placeholder="https://ejemplo.com/imagen.png" oninput="previewImgUrl(this.value)">
+        <div class="img-preview-wrap" id="imgPreviewWrap"><img id="imgPreview" src="" alt="Preview"></div>
+        <button class="btn-modal" style="padding:10px;font-size:13px;background:var(--text-muted);margin-top:6px;" onclick="event.preventDefault();document.getElementById('addonFileInput').click();" type="button">Subir archivo</button>
+      </div>
+      <div class="form-group">
+        <label>Link de descarga <span style="color:var(--danger)">*</span></label>
+        <input id="addonLinkInput" placeholder="https://ejemplo.com/descargar">
+      </div>
+      <div class="crear-btns">
+        <button class="btn-modal btn-cancel" onclick="cerrarModalAddon()" type="button">Cancelar</button>
+        <button class="btn-modal" id="btnPublicarAddon" onclick="publicarAddon()" type="button">Publicar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+      var cp = localStorage.getItem('colorPrimario');
+      if (cp) { document.documentElement.style.setProperty('--primary', cp); document.documentElement.style.setProperty('--primary-light', cp); document.documentElement.style.setProperty('--viewer-primary', cp); }
+      var cf = localStorage.getItem('colorFondo');
+      if (cf) document.documentElement.style.setProperty('--bg-body', cf);
+    })();
+
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+    var sessionUser = localStorage.getItem('sessionUser');
+    var sessionPass = localStorage.getItem('sessionPass');
+    if (!sessionUser || !sessionPass) window.location.href = 'login.html';
+
+    var addonsCache = [];
+    try { var c = localStorage.getItem('addonsCache'); if (c) addonsCache = JSON.parse(c); } catch(e) {}
+    var filtroActual = 'recientes';
+    var _subiendoAddon = false;
+    var _imgB64 = '';
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) { if (data.hasOwnProperty(key)) params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key])); }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); resolve(resp); };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Error de conexi&oacute;n')); };
+        document.body.appendChild(script);
+        setTimeout(function() { if (window[cb]) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Tiempo de espera agotado')); } }, 60000);
+      });
+    }
+
+    function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function tiempoRelativo(fs) {
+      if (!fs) return ''; var d = new Date(fs); if (isNaN(d.getTime())) return fs;
+      var seg = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (seg < 60) return 'hace ' + seg + ' segundos'; var min = Math.floor(seg / 60);
+      if (min < 60) return 'hace ' + min + (min === 1 ? ' minuto' : ' minutos'); var hor = Math.floor(min / 60);
+      if (hor < 24) return 'hace ' + hor + (hor === 1 ? ' hora' : ' horas'); var dia = Math.floor(hor / 24);
+      if (dia < 30) return 'hace ' + dia + (dia === 1 ? ' d&iacute;a' : ' d&iacute;as'); var mes = Math.floor(dia / 30);
+      if (mes < 12) return 'hace ' + mes + (mes === 1 ? ' mes' : ' meses'); var anio = Math.floor(mes / 12);
+      return 'hace ' + anio + (anio === 1 ? ' a&ntilde;o' : ' a&ntilde;os');
+    }
+
+    function mostrarCuentaInactiva() {
+      var overlay = document.createElement('div');
+      overlay.className = 'blocked-overlay';
+      overlay.innerHTML = '<div class="block-icon">&#128683;</div>'
+        + '<h2>Cuenta Desactivada</h2>'
+        + '<p>Tu cuenta ha sido desactivada. Esto pudo deberse a las siguientes razones:</p>'
+        + '<ul class="razones">'
+        + '<li>1. Romper las reglas o pol&iacute;ticas de la plataforma.</li>'
+        + '<li>2. No respetar a los usuarios de la plataforma.</li>'
+        + '<li>3. Hacer spam de contenido.</li>'
+        + '<li>4. Usar palabras obscenas.</li>'
+        + '<li>5. Funar o difamar informaci&oacute;n falsa de otros usuarios.</li>'
+        + '</ul>'
+        + '<p style="font-weight:600;color:#f8fafc;">Para reactivar tu cuenta, comun&iacute;cate con soporte y cu&eacute;ntanos tu situaci&oacute;n.</p>'
+        + '<a class="btn-soporte" href="https://soporte.com" target="_blank">Contactar Soporte</a>';
+      document.body.appendChild(overlay);
+    }
+
+    function verificarCuenta() {
+      jsonp({ action:'checkAccount', user:sessionUser }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (!d.exists || d.exists === false) { localStorage.removeItem('sessionUser'); localStorage.removeItem('sessionPass'); localStorage.removeItem('userProfile'); window.location.href = 'login.html'; } else if (d.status === 'Inactivo') { mostrarCuentaInactiva(); } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function cambiarFiltro(id) {
+      filtroActual = id;
+      document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-filtro') === id); });
+      renderAddons();
+    }
+
+    function init() {
+      var filtros = [
+        { id:'recientes', label:'M&aacute;s recientes' }, { id:'antiguos', label:'M&aacute;s antiguos' },
+        { id:'maslikes', label:'M&aacute;s likes' }, { id:'menoslikes', label:'Menos likes' }
+      ];
+      document.getElementById('filtrosBar').innerHTML = filtros.map(function(x) {
+        return '<button class="filtro-btn' + (filtroActual === x.id ? ' active' : '') + '" data-filtro="' + x.id + '" onclick="cambiarFiltro(\'' + x.id + '\')">' + x.label + '</button>';
+      }).join('');
+
+      if (addonsCache.length) renderAddons();
+      var cachedStr = localStorage.getItem('addonsCache');
+      jsonp({ action:'getAddons' }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.status === 'ADDONS_OK') { var nuevo = d.addons || []; var nuevoStr = JSON.stringify(nuevo); if (nuevoStr !== cachedStr) { addonsCache = nuevo; localStorage.setItem('addonsCache', nuevoStr); renderAddons(); } } } catch(e) {}
+        if (!cachedStr) renderAddons();
+      }).catch(function() { if (!cachedStr) renderAddons(); });
+    }
+
+    function renderAddons() {
+      var el = document.getElementById('addonList');
+      if (!el) return;
+      if (!addonsCache.length) { el.innerHTML = '<div class="sin-addons">No hay addons publicados a&uacute;n.</div>'; return; }
+      var lista = addonsCache.slice();
+      if (filtroActual === 'antiguos') lista.sort(function(a,b) { return (a.fecha||'').localeCompare(b.fecha||''); });
+      else if (filtroActual === 'maslikes') lista.sort(function(a,b) { return (b.likes||0) - (a.likes||0); });
+      else if (filtroActual === 'menoslikes') lista.sort(function(a,b) { return (a.likes||0) - (b.likes||0); });
+      else lista.sort(function(a,b) { return (b.fecha||'').localeCompare(a.fecha||''); });
+
+      el.innerHTML = '<div class="addon-grid">' + lista.map(function(a) {
+        var esPropio = a.subidoPor === sessionUser;
+        var imgHtml = a.imagen ? '<img class="addon-cover" src="' + escHtml(a.imagen) + '" loading="lazy" alt="Addon">' : '';
+        return '<div class="addon-card">'
+          + (esPropio ? '<div class="addon-menu-btn" onclick="event.stopPropagation();toggleAddonMenu(\'' + escHtml(a.Nombre) + '\')">&#8942;</div><div class="addon-menu-dropdown" id="addonMenu_' + escHtml(a.Nombre) + '"><button onclick="event.stopPropagation();editarAddon(\'' + escHtml(a.Nombre) + '\')">Editar</button><button onclick="event.stopPropagation();eliminarAddon(\'' + escHtml(a.Nombre) + '\')">Eliminar</button></div>' : '')
+          + imgHtml
+          + '<div class="addon-body">'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'
+          + '<a class="addon-user" href="perfil_publico.html?user=' + encodeURIComponent(a.subidoPor||'').replace(/%20/g,'-') + '">' + escHtml(a.subidoPor||'') + '</a>'
+          + '<span class="addon-date">' + tiempoRelativo(a.fecha) + '</span>'
+          + '</div>'
+          + '<div class="addon-title">' + escHtml(a.Nombre||'') + '</div>'
+          + '<div class="addon-desc">' + escHtml(a.descripcion||'') + '</div>'
+          + '<div class="addon-stats"><span>&#128077; ' + (a.likes||0) + '</span><span>&#128078; ' + (a.dislikes||0) + '</span></div>'
+          + (a.link ? '<a class="addon-dl-btn" href="' + escHtml(a.link) + '" target="_blank" rel="noopener">&#11015; Descargar</a>' : '<div class="addon-dl-btn" style="opacity:0.5;cursor:default;">Sin link</div>')
+          + '</div></div>';
+      }).join('') + '</div>';
+    }
+
+    function toggleAddonMenu(nombre) {
+      var menu = document.getElementById('addonMenu_' + nombre);
+      if (!menu) return;
+      var abierto = menu.classList.contains('open');
+      document.querySelectorAll('.addon-menu-dropdown.open').forEach(function(m) { if (m !== menu) m.classList.remove('open'); });
+      menu.classList.toggle('open', !abierto);
+    }
+
+    function eliminarAddon(nombre) {
+      if (!confirm('\u00bfEliminar este addon? Esta acci\u00f3n no se puede deshacer.')) return;
+      jsonp({ action:'deletePublicacion', user:sessionUser, pass:sessionPass, tipo:'addon', id:nombre }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'OK' || d.status === 'DELETED') {
+          addonsCache = addonsCache.filter(function(a) { return a.Nombre !== nombre; });
+          localStorage.setItem('addonsCache', JSON.stringify(addonsCache));
+          renderAddons();
+        } else { alert('Error al eliminar.'); } } catch(e) { alert('Error al eliminar.'); }
+      }).catch(function() { alert('Error de conexi\u00f3n.'); });
+    }
+
+    function editarAddon(nombre) {
+      var a = null;
+      for (var i = 0; i < addonsCache.length; i++) { if (addonsCache[i].Nombre === nombre) { a = addonsCache[i]; break; } }
+      if (!a) return;
+      var ov = document.createElement('div');
+      ov.className = 'edit-modal-overlay';
+      ov.id = 'editModalOverlay';
+      ov.innerHTML = '<div class="edit-modal-content"><h3>Editar addon: ' + escHtml(a.Nombre) + '</h3><textarea id="editAddonTextarea">' + escHtml(a.descripcion||'') + '</textarea><div class="edit-modal-btns"><button class="btn-modal" onclick="guardarEdicion(\'' + escHtml(a.Nombre) + '\')">Guardar</button><button class="btn-modal btn-cancel" onclick="cerrarEditModal()">Cancelar</button></div></div>';
+      ov.addEventListener('click', function(e) { if (e.target === ov) cerrarEditModal(); });
+      document.body.appendChild(ov);
+      document.getElementById('editAddonTextarea').focus();
+    }
+
+    function cerrarEditModal() {
+      var el = document.getElementById('editModalOverlay');
+      if (el) el.remove();
+    }
+
+    function guardarEdicion(nombre) {
+      var texto = document.getElementById('editAddonTextarea').value.trim();
+      if (!texto) { alert('La descripci\u00f3n no puede estar vac\u00eda.'); return; }
+      jsonp({ action:'editPublicacion', user:sessionUser, pass:sessionPass, tipo:'addon', id:nombre, contenido:texto }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'OK' || d.status === 'UPDATED') {
+          for (var i = 0; i < addonsCache.length; i++) { if (addonsCache[i].Nombre === nombre) { addonsCache[i].descripcion = texto; break; } }
+          localStorage.setItem('addonsCache', JSON.stringify(addonsCache));
+          cerrarEditModal();
+          renderAddons();
+        } else { alert('Error al guardar.'); } } catch(e) { alert('Error al guardar.'); }
+      }).catch(function() { alert('Error de conexi\u00f3n.'); });
+    }
+
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.addon-menu-dropdown.open').forEach(function(m) { m.classList.remove('open'); });
+    });
+
+    function previewImgUrl(url) {
+      var wrap = document.getElementById('imgPreviewWrap');
+      var img = document.getElementById('imgPreview');
+      if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:'))) {
+        img.src = url;
+        wrap.className = 'img-preview-wrap show';
+      } else {
+        wrap.className = 'img-preview-wrap';
+        img.src = '';
+      }
+    }
+
+    document.getElementById('addonFileInput').addEventListener('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var full = e.target.result;
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var img = new Image();
+        img.onload = function() {
+          var maxW = 800, maxH = 800;
+          var w = img.width, h = img.height;
+          if (w > maxW || h > maxH) { var r = Math.min(maxW/w, maxH/h); w = Math.round(w*r); h = Math.round(h*r); }
+          canvas.width = w; canvas.height = h;
+          ctx.drawImage(img, 0, 0, w, h);
+          var b64 = canvas.toDataURL('image/jpeg', 0.8);
+          _imgB64 = b64;
+          var inp = document.getElementById('addonImgUrlInput');
+          inp.value = '(archivo subido)';
+          previewImgUrl(b64);
+        };
+        img.src = full;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function contarPalabras(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+
+    document.getElementById('addonDescInput').addEventListener('input', function() {
+      var el = document.getElementById('crearWordCount');
+      var words = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+      el.textContent = words + '/700';
+      el.className = 'word-count' + (words > 700 ? ' err' : words > 0 ? ' ok' : '');
+    });
+
+    function abrirModalAddon() {
+      document.getElementById('addonNombreInput').value = '';
+      document.getElementById('addonDescInput').value = '';
+      document.getElementById('addonImgUrlInput').value = '';
+      document.getElementById('addonLinkInput').value = '';
+      document.getElementById('imgPreviewWrap').className = 'img-preview-wrap';
+      document.getElementById('crearWordCount').textContent = '0/700';
+      document.getElementById('crearWordCount').className = 'word-count';
+      document.getElementById('crearMsg').style.display = 'none';
+      document.getElementById('btnPublicarAddon').disabled = false;
+      document.getElementById('btnPublicarAddon').textContent = 'Publicar';
+      _imgB64 = '';
+      document.getElementById('crearOverlay').classList.add('active');
+    }
+
+    function cerrarModalAddon() {
+      document.getElementById('crearOverlay').classList.remove('active');
+    }
+
+    function publicarAddon() {
+      if (_subiendoAddon) return;
+      var nombre = document.getElementById('addonNombreInput').value.trim();
+      var desc = document.getElementById('addonDescInput').value.trim();
+      var imgUrl = document.getElementById('addonImgUrlInput').value.trim();
+      var link = document.getElementById('addonLinkInput').value.trim();
+
+      if (!nombre) { mostrarMsg('El nombre es obligatorio.', 'error'); return; }
+      if (contarPalabras(desc) > 700) { mostrarMsg('La descripci\u00f3n no puede tener m\u00e1s de 700 palabras.', 'error'); return; }
+      if (!link || !link.startsWith('https://')) { mostrarMsg('El link de descarga debe ser una URL https://.', 'error'); return; }
+      var imagen = _imgB64 || imgUrl;
+      if (!imagen) { mostrarMsg('Debes proporcionar una imagen (URL o archivo).', 'error'); return; }
+
+      _subiendoAddon = true;
+      document.getElementById('btnPublicarAddon').disabled = true;
+      document.getElementById('btnPublicarAddon').textContent = 'Publicando...';
+      document.getElementById('crearMsg').style.display = 'none';
+
+      document.getElementById('addonFormUser').value = sessionUser;
+      document.getElementById('addonFormPass').value = sessionPass;
+      document.getElementById('addonFormNombre').value = nombre;
+      document.getElementById('addonFormDesc').value = desc;
+      document.getElementById('addonFormImg').value = imagen;
+      document.getElementById('addonFormLink').value = link;
+      document.getElementById('addonForm').submit();
+    }
+
+    document.getElementById('addonFrame').addEventListener('load', function() {
+      if (!_subiendoAddon) return;
+      _subiendoAddon = false;
+      document.getElementById('btnPublicarAddon').disabled = false;
+      document.getElementById('btnPublicarAddon').textContent = 'Publicar';
+      cerrarModalAddon();
+      setTimeout(function() {
+        jsonp({ action:'getAddons' }).then(function(resp) {
+          try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if (d.status === 'ADDONS_OK') { addonsCache = d.addons || []; localStorage.setItem('addonsCache', JSON.stringify(addonsCache)); renderAddons(); } } catch(e) {}
+        }).catch(function() {});
+      }, 2000);
+    });
+
+    document.getElementById('crearOverlay').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModalAddon();
+    });
+
+    function mostrarMsg(texto, tipo) {
+      var msg = document.getElementById('crearMsg');
+      msg.textContent = texto;
+      msg.className = 'crear-msg ' + tipo;
+    }
+
+    verificarCuenta();
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin - WorldLeaf App</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-void: #060a0f;
+  --bg-body: #0b1120;
+  --bg-card: #111827;
+  --bg-card2: #162032;
+  --bg-topbar: rgba(6,10,15,0.92);
+  --bg-sidebar: #0d1729;
+  --primary: #22c55e;
+  --primary-light: #4ade80;
+  --primary-dark: #16a34a;
+  --primary-bg: rgba(34,197,94,0.09);
+  --primary-glow: rgba(34,197,94,0.25);
+  --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+  --amber: #f59e0b;
+  --amber-light: #fbbf24;
+  --amber-bg: rgba(245,158,11,0.10);
+  --amber-glow: rgba(245,158,11,0.22);
+  --blue: #3b82f6;
+  --blue-light: #60a5fa;
+  --blue-bg: rgba(59,130,246,0.10);
+  --info: #06b6d4;
+  --info-bg: rgba(6,182,212,0.10);
+  --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+  --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+  --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+  --text: #f0f6ff;
+  --text-secondary: #94a3b8;
+  --text-muted: #4b5e78;
+  --text-light: #2d3f57;
+  --border: #1e2f48;
+  --border-light: #131f30;
+  --surface: #162032;
+  --surface-2: #1e2f48;
+  --shadow: 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+  --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+  --shadow-glow: 0 0 24px var(--primary-glow);
+  --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+  --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+  --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --overlay: rgba(0,0,0,0.72);
+}
+[data-scheme="blue"]{--primary:#3b82f6;--primary-light:#60a5fa;--primary-bg:rgba(59,130,246,0.1);--primary-dark:#2563eb;--primary-gradient:linear-gradient(135deg,#60a5fa,#3b82f6)}
+[data-scheme="purple"]{--primary:#8b5cf6;--primary-light:#a78bfa;--primary-bg:rgba(139,92,246,0.1);--primary-dark:#7c3aed;--primary-gradient:linear-gradient(135deg,#a78bfa,#8b5cf6)}
+[data-scheme="orange"]{--primary:#f97316;--primary-light:#fb923c;--primary-bg:rgba(249,115,22,0.1);--primary-dark:#ea580c;--primary-gradient:linear-gradient(135deg,#fb923c,#f97316)}
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--surface-2)}
+html,body{height:100%}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg-body);color:var(--text);
+  overflow-x:hidden;padding:20px;
+  transition:background-color 0.3s,color 0.3s;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg,var(--border-light) 1px, transparent 1px);
+  background-size:28px 28px;opacity:0.35;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+}
+.page-header{margin-bottom:20px;text-align:center}
+.page-eyebrow{
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--primary);margin-bottom:4px;
+}
+.page-title{
+  font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--text);
+  letter-spacing:-0.5px;line-height:1.1;
+}
+.page-sub{font-size:13px;color:var(--text-secondary);margin-top:4px;font-weight:500}
+.tabs{
+  display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;
+  border-bottom:1px solid var(--border);padding-bottom:10px;
+}
+.tab{
+  padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  background:var(--bg-card);color:var(--text-secondary);cursor:pointer;
+  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:0.4px;text-transform:uppercase;transition:all 0.18s;
+}
+.tab:hover{background:var(--surface);color:var(--text);border-color:rgba(34,197,94,0.2)}
+.tab.active{background:var(--primary-bg);color:var(--primary);border-color:var(--primary);box-shadow:0 0 12px var(--primary-glow)}
+.section-wrap{animation:fadeIn 0.3s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg-banner{
+  padding:11px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;
+  border-left:3px solid;display:none;margin-bottom:16px;animation:fadeIn 0.2s ease;
+}
+.msg-banner.show{display:block}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;flex-wrap:wrap;gap:10px;
+}
+.section-title{
+  font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:8px;letter-spacing:0.2px;
+}
+.section-title .icon{font-size:20px}
+.search-wrap{position:relative;flex:1;max-width:300px}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none}
+.search-input,.input-field{
+  width:100%;padding:9px 14px 9px 36px;border:1px solid var(--border);border-radius:9px;
+  background:var(--bg-card);color:var(--text);
+  font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:all 0.2s;
+}
+.search-input:focus,.input-field:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.search-input::placeholder,.input-field::placeholder{color:var(--text-muted)}
+.input-field{padding:9px 14px;width:auto;min-width:160px}
+.table-wrap{overflow-x:auto;background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+  padding:13px 16px;text-align:left;font-weight:700;color:var(--text-muted);
+  text-transform:uppercase;font-size:10px;letter-spacing:0.8px;
+  border-bottom:1px solid var(--border);background:var(--surface);
+  font-family:'Rajdhani',sans-serif;
+}
+td{padding:12px 16px;border-bottom:1px solid var(--border-light);color:var(--text-secondary);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(34,197,94,0.03)}
+.btn-sm{
+  padding:5px 13px;border:none;border-radius:7px;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.18s;font-family:'Rajdhani',sans-serif;letter-spacing:0.4px;
+  white-space:nowrap;
+}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.btn-danger:hover{background:var(--danger);color:#fff;box-shadow:0 2px 10px rgba(239,68,68,0.4)}
+.btn-primary{background:var(--primary-bg);color:var(--primary);border:1px solid rgba(34,197,94,0.2)}
+.btn-primary:hover{background:var(--primary);color:#fff;box-shadow:0 2px 10px var(--primary-glow)}
+.btn-success{background:var(--success-bg);color:var(--success);border:1px solid rgba(34,197,94,0.2)}
+.btn-success:hover{background:var(--success);color:#fff}
+.btn-warning{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,0.2)}
+.btn-warning:hover{background:var(--amber);color:#fff}
+.btn-sm:disabled{opacity:0.35;cursor:not-allowed}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);font-weight:600;font-size:14px}
+.badge-rol{
+  display:inline-flex;align-items:center;padding:3px 11px;border-radius:20px;
+  font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;
+  font-family:'Rajdhani',sans-serif;
+}
+.badge-owner{background:var(--owner-gradient);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,0.35)}
+.badge-admin{background:var(--admin-gradient);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.30)}
+.badge-app{background:var(--app-gradient);color:#fff;box-shadow:0 2px 8px rgba(168,85,247,0.30)}
+.badge-user{background:var(--surface-2);color:var(--text-secondary)}
+.status-chip{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:20px;
+  font-size:10px;font-weight:700;font-family:'Rajdhani',sans-serif;letter-spacing:0.5px;
+}
+.status-chip::before{content:'';width:6px;height:6px;border-radius:50%;display:inline-block}
+.status-active{background:var(--success-bg);color:var(--success)}
+.status-active::before{background:var(--success);box-shadow:0 0 6px var(--success)}
+.status-inactive{background:var(--danger-bg);color:var(--danger)}
+.status-inactive::before{background:var(--danger)}
+.tag{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;
+  font-size:11px;font-weight:700;margin:3px;
+  font-family:'Rajdhani',sans-serif;letter-spacing:0.4px;
+}
+.tag-word{background:var(--warning-bg);color:var(--warning);border:1px solid rgba(245,158,11,0.2)}
+.tag-url{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(239,68,68,0.2)}
+.tag .tag-remove{cursor:pointer;font-size:13px;opacity:0.6;transition:opacity 0.18s;background:none;border:none;color:inherit;padding:0;line-height:1;margin-left:2px}
+.tag .tag-remove:hover{opacity:1}
+.add-word-form{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.add-word-form input{
+  padding:9px 14px;border:1px solid var(--border);border-radius:9px;
+  background:var(--bg-card);color:var(--text);font-family:'Inter',sans-serif;
+  font-size:13px;outline:none;transition:all 0.2s;flex:1;min-width:180px;
+}
+.add-word-form input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.add-word-form input::placeholder{color:var(--text-muted)}
+.content-section{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;margin-bottom:16px;
+}
+.content-section::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--primary-gradient);
+}
+.content-section h4{
+  font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--text);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+}
+.reg-card{
+  display:flex;align-items:stretch;background:var(--bg-card);border-radius:10px;
+  overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08);
+  border:1px solid var(--border);margin-bottom:8px;
+}
+.reg-card .reg-bar{width:4px;flex-shrink:0}
+.reg-card .reg-body{
+  flex:1;padding:12px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;
+}
+.reg-card .reg-action{display:flex;align-items:center;gap:6px;flex:1 1 200px;min-width:0}
+.reg-card .reg-action .reg-icon{font-size:16px;line-height:1}
+.reg-card .reg-action .reg-label{font-weight:700;font-size:13px;color:var(--text);white-space:nowrap}
+.reg-card .reg-user{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-muted)}
+.reg-card .reg-time{font-size:11px;color:var(--text-muted);white-space:nowrap}
+.reg-card .reg-detail{
+  width:100%;font-size:12px;color:var(--text-secondary);
+  padding-top:6px;word-break:break-word;border-top:1px solid var(--border-light);margin-top:4px;
+}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{
+  padding:5px 12px;border:1px solid var(--border);border-radius:7px;
+  background:var(--bg-card);color:var(--text-muted);cursor:pointer;
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.3px;text-transform:uppercase;transition:all 0.15s;
+}
+.filter-btn.active{background:var(--primary-bg);color:var(--primary);border-color:var(--primary)}
+.filter-btn:hover{border-color:rgba(34,197,94,0.3);color:var(--text)}
+.coins-form{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.coins-form input[type=number]{width:100px}
+.access-denied{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:60vh;text-align:center;padding:40px;
+}
+.access-denied .ad-icon{font-size:64px;margin-bottom:16px}
+.access-denied h2{font-size:24px;font-weight:800;color:var(--danger);margin-bottom:8px}
+.access-denied p{color:var(--text-secondary);font-size:14px;max-width:400px}
+.coin-actions{display:flex;gap:4px;flex-wrap:nowrap}
+@media(max-width:480px){
+  body{padding:12px}
+  .page-title{font-size:22px}
+  .tabs{gap:4px}
+  .tab{font-size:10px;padding:6px 10px}
+  .section-title{font-size:17px}
+  th,td{padding:8px 10px;font-size:12px}
+  .search-wrap{max-width:100%}
+  .search-input{max-width:100%}
+  .reg-card .reg-body{padding:10px}
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+(function(){
+  var t = localStorage.getItem('tema');
+  if (t === 'oscuro') document.documentElement.setAttribute('data-theme','dark');
+  var e = localStorage.getItem('esquema');
+  if (e && e !== 'default') document.documentElement.setAttribute('data-scheme',e);
+  var cp = localStorage.getItem('colorPrimario');
+  if (cp) { document.documentElement.style.setProperty('--primary',cp); document.documentElement.style.setProperty('--primary-light',cp); }
+  var cf = localStorage.getItem('colorFondo');
+  if (cf) document.documentElement.style.setProperty('--bg-body',cf);
+})();
+
+var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+
+var sessionUser = localStorage.getItem('sessionUser');
+var sessionPass = localStorage.getItem('sessionPass');
+if (!sessionUser || !sessionPass) { window.top.location.href = 'login.html'; }
+
+var userRole = '';
+try {
+  var pd = localStorage.getItem('userProfile');
+  if (pd) {
+    var parsed = JSON.parse(pd);
+    if (parsed && parsed.rol) userRole = parsed.rol;
+  }
+} catch(e) {}
+
+var isAdmin = userRole === 'Owner' || userRole === 'Admin' || userRole === 'App';
+
+function jsonp(data) {
+  return new Promise(function(resolve, reject) {
+    var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    var params = [];
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+    }
+    params.push('callback=' + cb);
+    var url = API_URL + '?' + params.join('&');
+    window[cb] = function(resp) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); resolve(resp); };
+    var script = document.createElement('script');
+    script.src = url;
+    script.onerror = function() { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Error de conexion')); };
+    document.body.appendChild(script);
+    setTimeout(function() { if (window[cb]) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Tiempo agotado')); } }, 60000);
+  });
+}
+
+function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function tiempoRelativo(fs) {
+  if (!fs) return '';
+  var d = new Date(fs);
+  if (isNaN(d.getTime())) return fs;
+  var seg = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (seg < 60) return 'hace ' + seg + ' segundos';
+  var min = Math.floor(seg / 60);
+  if (min < 60) return 'hace ' + min + (min === 1 ? ' minuto' : ' minutos');
+  var hor = Math.floor(min / 60);
+  if (hor < 24) return 'hace ' + hor + (hor === 1 ? ' hora' : ' horas');
+  var dia = Math.floor(hor / 24);
+  if (dia < 30) return 'hace ' + dia + (dia === 1 ? ' dia' : ' dias');
+  var mes = Math.floor(dia / 30);
+  if (mes < 12) return 'hace ' + mes + (mes === 1 ? ' mes' : ' meses');
+  var anio = Math.floor(mes / 12);
+  return 'hace ' + anio + (anio === 1 ? ' ano' : ' anos');
+}
+
+function mostrarMsg(texto, tipo) {
+  var el = document.getElementById('msgBanner');
+  if (!el) return;
+  el.textContent = texto;
+  el.className = 'msg-banner show';
+  el.style.background = tipo === 'error' ? 'var(--danger-bg)' : 'var(--success-bg)';
+  el.style.color = tipo === 'error' ? 'var(--danger)' : 'var(--success)';
+  el.style.borderLeftColor = tipo === 'error' ? 'var(--danger)' : 'var(--success)';
+  clearTimeout(el._t);
+  el._t = setTimeout(function() { el.classList.remove('show'); }, 4000);
+}
+
+// ─── ACCESS DENIED ────────────────────────────────────
+
+if (!sessionUser || !sessionPass) {
+  document.getElementById('app').innerHTML = '<div class="access-denied"><div class="ad-icon">🔒</div><h2>Sin sesion</h2><p>Debes iniciar sesion para acceder al panel.</p></div>';
+} else if (!isAdmin) {
+  document.getElementById('app').innerHTML = '<div class="access-denied"><div class="ad-icon">🚫</div><h2>Acceso Denegado</h2><p>Solo los usuarios con rol Owner, Admin o App pueden acceder a este panel.</p></div>';
+} else {
+  initApp();
+}
+
+// ─── INIT ─────────────────────────────────────────────
+
+var currentTab = 'usuarios';
+var usuariosCache = [];
+var publicacionesCache = [];
+var palabrasCache = [];
+var urlsCache = [];
+var registroCache = [];
+
+function initApp() {
+  renderLayout();
+  loadTab('usuarios');
+}
+
+function renderLayout() {
+  document.getElementById('app').innerHTML =
+    '<div class="page-header">' +
+      '<div class="page-eyebrow">⚡ WorldLeaf Admin Panel</div>' +
+      '<h1 class="page-title">Panel de Administracion</h1>' +
+      '<p class="page-sub">Gestiona usuarios, contenido y moderacion</p>' +
+    '</div>' +
+    '<div class="msg-banner" id="msgBanner"></div>' +
+    '<div class="tabs" id="tabBar">' +
+      '<button class="tab active" data-tab="usuarios" onclick="switchTab(\'usuarios\')">👥 Usuarios</button>' +
+      '<button class="tab" data-tab="contenido" onclick="switchTab(\'contenido\')">📄 Contenido</button>' +
+      '<button class="tab" data-tab="prohibidas" onclick="switchTab(\'prohibidas\')">🚫 Prohibidas</button>' +
+      '<button class="tab" data-tab="registro" onclick="switchTab(\'registro\')">📋 Registro</button>' +
+      '<button class="tab" data-tab="coins" onclick="switchTab(\'coins\')">💰 Coins</button>' +
+    '</div>' +
+    '<div id="sectionContent"></div>';
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-tab') === tab);
+  });
+  loadTab(tab);
+}
+
+function loadTab(tab) {
+  if (tab === 'usuarios') renderUsuarios();
+  else if (tab === 'contenido') renderContenido();
+  else if (tab === 'prohibidas') renderProhibidas();
+  else if (tab === 'registro') renderRegistro();
+  else if (tab === 'coins') renderCoins();
+}
+
+// ─── USERS TAB ────────────────────────────────────────
+
+function renderUsuarios() {
+  var html =
+    '<div class="section-header">' +
+      '<div class="section-title"><span class="icon">👥</span>Usuarios</div>' +
+      '<div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="userSearch" placeholder="Buscar usuario..." oninput="filterUsers(this.value)"></div>' +
+    '</div>' +
+    '<div id="usersContainer"><div class="empty-state">Cargando usuarios...</div></div>';
+  document.getElementById('sectionContent').innerHTML = html;
+  loadUsers();
+}
+
+function loadUsers() {
+  jsonp({ action:'getUsuarios', user:sessionUser, pass:sessionPass }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.usuarios) { usuariosCache = d.usuarios; renderUserList(''); }
+      else { document.getElementById('usersContainer').innerHTML = '<div class="empty-state">Error al cargar usuarios.</div>'; }
+    } catch(e) { document.getElementById('usersContainer').innerHTML = '<div class="empty-state">Error al procesar datos.</div>'; }
+  }).catch(function() { document.getElementById('usersContainer').innerHTML = '<div class="empty-state">Error de conexion.</div>'; });
+}
+
+function filterUsers(val) { renderUserList(val); }
+
+function renderUserList(filtro) {
+  var lista = filtro ? usuariosCache.filter(function(u) { return (u.nombre||u.username||u.user||'').toLowerCase().indexOf(filtro.toLowerCase()) !== -1; }) : usuariosCache;
+  if (!lista.length) {
+    document.getElementById('usersContainer').innerHTML = '<div class="empty-state">' + (filtro ? 'No se encontraron usuarios con ese nombre.' : 'No hay usuarios registrados.') + '</div>';
+    return;
+  }
+  var h = '<div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Estado</th><th>Coins</th><th>Acciones</th></tr></thead><tbody>';
+  for (var i = 0; i < lista.length; i++) {
+    var u = lista[i];
+    var uname = u.nombre || u.username || u.user || '';
+    var email = u.email || u.correo || '-';
+    var rol = u.rol || 'User';
+    var estado = u.estado || u.status || 'Activo';
+    var coins = u.coins || u.monedas || 0;
+    var rolClass = rol === 'Owner' ? 'badge-owner' : rol === 'Admin' ? 'badge-admin' : rol === 'App' ? 'badge-app' : 'badge-user';
+    var statusClass = (estado === 'Activo' || estado === 'active' || estado === 'activo') ? 'status-active' : 'status-inactive';
+    var isActive = estado === 'Activo' || estado === 'active' || estado === 'activo';
+    var canChangeRole = userRole === 'Owner' || userRole === 'App';
+    var canDelete = userRole === 'Owner' || userRole === 'App';
+    var canManage = userRole === 'Owner' || userRole === 'App' || userRole === 'Admin';
+    var safeName = escHtml(uname.replace(/'/g,"\\'"));
+    var displayStatus = isActive ? 'Activo' : 'Inactivo';
+    h += '<tr>' +
+      '<td style="font-weight:600;color:var(--text)">' + escHtml(uname) + '</td>' +
+      '<td>' + escHtml(email) + '</td>' +
+      '<td>' +
+        (canChangeRole
+          ? '<select class="input-field" style="min-width:80px;padding:4px 8px;font-size:11px;background:var(--bg-card)" onchange="changeUserRole(\'' + safeName + '\',this.value)">' +
+            '<option value="Owner"' + (rol==='Owner'?' selected':'') + '>Owner</option>' +
+            '<option value="Admin"' + (rol==='Admin'?' selected':'') + '>Admin</option>' +
+            '<option value="User"' + (rol==='User'?' selected':'') + '>User</option>' +
+            '</select>'
+          : '<span class="badge-rol ' + rolClass + '">' + escHtml(rol) + '</span>') +
+      '</td>' +
+      '<td><span class="status-chip ' + statusClass + '">' + displayStatus + '</span></td>' +
+      '<td style="font-weight:700;color:var(--amber)">' + coins + '</td>' +
+      '<td>' +
+        '<div class="coin-actions">' +
+          (canManage ? '<button class="btn-sm btn-success" onclick="toggleUserStatus(\'' + safeName + '\')" title="' + (isActive?'Desactivar':'Activar') + '">' + (isActive?'🔴':'🟢') + '</button>' : '') +
+          (canChangeRole ? '<button class="btn-sm btn-warning" onclick="addCoinsUser(\'' + safeName + '\')">+💰</button>' : '') +
+          (canDelete ? '<button class="btn-sm btn-danger" onclick="deleteUserConfirm(\'' + safeName + '\')">🗑️</button>' : '') +
+        '</div>' +
+      '</td>' +
+      '</tr>';
+  }
+  h += '</tbody></table></div>';
+  document.getElementById('usersContainer').innerHTML = h;
+}
+
+function changeUserRole(targetUser, newRole) {
+  jsonp({ action:'changeUserRole', user:sessionUser, pass:sessionPass, targetUser:targetUser, newRole:newRole }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg('Rol de ' + targetUser + ' cambiado a ' + newRole + '.', 'success'); loadUsers(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); loadUsers(); }
+    } catch(e) { mostrarMsg('Error al procesar.', 'error'); loadUsers(); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+function toggleUserStatus(targetUser) {
+  jsonp({ action:'toggleUserStatus', user:sessionUser, pass:sessionPass, targetUser:targetUser }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg('Estado de ' + targetUser + ' cambiado.', 'success'); loadUsers(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al procesar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+function deleteUserConfirm(targetUser) {
+  if (!confirm('¿Eliminar permanentemente al usuario "' + targetUser + '"?')) return;
+  jsonp({ action:'deleteUser', user:sessionUser, pass:sessionPass, targetUser:targetUser }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg('Usuario ' + targetUser + ' eliminado.', 'success'); loadUsers(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al procesar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+function addCoinsUser(targetUser) {
+  var amount = prompt('Coins para ' + targetUser + ' (usa numero negativo para quitar):', '100');
+  if (amount === null) return;
+  amount = parseInt(amount, 10);
+  if (isNaN(amount) || amount === 0) { mostrarMsg('Cantidad invalida.', 'error'); return; }
+  jsonp({ action:'addCoins', user:sessionUser, pass:sessionPass, targetUser:targetUser, amount:amount }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg((amount > 0 ? 'Añadidas ' : 'Quitadas ') + Math.abs(amount) + ' coins a ' + targetUser + '.', 'success'); loadUsers(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al procesar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+// ─── CONTENT TAB ──────────────────────────────────────
+
+var contentFilter = 'all';
+
+function renderContenido() {
+  var html =
+    '<div class="section-header">' +
+      '<div class="section-title"><span class="icon">📄</span>Moderacion de Contenido</div>' +
+      '<div class="filter-btns" id="contentFilters">' +
+        '<button class="filter-btn active" data-filter="all" onclick="setContentFilter(\'all\')">Todo</button>' +
+        '<button class="filter-btn" data-filter="foro" onclick="setContentFilter(\'foro\')">Foro</button>' +
+        '<button class="filter-btn" data-filter="addon" onclick="setContentFilter(\'addon\')">Addon</button>' +
+        '<button class="filter-btn" data-filter="marcketplace" onclick="setContentFilter(\'marcketplace\')">Marketplace</button>' +
+      '</div>' +
+    '</div>' +
+    '<div id="contentContainer"><div class="empty-state">Cargando publicaciones...</div></div>';
+  document.getElementById('sectionContent').innerHTML = html;
+  loadContent();
+}
+
+function setContentFilter(f) {
+  contentFilter = f;
+  document.querySelectorAll('#contentFilters .filter-btn').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-filter') === f);
+  });
+  renderContentList();
+}
+
+function loadContent() {
+  jsonp({ action:'getPublicaciones', user:sessionUser, pass:sessionPass }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.publicaciones) { publicacionesCache = d.publicaciones; renderContentList(); }
+      else { document.getElementById('contentContainer').innerHTML = '<div class="empty-state">Error al cargar publicaciones.</div>'; }
+    } catch(e) { document.getElementById('contentContainer').innerHTML = '<div class="empty-state">Error al procesar datos.</div>'; }
+  }).catch(function() { document.getElementById('contentContainer').innerHTML = '<div class="empty-state">Error de conexion.</div>'; });
+}
+
+function renderContentList() {
+  var lista = contentFilter === 'all' ? publicacionesCache : publicacionesCache.filter(function(p) { return (p.tipo||'').toLowerCase() === contentFilter; });
+  if (!lista.length) {
+    document.getElementById('contentContainer').innerHTML = '<div class="empty-state">No hay publicaciones' + (contentFilter !== 'all' ? ' de este tipo' : '') + '.</div>';
+    return;
+  }
+  var h = '<div class="table-wrap"><table><thead><tr><th>Tipo</th><th>Usuario</th><th>Contenido</th><th>Fecha</th><th>ID</th><th>Accion</th></tr></thead><tbody>';
+  for (var i = 0; i < lista.length; i++) {
+    var p = lista[i];
+    var tipo = p.tipo || '-';
+    var tipoLabel = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+    var contenido = p.titulo || p.nombre || p.descripcion || p.contenido || p.texto || '-';
+    var fecha = p.fecha || p.createdAt || '';
+    var pid = p.id || p._id || i;
+    var uname = p.usuario || p.user || p.username || p.autor || '-';
+    h += '<tr>' +
+      '<td><span class="badge-rol ' + (tipo==='foro'?'badge-admin':tipo==='addon'?'badge-owner':'badge-app') + '" style="font-size:9px;padding:1px 8px;">' + escHtml(tipoLabel) + '</span></td>' +
+      '<td style="font-weight:600;">' + escHtml(uname) + '</td>' +
+      '<td><div style="max-width:300px;word-break:break-word;">' + escHtml(String(contenido).slice(0,150)) + '</div></td>' +
+      '<td style="white-space:nowrap;font-size:11px;">' + escHtml(String(fecha).slice(0,10)) + '</td>' +
+      '<td style="font-size:11px;color:var(--text-muted)">' + escHtml(String(pid).slice(0,10)) + '</td>' +
+      '<td><button class="btn-sm btn-danger" onclick="deletePost(\'' + escHtml(tipo) + '\',\'' + escHtml(String(pid).replace(/'/g,"\\'")) + '\')">Eliminar</button></td>' +
+      '</tr>';
+  }
+  h += '</tbody></table></div>';
+  document.getElementById('contentContainer').innerHTML = h;
+}
+
+function deletePost(tipo, id) {
+  if (!confirm('¿Eliminar esta publicacion de tipo "' + tipo + '"?')) return;
+  jsonp({ action:'deletePublicacion', user:sessionUser, pass:sessionPass, tipo:tipo, id:id }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg('Publicacion eliminada.', 'success'); loadContent(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al procesar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+// ─── PROHIBIDAS TAB ───────────────────────────────────
+
+function renderProhibidas() {
+  var html =
+    '<div class="content-section">' +
+      '<h4>🔤 Palabras Prohibidas</h4>' +
+      '<div class="add-word-form">' +
+        '<input id="newPalabraInput" placeholder="Escribe una palabra prohibida..." onkeydown="if(event.key===\'Enter\')addPalabra()">' +
+        '<button class="btn-sm btn-primary" onclick="addPalabra()">+ Agregar</button>' +
+      '</div>' +
+      '<div id="palabrasList"><div class="empty-state" style="padding:12px;">Cargando...</div></div>' +
+    '</div>' +
+    '<div class="content-section">' +
+      '<h4>🔗 URLs / Patrones Prohibidos</h4>' +
+      '<div class="add-word-form">' +
+        '<input id="newUrlInput" placeholder="Ej: mundo malo.com..." onkeydown="if(event.key===\'Enter\')addUrl()">' +
+        '<button class="btn-sm btn-primary" onclick="addUrl()">+ Agregar</button>' +
+      '</div>' +
+      '<div id="urlsList"><div class="empty-state" style="padding:12px;">Cargando...</div></div>' +
+    '</div>';
+  document.getElementById('sectionContent').innerHTML = html;
+  loadProhibidas();
+}
+
+function loadProhibidas() {
+  jsonp({ action:'getProibidas', user:sessionUser, pass:sessionPass }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK' || d.palabras || d.urls) {
+        var pals = d.palabras || [];
+        var urls = d.urls || [];
+        palabrasCache = pals;
+        urlsCache = urls;
+        renderPalabras(pals);
+        renderUrls(urls);
+      } else {
+        document.getElementById('palabrasList').innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">Error al cargar.</div>';
+      }
+    } catch(e) { document.getElementById('palabrasList').innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">Error al procesar.</div>'; }
+  }).catch(function() { document.getElementById('palabrasList').innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">Error de conexion.</div>'; });
+}
+
+function renderPalabras(lista) {
+  var el = document.getElementById('palabrasList');
+  if (!el) return;
+  if (!lista.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No hay palabras prohibidas.</div>'; return; }
+  el.innerHTML = lista.map(function(p) {
+    return '<span class="tag tag-word">' + escHtml(p) + ' <button class="tag-remove" onclick="deletePalabra(\'' + escHtml(p.replace(/'/g,"\\'")) + '\')">&times;</button></span>';
+  }).join('');
+}
+
+function renderUrls(lista) {
+  var el = document.getElementById('urlsList');
+  if (!el) return;
+  if (!lista.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px 0;">No hay URLs prohibidas.</div>'; return; }
+  el.innerHTML = lista.map(function(u) {
+    return '<span class="tag tag-url">' + escHtml(u) + ' <button class="tag-remove" onclick="deleteUrl(\'' + escHtml(u.replace(/'/g,"\\'")) + '\')">&times;</button></span>';
+  }).join('');
+}
+
+function addPalabra() {
+  var input = document.getElementById('newPalabraInput');
+  var palabra = input.value.trim().toLowerCase();
+  if (!palabra) { mostrarMsg('Escribe una palabra.', 'error'); return; }
+  jsonp({ action:'addPalabraProibida', user:sessionUser, pass:sessionPass, palabra:palabra }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { input.value = ''; mostrarMsg('Palabra agregada.', 'success'); loadProhibidas(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al agregar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+function deletePalabra(palabra) {
+  jsonp({ action:'deletePalabraProibida', user:sessionUser, pass:sessionPass, palabra:palabra }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg('Palabra eliminada.', 'success'); loadProhibidas(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al eliminar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+function addUrl() {
+  var input = document.getElementById('newUrlInput');
+  var url = input.value.trim().toLowerCase();
+  if (!url) { mostrarMsg('Escribe un patron de URL.', 'error'); return; }
+  jsonp({ action:'addUrlProibida', user:sessionUser, pass:sessionPass, url:url }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { input.value = ''; mostrarMsg('URL agregada.', 'success'); loadProhibidas(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al agregar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+function deleteUrl(url) {
+  jsonp({ action:'deleteUrlProibida', user:sessionUser, pass:sessionPass, url:url }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') { mostrarMsg('URL eliminada.', 'success'); loadProhibidas(); }
+      else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al eliminar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+
+// ─── REGISTRO TAB ─────────────────────────────────────
+
+function renderRegistro() {
+  var html =
+    '<div class="section-header">' +
+      '<div class="section-title"><span class="icon">📋</span>Registro de Actividades</div>' +
+      '<div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="regSearch" placeholder="Buscar en registro..." oninput="filterRegistro(this.value)"></div>' +
+    '</div>' +
+    '<div id="registroContainer"><div class="empty-state">Cargando registro...</div></div>';
+  document.getElementById('sectionContent').innerHTML = html;
+  loadRegistro();
+}
+
+function loadRegistro() {
+  jsonp({ action:'getRegistro', user:sessionUser, pass:sessionPass }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.registro) { registroCache = d.registro; renderRegistroList(''); }
+      else { document.getElementById('registroContainer').innerHTML = '<div class="empty-state">Error al cargar registro.</div>'; }
+    } catch(e) { document.getElementById('registroContainer').innerHTML = '<div class="empty-state">Error al procesar datos.</div>'; }
+  }).catch(function() { document.getElementById('registroContainer').innerHTML = '<div class="empty-state">Error de conexion.</div>'; });
+}
+
+function filterRegistro(val) { renderRegistroList(val); }
+
+function renderRegistroList(filtro) {
+  var lista = filtro ? registroCache.filter(function(r) {
+    var q = filtro.toLowerCase();
+    return (r.accion||'').toLowerCase().indexOf(q)!==-1 || (r.usuario||r.user||'').toLowerCase().indexOf(q)!==-1 || (r.detalle||r.descripcion||r.texto||'').toLowerCase().indexOf(q)!==-1;
+  }) : registroCache;
+  if (!lista.length) {
+    document.getElementById('registroContainer').innerHTML = '<div class="empty-state">' + (filtro ? 'No se encontraron registros.' : 'No hay registros de actividad.') + '</div>';
+    return;
+  }
+  var ACTION_MAP = {
+    publicar:     { color:'#22c55e', icon:'➕' },
+    editar:       { color:'#3b82f6', icon:'✏️' },
+    eliminar:     { color:'#ef4444', icon:'🗑️' },
+    cambio_estado:{ color:'#eab308', icon:'🔄' },
+    _default:     { color:'#8b8fa3', icon:'📋' }
+  };
+  function getActionMeta(a) {
+    a = (a||'').toLowerCase();
+    for (var k in ACTION_MAP) { if (k!=='_default' && a.indexOf(k)!==-1) return ACTION_MAP[k]; }
+    return ACTION_MAP._default;
+  }
+  var h = '';
+  var max = Math.min(lista.length, 200);
+  for (var i = 0; i < max; i++) {
+    var r = lista[i];
+    var meta = getActionMeta(r.accion);
+    var accionLabel = (r.accion||'').replace(/_/g,' ');
+    var uname = r.usuario || r.user || '-';
+    var detalle = r.detalle || r.descripcion || r.texto || '';
+    var badge = r.tipo === 'admin'
+      ? '<span style="font-size:9px;padding:1px 7px;background:#1e293b;color:#38bdf8;border-radius:20px;font-weight:700;font-family:\'Rajdhani\',sans-serif;letter-spacing:0.3px;">Admin</span>'
+      : '<span style="font-size:9px;padding:2px 8px;background:var(--primary-bg);color:var(--primary);border-radius:20px;font-weight:700;font-family:\'Rajdhani\',sans-serif;">Usuario</span>';
+    h += '<div class="reg-card">' +
+      '<div class="reg-bar" style="background:' + meta.color + ';"></div>' +
+      '<div class="reg-body">' +
+        '<div class="reg-action">' +
+          '<span class="reg-icon">' + meta.icon + '</span>' +
+          '<span class="reg-label">' + escHtml(accionLabel) + '</span>' +
+          badge +
+        '</div>' +
+        '<div class="reg-user"><span>👤</span><span style="font-weight:600;">' + escHtml(uname) + '</span></div>' +
+        '<div class="reg-time">' + tiempoRelativo(r.fecha) + '</div>' +
+        (detalle ? '<div class="reg-detail">' + escHtml(detalle) + '</div>' : '') +
+      '</div>' +
+    '</div>';
+  }
+  if (lista.length > 200) h += '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:12px;">Mostrando 200 de ' + lista.length + '</div>';
+  document.getElementById('registroContainer').innerHTML = h;
+}
+
+// ─── COINS TAB ────────────────────────────────────────
+
+function renderCoins() {
+  var html =
+    '<div class="content-section">' +
+      '<h4>💰 Gestion de Coins</h4>' +
+      '<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Añade o quita coins a cualquier usuario del sistema.</p>' +
+      '<div class="coins-form">' +
+        '<input class="input-field" id="coinsUserName" placeholder="Nombre de usuario" style="flex:1;min-width:160px">' +
+        '<input class="input-field" id="coinsAmount" type="number" placeholder="Cantidad" style="width:100px">' +
+        '<button class="btn-sm btn-success" onclick="giveCoins()">Dar Coins</button>' +
+        '<button class="btn-sm btn-danger" onclick="removeCoins()">Quitar Coins</button>' +
+      '</div>' +
+      '<div style="margin-top:16px;font-size:12px;color:var(--text-muted);padding:12px;background:var(--surface);border-radius:var(--radius-sm);">' +
+        '💡 Usa numeros positivos para añadir coins y numeros negativos para quitarlos. Tambien puedes usar los botones de arriba.' +
+      '</div>' +
+    '</div>' +
+    '<div class="content-section">' +
+      '<h4>📊 Usuarios con mas Coins</h4>' +
+      '<div id="topCoinsContainer"><div class="empty-state" style="padding:16px;">Cargando usuarios...</div></div>' +
+    '</div>';
+  document.getElementById('sectionContent').innerHTML = html;
+  loadTopCoins();
+}
+
+function loadTopCoins() {
+  jsonp({ action:'getUsuarios', user:sessionUser, pass:sessionPass }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.usuarios) {
+        var sorted = d.usuarios.slice().sort(function(a,b) {
+          var ca = parseInt(a.coins||a.monedas||0,10);
+          var cb = parseInt(b.coins||b.monedas||0,10);
+          return cb - ca;
+        });
+        var top = sorted.slice(0, 20);
+        var el = document.getElementById('topCoinsContainer');
+        if (!top.length) { el.innerHTML = '<div class="empty-state" style="padding:16px;">No hay usuarios.</div>'; return; }
+        var h = '<div class="table-wrap"><table><thead><tr><th>#</th><th>Usuario</th><th>Coins</th></tr></thead><tbody>';
+        for (var i = 0; i < top.length; i++) {
+          var u = top[i];
+          var uname = u.nombre || u.username || u.user || '';
+          var coins = parseInt(u.coins||u.monedas||0,10);
+          h += '<tr><td style="font-weight:700;color:var(--text-muted)">' + (i+1) + '</td><td style="font-weight:600;color:var(--text)">' + escHtml(uname) + '</td><td style="font-weight:700;color:var(--amber)">' + coins + '</td></tr>';
+        }
+        h += '</tbody></table></div>';
+        el.innerHTML = h;
+      }
+    } catch(e) {}
+  }).catch(function(){});
+}
+
+function giveCoins() {
+  var uname = document.getElementById('coinsUserName').value.trim();
+  var amount = parseInt(document.getElementById('coinsAmount').value, 10);
+  if (!uname) { mostrarMsg('Escribe un nombre de usuario.', 'error'); return; }
+  if (isNaN(amount) || amount <= 0) { mostrarMsg('Cantidad invalida. Usa un numero positivo.', 'error'); return; }
+  doCoinsTransaction(uname, amount, 'añadidas');
+}
+
+function removeCoins() {
+  var uname = document.getElementById('coinsUserName').value.trim();
+  var amount = parseInt(document.getElementById('coinsAmount').value, 10);
+  if (!uname) { mostrarMsg('Escribe un nombre de usuario.', 'error'); return; }
+  if (isNaN(amount) || amount <= 0) { mostrarMsg('Cantidad invalida. Usa un numero positivo.', 'error'); return; }
+  doCoinsTransaction(uname, -amount, 'quitadas');
+}
+
+function doCoinsTransaction(targetUser, amount, label) {
+  jsonp({ action:'addCoins', user:sessionUser, pass:sessionPass, targetUser:targetUser, amount:amount }).then(function(r) {
+    try {
+      var d = typeof r === 'string' ? JSON.parse(r) : r;
+      if (d.status === 'OK') {
+        mostrarMsg((amount > 0 ? 'Añadidas ' : 'Quitadas ') + Math.abs(amount) + ' coins a ' + targetUser + '.', 'success');
+        loadTopCoins();
+      } else { mostrarMsg('Error: ' + (d.message || 'No autorizado'), 'error'); }
+    } catch(e) { mostrarMsg('Error al procesar.', 'error'); }
+  }).catch(function() { mostrarMsg('Error de conexion.', 'error'); });
+}
+</script>
+
+</body>
+</html>

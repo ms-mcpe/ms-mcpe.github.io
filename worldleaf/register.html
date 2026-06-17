@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.location.href='descarga.html'}}();</script>
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+      var cp = localStorage.getItem('colorPrimario');
+      if (cp) {
+        document.documentElement.style.setProperty('--primary', cp);
+        document.documentElement.style.setProperty('--primary-light', cp);
+      }
+    })();
+  </script>
+  <title>Crear Cuenta - WorldLeaf App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
+      --amber-bg: rgba(245,158,11,0.10);
+      --amber-glow: rgba(245,158,11,0.22);
+
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --blue-bg: rgba(59,130,246,0.10);
+      --info: #06b6d4;
+      --info-bg: rgba(6,182,212,0.10);
+
+      --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+      --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+      --shadow-glow: 0 0 24px var(--primary-glow);
+
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+    }
+    [data-theme="dark"] {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --overlay: rgba(0,0,0,0.72);
+    }
+    [data-scheme="blue"] {
+      --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59,130,246,0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+    }
+    [data-scheme="purple"] {
+      --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139,92,246,0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6);
+    }
+    [data-scheme="orange"] {
+      --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249,115,22,0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316);
+    }
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+    .btn-sm{
+      padding:5px 13px;border:none;border-radius:7px;
+      font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+      letter-spacing:0.4px;cursor:pointer;transition:all 0.2s;
+    }
+    input, textarea, select{
+      padding:10px 14px;border:1px solid var(--border);border-radius:9px;
+      background:var(--bg-card2);color:var(--text);
+      font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all 0.2s;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);
+    }
+
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--text);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%);
+    }
+
+    .container{
+      background: var(--bg-card);
+      border-radius: 20px;
+      box-shadow: var(--shadow-md);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes fadeInSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .container::before{
+      content:'';position:absolute;top:0;left:0;right:0;
+      height:3px;background:var(--primary-gradient);
+    }
+    .logo{
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo h1{
+      color: var(--primary);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .logo p{
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .form-group{
+      margin-bottom: 18px;
+    }
+    .form-group label{
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .form-group input{
+      width:100%;background:var(--bg-body);
+    }
+    .form-group input::placeholder{
+      color: var(--text-muted);
+    }
+    .btn{
+      width:100%;padding:13px 28px;border:none;border-radius:10px;
+      font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;
+      color:#fff;cursor:pointer;transition:all 0.2s;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .btn-primary{
+      background:var(--primary-gradient);
+      box-shadow:0 4px 14px var(--primary-glow);
+    }
+    .btn-primary:hover{
+      transform:translateY(-2px);filter:brightness(1.08);
+      box-shadow:0 8px 20px var(--primary-glow);
+    }
+    .btn-primary:active{
+      transform:translateY(0);
+    }
+    .btn-primary:disabled{
+      background:var(--text-light);cursor:not-allowed;
+      transform:none;box-shadow:none;opacity:0.6;
+    }
+    .links{
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .links a{
+      color:var(--primary);text-decoration:none;
+      font-weight:600;transition:color 0.2s;cursor:pointer;
+    }
+    .links a:hover{
+      color:var(--primary-light);text-decoration:underline;
+    }
+    .message{
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+      font-weight: 500;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .message.error{
+      display: block;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .message.success{
+      display: block;
+      background: var(--primary-bg);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .spinner{
+      display: none;
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .btn-loading .btn-text{display:none;}
+    .btn-loading .spinner{display:inline-block;}
+    .footer-text{
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .terms{
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+    .terms a{
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .terms a:hover{
+      text-decoration: underline;
+    }
+    @media(max-width:480px){
+      .container{padding:32px 24px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><h1>WorldLeaf</h1><p>Crea tu cuenta gratuita</p></div>
+    <div id="message" class="message"></div>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="user">Nombre de usuario</label>
+        <input type="text" id="user" placeholder="Elige un nombre de usuario" required autocomplete="username" minlength="3" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" placeholder="tu@correo.com" required autocomplete="email" maxlength="30">
+      </div>
+      <div class="form-group">
+        <label for="pass">Contraseña</label>
+        <input type="password" id="pass" placeholder="8-20 caracteres, debe empezar con letra" required autocomplete="new-password" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label for="confirmPass">Confirmar contraseña</label>
+        <input type="password" id="confirmPass" placeholder="Repite la contraseña" required autocomplete="new-password" maxlength="20">
+      </div>
+      <button type="submit" class="btn btn-primary" id="registerBtn">
+        <span class="btn-text">Crear cuenta</span>
+        <span class="spinner"></span>
+      </button>
+    </form>
+    <div class="terms">
+      Al registrarte, aceptas nuestros <a href="#">Términos de servicio</a> y <a href="#">Política de privacidad</a>.
+    </div>
+    <div class="links">
+      ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+    </div>
+    <div class="footer-text">WorldLeaf App &copy; 2026</div>
+  </div>
+
+  <script>
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+            params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+          }
+        }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) {
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          resolve(resp);
+        };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() {
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error('Error de conexión'));
+        };
+        document.body.appendChild(script);
+        setTimeout(function() {
+          if (window[cb]) {
+            delete window[cb];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            reject(new Error('Tiempo de espera agotado'));
+          }
+        }, 60000);
+      });
+    }
+
+    function validarPassword(pass) {
+      if (pass.length < 8) return 'La contraseña debe tener al menos 8 caracteres.';
+      if (pass.length > 20) return 'La contraseña debe tener máximo 20 caracteres.';
+      if (!/^[a-zA-Z]/.test(pass)) return 'La contraseña debe comenzar con una letra.';
+      return null;
+    }
+
+    var _userCheckTimeout = null;
+
+    function checkUserExists(username) {
+      if (_userCheckTimeout) clearTimeout(_userCheckTimeout);
+      var msg = document.getElementById('message');
+      if (username.length < 3) return;
+      _userCheckTimeout = setTimeout(function() {
+        jsonp({ action:'getUserProfile', username:username }).then(function(resp) {
+          try {
+            var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if (data.status === 'PROFILE_OK' && data.profile) {
+              mostrarMensaje(msg, 'El nombre de usuario "' + escHtml(username) + '" ya está en uso.', 'error');
+              document.getElementById('user')._exists = true;
+            } else {
+              document.getElementById('user')._exists = false;
+            }
+          } catch(e) {}
+        }).catch(function() {});
+      }, 500);
+    }
+
+    document.getElementById('user').addEventListener('blur', function() {
+      checkUserExists(this.value.trim());
+    });
+
+    function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function mostrarMensaje(el, texto, tipo) {
+      el.innerHTML = texto;
+      el.className = 'message ' + tipo;
+      el.style.display = 'block';
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('registerBtn');
+      var msg = document.getElementById('message');
+      var user = document.getElementById('user').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var pass = document.getElementById('pass').value;
+      var confirmPass = document.getElementById('confirmPass').value;
+
+      if (!user || !email || !pass || !confirmPass) {
+        mostrarMensaje(msg, 'Completa todos los campos.', 'error'); return;
+      }
+      if (user.length < 3) {
+        mostrarMensaje(msg, 'El nombre de usuario debe tener al menos 3 caracteres.', 'error'); return;
+      }
+      if (user.length > 20) { mostrarMensaje(msg, 'El nombre debe tener m&aacute;ximo 20 caracteres.', 'error'); return; }
+      var errPass = validarPassword(pass);
+      if (errPass) { mostrarMensaje(msg, errPass, 'error'); return; }
+      if (pass !== confirmPass) {
+        mostrarMensaje(msg, 'Las contraseñas no coinciden.', 'error'); return;
+      }
+      if (document.getElementById('user')._exists) {
+        mostrarMensaje(msg, 'El nombre de usuario ya está en uso. Elige otro.', 'error'); return;
+      }
+
+      btn.classList.add('btn-loading');
+      msg.style.display = 'none';
+
+      jsonp({ action:'register', user:user, pass:pass, email:email }).then(function(resp) {
+        btn.classList.remove('btn-loading');
+        if (resp === 'USER_EXISTS') {
+          mostrarMensaje(msg, 'El nombre de usuario ya está en uso. Elige otro.', 'error');
+        } else if (resp === 'REGISTER_OK') {
+          mostrarMensaje(msg, 'Cuenta creada con éxito. Redirigiendo al inicio de sesión...', 'success');
+          setTimeout(function() { window.location.href = 'login.html'; }, 1500);
+        } else {
+          mostrarMensaje(msg, 'Error al registrar: ' + resp, 'error');
+        }
+      }).catch(function(err) {
+        btn.classList.remove('btn-loading');
+        mostrarMensaje(msg, 'Error de conexión: ' + err.message, 'error');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="pv" content="2">
+  <script>!function(){if(sessionStorage.getItem('_cr'))return;var P=location.pathname.split('/').pop()||'index.html',CK='_ph_'+P,VK='_pv_'+P,ch=localStorage.getItem(CK),cv=localStorage.getItem(VK),mv=document.querySelector('meta[name="pv"]'),sv=mv?mv.content:'0';if(ch&&ch.length>500&&cv===sv){sessionStorage.setItem('_cr','1');document.open();document.write(ch);document.close();return}window.addEventListener('load',function(){var mv2=document.querySelector('meta[name="pv"]'),sv2=mv2?mv2.content:'0';localStorage.setItem(CK,'<!DOCTYPE html>'+document.documentElement.outerHTML);localStorage.setItem(VK,sv2);setTimeout(function(){try{var x=new XMLHttpRequest();x.open('GET',location.href+'?b='+Date.now(),true);x.onload=function(){try{var d=x.responseText,m=d.match(/<meta\s+name="pv"\s+content="([^"]+)"/i);if(m&&m[1]!==sv2){localStorage.setItem(CK,d);localStorage.setItem(VK,m[1])}}catch(e){}};x.send()}catch(e){}},3000)})}();</script>
+  <title>Descargar App - WorldLeaf</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+    })();
+  </script>
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
+      --amber-bg: rgba(245,158,11,0.10);
+      --amber-glow: rgba(245,158,11,0.22);
+
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --blue-bg: rgba(59,130,246,0.10);
+      --info: #06b6d4;
+      --info-bg: rgba(6,182,212,0.10);
+
+      --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+      --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+      --shadow-glow: 0 0 24px var(--primary-glow);
+
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+    }
+    [data-theme="dark"] {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --overlay: rgba(0,0,0,0.72);
+    }
+    [data-scheme="blue"] { --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59,130,246,0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6); }
+    [data-scheme="purple"] { --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139,92,246,0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6); }
+    [data-scheme="orange"] { --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249,115,22,0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316); }
+    
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+    
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+    .btn-sm{
+      padding:5px 13px;border:none;border-radius:7px;
+      font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+      letter-spacing:0.4px;cursor:pointer;transition:all 0.2s;
+    }
+    input, textarea, select{
+      padding:10px 14px;border:1px solid var(--border);border-radius:9px;
+      background:var(--bg-card2);color:var(--text);
+      font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all 0.2s;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);
+    }
+    
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+    
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg-body);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      color:var(--text);
+      transition:background-color 0.3s ease, color 0.3s ease;
+      position:relative;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.12) 0%, transparent 70%);
+    }
+    
+    .card{
+      background:var(--bg-card);
+      border-radius:20px;
+      box-shadow:var(--shadow-md);
+      padding:40px 36px;
+      width:100%;
+      max-width:420px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--border);
+      backdrop-filter:blur(10px);
+      transition:background-color 0.3s ease, border-color 0.3s ease;
+      animation:fadeInSlideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    
+    @keyframes fadeInSlideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary-gradient);}
+    .card .icon{font-size:72px;display:block;margin-bottom:16px;filter:drop-shadow(0 0 20px var(--primary-glow));}
+    .card h1{
+      font-size:30px;font-weight:800;letter-spacing:-1px;margin-bottom:8px;
+      background:var(--primary-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .card p{font-size:15px;color:var(--text-secondary);line-height:1.6;margin-bottom:8px;}
+    .card .sub{color:var(--text-muted);font-size:13px;}
+    
+    .btn{
+      display:block;width:100%;padding:13px 28px;border:none;border-radius:10px;
+      font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;
+      cursor:pointer;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);
+      background:var(--primary-gradient);color:#fff;text-decoration:none;margin-top:20px;
+      box-shadow:0 4px 14px var(--primary-glow);text-align:center;
+      animation:pulse 2s infinite;
+    }
+    .btn:hover{transform:translateY(-2px);filter:brightness(1.08);}
+    @keyframes pulse{0%,100%{box-shadow:0 4px 14px var(--primary-glow)}50%{box-shadow:0 4px 14px var(--primary-glow),0 0 0 8px transparent}}
+    
+    @media(max-width:768px){
+      .card {
+        padding: 40px 24px;
+        max-width: 95%;
+      }
+      .card .icon {
+        font-size: 85px;
+      }
+      .card h1 {
+        font-size: 34px;
+      }
+      .card p {
+        font-size: 17px;
+      }
+      .btn {
+        padding: 16px 28px;
+        font-size: 18px; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <span class="icon">📱</span>
+    <h1>WorldLeaf</h1>
+    <p>Para usar esta plataforma, descarga la aplicación desde la tienda oficial.</p>
+    <p class="sub">Solo está disponible a través de la app oficial de WorldLeaf.</p>
+    <a class="btn" href="https://ms-mcpe.github.io/worldleaf/WorldLeaf.apk">Descargar App</a>
+  </div>
+</body>
+</html>
+ 
