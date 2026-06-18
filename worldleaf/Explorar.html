@@ -687,6 +687,8 @@
       }).catch(function() { alert('Error de conexi\u00f3n.'); });
     }
 
+    window.addEventListener('message', function(e) { if(!e.data||e.data.type!=='nav-goto')return; cerrarViewer(); });
+
     document.addEventListener('click', function() {
       document.querySelectorAll('.foro-menu-dropdown.open, .coment-menu-dropdown.open').forEach(function(m) { m.classList.remove('open'); });
     });
@@ -744,7 +746,7 @@
       var imgs = viewerForo.imagenes ? viewerForo.imagenes.split('|').filter(Boolean) : [];
       var track = document.getElementById('carouselTrack');
       if (imgs.length) {
-        track.innerHTML = imgs.map(function(u) { return '<img src="' + u + '" onclick="window.open(\'' + u + '\',\'_blank\')">'; }).join('');
+        track.innerHTML = imgs.map(function(u) { return '<img src="' + u + '">'; }).join('');
         var dots = document.getElementById('viewerDots');
         dots.innerHTML = imgs.map(function(_, i) { return '<button class="viewer-dot' + (i === 0 ? ' active' : '') + '" onclick="irAImg(' + i + ')"></button>'; }).join('');
         carouselIdx = 0; track.scrollLeft = 0;
@@ -753,9 +755,10 @@
       actualizarVotoUI();
       renderComentarios();
       document.getElementById('viewerModal').style.display = 'flex';
+      if(window.parent&&window.parent!==window)window.parent.postMessage({type:'nav-push',label:'Foro '+escHtml(viewerForo.user||'')},'*');
     }
 
-    function cerrarViewer() { document.getElementById('viewerModal').style.display = 'none'; viewerForo = null; viewerComs = []; }
+    function cerrarViewer() { document.getElementById('viewerModal').style.display = 'none'; viewerForo = null; viewerComs = []; if(window.parent&&window.parent!==window)window.parent.postMessage({type:'nav-back'},'*'); }
     function carouselNext() { var t = document.getElementById('carouselTrack'), imgs = t.querySelectorAll('img'); if (!imgs.length) return; irAImg(Math.min(carouselIdx + 1, imgs.length - 1)); }
     function carouselPrev() { irAImg(Math.max(carouselIdx - 1, 0)); }
     function irAImg(idx) {

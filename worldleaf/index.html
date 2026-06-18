@@ -229,11 +229,36 @@
 
     #mainFrame{
       width:100%;
-      height:calc(100vh - 76px - 84px);
+      height:calc(100vh - 76px - 84px - 36px);
       border:none;
       display:block;
       background:var(--bg-body);
     }
+    .history-bar{
+      position:fixed;top:60px;left:0;right:0;height:36px;z-index:99;
+      background:rgba(6,10,15,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      display:flex;align-items:center;gap:4px;padding:0 8px;overflow-x:auto;
+      border-bottom:1px solid var(--border);white-space:nowrap;
+    }
+    .history-bar::-webkit-scrollbar{height:2px;}
+    .nav-btn{
+      flex-shrink:0;width:28px;height:28px;border:none;border-radius:6px;
+      background:var(--bg-card2);color:var(--text);font-size:12px;
+      cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;
+    }
+    .nav-btn:hover{background:var(--primary-bg);color:var(--primary);}
+    .nav-btn.disabled,.nav-btn:disabled{opacity:0.3;cursor:default;background:transparent;}
+    .nav-btn.disabled:hover{background:transparent;color:var(--text);}
+    .crumb{
+      flex-shrink:0;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;
+      cursor:pointer;transition:all 0.15s;color:var(--text-muted);
+      background:transparent;font-family:'Rajdhani',sans-serif;letter-spacing:0.3px;
+    }
+    .crumb:hover{background:var(--primary-bg);color:var(--primary);}
+    .crumb.active{background:var(--primary-bg);color:var(--primary);font-weight:700;}
+    .crumb.sub{font-style:italic;}
+    .crumb.sep{color:var(--border);font-size:10px;padding:0 2px;cursor:default;}
+    .crumb.empty{opacity:0.5;cursor:default;}
 
     .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
     .section-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--text);}
@@ -289,7 +314,7 @@
 
     @media(min-width:768px){
       body{padding-top:80px;padding-bottom:20px;}
-      #mainFrame{height:calc(100vh - 80px - 20px);}
+      #mainFrame{height:calc(100vh - 80px - 20px - 36px);}
       .bottombar{
         top:0;bottom:auto;left:auto;right:20px;
         height:60px;background:transparent;border-top:none;
@@ -334,6 +359,10 @@
     <div class="sidebar-footer">WorldLeaf App &copy; 2026</div>
   </nav>
 
+  <div class="history-bar" id="historyBar">
+    <span class="crumb empty">Inicio</span>
+  </div>
+
   <iframe id="mainFrame" name="mainFrame" src="Explorar.html"></iframe>
 
   <nav class="bottombar" id="bottombar">
@@ -375,23 +404,80 @@
     function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); document.querySelectorAll('.submenu.open').forEach(function(s){s.classList.remove('open');}); document.querySelectorAll('.sidebar-item.open').forEach(function(i){i.classList.remove('open');}); }
     function toggleSubmenu(el) { el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
 
+    var NAV_LABELS = {
+      explorar:'Explorar', addons:'Addons', marcketplace:'Marketplace',
+      perfil:'Perfil', coinas:'Coins+', ajustes:'Ajustes',
+      chat:'Chat', paneladmin:'Panel Admin'
+    };
+    var NAV_MAP = {
+      explorar:'Explorar.html', addons:'Addons.html', marcketplace:'Marcketplace.html',
+      perfil:'perfil.html', coinas:'coins+.html', ajustes:'Ajustes.html',
+      chat:'chat.html', paneladmin:'paneladmin.html'
+    };
+
+    var navHistory = {
+      stack:[], currentIdx:-1,
+      push:function(label,key,sub){
+        this.stack=this.stack.slice(0,this.currentIdx+1);
+        this.stack.push({label:label,key:key,sub:sub||false});
+        this.currentIdx=this.stack.length-1;
+        this.render();
+      },
+      back:function(){
+        if(this.currentIdx<=0)return;
+        this.currentIdx--;
+        this._go(this.currentIdx);
+      },
+      forward:function(){
+        if(this.currentIdx>=this.stack.length-1)return;
+        this.currentIdx++;
+        this._go(this.currentIdx);
+      },
+      _go:function(idx){
+        var e=this.stack[idx];
+        this.currentIdx=idx;
+        if(e.sub){
+          var f=document.getElementById('mainFrame');
+          if(f&&f.contentWindow)f.contentWindow.postMessage({type:'nav-goto',entry:e},'*');
+        }else{
+          closeSidebar();
+          document.querySelectorAll('.bottombar-item').forEach(function(el){
+            el.classList.toggle('active',el.getAttribute('data-seccion')===e.key);
+          });
+          document.getElementById('mainFrame').src=NAV_MAP[e.key]||'Explorar.html';
+          _histNav=true;
+          setTimeout(function(){_histNav=false;},0);
+          window.location.hash=e.key;
+        }
+        this.render();
+      },
+      render:function(){
+        var bar=document.getElementById('historyBar');if(!bar)return;
+        bar.innerHTML='';
+        var b=document.createElement('button');b.className='nav-btn'+(this.currentIdx<=0?' disabled':'');b.innerHTML='&#9664;';b.onclick=this.back.bind(this);b.disabled=this.currentIdx<=0;bar.appendChild(b);
+        var f=document.createElement('button');f.className='nav-btn'+(this.currentIdx>=this.stack.length-1?' disabled':'');f.innerHTML='&#9654;';f.onclick=this.forward.bind(this);f.disabled=this.currentIdx>=this.stack.length-1;bar.appendChild(f);
+        for(var i=0;i<this.stack.length;i++){
+          var e=this.stack[i];
+          var c=document.createElement('span');
+          c.className='crumb'+(i===this.currentIdx?' active':'')+(e.sub?' sub':'');
+          c.textContent='#'+(i+1)+' '+e.label;
+          c.onclick=function(idx){return function(){navHistory._go(idx);}}(i);
+          bar.appendChild(c);
+        }
+        if(this.stack.length===0){var x=document.createElement('span');x.className='crumb empty';x.textContent='Inicio';bar.appendChild(x);}
+      }
+    };
+
     function irA(seccion) {
       closeSidebar();
       document.querySelectorAll('.bottombar-item').forEach(function(el) {
         el.classList.toggle('active', el.getAttribute('data-seccion') === seccion);
       });
-      var map = {
-        explorar: 'Explorar.html',
-        addons: 'Addons.html',
-        marcketplace: 'Marcketplace.html',
-        perfil: 'perfil.html',
-        coinas: 'coins+.html',
-        ajustes: 'Ajustes.html',
-        chat: 'chat.html',
-        paneladmin: 'paneladmin.html'
-      };
-      document.getElementById('mainFrame').src = map[seccion] || 'Explorar.html';
+      document.getElementById('mainFrame').src = NAV_MAP[seccion] || 'Explorar.html';
+      _histNav = true;
+      setTimeout(function(){_histNav=false;},0);
       window.location.hash = seccion;
+      navHistory.push(NAV_LABELS[seccion] || seccion.charAt(0).toUpperCase()+seccion.slice(1), seccion, false);
     }
 
     function navegar(seccion) {
@@ -457,9 +543,27 @@
     var panelBtn = document.getElementById('panelAdminBtn');
     if (panelBtn && !esAdmin()) panelBtn.style.display = 'none';
 
+    var _histNav = false;
     window.addEventListener('hashchange', function() {
+      if (_histNav) { _histNav = false; return; }
       var h = window.location.hash.replace('#', '') || 'explorar';
       navegar(h);
+    });
+
+    window.addEventListener('message', function(e) {
+      var d = e.data;
+      if (!d || !d.type) return;
+      if (d.type === 'nav-push') {
+        navHistory.push(d.label || '...', null, true);
+      } else if (d.type === 'nav-back') {
+        // Iframe wants to go back to root view - find last non-sub entry
+        for (var i = navHistory.currentIdx; i >= 0; i--) {
+          if (!navHistory.stack[i].sub) {
+            navHistory._go(i);
+            return;
+          }
+        }
+      }
     });
 
     (function() {
