@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
+  <title>Ajustes - WorldLeaf App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
+      --amber-bg: rgba(245,158,11,0.10);
+      --amber-glow: rgba(245,158,11,0.22);
+
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --blue-bg: rgba(59,130,246,0.10);
+      --info: #06b6d4;
+      --info-bg: rgba(6,182,212,0.10);
+
+      --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+      --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+      --shadow-glow: 0 0 24px var(--primary-glow);
+
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+
+      --viewer-bg: #090d16;
+      --viewer-body: #0f172a;
+      --viewer-text: #f8fafc;
+      --viewer-text-muted: #64748b;
+      --viewer-text-light: #cbd5e1;
+      --viewer-comment-bg: #1e293b;
+      --viewer-comment-text: #cbd5e1;
+      --viewer-border: #334155;
+      --viewer-btn-bg: rgba(255, 255, 255, 0.1);
+      --viewer-btn-hover: rgba(255, 255, 255, 0.2);
+      --viewer-primary: #22c55e;
+      --input-bg: #1e293b;
+      --input-text: #f8fafc;
+      --input-border: #334155;
+    }
+    [data-theme="dark"] {
+      --bg-body: #0b1120;
+      --bg-card: #1e293b;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-bottombar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-dark: #16a34a;
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --primary-glow: rgba(34,197,94,0.25);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --settings-bg: #111827;
+    }
+    [data-scheme="blue"] { --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59, 130, 246, 0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6); --viewer-primary: #60a5fa; }
+    [data-scheme="purple"] { --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139, 92, 246, 0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6); --viewer-primary: #a78bfa; }
+    [data-scheme="orange"] { --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249, 115, 22, 0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316); --viewer-primary: #fb923c; }
+
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg-body);
+      min-height:100vh;
+      color:var(--text);
+      -webkit-user-select:none;user-select:none;
+      transition:background-color 0.3s ease, color 0.3s ease;
+      overflow-x:hidden;
+      width:100%;
+      max-width:100%;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+
+    input, textarea, select{
+      padding:10px 14px;border:1px solid var(--border);border-radius:9px;
+      background:var(--bg-card2);color:var(--text);
+      font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:all 0.2s;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);
+    }
+
+    .msg-banner{
+      padding:11px 16px;border-radius:9px;font-size:13px;font-weight:600;
+      border-left:3px solid;display:none;margin-bottom:16px;animation:fadeIn 0.2s ease;
+    }
+    .msg-banner.show{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+
+    .btn-sm{
+      padding:5px 13px;border:none;border-radius:7px;
+      font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+      letter-spacing:0.4px;cursor:pointer;transition:all 0.2s;
+    }
+
+    .accordion{
+      background:var(--bg-card);
+      border-radius:16px;
+      margin-bottom:12px;
+      overflow:hidden;
+      position:relative;
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    .accordion::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--primary-gradient);
+    }
+    .accordion:hover {
+      border-color: var(--primary-light);
+    }
+    .accordion-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      padding:16px 20px;
+      border:none;
+      background:none;
+      font-size:16px;
+      font-weight:700;
+      color:var(--text);
+      cursor:pointer;
+      transition:background-color 0.2s;
+      text-align:left;
+    }
+    .accordion-header:hover{
+      background:var(--primary-bg);
+    }
+    .accordion-header .arrow{
+      font-size:12px;
+      color:var(--text-muted);
+      transition:transform 0.2s ease;
+    }
+    .accordion-header.open .arrow{
+      transform:rotate(180deg);
+      color: var(--primary);
+    }
+    .accordion-body{
+      padding:0 20px 20px;
+      display:none;
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-card);
+    }
+    .accordion-body.open{display:block;}
+    .tema-btns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .tema-btn{
+      padding:10px 20px;
+      border:2px solid var(--border);
+      border-radius:10px;
+      background:var(--bg-body);
+      color:var(--text);
+      font-size:14px;
+      cursor:pointer;
+      transition:all 0.2s;
+      font-weight:600;
+    }
+    .tema-btn:hover{
+      border-color:var(--primary);
+      color: var(--primary);
+    }
+    .tema-btn.active{
+      border-color:var(--primary);
+      background:var(--primary);
+      color:#fff;
+      box-shadow: 0 4px 10px var(--primary-bg);
+    }
+    .esquemas{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .esq-btn{
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:3px solid var(--border);
+      cursor:pointer;
+      transition:all 0.2s ease;
+      position:relative;
+    }
+    .esq-btn:hover{
+      transform: scale(1.1);
+    }
+    .esq-btn.active{
+      border-color:var(--text);
+      transform: scale(1.1);
+    }
+    .esq-btn .check{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;font-size:16px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+    .esq-btn.active .check{display:block;}
+    .custom-colors{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;}
+    .custom-colors label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text);font-weight:500;}
+    .custom-colors input[type=color]{width:40px;height:40px;border:2px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:none;transition:border-color 0.2s;}
+    .custom-colors input[type=color]:focus{border-color:var(--primary);}
+    .about-info{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-top:8px;}
+    .about-info strong{color:var(--text);}
+    .form-group{margin-bottom:16px;margin-top:8px;}
+    .form-group label{display:block;font-size:14px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+    .set-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);outline:none;transition:all 0.2s;font-family:'Inter',sans-serif;background:var(--bg-card2);}
+    .set-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow);}
+    .btn-modal{width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s;margin-top:8px;}
+    .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+    .btn-modal:disabled{opacity:.6;cursor:not-allowed;}
+
+    .main-content{
+      padding:20px;
+      max-width:800px;
+      margin:0 auto;
+      animation: fadeIn 0.4s ease-out;
+    }
+    .main-content > .page-title{
+      margin-bottom:20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content" id="mainContent"></div>
+
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+      var cp = localStorage.getItem('colorPrimario');
+      if (cp) { document.documentElement.style.setProperty('--primary', cp); document.documentElement.style.setProperty('--primary-light', cp); document.documentElement.style.setProperty('--viewer-primary', cp); }
+      var cf = localStorage.getItem('colorFondo');
+      if (cf) document.documentElement.style.setProperty('--bg-body', cf);
+    })();
+
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+    var sessionUser = localStorage.getItem('sessionUser');
+    var sessionPass = localStorage.getItem('sessionPass');
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
+
+    var temaActual = localStorage.getItem('tema') || 'claro';
+    var esquemaActual = localStorage.getItem('esquema') || 'default';
+    var colorPersonalizado = { primario: localStorage.getItem('colorPrimario') || '', fondo: localStorage.getItem('colorFondo') || '' };
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) { if (data.hasOwnProperty(key)) params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key])); }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); resolve(resp); };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Error de conexi&oacute;n')); };
+        document.body.appendChild(script);
+        setTimeout(function() { if (window[cb]) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Tiempo de espera agotado')); } }, 60000);
+      });
+    }
+
+    function mostrarMsg(el, texto, tipo) {
+      if (!el) return;
+      el.style.display = 'block';
+      el.textContent = texto;
+      if (tipo === 'error') {
+        el.style.background = 'var(--danger-bg)';
+        el.style.color = 'var(--danger)';
+        el.style.borderLeftColor = 'var(--danger)';
+      } else {
+        el.style.background = 'var(--success-bg)';
+        el.style.color = 'var(--success)';
+        el.style.borderLeftColor = 'var(--success)';
+      }
+    }
+
+    function toggleAccordion(id) {
+      var body = document.getElementById('acc_' + id); if (!body) return;
+      body.previousElementSibling.classList.toggle('open');
+      body.classList.toggle('open');
+    }
+
+    function aplicarTema(tema) {
+      document.documentElement.removeAttribute('data-theme');
+      if (tema === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      temaActual = tema; localStorage.setItem('tema', tema);
+    }
+
+    function aplicarEsquema(esq) {
+      document.documentElement.removeAttribute('data-scheme');
+      if (esq !== 'default') document.documentElement.setAttribute('data-scheme', esq);
+      esquemaActual = esq; localStorage.setItem('esquema', esq);
+      if (esq !== 'default') { colorPersonalizado.primario = ''; colorPersonalizado.fondo = ''; localStorage.removeItem('colorPrimario'); localStorage.removeItem('colorFondo'); }
+    }
+
+    function aplicarColorPersonalizado() {
+      if (colorPersonalizado.primario) { document.documentElement.style.setProperty('--primary', colorPersonalizado.primario); document.documentElement.style.setProperty('--primary-light', colorPersonalizado.primario); document.documentElement.style.setProperty('--viewer-primary', colorPersonalizado.primario); }
+      else { document.documentElement.style.removeProperty('--primary'); document.documentElement.style.removeProperty('--primary-light'); document.documentElement.style.removeProperty('--viewer-primary'); }
+      if (colorPersonalizado.fondo) { document.documentElement.style.setProperty('--bg-body', colorPersonalizado.fondo); document.documentElement.style.setProperty('--bg-card', colorPersonalizado.fondo); document.documentElement.style.setProperty('--settings-bg', colorPersonalizado.fondo); }
+      else { document.documentElement.style.removeProperty('--bg-body'); document.documentElement.style.removeProperty('--bg-card'); document.documentElement.style.removeProperty('--settings-bg'); }
+    }
+
+    function cambiarTema(t) { aplicarTema(t); document.querySelectorAll('.tema-btn').forEach(function(b) { b.classList.toggle('active', b.getAttribute('onclick').indexOf("'" + t + "'") !== -1); }); }
+    function cambiarEsquema(e) { aplicarEsquema(e); aplicarColorPersonalizado(); document.querySelectorAll('.esq-btn').forEach(function(b) { b.classList.toggle('active', b.getAttribute('onclick').indexOf("'" + e + "'") !== -1); }); }
+    function cambiarColorPrimario(val) {
+      esquemaActual = 'default'; localStorage.setItem('esquema', 'default');
+      document.documentElement.removeAttribute('data-scheme');
+      document.querySelectorAll('.esq-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.esq-btn')[0].classList.add('active');
+      colorPersonalizado.primario = val; localStorage.setItem('colorPrimario', val); aplicarColorPersonalizado();
+    }
+    function cambiarColorFondo(val) { colorPersonalizado.fondo = val; localStorage.setItem('colorFondo', val); aplicarColorPersonalizado(); }
+
+    function enviarCodigoPass() {
+      var btn = document.getElementById('btnSendPassCode');
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      jsonp({ action:'sendCodeToMyEmail', user:sessionUser, pass:sessionPass }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.exito) { document.getElementById('passMsg').style.display = 'none'; document.getElementById('passStep1').style.display = 'none'; document.getElementById('passStep2').style.display = 'block'; }
+          else { mostrarMsg(document.getElementById('passMsg'), d.mensaje || 'Error al enviar c&oacute;digo.', 'error'); }
+        } catch(e) { mostrarMsg(document.getElementById('passMsg'), 'Error al procesar respuesta.', 'error'); }
+        btn.disabled = false; btn.textContent = 'Enviar c&oacute;digo';
+      }).catch(function(err) { mostrarMsg(document.getElementById('passMsg'), 'Error: ' + err.message, 'error'); btn.disabled = false; btn.textContent = 'Enviar c&oacute;digo'; });
+    }
+
+    function cambiarPassConCodigo() {
+      var code = document.getElementById('passCode').value.trim();
+      var np = document.getElementById('newPass').value;
+      var cp = document.getElementById('confirmNewPass').value;
+      if (!code) { mostrarMsg(document.getElementById('passMsg'), 'Ingresa el c&oacute;digo de verificaci&oacute;n.', 'error'); return; }
+      if (!np || !cp) { mostrarMsg(document.getElementById('passMsg'), 'Completa todos los campos.', 'error'); return; }
+      if (np.length < 8) { mostrarMsg(document.getElementById('passMsg'), 'La nueva contrase&ntilde;a debe tener al menos 8 caracteres.', 'error'); return; }
+      if (np.length > 20) { mostrarMsg(document.getElementById('passMsg'), 'La nueva contrase&ntilde;a debe tener m&aacute;ximo 20 caracteres.', 'error'); return; }
+      if (np !== cp) { mostrarMsg(document.getElementById('passMsg'), 'Las contrase&ntilde;as no coinciden.', 'error'); return; }
+      document.getElementById('passMsg').style.display = 'none';
+      jsonp({ action:'changePasswordWithCode', user:sessionUser, pass:sessionPass, code:code, newPassword:np }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.exito) { sessionPass = np; localStorage.setItem('sessionPass', np);
+            document.getElementById('passCode').value = ''; document.getElementById('newPass').value = ''; document.getElementById('confirmNewPass').value = '';
+            document.getElementById('passStep2').style.display = 'none'; document.getElementById('passStep1').style.display = 'block';
+            mostrarMsg(document.getElementById('passMsg'), 'Contrase&ntilde;a actualizada correctamente.', 'success');
+          } else { mostrarMsg(document.getElementById('passMsg'), d.mensaje || 'Error al cambiar contrase&ntilde;a.', 'error'); }
+        } catch(e) { mostrarMsg(document.getElementById('passMsg'), 'Error al procesar respuesta.', 'error'); }
+      }).catch(function(err) { mostrarMsg(document.getElementById('passMsg'), 'Error: ' + err.message, 'error'); });
+    }
+
+    function cancelarPass() { document.getElementById('passStep2').style.display = 'none'; document.getElementById('passStep1').style.display = 'block'; document.getElementById('passMsg').style.display = 'none'; }
+
+    function enviarCodigoEmail() {
+      var email = document.getElementById('newEmail').value.trim();
+      if (!email) { mostrarMsg(document.getElementById('emailMsg'), 'Ingresa el nuevo correo.', 'error'); return; }
+      if (email.indexOf('@') === -1) { mostrarMsg(document.getElementById('emailMsg'), 'Ingresa un correo v&aacute;lido.', 'error'); return; }
+      var btn = document.getElementById('btnSendEmailCode');
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      jsonp({ action:'sendCodeToMyEmail', user:sessionUser, pass:sessionPass }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.exito) { document.getElementById('emailMsg').style.display = 'none'; document.getElementById('emailStep1').style.display = 'none'; document.getElementById('emailStep2').style.display = 'block'; }
+          else { mostrarMsg(document.getElementById('emailMsg'), d.mensaje || 'Error al enviar c&oacute;digo.', 'error'); }
+        } catch(e) { mostrarMsg(document.getElementById('emailMsg'), 'Error al procesar respuesta.', 'error'); }
+        btn.disabled = false; btn.textContent = 'Enviar c&oacute;digo';
+      }).catch(function(err) { mostrarMsg(document.getElementById('emailMsg'), 'Error: ' + err.message, 'error'); btn.disabled = false; btn.textContent = 'Enviar c&oacute;digo'; });
+    }
+
+    function cambiarEmailConCodigo() {
+      var code = document.getElementById('emailCode').value.trim();
+      var newEmail = document.getElementById('newEmail').value.trim();
+      if (!code) { mostrarMsg(document.getElementById('emailMsg'), 'Ingresa el c&oacute;digo de verificaci&oacute;n.', 'error'); return; }
+      if (!newEmail) { mostrarMsg(document.getElementById('emailMsg'), 'Ingresa el nuevo correo.', 'error'); return; }
+      document.getElementById('emailMsg').style.display = 'none';
+      jsonp({ action:'changeEmailWithCode', user:sessionUser, pass:sessionPass, code:code, newEmail:newEmail }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.exito || d.status === 'EMAIL_UPDATED') { document.getElementById('emailCode').value = ''; document.getElementById('newEmail').value = ''; document.getElementById('emailStep2').style.display = 'none'; document.getElementById('emailStep1').style.display = 'block'; mostrarMsg(document.getElementById('emailMsg'), 'Correo actualizado correctamente.', 'success'); }
+          else { mostrarMsg(document.getElementById('emailMsg'), d.mensaje || 'Error al actualizar correo.', 'error'); }
+        } catch(e) { mostrarMsg(document.getElementById('emailMsg'), 'Error al procesar respuesta.', 'error'); }
+      }).catch(function(err) { mostrarMsg(document.getElementById('emailMsg'), 'Error: ' + err.message, 'error'); });
+    }
+
+    function cancelarEmail() { document.getElementById('emailStep2').style.display = 'none'; document.getElementById('emailStep1').style.display = 'block'; document.getElementById('emailMsg').style.display = 'none'; }
+
+    function limpiarCache() {
+      var btn = document.getElementById('btnLimpiarCache');
+      var msg = document.getElementById('cacheMsg');
+      btn.disabled = true; btn.textContent = 'Limpiando...';
+      var keep = { sessionUser:1, sessionPass:1, tema:1, esquema:1, colorPrimario:1, colorFondo:1 };
+      var count = 0;
+      for (var i = localStorage.length - 1; i >= 0; i--) {
+        var key = localStorage.key(i);
+        if (key && !keep[key]) { localStorage.removeItem(key); count++; }
+      }
+      btn.disabled = false; btn.textContent = 'Limpiar cach\u00e9';
+      msg.style.display = 'block';
+      msg.style.background = 'var(--success-bg)';
+      msg.style.color = 'var(--success)';
+      msg.innerHTML = 'Se eliminaron ' + count + ' elementos de cach\u00e9.';
+      setTimeout(function(){ msg.style.display = 'none'; }, 3000);
+    }
+
+    function mostrarAjustes() {
+      function accItem(id, titulo, cont, abierto) {
+        var io = abierto ? ' open' : '';
+        return '<div class="accordion"><button class="accordion-header' + io + '" onclick="toggleAccordion(\'' + id + '\')"><span>' + titulo + '</span><span class="arrow">&#9660;</span></button><div class="accordion-body' + io + '" id="acc_' + id + '">' + cont + '</div></div>';
+      }
+
+      document.getElementById('mainContent').innerHTML = '<h1 class="page-title">Ajustes</h1>'
+        + accItem('tema', 'Tema', '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Elige el modo claro u oscuro</p><div class="tema-btns"><button class="tema-btn' + (temaActual === 'claro' ? ' active' : '') + '" onclick="cambiarTema(\'claro\')">Claro</button><button class="tema-btn' + (temaActual === 'oscuro' ? ' active' : '') + '" onclick="cambiarTema(\'oscuro\')">Oscuro</button></div>')
+        + accItem('esquema', 'Esquema de colores', (function(){
+          var es = '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Personaliza los colores</p><div class="esquemas">';
+          [{ id:'default', bg:'#2e7d32', label:'Predeterminado' },{ id:'blue', bg:'#1565c0', label:'Azul' },{ id:'purple', bg:'#7b1fa2', label:'P&uacute;rpura' },{ id:'orange', bg:'#e65100', label:'Naranja' }].forEach(function(e){
+            es += '<button class="esq-btn' + (esquemaActual === e.id ? ' active' : '') + '" style="background:' + e.bg + '" onclick="cambiarEsquema(\'' + e.id + '\')" title="' + e.label + '"><span class="check">&#10003;</span></button>';
+          });
+          return es + '</div>';
+        })())
+        + accItem('colores', 'Colores personalizados', '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Tu propio color primario y de fondo</p><div class="custom-colors"><label>Primario <input type="color" value="' + (colorPersonalizado.primario || '#22c55e') + '" onchange="cambiarColorPrimario(this.value)"></label><label>Fondo <input type="color" value="' + (colorPersonalizado.fondo || '#0b1120') + '" onchange="cambiarColorFondo(this.value)"></label></div>')
+        + accItem('password', 'Cambiar contrase&ntilde;a', '<div id="passMsg" class="msg-banner"></div><div id="passStep1"><p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Te enviaremos un c&oacute;digo a tu correo para verificar tu identidad.</p><button class="btn-modal" id="btnSendPassCode" onclick="enviarCodigoPass()">Enviar c&oacute;digo</button></div><div id="passStep2" style="display:none;"><div class="form-group"><label>C&oacute;digo de verificaci&oacute;n</label><input type="text" id="passCode" class="set-input" placeholder="Ingresa el c&oacute;digo de 6 d&iacute;gitos" maxlength="6"></div><div class="form-group"><label>Nueva contrase&ntilde;a</label><input type="password" id="newPass" class="set-input" placeholder="8-20 caracteres, debe empezar con letra" maxlength="20"></div><div class="form-group"><label>Confirmar contrase&ntilde;a</label><input type="password" id="confirmNewPass" class="set-input" placeholder="Repite la nueva contrase&ntilde;a" maxlength="20"></div><button class="btn-modal" onclick="cambiarPassConCodigo()">Actualizar contrase&ntilde;a</button><button class="btn-modal" style="background:var(--text-muted);margin-top:6px;" onclick="cancelarPass()">Cancelar</button></div>')
+        + accItem('email', 'Cambiar correo electr&oacute;nico', '<div id="emailMsg" class="msg-banner"></div><div id="emailStep1"><p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Te enviaremos un c&oacute;digo a tu correo actual para verificar el cambio.</p><div class="form-group"><label>Nuevo correo</label><input type="email" id="newEmail" class="set-input" placeholder="tu@correo.com"></div><button class="btn-modal" id="btnSendEmailCode" onclick="enviarCodigoEmail()">Enviar c&oacute;digo</button></div><div id="emailStep2" style="display:none;"><div class="form-group"><label>C&oacute;digo de verificaci&oacute;n</label><input type="text" id="emailCode" class="set-input" placeholder="Ingresa el c&oacute;digo recibido"></div><button class="btn-modal" onclick="cambiarEmailConCodigo()">Actualizar correo</button><button class="btn-modal" style="background:var(--text-muted);margin-top:6px;" onclick="cancelarEmail()">Cancelar</button></div>')
+        + accItem('cache', 'Limpiar cach&eacute;', '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Elimina datos temporales almacenados (foros, addons, perfiles, etc.). Se conservar&aacute; tu sesi&oacute;n y preferencias.</p><button class="btn-modal" id="btnLimpiarCache" onclick="limpiarCache()">Limpiar cach&eacute;</button><div id="cacheMsg" style="padding:10px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none;"></div>')
+        + accItem('acerca', 'Acerca de', '<div class="about-info"><p><strong>WorldLeaf</strong> v1.0.1</p><p>&copy; 2026 JR-TechStudios. Todos los derechos reservados.</p><p style="margin-top:8px;">Una plataforma para compartir contenido de MCPE y formar una comunidad.</p></div>');
+    }
+
+    mostrarAjustes();
+  </script>
+</body>
+</html>

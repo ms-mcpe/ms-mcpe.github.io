@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
+  <title>Coins+ - WorldLeaf</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
+      --amber-bg: rgba(245,158,11,0.10);
+      --amber-glow: rgba(245,158,11,0.22);
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --blue-bg: rgba(59,130,246,0.10);
+      --info: #06b6d4;
+      --info-bg: rgba(6,182,212,0.10);
+      --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+      --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+      --shadow-glow: 0 0 24px var(--primary-glow);
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+      --bg-bottombar: rgba(6,10,15,0.92);
+      --input-bg: #1e293b;
+      --input-text: #f8fafc;
+      --input-border: #334155;
+      --viewer-bg: #090d16;
+      --viewer-body: #0f172a;
+      --viewer-text: #f8fafc;
+      --viewer-text-muted: #64748b;
+      --viewer-text-light: #cbd5e1;
+      --viewer-comment-bg: #1e293b;
+      --viewer-comment-text: #cbd5e1;
+      --viewer-border: #334155;
+      --viewer-btn-bg: rgba(255,255,255,0.1);
+      --viewer-btn-hover: rgba(255,255,255,0.2);
+      --viewer-primary: #22c55e;
+    }
+    [data-theme="dark"] {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #1e293b;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-dark: #16a34a;
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --primary-glow: rgba(34,197,94,0.25);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+    }
+    [data-scheme="blue"] { --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59,130,246,0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6); }
+    [data-scheme="purple"] { --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139,92,246,0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6); }
+    [data-scheme="orange"] { --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249,115,22,0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316); }
+
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+
+    body{
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg-body);min-height:100vh;color:var(--text);
+      -webkit-user-select:none;user-select:none;
+      transition:background-color 0.3s ease,color 0.3s ease;
+      overflow-x:hidden;width:100%;max-width:100%;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+    .content{padding:20px;max-width:800px;margin:0 auto;animation:fadeIn 0.4s ease-out;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes coinFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+    .balance-hero{
+      background:var(--bg-card);border-radius:24px;padding:28px 24px;margin-bottom:28px;
+      border:1px solid var(--border);box-shadow:var(--shadow-md);
+      position:relative;overflow:hidden;text-align:center;
+    }
+    .balance-hero::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:4px;
+      background:linear-gradient(90deg,var(--amber),var(--amber-light),var(--amber));
+      background-size:200% 100%;animation:shimmer 3s infinite linear;
+    }
+    .balance-hero .label{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+    .balance-hero .amount{
+      font-family:'Rajdhani',sans-serif;font-size:56px;font-weight:800;
+      color:var(--amber);filter:drop-shadow(0 0 20px var(--amber-glow));
+      display:flex;align-items:center;justify-content:center;gap:12px;
+      animation:coinFloat 3s ease-in-out infinite;line-height:1;
+    }
+    .balance-hero .amount img{width:40px;height:40px;object-fit:contain;}
+    .balance-hero .sub{font-size:14px;color:var(--text-secondary);font-weight:500;margin-top:2px;}
+    .balance-hero .decor-left,.balance-hero .decor-right{
+      position:absolute;font-size:72px;opacity:0.04;pointer-events:none;
+      font-family:'Rajdhani',sans-serif;font-weight:900;color:var(--amber);
+    }
+    .balance-hero .decor-left{top:-10px;left:12px;transform:rotate(-15deg);}
+    .balance-hero .decor-right{bottom:-10px;right:12px;transform:rotate(20deg);}
+
+    .msg-banner{
+      padding:14px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;
+      border:1.5px solid;display:none;margin-bottom:20px;animation:fadeIn 0.3s ease;
+      text-align:center;
+    }
+    .msg-banner.success{display:block;background:var(--success-bg);border-color:var(--success);color:var(--success);}
+    .msg-banner.error{display:block;background:var(--danger-bg);border-color:var(--danger);color:var(--danger);}
+
+    .section-title{
+      font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);
+      margin-bottom:16px;letter-spacing:-0.5px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .section-title .badge-count{
+      font-size:13px;background:var(--amber-bg);color:var(--amber);
+      padding:2px 10px;border-radius:20px;font-weight:700;
+    }
+
+    .method-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:32px;}
+    @media(min-width:600px){.method-grid{grid-template-columns:repeat(2,1fr);}}
+
+    .method-card{
+      background:var(--bg-card);border:1px solid rgba(245,158,11,0.2);
+      border-radius:var(--radius);padding:22px 20px 20px;
+      position:relative;overflow:hidden;
+      box-shadow:var(--shadow);display:flex;flex-direction:column;
+      transition:transform 0.25s cubic-bezier(0.16,1,0.3,1),box-shadow 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .method-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(135deg,#fbbf24,#f59e0b);z-index:1;}
+    .method-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:rgba(245,158,11,0.5);}
+    .method-card .method-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;}
+    .method-card .reward-row{
+      display:flex;align-items:center;gap:10px;margin-bottom:10px;
+    }
+    .method-card .reward-row .coin-icon{width:24px;height:24px;object-fit:contain;}
+    .method-card .reward-row .reward-amount{
+      font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:800;
+      color:var(--amber);filter:drop-shadow(0 0 8px var(--amber-glow));
+    }
+    .method-card .reward-row .reward-label{font-size:14px;font-weight:600;color:var(--text-secondary);}
+    .method-card .method-desc{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:16px;flex:1;font-weight:500;}
+    .method-card .method-btn{
+      width:100%;padding:14px 28px;border:none;
+      border-radius:var(--radius-sm);
+      font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;
+      background:linear-gradient(135deg,#fbbf24,#f59e0b);
+      color:#0b1120;cursor:pointer;text-align:center;
+      transition:all 0.2s;box-shadow:0 4px 14px var(--amber-glow);
+    }
+    .method-card .method-btn:hover{transform:translateY(-2px);filter:brightness(1.08);}
+    .method-card .method-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;filter:none;box-shadow:none;background:var(--text-muted);color:var(--bg-card);}
+    .method-card .method-btn.claimed{background:linear-gradient(135deg,#4ade80,#22c55e);color:#fff;box-shadow:0 4px 14px rgba(34,197,94,0.3);}
+    .method-card .method-btn.claimed:hover{box-shadow:0 6px 16px rgba(34,197,94,0.4);}
+    .method-card .cooldown-row{
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      margin-top:12px;font-size:13px;color:var(--text-muted);font-weight:600;
+    }
+    .method-card .cooldown-row .timer{color:var(--primary);font-weight:800;font-family:'Rajdhani',sans-serif;font-size:15px;letter-spacing:0.5px;}
+    .method-card .status-badge{
+      position:absolute;top:14px;right:14px;font-size:10px;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.5px;
+      padding:4px 10px;border-radius:20px;
+    }
+    .method-card .status-badge.available{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,0.3);}
+    .method-card .status-badge.cooldown{background:var(--primary-bg);color:var(--success);border:1px solid rgba(34,197,94,0.3);}
+
+    .transactions-card{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+    }
+    .transactions-card .tx-header{
+      padding:18px 22px;border-bottom:1px solid var(--border);
+      font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--text);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .transactions-card .tx-header .tx-count{font-size:13px;color:var(--text-muted);font-family:'Inter',sans-serif;font-weight:500;}
+    .transactions-card .tx-empty{
+      padding:36px 22px;text-align:center;color:var(--text-muted);
+      font-size:14px;font-weight:500;
+    }
+    .transactions-card .tx-empty .tx-empty-icon{font-size:36px;display:block;margin-bottom:8px;opacity:0.4;}
+    .tx-item{
+      display:flex;align-items:center;gap:14px;padding:14px 22px;
+      border-bottom:1px solid var(--border-light);transition:background 0.15s;
+    }
+    .tx-item:last-child{border-bottom:none;}
+    .tx-item:hover{background:var(--primary-bg);}
+    .tx-item .tx-icon{
+      width:38px;height:38px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;font-weight:700;
+    }
+    .tx-item .tx-icon.earned{background:var(--success-bg);color:var(--success);}
+    .tx-item .tx-icon.spent{background:var(--danger-bg);color:var(--danger);}
+    .tx-item .tx-body{flex:1;min-width:0;}
+    .tx-item .tx-body .tx-desc{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .tx-item .tx-body .tx-date{font-size:12px;color:var(--text-muted);font-weight:500;margin-top:2px;}
+    .tx-item .tx-amount{
+      font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+      flex-shrink:0;
+    }
+    .tx-item .tx-amount.positive{color:var(--success);}
+    .tx-item .tx-amount.negative{color:var(--danger);}
+
+    .loading-shimmer{
+      text-align:center;padding:40px 20px;color:var(--text-muted);
+    }
+    .loading-shimmer .spinner{
+      width:36px;height:36px;border:3px solid var(--border);
+      border-top-color:var(--primary);border-radius:50%;
+      animation:spin 0.8s linear infinite;margin:0 auto 12px;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .blocked-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
+      background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:40px 24px;text-align:center;
+    }
+    .blocked-overlay .block-icon{font-size:72px;margin-bottom:16px;animation:pulseBlock 2s infinite;}
+    @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:0.8;}}
+    .blocked-overlay h2{font-size:24px;font-weight:800;color:#ef4444;margin-bottom:8px;}
+    .blocked-overlay p{font-size:15px;color:#cbd5e1;max-width:480px;line-height:1.6;margin-bottom:16px;}
+    .blocked-overlay .razones{text-align:left;color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:24px;}
+    .blocked-overlay .razones li{margin-bottom:4px;}
+    .blocked-overlay .btn-soporte{
+      display:inline-block;padding:14px 40px;border-radius:12px;
+      background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;
+      font-size:16px;font-weight:700;text-decoration:none;
+      transition:all 0.2s;box-shadow:0 4px 16px rgba(59,130,246,0.3);
+    }
+    .blocked-overlay .btn-soporte:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(59,130,246,0.5);}
+
+    @media(max-width:480px){
+      .content{padding:14px;}
+      .balance-hero{padding:22px 16px;border-radius:18px;}
+      .balance-hero .amount{font-size:40px;}
+      .balance-hero .amount img{width:30px;height:30px;}
+      .method-card{padding:16px;}
+      .method-card .reward-row .reward-amount{font-size:24px;}
+      .method-card .reward-row .coin-icon{width:20px;height:20px;}
+      .section-title{font-size:18px;}
+      .transactions-card .tx-header{padding:14px 16px;}
+      .tx-item{padding:12px 16px;}
+      .balance-hero .decor-left,.balance-hero .decor-right{font-size:48px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="content" id="app"></div>
+
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+      var cp = localStorage.getItem('colorPrimario');
+      if (cp) { document.documentElement.style.setProperty('--primary', cp); document.documentElement.style.setProperty('--primary-light', cp); }
+      var cf = localStorage.getItem('colorFondo');
+      if (cf) document.documentElement.style.setProperty('--bg-body', cf);
+    })();
+
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+    var sessionUser = localStorage.getItem('sessionUser');
+    var sessionPass = localStorage.getItem('sessionPass');
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
+
+    var METHODS = [
+      { amount: 150, url: 'https://cuty.io/XnnG5q', label: 'Acortador' },
+      { amount: 500, url: 'https://cutw.in/XQoBgXP', label: 'Acortador' }
+    ];
+    var COOLDOWN_MS = 15 * 60 * 60 * 1000;
+    var userCoins = 0;
+    var claimTimers = {};
+    var txData = [];
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) { if (data.hasOwnProperty(key)) params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key])); }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); resolve(resp); };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Error de conexion')); };
+        document.body.appendChild(script);
+        setTimeout(function() { if (window[cb]) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Tiempo de espera agotado')); } }, 60000);
+      });
+    }
+
+    function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function formatCoins(n) {
+      n = Number(n);
+      if (isNaN(n)) return '0';
+      if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'k';
+      return String(n);
+    }
+
+    function getClaimKey(amount) { return 'coins_claim_' + amount; }
+    function getClaimTime(amount) { try { return parseInt(localStorage.getItem(getClaimKey(amount))) || 0; } catch(e) { return 0; } }
+    function setClaimTime(amount) { try { localStorage.setItem(getClaimKey(amount), String(Date.now())); } catch(e) {} }
+    function canClaim(amount) { var last = getClaimTime(amount); if (!last) return true; return (Date.now() - last) >= COOLDOWN_MS; }
+    function getRemainingMs(amount) { var last = getClaimTime(amount); if (!last) return 0; var diff = COOLDOWN_MS - (Date.now() - last); return diff > 0 ? diff : 0; }
+
+    function formatTime(ms) {
+      var h = Math.floor(ms / 3600000);
+      var m = Math.floor((ms % 3600000) / 60000);
+      var s = Math.floor((ms % 60000) / 1000);
+      return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function mostrarCuentaInactiva() {
+      var overlay = document.createElement('div');
+      overlay.className = 'blocked-overlay';
+      overlay.innerHTML = '<div class="block-icon">&#128683;</div>'
+        + '<h2>Cuenta Desactivada</h2>'
+        + '<p>Tu cuenta ha sido desactivada. Esto pudo deberse a las siguientes razones:</p>'
+        + '<ul class="razones">'
+        + '<li>1. Romper las reglas o pol&iacute;ticas de la plataforma.</li>'
+        + '<li>2. No respetar a los usuarios de la plataforma.</li>'
+        + '<li>3. Hacer spam de contenido.</li>'
+        + '<li>4. Usar palabras obscenas.</li>'
+        + '<li>5. Funar o difamar informaci&oacute;n falsa de otros usuarios.</li>'
+        + '</ul>'
+        + '<p style="font-weight:600;color:#f8fafc;">Para reactivar tu cuenta, comun&iacute;cate con soporte y cu&eacute;ntanos tu situaci&oacute;n.</p>'
+        + '<a class="btn-soporte" href="https://soporte.com" target="_blank">Contactar Soporte</a>';
+      document.body.appendChild(overlay);
+    }
+
+    function verificarCuenta() {
+      jsonp({ action:'checkAccount', user:sessionUser }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (!d.exists || d.exists === false) { localStorage.removeItem('sessionUser'); localStorage.removeItem('sessionPass'); localStorage.removeItem('userProfile'); window.location.href = 'login.html'; } else if (d.status === 'Inactivo') { mostrarCuentaInactiva(); } } catch(e) {}
+      }).catch(function(){});
+    }
+    verificarCuenta();
+
+    function cargarCoins() {
+      jsonp({ action:'getUserCoins', user:sessionUser }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (typeof d.coins === 'number') { userCoins = d.coins; actualizarBalanceUI(); } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function cargarTransacciones() {
+      jsonp({ action:'getUserCoins', user:sessionUser }).then(function(r) {
+        try {
+          var d = typeof r === 'string' ? JSON.parse(r) : r;
+          if (d.transactions && Array.isArray(d.transactions)) { txData = d.transactions; }
+          renderTransacciones();
+        } catch(e) { renderTransacciones(); }
+      }).catch(function(){ renderTransacciones(); });
+    }
+
+    function mostrarMensaje(texto, tipo) {
+      var el = document.getElementById('msgBanner');
+      if (!el) return;
+      el.innerHTML = texto;
+      el.className = 'msg-banner ' + (tipo === 'success' ? 'success' : 'error');
+    }
+
+    function actualizarBalanceUI() {
+      var el = document.getElementById('balDisplay');
+      if (el) el.textContent = formatCoins(userCoins);
+    }
+
+    function renderizar() {
+      var h = '';
+
+      // Balance hero
+      h += '<div class="balance-hero">'
+        + '<div class="decor-left">&#9733;</div>'
+        + '<div class="decor-right">&#9733;</div>'
+        + '<div class="label">Tu Saldo</div>'
+        + '<div class="amount">'
+        + '<img src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" alt="">'
+        + '<span id="balDisplay">' + formatCoins(userCoins) + '</span>'
+        + '</div>'
+        + '<div class="sub">WorldLeaf Coins</div>'
+        + '</div>';
+
+      h += '<div class="msg-banner" id="msgBanner"></div>';
+
+      // Methods
+      h += '<div class="section-title"><span>&#128176; M&eacute;todos para ganar Coins</span></div>';
+      h += '<div class="method-grid">';
+      for (var i = 0; i < METHODS.length; i++) {
+        var m = METHODS[i];
+        var claimable = canClaim(m.amount);
+        var remaining = getRemainingMs(m.amount);
+        var btnClass = ''; var btnText = 'Ir al enlace'; var disabled = '';
+        var timerHtml = ''; var statusBadge = '';
+        if (claimable) { statusBadge = '<div class="status-badge available">Disponible</div>'; }
+        else {
+          statusBadge = '<div class="status-badge cooldown">En espera</div>';
+          btnClass = ' claimed'; btnText = '&#9989; Reclamado'; disabled = ' disabled';
+          timerHtml = '<div class="cooldown-row">&#9201; Disponible en <span class="timer" id="timer_' + m.amount + '">' + formatTime(remaining) + '</span></div>';
+        }
+        h += '<div class="method-card">'
+          + statusBadge
+          + '<div class="method-label">' + escHtml(m.label) + '</div>'
+          + '<div class="reward-row">'
+          + '<img class="coin-icon" src="https://i.ibb.co/zWJfhb80/Background-Eraser-20260614-201641754.png" alt="">'
+          + '<span class="reward-amount">+' + formatCoins(m.amount) + '</span>'
+          + '<span class="reward-label">Coins</span>'
+          + '</div>'
+          + '<div class="method-desc">Accede al enlace, completa el paso y vuelve para recibir tus Coins autom&aacute;ticamente.</div>'
+          + '<button class="method-btn' + btnClass + '" id="claimBtn_' + m.amount + '" onclick="irAlAcortador(' + m.amount + ')"' + disabled + '>' + btnText + '</button>'
+          + timerHtml
+          + '</div>';
+      }
+      h += '</div>';
+
+      // Transactions
+      h += '<div class="section-title"><span>&#128195; Historial de Transacciones</span></div>';
+      h += '<div class="transactions-card">';
+      h += '<div class="tx-header"><span>Movimientos</span><span class="tx-count" id="txCount">Cargando...</span></div>';
+      h += '<div id="txBody">';
+      h += '<div class="loading-shimmer"><div class="spinner"></div>Cargando transacciones...</div>';
+      h += '</div></div>';
+
+      document.getElementById('app').innerHTML = h;
+
+      // Start timers
+      for (var j = 0; j < METHODS.length; j++) {
+        var amt = METHODS[j].amount;
+        if (!canClaim(amt)) iniciarTimer(amt);
+      }
+    }
+
+    function renderTransacciones() {
+      var body = document.getElementById('txBody');
+      var count = document.getElementById('txCount');
+      if (!body) return;
+      if (count) count.textContent = txData.length + ' transacci' + (txData.length === 1 ? '&oacute;n' : 'ones');
+      if (!txData.length) {
+        body.innerHTML = '<div class="tx-empty"><span class="tx-empty-icon">&#128176;</span>A&uacute;n no tienes transacciones.</div>';
+        return;
+      }
+      var h = '';
+      for (var i = 0; i < txData.length; i++) {
+        var t = txData[i];
+        var amount = Number(t.amount) || 0;
+        var isPositive = amount > 0;
+        var desc = t.description || t.desc || (isPositive ? 'Ganancia' : 'Gasto');
+        var dateStr = t.date || t.fecha || '';
+        var icon = isPositive ? '+' : '-';
+        var iconClass = isPositive ? 'earned' : 'spent';
+        var amtClass = isPositive ? 'positive' : 'negative';
+        var amtDisplay = (isPositive ? '+' : '-') + formatCoins(Math.abs(amount));
+        h += '<div class="tx-item">'
+          + '<div class="tx-icon ' + iconClass + '">' + icon + '</div>'
+          + '<div class="tx-body">'
+          + '<div class="tx-desc">' + escHtml(desc) + '</div>'
+          + '<div class="tx-date">' + escHtml(dateStr) + '</div>'
+          + '</div>'
+          + '<div class="tx-amount ' + amtClass + '">' + amtDisplay + '</div>'
+          + '</div>';
+      }
+      body.innerHTML = h;
+    }
+
+    function irAlAcortador(amount) {
+      if (!canClaim(amount)) return;
+      try { sessionStorage.setItem('pendingClaim', String(amount)); } catch(e) {}
+      var m = null;
+      for (var i = 0; i < METHODS.length; i++) { if (METHODS[i].amount === amount) { m = METHODS[i]; break; } }
+      if (m) window.open(m.url, '_blank');
+    }
+
+    function procesarVerified() {
+      var params = new URLSearchParams(window.location.search);
+      var verified = params.get('verified');
+      if (!verified) return;
+      var amount = parseInt(verified);
+      if (isNaN(amount) || (amount !== 150 && amount !== 500)) return;
+      if (!canClaim(amount)) {
+        mostrarMensaje('Ya reclamaste ' + amount + ' Coins recientemente. Espera a que termine el enfriamiento.', 'error');
+        return;
+      }
+      var pending = sessionStorage.getItem('pendingClaim');
+      if (pending && parseInt(pending) === amount) { try { sessionStorage.removeItem('pendingClaim'); } catch(e) {} }
+      jsonp({ action:'addCoins', user:sessionUser, pass:sessionPass, amount:amount }).then(function(r) {
+        try {
+          var d = typeof r === 'string' ? JSON.parse(r) : r;
+          if (d.status === 'COINS_ADDED') {
+            userCoins = d.coins; actualizarBalanceUI(); setClaimTime(amount);
+            renderizar(); cargarTransacciones();
+            mostrarMensaje('&#9989; &iexcl;Has ganado ' + formatCoins(amount) + ' Coins!', 'success');
+          } else if (d.status === 'ALREADY_CLAIMED') {
+            setClaimTime(amount); renderizar();
+            mostrarMensaje('Ya reclamaste estos Coins anteriormente.', 'error');
+          } else { mostrarMensaje('Error al reclamar Coins. Intenta de nuevo.', 'error'); }
+        } catch(e) { mostrarMensaje('Error al procesar la recompensa.', 'error'); }
+      }).catch(function() {
+        mostrarMensaje('Error de conexi&oacute;n. Los Coins se a&ntilde;adir&aacute;n cuando verifiques tu cuenta.', 'error');
+      });
+    }
+
+    function iniciarTimer(amount) {
+      if (claimTimers[amount]) clearInterval(claimTimers[amount]);
+      claimTimers[amount] = setInterval(function() {
+        var remaining = getRemainingMs(amount);
+        var el = document.getElementById('timer_' + amount);
+        var btn = document.getElementById('claimBtn_' + amount);
+        if (remaining <= 0) {
+          clearInterval(claimTimers[amount]);
+          delete claimTimers[amount];
+          renderizar(); return;
+        }
+        if (el) el.textContent = formatTime(remaining);
+      }, 1000);
+    }
+
+    function init() {
+      renderizar();
+      cargarCoins();
+      cargarTransacciones();
+      procesarVerified();
+    }
+    init();
+  </script>
+</body>
+</html>

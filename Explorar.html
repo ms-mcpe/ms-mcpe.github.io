@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
+  <title>Explorar - WorldLeaf</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #111827;
+      --bg-card2: #162032;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-dark: #16a34a;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-glow: rgba(34,197,94,0.25);
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
+      --amber-bg: rgba(245,158,11,0.10);
+      --amber-glow: rgba(245,158,11,0.22);
+
+      --blue: #3b82f6;
+      --blue-light: #60a5fa;
+      --blue-bg: rgba(59,130,246,0.10);
+      --info: #06b6d4;
+      --info-bg: rgba(6,182,212,0.10);
+
+      --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+      --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --surface: #162032;
+      --surface-2: #1e2f48;
+
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+      --shadow-glow: 0 0 24px var(--primary-glow);
+
+      --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+      --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+      --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+
+      --radius: 14px;
+      --radius-sm: 9px;
+      --overlay: rgba(0,0,0,0.72);
+      --bg-bottombar: rgba(6,10,15,0.92);
+
+      --viewer-bg: #090d16;
+      --viewer-body: #0f172a;
+      --viewer-text: #f8fafc;
+      --viewer-text-muted: #64748b;
+      --viewer-text-light: #cbd5e1;
+      --viewer-comment-bg: #1e293b;
+      --viewer-comment-text: #cbd5e1;
+      --viewer-border: #334155;
+      --viewer-btn-bg: rgba(255, 255, 255, 0.1);
+      --viewer-btn-hover: rgba(255, 255, 255, 0.2);
+      --viewer-primary: #22c55e;
+      --input-bg: #1e293b;
+      --input-text: #f8fafc;
+      --input-border: #334155;
+    }
+    [data-theme="dark"] {
+      --bg-void: #060a0f;
+      --bg-body: #0b1120;
+      --bg-card: #1e293b;
+      --bg-topbar: rgba(6,10,15,0.92);
+      --bg-bottombar: rgba(6,10,15,0.92);
+      --bg-sidebar: #0d1729;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-dark: #16a34a;
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --primary-glow: rgba(34,197,94,0.25);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+    }
+    [data-scheme="blue"] { --primary: #3b82f6; --primary-light: #60a5fa; --primary-bg: rgba(59, 130, 246, 0.1); --primary-dark: #2563eb; --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6); --viewer-primary: #60a5fa; }
+    [data-scheme="purple"] { --primary: #8b5cf6; --primary-light: #a78bfa; --primary-bg: rgba(139, 92, 246, 0.1); --primary-dark: #7c3aed; --primary-gradient: linear-gradient(135deg,#a78bfa,#8b5cf6); --viewer-primary: #a78bfa; }
+    [data-scheme="orange"] { --primary: #f97316; --primary-light: #fb923c; --primary-bg: rgba(249, 115, 22, 0.1); --primary-dark: #ea580c; --primary-gradient: linear-gradient(135deg,#fb923c,#f97316); --viewer-primary: #fb923c; }
+
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg-body);
+      min-height:100vh;
+      color:var(--text);
+      -webkit-user-select:none;user-select:none;
+      transition:background-color 0.3s ease, color 0.3s ease;
+      overflow-x:hidden;width:100%;max-width:100%;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+
+    .main-content{padding:20px;max-width:800px;margin:0 auto;animation:fadeIn 0.4s ease-out;}
+
+    .filtros{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+    .filtro-btn{
+      padding:8px 16px;
+      border:1.5px solid var(--border);
+      border-radius:20px;
+      background:var(--bg-card);
+      color:var(--text-secondary);
+      font-size:13px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    .filtro-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg);}
+    .filtro-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 10px var(--primary-bg);}
+
+    .foro-card{
+      background:var(--bg-card);
+      border-radius:20px;
+      overflow:hidden;
+      position:relative;
+      margin-bottom:20px;
+      cursor:pointer;
+      transition:transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+    }
+    .foro-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--primary-gradient);
+    }
+    .foro-card:hover{
+      transform:translateY(-4px);
+      box-shadow:var(--shadow-md);
+      border-color:var(--primary-light);
+    }
+    .foro-card-header{padding:16px 20px 0;display:flex;justify-content:space-between;align-items:center;}
+    .foro-card-user{font-size:14px;font-weight:700;color:var(--primary);cursor:pointer;transition:color 0.15s;}
+    .foro-card-user:hover{color:var(--primary-dark);text-decoration:underline;}
+    .foro-card-date{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;}
+    .foro-card-snippet{padding:12px 20px 0;font-size:15px;color:var(--text);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;line-height:1.6;}
+    .foro-card-imgs{margin-top:14px;display:grid;gap:4px;overflow:hidden;background:var(--border-light);border-radius:12px;margin-left:16px;margin-right:16px;}
+    .foro-card-imgs img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
+    .foro-card-imgs img:hover{transform:scale(1.02);}
+    .foro-card-imgs.single img{max-height:340px;width:100%;}
+    .foro-card-imgs.double{grid-template-columns:1fr 1fr;}
+    .foro-card-imgs.double img{height:240px;}
+    .foro-card-imgs.triple{grid-template-columns:2fr 1.2fr;grid-template-rows:120px 120px;}
+    .foro-card-imgs.triple img:first-child{grid-row:1/3;height:244px;}
+    .foro-card-imgs.triple img:not(:first-child){height:120px;}
+    .foro-card-imgs.quad{grid-template-columns:1fr 1fr;grid-template-rows:120px 120px;}
+    .foro-card-imgs.quad img{height:120px;}
+    .foro-card-imgs.quint{grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:120px 120px;}
+    .foro-card-imgs.quint img:first-child{grid-column:1/3;grid-row:1/3;height:244px;}
+    .foro-card-imgs.quint img:not(:first-child){height:120px;}
+    .foro-card-stats{padding:14px 20px 16px;display:flex;gap:20px;font-size:14px;color:var(--text-secondary);font-weight:600;}
+
+    .sin-foros{text-align:center;color:var(--text-light);font-size:15px;padding:60px 0;font-weight:500;}
+
+    .tipo-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;background:var(--primary-bg);color:var(--primary);text-transform:uppercase;letter-spacing:0.5px;}
+
+    .skeleton{padding:60px 20px;text-align:center;color:var(--text-secondary);font-size:15px;}
+    .skeleton .spinner{width:32px;height:32px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+    .foro-menu-btn{
+      position:absolute;top:12px;right:12px;z-index:5;
+      width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.35);border-radius:50%;cursor:pointer;
+      color:#fff;font-size:18px;line-height:1;transition:all 0.2s;
+      border:none;user-select:none;
+    }
+    .foro-menu-btn:hover{background:rgba(255,255,255,0.2);}
+    .foro-menu-dropdown{
+      position:absolute;top:44px;right:12px;z-index:10;
+      background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;
+      box-shadow:var(--shadow-md);min-width:140px;overflow:hidden;
+      display:none;flex-direction:column;
+    }
+    .foro-menu-dropdown.open{display:flex;}
+    .foro-menu-dropdown button{
+      padding:10px 16px;border:none;background:none;color:var(--text);
+      font-size:14px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.15s;font-family:inherit;
+    }
+    .foro-menu-dropdown button:hover{background:var(--primary-bg);color:var(--primary);}
+    .foro-menu-dropdown button:last-child{color:var(--danger);}
+    .foro-menu-dropdown button:last-child:hover{background:var(--danger-bg);color:var(--danger);}
+
+    .edit-modal-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;
+      background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+      display:flex;align-items:center;justify-content:center;padding:20px;
+    }
+    .edit-modal-content{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:16px;
+      padding:24px;max-width:500px;width:100%;box-shadow:var(--shadow-lg);
+    }
+    .edit-modal-content h3{font-size:18px;font-weight:700;margin-bottom:14px;color:var(--text);}
+    .edit-modal-content textarea{
+      width:100%;min-height:120px;padding:12px;border:1px solid var(--border);
+      border-radius:10px;background:var(--bg-card2);color:var(--text);
+      font-size:14px;font-family:inherit;outline:none;resize:vertical;margin-bottom:14px;
+    }
+    .edit-modal-content textarea:focus{border-color:var(--primary);}
+    .edit-modal-btns{display:flex;gap:10px;}
+    .edit-modal-btns .btn-modal{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s;}
+    .edit-modal-btns .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+    .edit-modal-btns .btn-cancel{background:var(--text-muted);}
+    .edit-modal-btns .btn-cancel:hover{background:var(--text-secondary);}
+
+    .viewer{
+      position:fixed;top:0;left:0;right:0;bottom:0;background:var(--viewer-bg);z-index:300;display:flex;flex-direction:column;overflow-y:auto;
+    }
+    .viewer-close{
+      position:fixed;top:16px;right:20px;z-index:310;background:var(--viewer-btn-bg);color:#fff;border:none;
+      font-size:28px;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+    }
+    .viewer-close:hover{background:var(--viewer-btn-hover);transform:scale(1.05);}
+    .viewer-topbar{padding:20px 24px 0;display:flex;justify-content:space-between;align-items:center;}
+    .viewer-user{color:var(--viewer-primary);font-size:15px;font-weight:700;cursor:pointer;}
+    .viewer-user:hover{text-decoration:underline;}
+    .viewer-date{color:var(--viewer-text-muted);font-size:13px;}
+    .viewer-carousel{position:relative;display:flex;align-items:center;justify-content:center;padding:24px;max-height:55vh;}
+    .carousel-track{display:flex;overflow-x:auto;gap:16px;padding:0 40px;scroll-behavior:smooth;max-width:100%;}
+    .carousel-track img{max-height:50vh;border-radius:12px;object-fit:contain;cursor:pointer;flex-shrink:0;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+    .carousel-btn{
+      position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
+      background:var(--viewer-btn-bg);color:#fff;border:none;font-size:20px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;z-index:2;transition:all 0.2s;
+    }
+    .carousel-btn:hover{background:var(--viewer-btn-hover);transform:scale(1.05) translateY(-50%);}
+    .carousel-prev{left:12px;}
+    .carousel-next{right:12px;}
+    .viewer-dots{display:flex;justify-content:center;gap:8px;padding:0 24px 16px;flex-wrap:wrap;}
+    .viewer-dot{width:10px;height:10px;border-radius:50%;background:var(--viewer-border);border:none;cursor:pointer;padding:0;transition:all 0.2s;}
+    .viewer-dot.active{background:var(--viewer-primary);transform:scale(1.2);}
+    .viewer-body{background:var(--viewer-body);border-radius:24px 24px 0 0;padding:24px;flex:1;border-top:1px solid var(--viewer-border);}
+    .viewer-desc{color:var(--viewer-text);font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow-y:auto;margin-bottom:16px;padding-right:8px;}
+    .viewer-actions{display:flex;gap:16px;margin-bottom:20px;}
+    .viewer-actions .vbtn{
+      background:none;border:1px solid var(--viewer-border);color:var(--viewer-text-light);
+      padding:8px 20px;border-radius:24px;cursor:pointer;font-size:14px;font-weight:600;
+      display:flex;align-items:center;gap:8px;transition:all 0.2s;
+    }
+    .viewer-actions .vbtn:hover{border-color:var(--viewer-primary);color:var(--viewer-primary);background:var(--viewer-btn-bg);}
+    .viewer-actions .vbtn.liked{border-color:var(--viewer-primary);color:var(--viewer-primary);background:color-mix(in srgb, var(--viewer-primary) 15%, transparent);}
+    .viewer-comments h4{color:var(--viewer-text-light);font-size:16px;font-weight:700;margin-bottom:12px;}
+    .viewer-comments #viewerCommentsList{margin-bottom:16px;}
+    .ver-mas-coms{
+      display:block;width:100%;text-align:center;padding:10px;font-size:14px;font-weight:600;
+      border:1px solid var(--viewer-border);border-radius:10px;background:none;color:var(--viewer-text-light);
+      cursor:pointer;margin-top:6px;transition:all 0.2s;
+    }
+    .ver-mas-coms:hover{border-color:var(--viewer-primary);color:var(--viewer-primary);background:var(--viewer-btn-bg);}
+    .viewer-comment{
+      background:var(--viewer-comment-bg);border-radius:12px;padding:12px 16px;margin-bottom:10px;
+      border:1px solid var(--viewer-border);position:relative;
+    }
+    .viewer-comment-user{font-size:13px;font-weight:700;color:var(--viewer-primary);margin-bottom:4px;cursor:pointer;}
+    .viewer-comment-user:hover{text-decoration:underline;}
+    .viewer-comment-text{font-size:14px;color:var(--viewer-comment-text);line-height:1.5;word-break:break-word;}
+    .viewer-comment-date{font-size:11px;color:var(--viewer-text-muted);margin-top:6px;}
+    .comment-form textarea{
+      width:100%;padding:12px;border:1px solid var(--input-border);border-radius:10px;background:var(--input-bg);
+      color:var(--input-text);font-size:14px;resize:vertical;min-height:48px;font-family:inherit;
+      outline:none;margin-bottom:10px;transition:border-color 0.2s;
+    }
+    .comment-form textarea:focus{border-color:var(--primary);}
+    .comment-form .btn-modal{
+      width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:700;
+      font-family:'Rajdhani',sans-serif;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s;
+    }
+    .comment-form .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+
+    .coment-menu-btn{
+      position:absolute;top:4px;right:4px;z-index:2;width:22px;height:22px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.25);border-radius:50%;cursor:pointer;
+      color:#fff;font-size:14px;line-height:1;transition:all 0.15s;border:none;
+    }
+    .coment-menu-btn:hover{background:rgba(255,255,255,0.25);}
+    .coment-menu-dropdown{
+      position:absolute;top:28px;right:4px;z-index:10;
+      background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;
+      box-shadow:var(--shadow-md);min-width:100px;overflow:hidden;
+      display:none;flex-direction:column;
+    }
+    .coment-menu-dropdown.open{display:flex;}
+    .coment-menu-dropdown button{
+      padding:6px 12px;border:none;background:none;color:var(--text);
+      font-size:12px;font-weight:600;cursor:pointer;text-align:left;transition:all 0.1s;font-family:inherit;
+    }
+    .coment-menu-dropdown button:hover{background:var(--primary-bg);color:var(--primary);}
+    .coment-menu-dropdown button:last-child{color:var(--danger);}
+    .coment-menu-dropdown button:last-child:hover{background:var(--danger-bg);color:var(--danger);}
+
+    .fab{
+      position:fixed;bottom:32px;right:24px;z-index:150;
+      width:60px;height:60px;border-radius:50%;
+      background:var(--primary-gradient);color:#fff;border:none;
+      font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 20px rgba(34,197,94,0.4);
+      transition:all 0.25s ease;
+    }
+    .fab:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(34,197,94,0.55);}
+    .fab:active{transform:scale(0.95);}
+
+    .blocked-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;
+      background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:40px 24px;text-align:center;
+    }
+    .blocked-overlay .block-icon{font-size:72px;margin-bottom:16px;animation:pulseBlock 2s infinite;}
+    @keyframes pulseBlock{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:0.8;}}
+    .blocked-overlay h2{font-size:24px;font-weight:800;color:#ef4444;margin-bottom:8px;}
+    .blocked-overlay p{font-size:15px;color:#cbd5e1;max-width:480px;line-height:1.6;margin-bottom:16px;}
+    .blocked-overlay .razones{text-align:left;color:#94a3b8;font-size:14px;line-height:1.8;margin-bottom:24px;}
+    .blocked-overlay .razones li{margin-bottom:4px;}
+    .blocked-overlay .btn-soporte{
+      display:inline-block;padding:14px 40px;border-radius:12px;
+      background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;
+      font-size:16px;font-weight:700;text-decoration:none;
+      transition:all 0.2s;box-shadow:0 4px 16px rgba(59,130,246,0.3);
+    }
+    .blocked-overlay .btn-soporte:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(59,130,246,0.5);}
+
+    .crear-overlay{
+      display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:400;
+      background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);
+      align-items:center;justify-content:center;padding:20px;
+    }
+    .crear-overlay.active{display:flex;}
+    .crear-modal{
+      background:var(--bg-card);border-radius:20px;padding:28px 24px;
+      max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+      box-shadow:var(--shadow-lg);border:1px solid var(--border);
+      animation:zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes zoomIn{from{transform:scale(0.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+    .crear-modal h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:18px;}
+    .crear-modal .form-group{margin-bottom:16px;}
+    .crear-modal .form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+    .crear-modal .form-group textarea{
+      width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;
+      background:var(--bg-card2);color:var(--text);font-size:14px;font-family:inherit;
+      outline:none;resize:vertical;min-height:120px;transition:border-color 0.2s;
+    }
+    .crear-modal .form-group textarea:focus{border-color:var(--primary);}
+    .crear-imgs-row{display:flex;gap:8px;flex-wrap:wrap;}
+    .crear-img-slot{
+      width:80px;height:80px;border:2px dashed var(--border);border-radius:8px;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+      overflow:hidden;position:relative;transition:border-color 0.2s;
+    }
+    .crear-img-slot:hover{border-color:var(--primary);}
+    .crear-img-slot.has-img{border-style:solid;border-color:var(--primary);}
+    .slot-placeholder{font-size:28px;color:var(--text-light);}
+    .slot-preview{width:100%;height:100%;object-fit:cover;display:none;}
+    .slot-preview.show{display:block;}
+    .crear-img-slot .slot-placeholder.hide{display:none;}
+    .word-count{font-size:12px;color:var(--text-secondary);font-weight:400;}
+    .word-count.ok{color:var(--primary);}
+    .word-count.err{color:var(--danger);}
+    .crear-btns{display:flex;gap:10px;margin-top:8px;}
+    .crear-btns .btn-modal{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:'Rajdhani',sans-serif;cursor:pointer;background:var(--primary);color:#fff;transition:all 0.2s;}
+    .crear-btns .btn-modal:hover{background:var(--primary-dark);box-shadow:0 4px 12px var(--primary-glow);}
+    .crear-btns .btn-modal:disabled{opacity:0.6;cursor:not-allowed;}
+    .crear-btns .btn-cancel{background:var(--text-muted);}
+    .crear-btns .btn-cancel:hover{background:var(--text-secondary);box-shadow:none;}
+    .crear-msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;display:none;font-weight:500;}
+    .crear-msg.error{display:block;color:#ef4444;background:var(--danger-bg);border:1px solid rgba(239,68,68,0.2);}
+    .crear-msg.success{display:block;color:var(--primary);background:var(--primary-bg);border:1px solid var(--primary-glow);}
+
+    .file-input-hidden{position:absolute;opacity:0;width:1px;height:1px;overflow:hidden;pointer-events:none;}
+
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+    .section-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--text);}
+    .stat-number{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--primary);}
+
+    @media(min-width:768px){
+      .main-content{padding:24px;max-width:900px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div id="explorarContent"></div>
+  </div>
+
+  <button class="fab" id="fabBtn" onclick="abrirModalCrear()" title="Crear publicaci&oacute;n">+</button>
+
+  <div class="viewer" id="viewerModal" style="display:none;">
+    <button class="viewer-close" onclick="cerrarViewer()">&times;</button>
+    <div class="viewer-topbar"><span id="viewerUser" class="viewer-user"></span><span id="viewerDate" class="viewer-date"></span></div>
+    <div class="viewer-carousel" id="viewerCarousel">
+      <button class="carousel-btn carousel-prev" onclick="carouselPrev()">&#10094;</button>
+      <div class="carousel-track" id="carouselTrack"></div>
+      <button class="carousel-btn carousel-next" onclick="carouselNext()">&#10095;</button>
+    </div>
+    <div class="viewer-dots" id="viewerDots"></div>
+    <div class="viewer-body">
+      <div class="viewer-desc" id="viewerDesc"></div>
+      <div class="viewer-actions">
+        <button class="vbtn like" id="viewerLikeBtn" onclick="darLike()">&#128077; <span id="viewerLikes">0</span></button>
+        <button class="vbtn dislike" id="viewerDislikeBtn" onclick="darDislike()">&#128078; <span id="viewerDislikes">0</span></button>
+      </div>
+      <div class="viewer-comments">
+        <h4>Comentarios</h4>
+        <div class="comment-form">
+          <textarea id="commentInput" placeholder="Escribe un comentario..." rows="2"></textarea>
+          <button class="btn-modal" onclick="enviarComentario()">Enviar</button>
+        </div>
+        <div id="viewerCommentsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="crear-overlay" id="crearOverlay">
+    <div class="crear-modal">
+      <h3>Crear publicaci&oacute;n</h3>
+      <div id="crearMsg" class="crear-msg"></div>
+      <div class="form-group">
+        <label>Im&aacute;genes</label>
+        <div class="crear-imgs-row" id="crearImgRow">
+          <div class="crear-img-slot" data-idx="0" onclick="crearSlotClick(0)">
+            <span class="slot-placeholder">+</span>
+            <img class="slot-preview" id="crearPreview0">
+          </div>
+          <div class="crear-img-slot" data-idx="1" onclick="crearSlotClick(1)">
+            <span class="slot-placeholder">+</span>
+            <img class="slot-preview" id="crearPreview1">
+          </div>
+          <div class="crear-img-slot" data-idx="2" onclick="crearSlotClick(2)">
+            <span class="slot-placeholder">+</span>
+            <img class="slot-preview" id="crearPreview2">
+          </div>
+          <div class="crear-img-slot" data-idx="3" onclick="crearSlotClick(3)">
+            <span class="slot-placeholder">+</span>
+            <img class="slot-preview" id="crearPreview3">
+          </div>
+          <div class="crear-img-slot" data-idx="4" onclick="crearSlotClick(4)">
+            <span class="slot-placeholder">+</span>
+            <img class="slot-preview" id="crearPreview4">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripci&oacute;n <span id="crearWordCount" class="word-count">0/700</span></label>
+        <textarea id="crearDescInput" placeholder="M&aacute;ximo 700 palabras..."></textarea>
+      </div>
+      <div class="crear-btns">
+        <button class="btn-modal btn-cancel" onclick="cerrarModalCrear()">Cancelar</button>
+        <button class="btn-modal" id="btnCrearPublicar" onclick="publicarForo()">Publicar</button>
+      </div>
+    </div>
+  </div>
+
+  <iframe id="foroFrame" name="foroFrame" style="display:none;"></iframe>
+  <form id="foroForm" action="https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec" method="POST" target="foroFrame" style="display:none;">
+    <input type="hidden" name="action" value="addForo">
+    <input type="hidden" name="user" id="foroFormUser">
+    <input type="hidden" name="pass" id="foroFormPass">
+    <input type="hidden" name="descripcion" id="foroFormDesc">
+    <input type="hidden" name="img1" id="foroFormImg1">
+    <input type="hidden" name="img2" id="foroFormImg2">
+    <input type="hidden" name="img3" id="foroFormImg3">
+    <input type="hidden" name="img4" id="foroFormImg4">
+    <input type="hidden" name="img5" id="foroFormImg5">
+    <input type="hidden" name="img6" id="foroFormImg6">
+  </form>
+
+  <input type="file" id="crearFileInput" class="file-input-hidden" accept="image/*" multiple>
+
+  <script>
+    (function(){
+      var t = localStorage.getItem('tema');
+      if (t === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var e = localStorage.getItem('esquema');
+      if (e && e !== 'default') document.documentElement.setAttribute('data-scheme', e);
+      var cp = localStorage.getItem('colorPrimario');
+      if (cp) { document.documentElement.style.setProperty('--primary', cp); document.documentElement.style.setProperty('--primary-light', cp); document.documentElement.style.setProperty('--viewer-primary', cp); }
+      var cf = localStorage.getItem('colorFondo');
+      if (cf) document.documentElement.style.setProperty('--bg-body', cf);
+    })();
+
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+    var sessionUser = localStorage.getItem('sessionUser');
+    var sessionPass = localStorage.getItem('sessionPass');
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
+
+    var forosCache = [];
+    try { var cf = localStorage.getItem('forosCache'); if (cf) forosCache = JSON.parse(cf); } catch(e) {}
+
+    var viewerForo = null, viewerComs = [], carouselIdx = 0, comentariosMax = 6;
+    var filtroActual = localStorage.getItem('filtroExplorar') || 'recientes';
+
+    var crearImgsB64 = ['','','','',''];
+    var _subiendoForo = false;
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) { if (data.hasOwnProperty(key)) params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key])); }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); resolve(resp); };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Error de conexi&oacute;n')); };
+        document.body.appendChild(script);
+        setTimeout(function() { if (window[cb]) { delete window[cb]; if (script.parentNode) script.parentNode.removeChild(script); reject(new Error('Tiempo de espera agotado')); } }, 60000);
+      });
+    }
+
+    function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    function tiempoRelativo(fs) {
+      if (!fs) return ''; var d = new Date(fs); if (isNaN(d.getTime())) return fs;
+      var seg = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (seg < 60) return 'hace ' + seg + ' segundos'; var min = Math.floor(seg / 60);
+      if (min < 60) return 'hace ' + min + (min === 1 ? ' minuto' : ' minutos'); var hor = Math.floor(min / 60);
+      if (hor < 24) return 'hace ' + hor + (hor === 1 ? ' hora' : ' horas'); var dia = Math.floor(hor / 24);
+      if (dia < 30) return 'hace ' + dia + (dia === 1 ? ' d&iacute;a' : ' d&iacute;as'); var mes = Math.floor(dia / 30);
+      if (mes < 12) return 'hace ' + mes + (mes === 1 ? ' mes' : ' meses'); var anio = Math.floor(mes / 12);
+      return 'hace ' + anio + (anio === 1 ? ' a&ntilde;o' : ' a&ntilde;os');
+    }
+
+    function mostrarCuentaInactiva() {
+      var overlay = document.createElement('div');
+      overlay.className = 'blocked-overlay';
+      overlay.innerHTML = '<div class="block-icon">&#128683;</div>'
+        + '<h2>Cuenta Desactivada</h2>'
+        + '<p>Tu cuenta ha sido desactivada. Esto pudo deberse a las siguientes razones:</p>'
+        + '<ul class="razones">'
+        + '<li>1. Romper las reglas o pol&iacute;ticas de la plataforma.</li>'
+        + '<li>2. No respetar a los usuarios de la plataforma.</li>'
+        + '<li>3. Hacer spam de contenido.</li>'
+        + '<li>4. Usar palabras obscenas.</li>'
+        + '<li>5. Funar o difamar informaci&oacute;n falsa de otros usuarios.</li>'
+        + '</ul>'
+        + '<p style="font-weight:600;color:#f8fafc;">Para reactivar tu cuenta, comun&iacute;cate con soporte y cu&eacute;ntanos tu situaci&oacute;n.</p>'
+        + '<a class="btn-soporte" href="https://soporte.com" target="_blank">Contactar Soporte</a>';
+      document.body.appendChild(overlay);
+    }
+
+    function verificarCuenta() {
+      jsonp({ action:'checkAccount', user:sessionUser }).then(function(r) {
+        try { var d = typeof r === 'string' ? JSON.parse(r) : r; if (!d.exists || d.exists === false) { localStorage.removeItem('sessionUser'); localStorage.removeItem('sessionPass'); localStorage.removeItem('userProfile'); window.location.href = 'login.html'; } else if (d.status === 'Inactivo') { mostrarCuentaInactiva(); } } catch(e) {}
+      }).catch(function(){});
+    }
+
+    function mostrarExplorar() {
+      var f = [
+        { id:'recientes', label:'M&aacute;s recientes' }, { id:'antiguos', label:'M&aacute;s antiguos' },
+        { id:'megustas', label:'M&aacute;s likes' }, { id:'menosgustas', label:'Menos likes' }
+      ];
+      var html = '<div class="filtros" id="filtrosBar">' + f.map(function(x) {
+        return '<button class="filtro-btn' + (filtroActual === x.id ? ' active' : '') + '" data-filtro="' + x.id + '" onclick="cambiarFiltro(\'' + x.id + '\')">' + x.label + '</button>';
+      }).join('') + '</div><div id="explorarList"></div>';
+      document.getElementById('explorarContent').innerHTML = html;
+      if (forosCache.length) { renderExplorar(); }
+      else {
+        document.getElementById('explorarList').innerHTML = '<div class="skeleton"><div class="spinner"></div>Cargando publicaciones...</div>';
+      }
+      var cachedForos = localStorage.getItem('forosCache');
+      jsonp({ action:'getForos' }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.status === 'FOROS_OK') { var nuevo = d.foros || []; var nuevoStr = JSON.stringify(nuevo); if (nuevoStr !== cachedForos) { forosCache = nuevo; localStorage.setItem('forosCache', nuevoStr); renderExplorar(); } } } catch(e) {}
+        if (!cachedForos) renderExplorar();
+      }).catch(function() { if (!cachedForos) renderExplorar(); });
+    }
+
+    function cambiarFiltro(id) {
+      filtroActual = id; localStorage.setItem('filtroExplorar', id);
+      document.querySelectorAll('.filtro-btn').forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-filtro') === id); });
+      renderExplorar();
+    }
+
+    function renderExplorar() {
+      var el = document.getElementById('explorarList');
+      if (!el) return;
+      if (!forosCache.length) { el.innerHTML = '<div class="sin-foros">No hay publicaciones a&uacute;n.</div>'; return; }
+      var lista = forosCache.slice();
+      if (filtroActual === 'antiguos') lista.sort(function(a,b) { return (a.fecha||'').localeCompare(b.fecha||''); });
+      else if (filtroActual === 'megustas') lista.sort(function(a,b) { return (b.likes||0) - (a.likes||0); });
+      else if (filtroActual === 'menosgustas') lista.sort(function(a,b) { return (a.likes||0) - (b.likes||0); });
+      else lista.sort(function(a,b) { return (b.fecha||'').localeCompare(a.fecha||''); });
+      lista = lista.filter(function(f) { return f.tipo !== 'addon'; });
+      el.innerHTML = lista.map(function(f) {
+        var snip = (f.descripcion || '').slice(0, 280);
+        var imgs = f.imagenes ? f.imagenes.split('|').filter(Boolean) : [];
+        var ic = imgs.length;
+        var imgClass = ic === 1 ? 'single' : ic === 2 ? 'double' : ic === 3 ? 'triple' : ic === 4 ? 'quad' : 'quint';
+        var esPropio = f.user === sessionUser;
+        return '<div class="foro-card" onclick="abrirViewer(\'' + f.id + '\')">'
+          + (esPropio ? '<div class="foro-menu-btn" onclick="event.stopPropagation();toggleForoMenu(\'' + f.id + '\')">&#8942;</div><div class="foro-menu-dropdown" id="foroMenu_' + f.id + '"><button onclick="event.stopPropagation();editarForoPropio(\'' + f.id + '\')">Editar</button><button onclick="event.stopPropagation();eliminarForoPropio(\'' + f.id + '\')">Eliminar</button></div>' : '')
+          + '<div class="foro-card-header"><span class="foro-card-user" onclick="event.stopPropagation();window.location.href=\'perfil_publico.html?user=' + encodeURIComponent(f.user).replace(/%20/g,'-') + '\'">' + escHtml(f.user || '') + '</span><span class="foro-card-date">' + (f.tipo && f.tipo !== 'foro' ? '<span class="tipo-badge">' + escHtml(f.tipo) + '</span> ' : '') + tiempoRelativo(f.fecha) + '</span></div>'
+          + (imgs.length ? '<div class="foro-card-imgs ' + imgClass + '">' + imgs.map(function(u) { return '<img src="' + u + '" loading="lazy">'; }).join('') + '</div>' : '')
+          + '<div class="foro-card-snippet">' + escHtml(snip) + '</div>'
+          + '<div class="foro-card-stats"><span>&#128077; ' + (f.likes || 0) + '</span><span>&#128078; ' + (f.dislikes || 0) + '</span></div></div>';
+      }).join('');
+    }
+
+    function toggleForoMenu(id) {
+      var menu = document.getElementById('foroMenu_' + id);
+      if (!menu) return;
+      var abierto = menu.classList.contains('open');
+      document.querySelectorAll('.foro-menu-dropdown.open').forEach(function(m) { if (m !== menu) m.classList.remove('open'); });
+      menu.classList.toggle('open', !abierto);
+    }
+
+    function eliminarForoPropio(id) {
+      if (!confirm('\u00bfEliminar esta publicaci\u00f3n? Esta acci\u00f3n no se puede deshacer.')) return;
+      jsonp({ action:'deletePublicacion', user:sessionUser, pass:sessionPass, tipo:'foro', id:id }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'OK' || d.status === 'DELETED') {
+          forosCache = forosCache.filter(function(f) { return f.id !== id; });
+          localStorage.setItem('forosCache', JSON.stringify(forosCache));
+          renderExplorar();
+        } else { alert('Error al eliminar.'); } } catch(e) { alert('Error al eliminar.'); }
+      }).catch(function() { alert('Error de conexi\u00f3n.'); });
+    }
+
+    function editarForoPropio(id) {
+      var f = null;
+      for (var i = 0; i < forosCache.length; i++) { if (forosCache[i].id === id) { f = forosCache[i]; break; } }
+      if (!f) return;
+      var ov = document.createElement('div');
+      ov.className = 'edit-modal-overlay';
+      ov.id = 'editModalOverlay';
+      ov.innerHTML = '<div class="edit-modal-content"><h3>Editar publicaci\u00f3n</h3><textarea id="editForoTextarea">' + escHtml(f.descripcion || '') + '</textarea><div class="edit-modal-btns"><button class="btn-modal" onclick="guardarEdicionForo(\'' + id + '\')">Guardar</button><button class="btn-modal btn-cancel" onclick="cerrarEditModal()">Cancelar</button></div></div>';
+      ov.addEventListener('click', function(e) { if (e.target === ov) cerrarEditModal(); });
+      document.body.appendChild(ov);
+      document.getElementById('editForoTextarea').focus();
+    }
+
+    function cerrarEditModal() {
+      var el = document.getElementById('editModalOverlay');
+      if (el) el.remove();
+    }
+
+    function guardarEdicionForo(id) {
+      var texto = document.getElementById('editForoTextarea').value.trim();
+      if (!texto) { alert('La descripci\u00f3n no puede estar vac\u00eda.'); return; }
+      jsonp({ action:'editPublicacion', user:sessionUser, pass:sessionPass, tipo:'foro', id:id, contenido:texto }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'OK' || d.status === 'UPDATED') {
+          for (var i = 0; i < forosCache.length; i++) { if (forosCache[i].id === id) { forosCache[i].descripcion = texto; break; } }
+          localStorage.setItem('forosCache', JSON.stringify(forosCache));
+          cerrarEditModal();
+          renderExplorar();
+        } else { alert('Error al guardar.'); } } catch(e) { alert('Error al guardar.'); }
+      }).catch(function() { alert('Error de conexi\u00f3n.'); });
+    }
+
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.foro-menu-dropdown.open, .coment-menu-dropdown.open').forEach(function(m) { m.classList.remove('open'); });
+    });
+
+    function toggleComentMenu(id) {
+      var el = document.getElementById('comentMenu_' + id);
+      if (!el) return;
+      var abierto = el.classList.contains('open');
+      document.querySelectorAll('.coment-menu-dropdown.open').forEach(function(m) { if (m !== el) m.classList.remove('open'); });
+      el.classList.toggle('open', !abierto);
+    }
+
+    function eliminarComentPropio(id) {
+      if (!confirm('\u00bfEliminar este comentario?')) return;
+      jsonp({ action:'deletePublicacion', user:sessionUser, pass:sessionPass, tipo:'comentario', id:id }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'OK') {
+          viewerComs = viewerComs.filter(function(c) { return c.id !== id; });
+          renderComentarios();
+        } else { alert('Error al eliminar.'); } } catch(e) { alert('Error al eliminar.'); }
+      }).catch(function() { alert('Error de conexi\u00f3n.'); });
+    }
+
+    function editarComentPropio(id) {
+      var c = null;
+      for (var i = 0; i < viewerComs.length; i++) { if (viewerComs[i].id === id) { c = viewerComs[i]; break; } }
+      if (!c) return;
+      var text = prompt('Editar comentario:', c.comentario);
+      if (text === null || text.trim() === '') return;
+      jsonp({ action:'editPublicacion', user:sessionUser, pass:sessionPass, tipo:'comentario', id:id, contenido:text.trim() }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'OK') {
+          for (var i = 0; i < viewerComs.length; i++) { if (viewerComs[i].id === id) { viewerComs[i].comentario = text.trim(); break; } }
+          renderComentarios();
+        } else { alert('Error al editar.'); } } catch(e) { alert('Error al editar.'); }
+      }).catch(function() { alert('Error de conexi\u00f3n.'); });
+    }
+
+    function abrirViewer(foroId) {
+      var cached = null;
+      for (var i = 0; i < forosCache.length; i++) { if (forosCache[i].id === foroId) { cached = forosCache[i]; break; } }
+      if (cached) { viewerForo = cached; viewerComs = []; mostrarViewer(); }
+      jsonp({ action:'getForo', foroId:foroId }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'FORO_OK' && viewerForo && viewerForo.id === foroId) { for (var k in d.foro) viewerForo[k] = d.foro[k]; viewerComs = d.comentarios || []; mostrarViewer(); } } catch(e) {}
+      }).catch(function() {});
+    }
+
+    function mostrarViewer() {
+      if (!viewerForo) return;
+      comentariosMax = 6;
+      var userEl = document.getElementById('viewerUser');
+      userEl.textContent = escHtml(viewerForo.user || '');
+      userEl.onclick = function() { window.location.href = 'perfil_publico.html?user=' + encodeURIComponent(viewerForo.user).replace(/%20/g,'-'); };
+      document.getElementById('viewerDate').textContent = tiempoRelativo(viewerForo.fecha);
+      document.getElementById('viewerLikes').textContent = viewerForo.likes || 0;
+      document.getElementById('viewerDislikes').textContent = viewerForo.dislikes || 0;
+      var imgs = viewerForo.imagenes ? viewerForo.imagenes.split('|').filter(Boolean) : [];
+      var track = document.getElementById('carouselTrack');
+      if (imgs.length) {
+        track.innerHTML = imgs.map(function(u) { return '<img src="' + u + '" onclick="window.open(\'' + u + '\',\'_blank\')">'; }).join('');
+        var dots = document.getElementById('viewerDots');
+        dots.innerHTML = imgs.map(function(_, i) { return '<button class="viewer-dot' + (i === 0 ? ' active' : '') + '" onclick="irAImg(' + i + ')"></button>'; }).join('');
+        carouselIdx = 0; track.scrollLeft = 0;
+      } else { track.innerHTML = '<p style="color:#666;padding:40px;">Sin im&aacute;genes</p>'; document.getElementById('viewerDots').innerHTML = ''; }
+      document.getElementById('viewerDesc').textContent = viewerForo.descripcion || '';
+      actualizarVotoUI();
+      renderComentarios();
+      document.getElementById('viewerModal').style.display = 'flex';
+    }
+
+    function cerrarViewer() { document.getElementById('viewerModal').style.display = 'none'; viewerForo = null; viewerComs = []; }
+    function carouselNext() { var t = document.getElementById('carouselTrack'), imgs = t.querySelectorAll('img'); if (!imgs.length) return; irAImg(Math.min(carouselIdx + 1, imgs.length - 1)); }
+    function carouselPrev() { irAImg(Math.max(carouselIdx - 1, 0)); }
+    function irAImg(idx) {
+      var t = document.getElementById('carouselTrack'), imgs = t.querySelectorAll('img');
+      if (!imgs.length) return; carouselIdx = idx; imgs[idx].scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+      document.querySelectorAll('.viewer-dot').forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+    }
+
+    function userVoteState(foro) {
+      var u = sessionUser;
+      if (!u || !foro) return 0;
+      if ((foro.likesUsers || '').split(',').indexOf(u) !== -1) return 1;
+      if ((foro.dislikesUsers || '').split(',').indexOf(u) !== -1) return -1;
+      return 0;
+    }
+
+    function actualizarVotoUI() {
+      var s = userVoteState(viewerForo);
+      document.getElementById('viewerLikeBtn').classList.toggle('liked', s === 1);
+      document.getElementById('viewerDislikeBtn').classList.toggle('liked', s === -1);
+    }
+
+    function darLike() {
+      if (!viewerForo) return;
+      var s = userVoteState(viewerForo);
+      var foroId = viewerForo.id;
+      if (s === 1) { viewerForo.likes--; viewerForo.likesUsers = (viewerForo.likesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+      else {
+        if (s === -1) { viewerForo.dislikes--; viewerForo.dislikesUsers = (viewerForo.dislikesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+        viewerForo.likes = (viewerForo.likes || 0) + 1;
+        viewerForo.likesUsers = ((viewerForo.likesUsers || '').split(',').filter(Boolean).concat([sessionUser])).join(',');
+      }
+      document.getElementById('viewerLikes').textContent = viewerForo.likes;
+      document.getElementById('viewerDislikes').textContent = viewerForo.dislikes;
+      actualizarVotoUI();
+      jsonp({ action:'likeForo', foroId:foroId, user:sessionUser }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'FORO_RATED') {
+          viewerForo.likes = d.likes; viewerForo.dislikes = d.dislikes;
+          viewerForo.likesUsers = d.likesUsers || ''; viewerForo.dislikesUsers = d.dislikesUsers || '';
+          document.getElementById('viewerLikes').textContent = d.likes; document.getElementById('viewerDislikes').textContent = d.dislikes;
+          actualizarVotoUI();
+          for (var i = 0; i < forosCache.length; i++) { if (forosCache[i].id === foroId) { forosCache[i].likes = d.likes; forosCache[i].dislikes = d.dislikes; break; } }
+          renderExplorar();
+        } } catch(e) {}
+      }).catch(function() {});
+    }
+
+    function darDislike() {
+      if (!viewerForo) return;
+      var s = userVoteState(viewerForo);
+      var foroId = viewerForo.id;
+      if (s === -1) { viewerForo.dislikes--; viewerForo.dislikesUsers = (viewerForo.dislikesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+      else {
+        if (s === 1) { viewerForo.likes--; viewerForo.likesUsers = (viewerForo.likesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+        viewerForo.dislikes = (viewerForo.dislikes || 0) + 1;
+        viewerForo.dislikesUsers = ((viewerForo.dislikesUsers || '').split(',').filter(Boolean).concat([sessionUser])).join(',');
+      }
+      document.getElementById('viewerLikes').textContent = viewerForo.likes;
+      document.getElementById('viewerDislikes').textContent = viewerForo.dislikes;
+      actualizarVotoUI();
+      jsonp({ action:'dislikeForo', foroId:foroId, user:sessionUser }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp; if (d.status === 'FORO_RATED') {
+          viewerForo.likes = d.likes; viewerForo.dislikes = d.dislikes;
+          viewerForo.likesUsers = d.likesUsers || ''; viewerForo.dislikesUsers = d.dislikesUsers || '';
+          document.getElementById('viewerLikes').textContent = d.likes; document.getElementById('viewerDislikes').textContent = d.dislikes;
+          actualizarVotoUI();
+          for (var i = 0; i < forosCache.length; i++) { if (forosCache[i].id === foroId) { forosCache[i].likes = d.likes; forosCache[i].dislikes = d.dislikes; break; } }
+          renderExplorar();
+        } } catch(e) {}
+      }).catch(function() {});
+    }
+
+    function renderComentarios() {
+      var el = document.getElementById('viewerCommentsList');
+      if (!viewerComs.length) { el.innerHTML = '<p style="color:#555;font-size:13px;">No hay comentarios todav&iacute;a.</p>'; return; }
+      var mostrar = viewerComs.slice(0, comentariosMax);
+      var html = mostrar.map(function(c) {
+        var cId = c.id || '';
+        var esPropio = c.user === sessionUser;
+        var menuHtml = esPropio && cId ? '<button class="coment-menu-btn" onclick="event.stopPropagation();toggleComentMenu(\'' + cId + '\')">&#8942;</button><div class="coment-menu-dropdown" id="comentMenu_' + cId + '"><button onclick="event.stopPropagation();editarComentPropio(\'' + cId + '\')">Editar</button><button onclick="event.stopPropagation();eliminarComentPropio(\'' + cId + '\')">Eliminar</button></div>' : '';
+        return '<div class="viewer-comment">' + menuHtml + '<div class="viewer-comment-user" onclick="window.location.href=\'perfil_publico.html?user=' + encodeURIComponent(c.user || '').replace(/%20/g,'-') + '\'">' + escHtml(c.user || '') + '</div><div class="viewer-comment-text">' + escHtml(c.comentario || '') + '</div><div class="viewer-comment-date">' + tiempoRelativo(c.fecha) + '</div></div>';
+      }).join('');
+      if (viewerComs.length > comentariosMax) {
+        html += '<button class="vbtn ver-mas-coms" onclick="comentariosMax=9999;renderComentarios()">Ver m&aacute;s (' + (viewerComs.length - comentariosMax) + ' restantes)</button>';
+      }
+      el.innerHTML = html;
+    }
+
+    function enviarComentario() {
+      if (!viewerForo) return;
+      var texto = document.getElementById('commentInput').value.trim();
+      if (!texto) return;
+      document.getElementById('commentInput').value = '';
+      var tempComment = { id: 'temp_' + Date.now(), user: sessionUser, comentario: texto, fecha: new Date().toISOString() };
+      viewerComs.unshift(tempComment);
+      renderComentarios();
+      jsonp({ action:'addComentario', user:sessionUser, pass:sessionPass, foroId:viewerForo.id, comentario:texto }).then(function(resp) {
+        try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (d.status !== 'COMENTARIO_OK') { viewerComs = viewerComs.filter(function(c) { return c !== tempComment; }); renderComentarios(); }
+        } catch(e) { viewerComs = viewerComs.filter(function(c) { return c !== tempComment; }); renderComentarios(); }
+      }).catch(function() { viewerComs = viewerComs.filter(function(c) { return c !== tempComment; }); renderComentarios(); });
+    }
+
+    function leerArchivoComoBase64(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function() { callback(reader.result); };
+      reader.onerror = function() { callback(null); };
+      reader.readAsDataURL(file);
+    }
+
+    function redimensionarImagen(dataUrl, maxAncho, calidad, callback) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var w = img.width, h = img.height;
+        if (w > maxAncho) { h = h * maxAncho / w; w = maxAncho; }
+        if (h > maxAncho) { w = w * maxAncho / h; h = maxAncho; }
+        canvas.width = w; canvas.height = h;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        callback(canvas.toDataURL('image/jpeg', calidad));
+      };
+      img.onerror = function() { callback(dataUrl); };
+      img.src = dataUrl;
+    }
+
+    function contarPalabras(s) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+
+    function abrirModalCrear() {
+      document.getElementById('crearOverlay').classList.add('active');
+      document.getElementById('crearDescInput').value = '';
+      document.getElementById('crearMsg').style.display = 'none';
+      document.getElementById('btnCrearPublicar').disabled = false;
+      document.getElementById('btnCrearPublicar').textContent = 'Publicar';
+      document.getElementById('crearWordCount').textContent = '0/700';
+      document.getElementById('crearWordCount').className = 'word-count';
+      crearImgsB64 = ['','','','',''];
+      for (var i = 0; i < 5; i++) {
+        var slot = document.querySelector('.crear-img-slot[data-idx="' + i + '"]');
+        if (!slot) continue;
+        slot.classList.remove('has-img');
+        slot.querySelector('.slot-placeholder').classList.remove('hide');
+        var prev = document.getElementById('crearPreview' + i);
+        prev.className = 'slot-preview';
+        prev.src = '';
+      }
+    }
+
+    function cerrarModalCrear() {
+      document.getElementById('crearOverlay').classList.remove('active');
+    }
+
+    function crearSlotClick(idx) {
+      if (crearImgsB64[idx]) {
+        crearImgsB64[idx] = '';
+        var slot = document.querySelector('.crear-img-slot[data-idx="' + idx + '"]');
+        slot.classList.remove('has-img');
+        slot.querySelector('.slot-placeholder').classList.remove('hide');
+        document.getElementById('crearPreview' + idx).className = 'slot-preview';
+        document.getElementById('crearPreview' + idx).src = '';
+        return;
+      }
+      var input = document.getElementById('crearFileInput');
+      input.setAttribute('data-target-idx', idx);
+      input.value = '';
+      input.click();
+    }
+
+    document.getElementById('crearFileInput').addEventListener('change', function() {
+      var idx = parseInt(this.getAttribute('data-target-idx') || '0');
+      var file = this.files[0];
+      if (!file) return;
+      leerArchivoComoBase64(file, function(b64) {
+        if (!b64) return;
+        redimensionarImagen(b64, 800, 0.7, function(b64Peq) {
+          crearImgsB64[idx] = b64Peq;
+          var slot = document.querySelector('.crear-img-slot[data-idx="' + idx + '"]');
+          slot.classList.add('has-img');
+          slot.querySelector('.slot-placeholder').classList.add('hide');
+          var prev = document.getElementById('crearPreview' + idx);
+          prev.src = b64Peq;
+          prev.className = 'slot-preview show';
+        });
+      });
+    });
+
+    document.getElementById('crearDescInput').addEventListener('input', function() {
+      var el = document.getElementById('crearWordCount');
+      var words = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+      el.textContent = words + '/700';
+      el.className = 'word-count' + (words > 700 ? ' err' : ' ok');
+    });
+
+    function publicarForo() {
+      if (_subiendoForo) return;
+      var desc = document.getElementById('crearDescInput').value.trim();
+      var words = desc ? desc.split(/\s+/).length : 0;
+      if (words > 700) {
+        document.getElementById('crearMsg').textContent = 'La descripci\u00f3n no puede tener m\u00e1s de 700 palabras.';
+        document.getElementById('crearMsg').className = 'crear-msg error';
+        return;
+      }
+      var tieneImg = crearImgsB64.some(function(b) { return b; });
+      if (!tieneImg) {
+        document.getElementById('crearMsg').textContent = 'Debes agregar al menos una imagen.';
+        document.getElementById('crearMsg').className = 'crear-msg error';
+        return;
+      }
+      _subiendoForo = true;
+      document.getElementById('btnCrearPublicar').disabled = true;
+      document.getElementById('btnCrearPublicar').textContent = 'Publicando...';
+      document.getElementById('crearMsg').style.display = 'none';
+      document.getElementById('foroFormUser').value = sessionUser;
+      document.getElementById('foroFormPass').value = sessionPass;
+      document.getElementById('foroFormDesc').value = desc;
+      for (var i = 0; i < 5; i++) { document.getElementById('foroFormImg' + (i + 1)).value = crearImgsB64[i] || ''; }
+      document.getElementById('foroFormImg6').value = '';
+      document.getElementById('foroForm').submit();
+      setTimeout(function verificarForo() {
+        if (!_subiendoForo) return;
+        _subiendoForo = false;
+        document.getElementById('btnCrearPublicar').disabled = false;
+        document.getElementById('btnCrearPublicar').textContent = 'Publicar';
+        cerrarModalCrear();
+        jsonp({ action:'getForos' }).then(function(resp) {
+          try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if (d.status === 'FOROS_OK') { forosCache = d.foros || []; localStorage.setItem('forosCache', JSON.stringify(forosCache)); renderExplorar(); } } catch(e) {}
+        }).catch(function() {});
+      }, 10000);
+    }
+
+    document.getElementById('foroFrame').addEventListener('load', function() {
+      if (!_subiendoForo) return;
+      _subiendoForo = false;
+      document.getElementById('btnCrearPublicar').disabled = false;
+      document.getElementById('btnCrearPublicar').textContent = 'Publicar';
+      cerrarModalCrear();
+      setTimeout(function() {
+        jsonp({ action:'getForos' }).then(function(resp) {
+          try { var d = typeof resp === 'string' ? JSON.parse(resp) : resp;
+            if (d.status === 'FOROS_OK') { forosCache = d.foros || []; localStorage.setItem('forosCache', JSON.stringify(forosCache)); renderExplorar(); } } catch(e) {}
+        }).catch(function() {});
+      }, 2000);
+    });
+
+    document.getElementById('viewerModal').addEventListener('click', function(e) {
+      if (e.target === this) cerrarViewer();
+    });
+
+    document.getElementById('crearOverlay').addEventListener('click', function(e) {
+      if (e.target === this) cerrarModalCrear();
+    });
+
+    verificarCuenta();
+    mostrarExplorar();
+  </script>
+</body>
+</html>

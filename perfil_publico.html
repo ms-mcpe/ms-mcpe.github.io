@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.location.href='descarga.html'}}();</script>
+  <title>Perfil - WorldLeaf App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+      :root {
+        --bg-void: #060a0f;
+        --bg-body: #0b1120;
+        --bg-card: #111827;
+        --bg-card2: #162032;
+        --bg-topbar: rgba(6,10,15,0.92);
+        --bg-sidebar: #0d1729;
+
+        --primary: #22c55e;
+        --primary-light: #4ade80;
+        --primary-dark: #16a34a;
+        --primary-bg: rgba(34,197,94,0.09);
+        --primary-glow: rgba(34,197,94,0.25);
+        --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+
+        --amber: #f59e0b;
+        --amber-light: #fbbf24;
+        --amber-bg: rgba(245,158,11,0.10);
+        --amber-glow: rgba(245,158,11,0.22);
+
+        --blue: #3b82f6;
+        --blue-light: #60a5fa;
+        --blue-bg: rgba(59,130,246,0.10);
+        --info: #06b6d4;
+        --info-bg: rgba(6,182,212,0.10);
+
+        --owner-gradient: linear-gradient(135deg,#fcd34d,#f59e0b);
+        --admin-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+        --app-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+
+        --text: #f0f6ff;
+        --text-secondary: #94a3b8;
+        --text-muted: #4b5e78;
+        --text-light: #2d3f57;
+
+        --border: #1e2f48;
+        --border-light: #131f30;
+        --surface: #162032;
+        --surface-2: #1e2f48;
+
+        --shadow: 0 4px 16px rgba(0,0,0,0.5);
+        --shadow-md: 0 8px 28px rgba(0,0,0,0.6);
+        --shadow-lg: 0 20px 48px rgba(0,0,0,0.7);
+        --shadow-glow: 0 0 24px var(--primary-glow);
+
+        --success: #22c55e; --success-bg: rgba(34,197,94,0.10);
+        --danger: #ef4444; --danger-bg: rgba(239,68,68,0.10);
+        --warning: #f59e0b; --warning-bg: rgba(245,158,11,0.10);
+
+        --radius: 14px;
+        --radius-sm: 9px;
+        --overlay: rgba(0,0,0,0.72);
+      }
+    [data-theme="dark"] {
+      --bg-body: #060a0f;
+      --bg-card: #0d1729;
+      --bg-topbar: rgba(6,10,15,0.95);
+      --bg-bottombar: rgba(6,10,15,0.95);
+      --bg-sidebar: #060a0f;
+      --primary: #22c55e;
+      --primary-light: #4ade80;
+      --primary-bg: rgba(34,197,94,0.09);
+      --primary-dark: #16a34a;
+      --primary-gradient: linear-gradient(135deg,#4ade80,#22c55e);
+      --text: #f0f6ff;
+      --text-secondary: #94a3b8;
+      --text-muted: #4b5e78;
+      --text-light: #2d3f57;
+      --border: #1e2f48;
+      --border-light: #131f30;
+      --shadow: rgba(0,0,0,0.5);
+      --shadow-md: rgba(0,0,0,0.6);
+    }
+    [data-scheme="blue"] {
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --primary-bg: rgba(59,130,246,0.10);
+      --primary-dark: #2563eb;
+      --primary-gradient: linear-gradient(135deg,#60a5fa,#3b82f6);
+      --viewer-primary: #60a5fa;
+    }
+    [data-scheme="purple"] {
+      --primary: #a855f7;
+      --primary-light: #c084fc;
+      --primary-bg: rgba(168,85,247,0.10);
+      --primary-dark: #9333ea;
+      --primary-gradient: linear-gradient(135deg,#c084fc,#a855f7);
+      --viewer-primary: #c084fc;
+    }
+    [data-scheme="orange"] {
+      --primary: #f59e0b;
+      --primary-light: #fbbf24;
+      --primary-bg: rgba(245,158,11,0.10);
+      --primary-dark: #d97706;
+      --primary-gradient: linear-gradient(135deg,#fbbf24,#f59e0b);
+      --viewer-primary: #fbbf24;
+    }
+    *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg-body);min-height:100vh;padding-top:0;padding-bottom:64px;color:var(--text);-webkit-user-select:none;user-select:none;transition:background-color 0.3s ease,color 0.3s ease;overflow-x:hidden;width:100%;max-width:100%;}
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+      background-image:linear-gradient(var(--border-light) 1px, transparent 1px),linear-gradient(90deg, var(--border-light) 1px, transparent 1px);
+      background-size:28px 28px;opacity:0.35;
+    }
+    body::after{
+      content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,197,94,0.07) 0%, transparent 70%);
+    }
+    .header{position:relative;width:100%;height:200px;overflow:hidden;background:var(--primary-gradient);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
+    .header img{width:100%;height:100%;object-fit:cover;}
+    .header .overlay{position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(transparent,rgba(0,0,0,.5));}
+    .perfil-info{position:relative;padding:0 20px;margin-top:-50px;}
+    .avatar-wrap{position:relative;width:100px;height:100px;border-radius:50%;border:4px solid var(--bg-card);overflow:hidden;box-shadow:0 4px 12px var(--shadow-md);background:var(--primary-bg);}
+    .avatar-wrap img{width:100%;height:100%;object-fit:cover;}
+    .avatar-wrap .avatar-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;color:var(--primary);background:var(--primary-bg);}
+
+    .nombre-usuario{font-size:22px;font-weight:700;color:var(--text);margin-top:12px;}
+    .badge-rol{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 11px;border-radius:20px;display:inline-flex;align-items:center;}
+    .badge-owner{background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,0.35);}
+    .badge-admin{background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,0.30);}
+    .badge-app{background:linear-gradient(135deg,#c084fc,#a855f7);color:#fff;box-shadow:0 2px 8px rgba(168,85,247,0.30);}
+    .badge-user{background:var(--primary-bg);color:var(--primary);}
+    .verificacion{font-size:12px;color:var(--text-secondary);margin-top:2px;}
+    .descripcion{background:var(--bg-card);border-radius:var(--radius);padding:16px;margin:16px 20px 0;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+    .descripcion::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary-gradient);}
+    .descripcion-titulo{font-size:13px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+    .descripcion-texto{font-size:15px;color:var(--text);line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+    .descripcion-vacia{font-size:14px;color:var(--text-light);font-style:italic;}
+
+    .seccion{background:var(--bg-card);border-radius:var(--radius);margin:16px 20px 0;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+    .seccion::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--primary-gradient);}
+    .seccion-titulo{font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    #loading{text-align:center;padding:60px 20px;color:var(--text-secondary);font-size:16px;}
+    #loading .spinner{width:32px;height:32px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 12px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .message{padding:12px 16px;border-radius:8px;font-size:14px;margin:12px 20px 0;display:none;text-align:center;}
+    .message.error{display:block;background:#ffebee;color:#c62828;border:1px solid #ef9a9a;}
+    .message.success{display:block;background:var(--primary-bg);color:var(--primary);border:1px solid var(--primary-light);}
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--overlay);z-index:200;align-items:center;justify-content:center;padding:20px;}
+    .modal-overlay.active{display:flex;}
+    .modal{background:var(--bg-card);border-radius:16px;padding:28px 24px;max-width:420px;width:100%;position:relative;box-shadow:0 8px 32px var(--shadow-md);}
+    .modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-secondary);line-height:1;}
+    .modal h3{font-size:18px;color:var(--text);margin-bottom:16px;}
+    .back-btn{position:fixed;top:12px;left:12px;z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;border:none;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:background .2s;}
+    .back-btn:hover{background:rgba(0,0,0,.6);}
+    .foro-card{background:var(--bg-card);border-radius:16px;overflow:hidden;margin-bottom:16px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;border:1px solid var(--border-light);box-shadow:0 1px 3px var(--shadow);}
+    .foro-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--shadow-md);}
+    .foro-card-header{padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center;}
+    .foro-card-user{font-size:13px;font-weight:600;color:var(--primary);cursor:pointer;}
+    .foro-card-user:hover{text-decoration:underline;}
+    .foro-card-date{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;}
+    .foro-card-snippet{padding:10px 16px 0;font-size:14px;color:var(--text);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;line-height:1.5;}
+    .foro-card-imgs{margin-top:10px;display:grid;gap:2px;overflow:hidden;background:var(--border-light);}
+    .foro-card-imgs img{width:100%;height:100%;object-fit:cover;display:block;}
+    .foro-card-imgs.single img{max-height:300px;width:100%;}
+    .foro-card-imgs.double{grid-template-columns:1fr 1fr;}
+    .foro-card-imgs.double img{height:220px;}
+    .foro-card-imgs.triple{grid-template-columns:2fr 1fr;grid-template-rows:110px 110px;}
+    .foro-card-imgs.triple img:first-child{grid-row:1/3;height:220px;}
+    .foro-card-imgs.triple img:not(:first-child){height:110px;}
+    .foro-card-imgs.quad{grid-template-columns:1fr 1fr;grid-template-rows:110px 110px;}
+    .foro-card-imgs.quad img{height:110px;}
+    .foro-card-imgs.quint{grid-template-columns:1fr 1fr 1fr;grid-template-rows:110px 110px;}
+    .foro-card-imgs.quint img:first-child{grid-column:1/3;grid-row:1/3;height:220px;}
+    .foro-card-imgs.quint img:not(:first-child){height:110px;}
+    .foro-card-stats{padding:10px 16px 14px;display:flex;gap:16px;font-size:13px;color:var(--text-secondary);}
+    .tipo-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:var(--primary-bg);color:var(--primary);text-transform:uppercase;}
+    .sin-foros{text-align:center;color:var(--text-light);font-size:14px;padding:20px 0;}
+    .viewer{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--viewer-bg);z-index:300;display:flex;flex-direction:column;overflow-y:auto;}
+    .viewer-close{position:fixed;top:12px;right:16px;z-index:310;background:var(--viewer-btn-bg);color:#fff;border:none;font-size:28px;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .viewer-close:hover{background:var(--viewer-btn-hover);}
+    .viewer-topbar{padding:14px 20px 0;display:flex;justify-content:space-between;align-items:center;}
+    .viewer-user{color:var(--viewer-primary);font-size:14px;font-weight:600;}
+    .viewer-date{color:var(--viewer-text-muted);font-size:12px;}
+    .viewer-carousel{position:relative;display:flex;align-items:center;justify-content:center;padding:20px;max-height:55vh;}
+    .carousel-track{display:flex;overflow-x:auto;gap:12px;padding:0 40px;scroll-behavior:smooth;max-width:100%;}
+    .carousel-track img{max-height:50vh;border-radius:8px;object-fit:contain;cursor:pointer;flex-shrink:0;}
+    .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--viewer-btn-bg);color:#fff;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;}
+    .carousel-btn:hover{background:var(--viewer-btn-hover);}
+    .carousel-prev{left:8px;}
+    .carousel-next{right:8px;}
+    .viewer-dots{display:flex;justify-content:center;gap:6px;padding:0 20px 12px;flex-wrap:wrap;}
+    .viewer-dot{width:8px;height:8px;border-radius:50%;background:var(--viewer-border);border:none;cursor:pointer;padding:0;}
+    .viewer-dot.active{background:var(--viewer-primary);}
+    .viewer-body{background:var(--viewer-body);border-radius:16px 16px 0 0;padding:20px;flex:1;}
+    .viewer-desc{color:var(--viewer-text);font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto;margin-bottom:12px;}
+    .viewer-actions{display:flex;gap:16px;margin-bottom:16px;}
+    .viewer-actions .vbtn{background:none;border:1px solid var(--viewer-border);color:var(--viewer-text-light);padding:6px 16px;border-radius:20px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px;transition:all .2s;}
+    .viewer-actions .vbtn:hover{border-color:var(--viewer-primary);color:var(--viewer-primary);}
+    .viewer-actions .vbtn.liked{border-color:var(--viewer-primary);color:var(--viewer-primary);background:color-mix(in srgb, var(--viewer-primary) 10%, transparent);}
+    .viewer-comments h4{color:var(--viewer-text-light);font-size:15px;margin-bottom:10px;}
+    .viewer-comments #viewerCommentsList{margin-bottom:12px;}
+    .ver-mas-coms{display:block;width:100%;text-align:center;padding:8px;font-size:13px;border:1px solid var(--viewer-border);border-radius:8px;background:none;color:var(--viewer-text-light);cursor:pointer;margin-top:4px;}
+    .ver-mas-coms:hover{border-color:var(--viewer-primary);color:var(--viewer-primary);}
+    .viewer-comment{background:var(--viewer-comment-bg);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+    .viewer-comment-user{font-size:12px;font-weight:600;color:var(--viewer-primary);margin-bottom:2px;}
+    .viewer-comment-text{font-size:13px;color:var(--viewer-comment-text);word-break:break-word;}
+    .viewer-comment-date{font-size:11px;color:var(--viewer-text-muted);margin-top:4px;}
+    .comment-form textarea{width:100%;padding:10px;border:1px solid var(--input-border);border-radius:8px;background:var(--input-bg);color:var(--input-text);font-size:13px;resize:vertical;min-height:40px;font-family:inherit;outline:none;margin-bottom:8px;}
+    .comment-form textarea:focus{border-color:var(--primary);}
+    .comment-form .btn-modal{background:var(--primary);color:#fff;width:auto;padding:8px 24px;font-size:13px;}
+    .bottombar{
+      position:fixed;bottom:0;left:0;right:0;height:64px;
+      background:rgba(6,10,15,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      display:flex;align-items:center;justify-content:space-around;
+      box-shadow:0 -2px 20px rgba(0,0,0,0.5);z-index:100;padding:0 8px;
+      border-top:1px solid var(--border);
+    }
+    .bottombar-item{
+      display:flex;flex-direction:column;align-items:center;gap:2px;
+      padding:6px 12px;border:none;background:none;cursor:pointer;
+      color:var(--text-secondary);transition:color .2s;
+      font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.3px;min-width:56px;
+    }
+    .bottombar-item .icon{font-size:22px;line-height:1;}
+    .bottombar-item.active,.bottombar-item:hover{color:var(--primary);}
+    .bottombar-item.active .icon{color:var(--primary);}
+    @media(max-width:480px){.header{height:160px;}.perfil-info{padding:0 16px;margin-top:-45px;}.avatar-wrap{width:80px;height:80px;}.nombre-usuario{font-size:18px;}}
+    @media(min-width:768px) {
+      body{padding-bottom:20px;}
+      .header{height:240px;}
+      .perfil-info{padding:0 32px;}
+      .descripcion,.seccion{margin-left:32px;margin-right:32px;}
+      .bottombar{top:0;bottom:auto;left:auto;right:20px;height:60px;background:transparent;border-top:none;box-shadow:none;width:auto;z-index:101;gap:12px;backdrop-filter:none;-webkit-backdrop-filter:none;}
+      .bottombar-item{flex-direction:row;padding:8px 16px;gap:8px;font-size:13px;height:40px;min-width:auto;}
+    }
+    @media(min-width:1024px) {
+      .descripcion,.seccion{max-width:700px;margin-left:auto;margin-right:auto;}
+    }
+    .page-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+    .section-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--text);}
+    .stat-number{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--primary);}
+    .btn-sm{
+      padding:5px 13px;border:none;border-radius:7px;
+      font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
+      letter-spacing:0.4px;cursor:pointer;transition:all 0.2s;
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    :root{
+      --viewer-bg:#111111;--viewer-body:#1a1a1a;--viewer-text:#dddddd;
+      --viewer-text-muted:#666666;--viewer-text-light:#cccccc;
+      --viewer-comment-bg:#222222;--viewer-comment-text:#bbbbbb;
+      --viewer-border:#444444;--viewer-btn-bg:rgba(255,255,255,.15);
+      --viewer-btn-hover:rgba(255,255,255,.25);
+      --input-bg:#222222;--input-text:#dddddd;--input-border:#333333;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="window.location.href='index.html'" title="Inicio">&#127968;</button>
+
+  <div class="header" id="coverHeader">
+    <img id="coverImg" src="" alt="Portada" style="display:none;">
+    <div class="overlay"></div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    Cargando perfil...
+  </div>
+
+  <div id="profileContent" style="display:none;">
+    <div class="perfil-info">
+      <div class="avatar-wrap">
+        <div class="avatar-placeholder" id="avatarPlaceholder">U</div>
+        <img id="avatarImg" src="" alt="Avatar" style="display:none;">
+      </div>
+      <div class="nombre-usuario" id="userName"></div>
+      <div><span class="badge-rol badge-user" id="userRol"></span></div>
+      <div class="verificacion" id="userVerificacion"></div>
+    </div>
+
+    <div id="messageGlobal" class="message"></div>
+
+    <div class="descripcion">
+      <div class="descripcion-titulo">Descripci&oacute;n</div>
+      <div class="descripcion-texto" id="descText"></div>
+    </div>
+
+    <div class="seccion" id="seccionForos">
+      <div class="seccion-titulo">
+        <span id="seccionForosTitulo">Contenido</span>
+      </div>
+      <div id="forosList"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalViewer">
+    <div class="viewer">
+      <button class="viewer-close" onclick="cerrarViewer()">&times;</button>
+      <div class="viewer-topbar">
+        <span id="viewerUser" class="viewer-user"></span>
+        <span id="viewerDate" class="viewer-date"></span>
+      </div>
+      <div class="viewer-carousel" id="viewerCarousel">
+        <button class="carousel-btn carousel-prev" onclick="carouselPrev()">&#10094;</button>
+        <div class="carousel-track" id="carouselTrack"></div>
+        <button class="carousel-btn carousel-next" onclick="carouselNext()">&#10095;</button>
+      </div>
+      <div class="viewer-dots" id="viewerDots"></div>
+      <div class="viewer-body">
+        <div class="viewer-desc" id="viewerDesc"></div>
+        <div class="viewer-actions">
+          <button class="vbtn like" id="viewerLikeBtn" onclick="darLike()">&#128077; <span id="viewerLikes">0</span></button>
+          <button class="vbtn dislike" id="viewerDislikeBtn" onclick="darDislike()">&#128078; <span id="viewerDislikes">0</span></button>
+        </div>
+        <div class="viewer-comments">
+          <h4>Comentarios</h4>
+          <div class="comment-form">
+            <textarea id="commentInput" placeholder="Escribe un comentario..." rows="2"></textarea>
+            <button class="btn-modal" onclick="enviarComentario()">Enviar</button>
+          </div>
+          <div id="viewerCommentsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── Theme from localStorage ────────────────────────────
+    (function(){
+      var tema = localStorage.getItem('tema');
+      if (tema === 'oscuro') document.documentElement.setAttribute('data-theme', 'dark');
+      var esq = localStorage.getItem('esquema');
+      if (esq && esq !== 'default') document.documentElement.setAttribute('data-scheme', esq);
+      var cp = localStorage.getItem('colorPrimario');
+      var cf = localStorage.getItem('colorFondo');
+      if (cp) { document.documentElement.style.setProperty('--primary', cp); document.documentElement.style.setProperty('--primary-light', cp); document.documentElement.style.setProperty('--viewer-primary', cp); }
+      if (cf) document.documentElement.style.setProperty('--bg-body', cf);
+    })();
+
+    var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
+    var sessionUser = localStorage.getItem('sessionUser');
+    var sessionPass = localStorage.getItem('sessionPass');
+
+    // ─── Parse ?user=username from URL ─────────────────────
+    var usernameViewing = null;
+    (function(){
+      var match = window.location.search.match(/[?&]user=([^&]+)/);
+      if (match && match[1]) usernameViewing = decodeURIComponent(match[1].replace(/-/g,'%20'));
+    })();
+
+    if (!usernameViewing) {
+      window.location.href = 'index.html';
+    }
+
+    var profileCache = null;
+    var forosCache = [];
+
+    function jsonp(data) {
+      return new Promise(function(resolve, reject) {
+        var cb = 'jpcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+        var params = [];
+        for (var key in data) {
+          if (data.hasOwnProperty(key)) {
+            params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+          }
+        }
+        params.push('callback=' + cb);
+        var url = API_URL + '?' + params.join('&');
+        window[cb] = function(resp) {
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          resolve(resp);
+        };
+        var script = document.createElement('script');
+        script.src = url;
+        script.onerror = function() {
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error('Error de conexi&oacute;n'));
+        };
+        document.body.appendChild(script);
+        setTimeout(function() {
+          if (window[cb]) {
+            delete window[cb];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            reject(new Error('Tiempo de espera agotado'));
+          }
+        }, 60000);
+      });
+    }
+
+    function cargarPerfil() {
+      document.getElementById('loading').innerHTML = '<div class="spinner"></div>Cargando perfil de ' + escHtml(usernameViewing) + '...';
+      var cacheKey = 'userProfile_' + usernameViewing;
+      var cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        try {
+          var p = JSON.parse(cached);
+          profileCache = p;
+          mostrarPerfil(p);
+        } catch(e) {}
+      }
+      jsonp({ action:'getUserProfile', username:usernameViewing }).then(function(resp) {
+        try {
+          var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (data.status === 'PROFILE_OK' && data.profile) {
+            var nuevoStr = JSON.stringify(data.profile);
+            if (nuevoStr !== cached) {
+              profileCache = data.profile;
+              localStorage.setItem(cacheKey, nuevoStr);
+              mostrarPerfil(data.profile);
+            }
+          } else if (!cached) {
+            document.getElementById('loading').innerHTML = '<p style="color:#c62828;">Usuario no encontrado. <a href="index.html" style="color:#2e7d32;">Volver</a></p>';
+          }
+        } catch(e) {
+          if (!cached) document.getElementById('loading').innerHTML = '<p style="color:#c62828;">Error al procesar respuesta.</p>';
+        }
+      }).catch(function(err) {
+        if (!cached) document.getElementById('loading').innerHTML = '<p style="color:#c62828;">Error de conexi&oacute;n: ' + err.message + '</p>';
+      });
+    }
+
+    function mostrarPerfil(p) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('profileContent').style.display = 'block';
+      document.getElementById('seccionForosTitulo').textContent = 'Contenido de ' + p.user;
+
+      document.getElementById('userName').textContent = p.user;
+
+      var rolEl = document.getElementById('userRol');
+      rolEl.textContent = p.rol || 'User';
+      rolEl.className = 'badge-rol ' + (p.rol === 'Admin' ? 'badge-admin' : p.rol === 'Owner' ? 'badge-owner' : 'badge-user');
+
+      var verEl = document.getElementById('userVerificacion');
+      var ver = p.verificacion || '';
+      verEl.textContent = ver;
+      verEl.style.display = (ver && ver !== 'No Verificado') ? 'block' : 'none';
+
+      if (p.descripcion) {
+        document.getElementById('descText').textContent = p.descripcion;
+        document.getElementById('descText').className = 'descripcion-texto';
+      } else {
+        document.getElementById('descText').textContent = 'Este usuario no ha escrito una descripci&oacute;n.';
+        document.getElementById('descText').className = 'descripcion-vacia';
+      }
+
+      if (p.fotoPortada) {
+        document.getElementById('coverImg').src = p.fotoPortada;
+        document.getElementById('coverImg').style.display = 'block';
+      } else {
+        document.getElementById('coverImg').style.display = 'none';
+      }
+
+      if (p.fotoPerfil) {
+        document.getElementById('avatarImg').src = p.fotoPerfil;
+        document.getElementById('avatarImg').style.display = 'block';
+        document.getElementById('avatarPlaceholder').style.display = 'none';
+      } else {
+        document.getElementById('avatarPlaceholder').textContent = p.user.charAt(0).toUpperCase();
+        document.getElementById('avatarImg').style.display = 'none';
+        document.getElementById('avatarPlaceholder').style.display = 'flex';
+      }
+    }
+
+    // ─── FOROS ──────────────────────────────────────────────
+    var foroActual = null;
+    var carouselIdx = 0;
+
+    function cargarForos() {
+      if (forosCache.length) renderForos();
+      var cachedForos = localStorage.getItem('forosCache');
+      jsonp({ action:'getForos' }).then(function(resp) {
+        try {
+          var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (data.status === 'FOROS_OK') {
+            var nuevo = data.foros || [];
+            var nuevoStr = JSON.stringify(nuevo);
+            if (nuevoStr !== cachedForos) {
+              forosCache = nuevo;
+              localStorage.setItem('forosCache', nuevoStr);
+              renderForos();
+            }
+          }
+        } catch(e) {}
+        if (!cachedForos) renderForos();
+      }).catch(function() { if (!cachedForos) renderForos(); });
+    }
+
+    function renderForos() {
+      var el = document.getElementById('forosList');
+      var userForos = forosCache.filter(function(f) { return f.user === usernameViewing; });
+      if (!userForos.length) {
+        el.innerHTML = '<div class="sin-foros">Este usuario no tiene contenido a&uacute;n.</div>';
+        return;
+      }
+      var html = '';
+      userForos.forEach(function(f) {
+        var snippet = (f.descripcion || '').slice(0, 280);
+        var imgs = f.imagenes ? f.imagenes.split('|').filter(Boolean) : [];
+        var ic = imgs.length;
+        var imgClass = ic === 1 ? 'single' : ic === 2 ? 'double' : ic === 3 ? 'triple' : ic === 4 ? 'quad' : 'quint';
+        html += '<div class="foro-card" onclick="abrirViewer(\'' + f.id + '\')">';
+        html += '  <div class="foro-card-header">';
+        html += '    <span class="foro-card-user" onclick="event.stopPropagation();window.location.href=\'perfil_publico.html?user=' + encodeURIComponent(f.user).replace(/%20/g,'-') + '\'">' + escHtml(f.user || '') + '</span>';
+        html += '    <span class="foro-card-date">' + (f.tipo && f.tipo !== 'foro' ? '<span class="tipo-badge">' + escHtml(f.tipo) + '</span> ' : '') + tiempoRelativo(f.fecha) + '</span>';
+        html += '  </div>';
+        if (imgs.length) {
+          html += '  <div class="foro-card-imgs ' + imgClass + '">';
+          imgs.forEach(function(url) { html += '<img src="' + url + '" loading="lazy">'; });
+          html += '  </div>';
+        }
+        html += '  <div class="foro-card-snippet">' + escHtml(snippet) + '</div>';
+        html += '  <div class="foro-card-stats">';
+        html += '    <span>&#128077; ' + (f.likes || 0) + '</span>';
+        html += '    <span>&#128078; ' + (f.dislikes || 0) + '</span>';
+        html += '  </div>';
+        html += '</div>';
+      });
+      el.innerHTML = html;
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function tiempoRelativo(fechaStr) {
+      if (!fechaStr) return '';
+      var d = new Date(fechaStr);
+      if (isNaN(d.getTime())) return fechaStr;
+      var seg = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (seg < 60) return 'hace ' + seg + ' segundos';
+      var min = Math.floor(seg / 60);
+      if (min < 60) return 'hace ' + min + (min === 1 ? ' minuto' : ' minutos');
+      var hor = Math.floor(min / 60);
+      if (hor < 24) return 'hace ' + hor + (hor === 1 ? ' hora' : ' horas');
+      var dia = Math.floor(hor / 24);
+      if (dia < 30) return 'hace ' + dia + (dia === 1 ? ' d&iacute;a' : ' d&iacute;as');
+      var mes = Math.floor(dia / 30);
+      if (mes < 12) return 'hace ' + mes + (mes === 1 ? ' mes' : ' meses');
+      var anio = Math.floor(mes / 12);
+      return 'hace ' + anio + (anio === 1 ? ' a&ntilde;o' : ' a&ntilde;os');
+    }
+
+    // ─── VISOR DE PUBLICACIONES ─────────────────────────────
+    var viewerForo = null;
+    var viewerComs = [];
+
+    function abrirViewer(foroId) {
+      var cached = null;
+      for (var i = 0; i < forosCache.length; i++) {
+        if (forosCache[i].id === foroId) { cached = forosCache[i]; break; }
+      }
+      if (cached) {
+        viewerForo = cached;
+        viewerComs = [];
+        mostrarViewer();
+      }
+      jsonp({ action:'getForo', foroId:foroId }).then(function(resp) {
+        try {
+          var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+          if (data.status === 'FORO_OK' && viewerForo && viewerForo.id === foroId) {
+            for (var k in data.foro) viewerForo[k] = data.foro[k];
+            viewerComs = data.comentarios || [];
+            mostrarViewer();
+          }
+        } catch(e) {}
+      }).catch(function() {});
+    }
+
+    function mostrarViewer() {
+      if (!viewerForo) return;
+      comentariosMax = 6;
+      document.getElementById('viewerUser').textContent = escHtml(viewerForo.user || '');
+      document.getElementById('viewerDate').textContent = tiempoRelativo(viewerForo.fecha);
+      document.getElementById('viewerLikes').textContent = viewerForo.likes || 0;
+      document.getElementById('viewerDislikes').textContent = viewerForo.dislikes || 0;
+
+      var imgs = viewerForo.imagenes ? viewerForo.imagenes.split('|').filter(Boolean) : [];
+      var track = document.getElementById('carouselTrack');
+      if (imgs.length) {
+        track.innerHTML = imgs.map(function(url) {
+          return '<img src="' + url + '" onclick="window.open(\'' + url + '\',\'_blank\')">';
+        }).join('');
+        var dots = document.getElementById('viewerDots');
+        dots.innerHTML = imgs.map(function(_, i) {
+          return '<button class="viewer-dot' + (i === 0 ? ' active' : '') + '" onclick="irAImg(' + i + ')"></button>';
+        }).join('');
+        carouselIdx = 0;
+        track.scrollLeft = 0;
+      } else {
+        track.innerHTML = '<p style="color:#666;padding:40px;">Sin im&aacute;genes</p>';
+        document.getElementById('viewerDots').innerHTML = '';
+      }
+
+      var desc = viewerForo.descripcion || '';
+      document.getElementById('viewerDesc').textContent = desc;
+
+      actualizarVotoUI();
+      renderComentarios();
+      abrirModal('modalViewer');
+    }
+
+    function cerrarViewer() {
+      cerrarModal('modalViewer');
+      viewerForo = null;
+      viewerComs = [];
+    }
+
+    function carouselNext() {
+      var track = document.getElementById('carouselTrack');
+      var imgs = track.querySelectorAll('img');
+      if (!imgs.length) return;
+      var idx = Math.min(carouselIdx + 1, imgs.length - 1);
+      irAImg(idx);
+    }
+
+    function carouselPrev() {
+      var idx = Math.max(carouselIdx - 1, 0);
+      irAImg(idx);
+    }
+
+    function irAImg(idx) {
+      var track = document.getElementById('carouselTrack');
+      var imgs = track.querySelectorAll('img');
+      if (!imgs.length) return;
+      carouselIdx = idx;
+      imgs[idx].scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+      var dots = document.querySelectorAll('.viewer-dot');
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+    }
+
+    // ─── LIKES / DISLIKES ──────────────────────────────────
+    function userVoteState(foro) {
+      var u = sessionUser;
+      if (!u || !foro) return 0;
+      if ((foro.likesUsers || '').split(',').indexOf(u) !== -1) return 1;
+      if ((foro.dislikesUsers || '').split(',').indexOf(u) !== -1) return -1;
+      return 0;
+    }
+
+    function actualizarVotoUI() {
+      var s = userVoteState(viewerForo);
+      document.getElementById('viewerLikeBtn').classList.toggle('liked', s === 1);
+      document.getElementById('viewerDislikeBtn').classList.toggle('liked', s === -1);
+    }
+
+    function darLike() {
+      if (!viewerForo) return;
+      var s = userVoteState(viewerForo);
+      var foroId = viewerForo.id;
+      if (s === 1) { viewerForo.likes--; viewerForo.likesUsers = (viewerForo.likesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+      else {
+        if (s === -1) { viewerForo.dislikes--; viewerForo.dislikesUsers = (viewerForo.dislikesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+        viewerForo.likes = (viewerForo.likes || 0) + 1;
+        viewerForo.likesUsers = ((viewerForo.likesUsers || '').split(',').filter(Boolean).concat([sessionUser])).join(',');
+      }
+      document.getElementById('viewerLikes').textContent = viewerForo.likes;
+      document.getElementById('viewerDislikes').textContent = viewerForo.dislikes;
+      actualizarVotoUI();
+      jsonp({ action:'likeForo', foroId:foroId, user:sessionUser }).then(function(resp) {
+        try { var data = typeof resp === 'string' ? JSON.parse(resp) : resp; if (data.status === 'FORO_RATED') {
+          viewerForo.likes = data.likes; viewerForo.dislikes = data.dislikes;
+          viewerForo.likesUsers = data.likesUsers || ''; viewerForo.dislikesUsers = data.dislikesUsers || '';
+          document.getElementById('viewerLikes').textContent = data.likes; document.getElementById('viewerDislikes').textContent = data.dislikes;
+          actualizarVotoUI();
+          actualizarForoEnCache(viewerForo.id, data.likes, data.dislikes);
+        } } catch(e) {}
+      }).catch(function() {});
+    }
+
+    function darDislike() {
+      if (!viewerForo) return;
+      var s = userVoteState(viewerForo);
+      var foroId = viewerForo.id;
+      if (s === -1) { viewerForo.dislikes--; viewerForo.dislikesUsers = (viewerForo.dislikesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+      else {
+        if (s === 1) { viewerForo.likes--; viewerForo.likesUsers = (viewerForo.likesUsers || '').split(',').filter(function(x) { return x !== sessionUser; }).join(','); }
+        viewerForo.dislikes = (viewerForo.dislikes || 0) + 1;
+        viewerForo.dislikesUsers = ((viewerForo.dislikesUsers || '').split(',').filter(Boolean).concat([sessionUser])).join(',');
+      }
+      document.getElementById('viewerLikes').textContent = viewerForo.likes;
+      document.getElementById('viewerDislikes').textContent = viewerForo.dislikes;
+      actualizarVotoUI();
+      jsonp({ action:'dislikeForo', foroId:foroId, user:sessionUser }).then(function(resp) {
+        try { var data = typeof resp === 'string' ? JSON.parse(resp) : resp; if (data.status === 'FORO_RATED') {
+          viewerForo.likes = data.likes; viewerForo.dislikes = data.dislikes;
+          viewerForo.likesUsers = data.likesUsers || ''; viewerForo.dislikesUsers = data.dislikesUsers || '';
+          document.getElementById('viewerLikes').textContent = data.likes; document.getElementById('viewerDislikes').textContent = data.dislikes;
+          actualizarVotoUI();
+          actualizarForoEnCache(viewerForo.id, data.likes, data.dislikes);
+        } } catch(e) {}
+      }).catch(function() {});
+    }
+
+    function actualizarForoEnCache(id, likes, dislikes) {
+      for (var i = 0; i < forosCache.length; i++) {
+        if (forosCache[i].id === id) {
+          forosCache[i].likes = likes;
+          forosCache[i].dislikes = dislikes;
+          renderForos();
+          break;
+        }
+      }
+    }
+
+    // ─── COMENTARIOS ────────────────────────────────────────
+    var comentariosMax = 6;
+
+    function renderComentarios() {
+      var el = document.getElementById('viewerCommentsList');
+      if (!viewerComs.length) { el.innerHTML = '<p style="color:#555;font-size:13px;">No hay comentarios todav&iacute;a.</p>'; return; }
+      var mostrar = viewerComs.slice(0, comentariosMax);
+      var html = mostrar.map(function(c) {
+        return '<div class="viewer-comment"><div class="viewer-comment-user">' + escHtml(c.user || '') + '</div><div class="viewer-comment-text">' + escHtml(c.comentario || '') + '</div><div class="viewer-comment-date">' + tiempoRelativo(c.fecha) + '</div></div>';
+      }).join('');
+      if (viewerComs.length > comentariosMax) {
+        html += '<button class="vbtn ver-mas-coms" onclick="comentariosMax=9999;renderComentarios()">Ver m&aacute;s (' + (viewerComs.length - comentariosMax) + ' restantes)</button>';
+      }
+      el.innerHTML = html;
+    }
+
+    function enviarComentario() {
+      if (!viewerForo) return;
+      var texto = document.getElementById('commentInput').value.trim();
+      if (!texto) return;
+      document.getElementById('commentInput').value = '';
+      var tempComment = { user: sessionUser, comentario: texto, fecha: new Date().toISOString() };
+      viewerComs.unshift(tempComment);
+      renderComentarios();
+      jsonp({ action:'addComentario', user:sessionUser, pass:sessionPass, foroId:viewerForo.id, comentario:texto }).then(function(resp) {
+        try { var data = typeof resp === 'string' ? JSON.parse(resp) : resp; if (data.status !== 'COMENTARIO_OK') { viewerComs = viewerComs.filter(function(c) { return c !== tempComment; }); renderComentarios(); } } catch(e) { viewerComs = viewerComs.filter(function(c) { return c !== tempComment; }); renderComentarios(); }
+      }).catch(function() { viewerComs = viewerComs.filter(function(c) { return c !== tempComment; }); renderComentarios(); });
+    }
+
+    function mostrarAlerta(elId, texto, tipo) {
+      var el = document.getElementById(elId);
+      el.textContent = texto;
+      el.className = 'message ' + tipo;
+      el.style.display = 'block';
+      setTimeout(function() { el.style.display = 'none'; }, 5000);
+    }
+
+    function abrirModal(modalId) { document.getElementById(modalId).classList.add('active'); }
+    function cerrarModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+
+    cargarPerfil();
+    cargarForos();
+  </script>
+</body>
+</html>
