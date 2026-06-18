@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ajustes - WorldLeaf</title>
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
+  <title>Ajustes - WorldLeaf App</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -112,6 +113,7 @@
       background:var(--bg-body);
       min-height:100vh;
       color:var(--text);
+      -webkit-user-select:none;user-select:none;
       transition:background-color 0.3s ease, color 0.3s ease;
       overflow-x:hidden;
       width:100%;
@@ -297,7 +299,7 @@
     var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
     var sessionUser = localStorage.getItem('sessionUser');
     var sessionPass = localStorage.getItem('sessionPass');
-    if (!sessionUser || !sessionPass) window.location.href = 'login.html';
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
 
     var temaActual = localStorage.getItem('tema') || 'claro';
     var esquemaActual = localStorage.getItem('esquema') || 'default';

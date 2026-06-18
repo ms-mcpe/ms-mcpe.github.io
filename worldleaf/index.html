@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.location.href='descarga.html'}}();</script>
+    <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
   <title>WorldLeaf App</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -59,10 +59,23 @@
       --radius: 14px;
       --radius-sm: 9px;
       --overlay: rgba(0,0,0,0.72);
+      --viewer-bg: #090d16;
+      --viewer-body: #0f172a;
+      --viewer-text: #f8fafc;
+      --viewer-text-muted: #64748b;
+      --viewer-text-light: #cbd5e1;
+      --viewer-comment-bg: #1e293b;
+      --viewer-comment-text: #cbd5e1;
+      --viewer-border: #334155;
+      --viewer-btn-bg: rgba(255,255,255,0.1);
+      --viewer-btn-hover: rgba(255,255,255,0.2);
+      --viewer-primary: #22c55e;
 
       --input-bg: #1e293b;
       --input-text: #f8fafc;
       --input-border: #334155;
+
+      --bg-bottombar: rgba(6,10,15,0.92);
     }
     [data-theme="dark"] {
       --bg-body: #0b1120;
@@ -96,7 +109,7 @@
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
     ::-webkit-scrollbar-thumb:hover{background:var(--surface-2);}
 
-    html,body{height:100%;}
+    html,body{height:100%;-webkit-user-select:none;user-select:none;}
 
     body{
       font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
@@ -104,6 +117,7 @@
       padding-top:76px;
       padding-bottom:84px;
       color:var(--text);
+      -webkit-user-select:none;user-select:none;
       transition:background-color 0.3s ease, color 0.3s ease;
       overflow-x:hidden;width:100%;max-width:100%;
     }

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
   <title>Coins+ - WorldLeaf</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -49,6 +50,21 @@
       --radius: 14px;
       --radius-sm: 9px;
       --overlay: rgba(0,0,0,0.72);
+      --bg-bottombar: rgba(6,10,15,0.92);
+      --input-bg: #1e293b;
+      --input-text: #f8fafc;
+      --input-border: #334155;
+      --viewer-bg: #090d16;
+      --viewer-body: #0f172a;
+      --viewer-text: #f8fafc;
+      --viewer-text-muted: #64748b;
+      --viewer-text-light: #cbd5e1;
+      --viewer-comment-bg: #1e293b;
+      --viewer-comment-text: #cbd5e1;
+      --viewer-border: #334155;
+      --viewer-btn-bg: rgba(255,255,255,0.1);
+      --viewer-btn-hover: rgba(255,255,255,0.2);
+      --viewer-primary: #22c55e;
     }
     [data-theme="dark"] {
       --bg-void: #060a0f;
@@ -84,6 +100,7 @@
     body{
       font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
       background:var(--bg-body);min-height:100vh;color:var(--text);
+      -webkit-user-select:none;user-select:none;
       transition:background-color 0.3s ease,color 0.3s ease;
       overflow-x:hidden;width:100%;max-width:100%;
     }
@@ -294,7 +311,7 @@
     var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
     var sessionUser = localStorage.getItem('sessionUser');
     var sessionPass = localStorage.getItem('sessionPass');
-    if (!sessionUser || !sessionPass) window.location.href = 'login.html';
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
 
     var METHODS = [
       { amount: 150, url: 'https://cuty.io/XnnG5q', label: 'Acortador' },

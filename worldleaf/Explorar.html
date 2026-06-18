@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script>!function(){var ua=navigator.userAgent.toLowerCase(),wv=/wv|webview/.test(ua),ios=/iphone|ipad|ipod/.test(ua),nosaf=!/safari|cribrowser|fxios|edgios|opios/.test(ua);if(!wv&&!(ios&&nosaf)&&!navigator.standalone){window.top.location.href='descarga.html'}}();</script>
   <title>Explorar - WorldLeaf</title>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -58,6 +59,7 @@
       --radius: 14px;
       --radius-sm: 9px;
       --overlay: rgba(0,0,0,0.72);
+      --bg-bottombar: rgba(6,10,15,0.92);
 
       --viewer-bg: #090d16;
       --viewer-body: #0f172a;
@@ -79,6 +81,7 @@
       --bg-body: #0b1120;
       --bg-card: #1e293b;
       --bg-topbar: rgba(6,10,15,0.92);
+      --bg-bottombar: rgba(6,10,15,0.92);
       --bg-sidebar: #0d1729;
       --primary: #22c55e;
       --primary-light: #4ade80;
@@ -111,6 +114,7 @@
       background:var(--bg-body);
       min-height:100vh;
       color:var(--text);
+      -webkit-user-select:none;user-select:none;
       transition:background-color 0.3s ease, color 0.3s ease;
       overflow-x:hidden;width:100%;max-width:100%;
     }
@@ -517,7 +521,7 @@
     var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
     var sessionUser = localStorage.getItem('sessionUser');
     var sessionPass = localStorage.getItem('sessionPass');
-    if (!sessionUser || !sessionPass) window.location.href = 'login.html';
+    if (!sessionUser || !sessionPass) window.top.location.href = 'login.html';
 
     var forosCache = [];
     try { var cf = localStorage.getItem('forosCache'); if (cf) forosCache = JSON.parse(cf); } catch(e) {}
