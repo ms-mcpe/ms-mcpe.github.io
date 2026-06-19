@@ -6,6 +6,13 @@
     <title>Cargando...</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --pal-boton: #c4a87c; --pal-borde: rgba(255,255,255,0.08);
+            --pal-barra-superior: rgba(0,0,0,0.4); --pal-marca-agua: rgba(196,168,124,0.06);
+            --pal-menu-fondo: rgba(0,0,0,0.6); --pal-menu-texto: rgba(224,230,240,0.7);
+            --pal-buscador-fondo: rgba(255,255,255,0.04); --pal-buscador-texto: #e0e6f0;
+            --pal-buscador-borde: rgba(255,255,255,0.08);
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; -o-user-drag: none; -webkit-touch-callout: none; }
         input, textarea, select, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
         body {
@@ -18,6 +25,7 @@
             position: fixed; inset: 0; pointer-events: none;
             display: flex; align-items: center; justify-content: center;
             opacity: 0.06; z-index: 0;
+            color: var(--pal-marca-agua);
         }
         .watermark-bg img {
             width: 300px; height: 300px; border-radius: 40px; object-fit: cover;
@@ -36,13 +44,13 @@
         .topbar {
             position: fixed; top: 0; left: 0; right: 0; height: 52px;
             display: flex; align-items: center; padding: 0 16px;
-            background: rgba(0,0,0,0.4); z-index: 100;
+            background: var(--pal-barra-superior); z-index: 100;
             backdrop-filter: blur(8px);
         }
         .menu-btn {
             width: 36px; height: 36px; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--pal-borde);
+            background: var(--pal-buscador-fondo);
             color: #e0e6f0; font-size: 18px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.2s;
@@ -55,15 +63,15 @@
         /* Sidebar */
         .sidebar {
             position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 200;
-            backdrop-filter: blur(16px); border-right: 1px solid rgba(255,255,255,0.06);
+            background: var(--pal-menu-fondo); z-index: 200;
+            backdrop-filter: blur(16px); border-right: 1px solid var(--pal-borde);
             transition: left 0.3s ease; overflow-y: auto;
             display: flex; flex-direction: column;
         }
         .sidebar.open { left: 0; }
         .sidebar-header {
             display: flex; align-items: center; gap: 10px;
-            padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 16px; border-bottom: 1px solid var(--pal-borde);
         }
         .sidebar-icon {
             width: 40px; height: 40px; border-radius: 10px;
@@ -86,7 +94,7 @@
         .nav-btn {
             display: flex; align-items: center; gap: 10px;
             width: 100%; padding: 10px 16px;
-            background: none; border: none; color: rgba(224,230,240,0.7);
+            background: none; border: none; color: var(--pal-menu-texto);
             font-size: 14px; font-weight: 500; cursor: pointer;
             transition: background 0.15s; text-align: left;
         }
@@ -106,7 +114,7 @@
             font-size: 13px; cursor: pointer; text-align: left;
             transition: background 0.15s, color 0.15s;
         }
-        .sub-btn:hover { background: rgba(255,255,255,0.03); color: rgba(224,230,240,0.8); }
+        .sub-btn:hover { background: rgba(255,255,255,0.03); color: var(--pal-menu-texto); }
         /* Main content */
         .main-content {
             padding: 80px 20px 40px; max-width: 800px; margin: 0 auto;
@@ -164,7 +172,7 @@
             font-size: 16px; font-weight: 700;
         }
         .addons-header .cat-label {
-            font-size: 12px; color: #c4a87c; font-weight: 600;
+            font-size: 12px; color: var(--pal-boton); font-weight: 600;
             background: rgba(196,168,124,0.1);
             padding: 4px 12px; border-radius: 20px;
         }
@@ -172,12 +180,12 @@
         .addon-search {
             width: 100%; box-sizing: border-box;
             padding: 10px 14px; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04);
-            color: #e0e6f0; font-size: 14px; outline: none;
+            border: 1px solid var(--pal-buscador-borde);
+            background: var(--pal-buscador-fondo);
+            color: var(--pal-buscador-texto); font-size: 14px; outline: none;
             transition: border-color 0.2s;
         }
-        .addon-search:focus { border-color: #c4a87c; }
+        .addon-search:focus { border-color: var(--pal-boton); }
         .addon-search::placeholder { color: rgba(224,230,240,0.25); }
         .addons-grid {
             display: grid;
@@ -192,12 +200,12 @@
         }
         .addon-card {
             background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid var(--pal-borde);
             border-radius: 12px; overflow: hidden;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .addon-card:hover {
-            border-color: rgba(196,168,124,0.3);
+            border-color: color-mix(in srgb, var(--pal-boton) 30%, transparent);
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .addon-card-thumb-wrap {
@@ -227,7 +235,7 @@
         .addon-card-cat {
             font-size: 0.62rem; font-weight: 700;
             letter-spacing: 0.6px; text-transform: uppercase;
-            color: #c4a87c; margin-bottom: 4px;
+            color: var(--pal-boton); margin-bottom: 4px;
         }
         .addon-card-space {
             font-size: 0.7rem; color: rgba(224,230,240,0.35);
@@ -250,7 +258,7 @@
             align-items: center; justify-content: space-between;
         }
         .addon-card-foot .addon-link {
-            font-size: 12px; color: #c4a87c; text-decoration: none;
+            font-size: 12px; color: var(--pal-boton); text-decoration: none;
             font-weight: 500; display: inline-flex; align-items: center; gap: 4px;
             cursor: pointer;
         }
@@ -338,11 +346,11 @@
             border: 2px solid transparent; transition: border-color 0.2s;
         }
         .modal-img-gallery img:hover,
-        .modal-img-gallery img.active { border-color: #c4a87c; }
+        .modal-img-gallery img.active { border-color: var(--pal-boton); }
         .modal-body { padding: 16px; }
         .modal-body .m-category {
             font-size: 0.65rem; font-weight: 700; letter-spacing: 0.6px;
-            text-transform: uppercase; color: #c4a87c; margin-bottom: 4px;
+            text-transform: uppercase; color: var(--pal-boton); margin-bottom: 4px;
         }
         .modal-body .m-title {
             font-size: 1.2rem; font-weight: 800; color: #e0e6f0;
@@ -360,7 +368,7 @@
         .modal-body .m-download {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 12px 28px;
-            background: linear-gradient(135deg, #c4a87c, #a08050);
+            background: var(--pal-boton);
             color: #0a0e17; font-weight: 700; font-size: 14px;
             border-radius: 10px; text-decoration: none;
             transition: opacity 0.2s;
@@ -544,17 +552,53 @@
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('topbar').style.display = 'flex';
             document.title = space.nombrePlataforma || space.usuario + "'s Space";
-            document.body.style.background = space.colorFondo || '#0a0e17';
-            document.body.style.color = space.colorTexto || '#e0e6f0';
-            var accent = space.colorAcento || '#c4a87c';
+            var config = {};
+            try { config = JSON.parse(space.config || '{}'); } catch(e) {}
+            var pal = config.palette || {};
+            var bgCfg = config.background || {};
+            var defaultFondo = pal.fondo || space.colorFondo || '#0a0e17';
+            var defaultTexto = pal.texto || space.colorTexto || '#e0e6f0';
+            var accent = pal.acento || space.colorAcento || '#c4a87c';
+            document.body.style.background = defaultFondo;
+            document.body.style.color = defaultTexto;
             document.documentElement.style.setProperty('--accent', accent);
+            // Background image & gradient
+            var bgParts = [];
+            var bgImgUrl = '';
+            if (bgCfg.imagen) {
+                if (Array.isArray(bgCfg.imagen) && bgCfg.imagen.length) {
+                    bgImgUrl = bgCfg.imagen[0].src || bgCfg.imagen[0];
+                } else if (typeof bgCfg.imagen === 'string') {
+                    bgImgUrl = bgCfg.imagen;
+                }
+            }
+            if (bgImgUrl) bgParts.push('url(' + bgImgUrl + ')');
+            if (bgCfg.gradiente) bgParts.push(bgCfg.gradiente);
+            if (bgImgUrl && bgCfg.colorOpacidad) {
+                var opHex = bgCfg.colorOpacidad || '#000000';
+                var opVal = (typeof bgCfg.opacidad === 'number' ? bgCfg.opacidad : 100) / 100;
+                bgParts.push('linear-gradient(rgba(' + parseInt(opHex.slice(1,3),16) + ',' + parseInt(opHex.slice(3,5),16) + ',' + parseInt(opHex.slice(5,7),16) + ',' + opVal + '),rgba(' + parseInt(opHex.slice(1,3),16) + ',' + parseInt(opHex.slice(3,5),16) + ',' + parseInt(opHex.slice(5,7),16) + ',' + opVal + '))');
+            }
+            if (bgParts.length) {
+                document.body.style.background = bgParts.join(', ');
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundRepeat = 'no-repeat';
+            }
+            // Apply other palette colors as CSS vars
+            document.documentElement.style.setProperty('--pal-boton', pal.boton || accent);
+            document.documentElement.style.setProperty('--pal-borde', pal.borde || 'rgba(255,255,255,0.08)');
+            document.documentElement.style.setProperty('--pal-barra-superior', pal.barraSuperior || 'rgba(0,0,0,0.4)');
+            document.documentElement.style.setProperty('--pal-marca-agua', pal.marcaAgua || 'rgba(196,168,124,0.06)');
+            document.documentElement.style.setProperty('--pal-menu-fondo', pal.menuFondo || 'rgba(0,0,0,0.6)');
+            document.documentElement.style.setProperty('--pal-menu-texto', pal.menuTexto || 'rgba(224,230,240,0.7)');
+            document.documentElement.style.setProperty('--pal-buscador-fondo', pal.buscadorFondo || 'rgba(255,255,255,0.04)');
+            document.documentElement.style.setProperty('--pal-buscador-texto', pal.buscadorTexto || '#e0e6f0');
+            document.documentElement.style.setProperty('--pal-buscador-borde', pal.buscadorBorde || 'rgba(255,255,255,0.08)');
 
             // Topbar
             document.getElementById('topbarTitle').textContent = space.nombrePlataforma || space.usuario;
 
-            // Config
-            var config = {};
-            try { config = JSON.parse(space.config || '{}'); } catch(e) {}
             var showTop = config.showTop !== false;
             var showIcon = config.showIcon !== false;
             var showName = config.showName !== false;
@@ -595,10 +639,9 @@
                 document.getElementById('loadingIcon').style.display = '';
             }
 
-            // Categories
-            var categorias = [];
-            try { categorias = JSON.parse(space.categorias || '[]'); } catch(e) {}
-            if (!categorias.length) categorias = [];
+            // Categories from complementos or fallback
+            var categorias = config.complementos || [];
+            if (!categorias.length) { try { categorias = JSON.parse(space.categorias || '[]'); } catch(e) {} }
             renderNav(categorias, accent);
         }
 
@@ -634,17 +677,36 @@
             var list = document.getElementById('navList');
             list.innerHTML = '';
 
-            // Fixed "Filtros" with submenu
+            // "Todos" button - show all addons
+            var todosItem = document.createElement('div');
+            todosItem.className = 'nav-item';
+            var todosBtn = document.createElement('button');
+            todosBtn.className = 'nav-btn';
+            todosBtn.innerHTML = '<span>Todos</span>';
+            todosBtn.addEventListener('click', function() {
+                mostrarTodosAddons();
+                closeMenu();
+            });
+            todosItem.appendChild(todosBtn);
+            list.appendChild(todosItem);
+
+            // "Filtros" sub-menu with sort options
             var filtrosItem = document.createElement('div');
             filtrosItem.className = 'nav-item';
-
             var filtrosBtn = document.createElement('button');
             filtrosBtn.className = 'nav-btn';
             filtrosBtn.innerHTML = '<span>Filtros</span><span class="arrow">›</span>';
             filtrosBtn.addEventListener('click', function() {
-                toggleFiltros();
+                var sub = document.getElementById('sub_filtros');
+                if (!sub) return;
+                var isOpen = sub.classList.contains('open');
+                document.querySelectorAll('.submenu').forEach(function(s) { s.classList.remove('open'); });
+                document.querySelectorAll('.nav-btn .arrow').forEach(function(a) { a.classList.remove('open'); });
+                if (!isOpen) {
+                    sub.classList.add('open');
+                    filtrosBtn.querySelector('.arrow').classList.add('open');
+                }
             });
-
             var filtrosSub = document.createElement('div');
             filtrosSub.className = 'submenu';
             filtrosSub.id = 'sub_filtros';
@@ -661,40 +723,78 @@
                 });
                 filtrosSub.appendChild(sb);
             });
-
             filtrosItem.appendChild(filtrosBtn);
             filtrosItem.appendChild(filtrosSub);
             list.appendChild(filtrosItem);
 
-            // "Todos" button - show all addons
-            var todosItem = document.createElement('div');
-            todosItem.className = 'nav-item';
-            var todosBtn = document.createElement('button');
-            todosBtn.className = 'nav-btn';
-            todosBtn.innerHTML = '<span>Todos</span>';
-            todosBtn.addEventListener('click', function() {
-                mostrarTodosAddons();
-                closeMenu();
+            // "Complementos" sub-menu with categories
+            var compItem = document.createElement('div');
+            compItem.className = 'nav-item';
+            var compBtn = document.createElement('button');
+            compBtn.className = 'nav-btn';
+            compBtn.innerHTML = '<span>Complementos</span><span class="arrow">›</span>';
+            compBtn.addEventListener('click', function() {
+                var sub = document.getElementById('sub_complementos');
+                if (!sub) return;
+                var isOpen = sub.classList.contains('open');
+                document.querySelectorAll('.submenu').forEach(function(s) { s.classList.remove('open'); });
+                document.querySelectorAll('.nav-btn .arrow').forEach(function(a) { a.classList.remove('open'); });
+                if (!isOpen) {
+                    sub.classList.add('open');
+                    compBtn.querySelector('.arrow').classList.add('open');
+                }
             });
-            todosItem.appendChild(todosBtn);
-            list.appendChild(todosItem);
-
-            // Configurable categories - simple items, no submenu
-            categorias.forEach(function(cat) {
-                var item = document.createElement('div');
-                item.className = 'nav-item';
-
-                var btn = document.createElement('button');
-                btn.className = 'nav-btn';
-                btn.innerHTML = escHtml(cat);
-                btn.addEventListener('click', function() {
-                    filtrarPorCategoria(cat);
-                    closeMenu();
+            var compSub = document.createElement('div');
+            compSub.className = 'submenu';
+            compSub.id = 'sub_complementos';
+            if (categorias.length) {
+                categorias.forEach(function(cat) {
+                    var sb = document.createElement('button');
+                    sb.className = 'sub-btn';
+                    sb.textContent = cat;
+                    sb.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        filtrarPorCategoria(cat);
+                        closeMenu();
+                    });
+                    compSub.appendChild(sb);
                 });
+            } else {
+                var sb = document.createElement('button');
+                sb.className = 'sub-btn';
+                sb.textContent = 'Sin categorias';
+                sb.style.cursor = 'default';
+                compSub.appendChild(sb);
+            }
+            compItem.appendChild(compBtn);
+            compItem.appendChild(compSub);
+            list.appendChild(compItem);
 
-                item.appendChild(btn);
-                list.appendChild(item);
-            });
+            // Apply palette CSS variables
+            var root = document.documentElement;
+            var borde = getComputedStyle(root).getPropertyValue('--pal-borde').trim() || 'rgba(255,255,255,0.08)';
+            var buscadorFondo = getComputedStyle(root).getPropertyValue('--pal-buscador-fondo').trim() || 'rgba(255,255,255,0.04)';
+            var buscadorTexto = getComputedStyle(root).getPropertyValue('--pal-buscador-texto').trim() || '#e0e6f0';
+            var buscadorBorde = getComputedStyle(root).getPropertyValue('--pal-buscador-borde').trim() || 'rgba(255,255,255,0.08)';
+            var barraSuperior = getComputedStyle(root).getPropertyValue('--pal-barra-superior').trim() || 'rgba(0,0,0,0.4)';
+            var menuFondo = getComputedStyle(root).getPropertyValue('--pal-menu-fondo').trim() || 'rgba(0,0,0,0.6)';
+            var menuTexto = getComputedStyle(root).getPropertyValue('--pal-menu-texto').trim() || 'rgba(224,230,240,0.7)';
+            // Apply to elements
+            var topbar = document.getElementById('topbar');
+            if (topbar) topbar.style.background = barraSuperior;
+            var sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.style.background = menuFondo;
+            document.querySelectorAll('.nav-btn').forEach(function(b) { b.style.color = menuTexto; });
+            document.querySelectorAll('.sub-btn').forEach(function(b) { b.style.color = 'rgba(224,230,240,0.45)'; });
+            // Search input
+            var search = document.getElementById('addonSearch');
+            if (search) {
+                search.style.background = buscadorFondo;
+                search.style.color = buscadorTexto;
+                search.style.borderColor = borde;
+            }
+            // Cards
+            document.querySelectorAll('.addon-card').forEach(function(c) { c.style.borderColor = borde; });
         }
 
         // ── Addons data ──
@@ -972,19 +1072,6 @@
             document.getElementById('addonModal').classList.remove('open');
         }
 
-        function toggleFiltros() {
-            var sub = document.getElementById('sub_filtros');
-            if (!sub) return;
-            var isOpen = sub.classList.contains('open');
-            document.querySelectorAll('.submenu').forEach(function(s) { s.classList.remove('open'); });
-            document.querySelectorAll('.nav-btn .arrow').forEach(function(a) { a.classList.remove('open'); });
-            if (!isOpen) {
-                sub.classList.add('open');
-                var arrow = sub.parentElement.querySelector('.nav-btn .arrow');
-                if (arrow) arrow.classList.add('open');
-            }
-        }
-
         // Menu toggle
         document.getElementById('menuToggle').addEventListener('click', function() {
             toggleMenu();
@@ -1002,6 +1089,8 @@
         function closeMenu() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('open');
+            document.querySelectorAll('.submenu').forEach(function(s) { s.classList.remove('open'); });
+            document.querySelectorAll('.nav-btn .arrow').forEach(function(a) { a.classList.remove('open'); });
         }
 
         function showError() {
@@ -1158,7 +1247,7 @@
         document.addEventListener('dragstart', function(e) { if (e.target.tagName === 'IMG') { e.preventDefault(); return false; } });
         document.addEventListener('drop', function(e) { e.preventDefault(); return false; });
         document.addEventListener('dragover', function(e) { e.preventDefault(); return false; });
-        console.log('%cWorldLeaf Space v2.0', 'color: #c4a87c; font-size: 14px; font-weight: bold;');
+        console.log('%cWorldLeaf Space v2.0', 'color: ' + getComputedStyle(document.documentElement).getPropertyValue('--pal-boton').trim() + '; font-size: 14px; font-weight: bold;');
         console.log('%cEntorno protegido', 'color: #666; font-size: 11px;');
     </script>
 </body>

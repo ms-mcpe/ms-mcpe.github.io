@@ -440,7 +440,7 @@
     <div class="modal-overlay" id="spaceModal">
         <div class="modal" style="max-width:480px">
             <button class="modal-close" onclick="closeModal('spaceModal')">&times;</button>
-            <div class="modal-logo"><h2 id="spaceModalTitle">Crear espacio</h2><p id="spaceModalDesc">Personaliza tu plataforma con nombre, icono y colores.</p></div>
+            <div class="modal-logo"><h2 id="spaceModalTitle">Crear espacio</h2><p id="spaceModalDesc">Personaliza tu plataforma con nombre e icono.</p></div>
             <div id="spaceMessage" class="message"></div>
             <form id="spaceForm">
                 <div class="form-group">
@@ -457,34 +457,7 @@
                         <button type="button" onclick="addSpaceIconUrl()" style="background:rgba(196,168,124,0.1);border:1px solid rgba(196,168,124,0.3);color:#c4a87c;border-radius:6px;padding:9px 14px;cursor:pointer;flex-shrink:0"><i class="fas fa-plus"></i></button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Color de fondo</label>
-                    <div style="display:flex;gap:10px;align-items:center">
-                        <input type="color" id="spaceBg" value="#000000" style="width:48px;height:40px;padding:2px;border-radius:8px;cursor:pointer;background:none;border:1px solid rgba(255,255,255,0.1)">
-                        <input type="text" id="spaceBgText" maxlength="7" placeholder="#0a0e17" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e0e6f0;font-family:'Inter',sans-serif;font-size:13px;outline:none">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Color secundario (tarjetas)</label>
-                    <div style="display:flex;gap:10px;align-items:center">
-                        <input type="color" id="spaceSecondary" value="#000000" style="width:48px;height:40px;padding:2px;border-radius:8px;cursor:pointer;background:none;border:1px solid rgba(255,255,255,0.1)">
-                        <input type="text" id="spaceSecondaryText" maxlength="7" placeholder="#111827" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e0e6f0;font-family:'Inter',sans-serif;font-size:13px;outline:none">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Color de acento (botones, enlaces)</label>
-                    <div style="display:flex;gap:10px;align-items:center">
-                        <input type="color" id="spaceAccent" value="#000000" style="width:48px;height:40px;padding:2px;border-radius:8px;cursor:pointer;background:none;border:1px solid rgba(255,255,255,0.1)">
-                        <input type="text" id="spaceAccentText" maxlength="7" placeholder="#c4a87c" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e0e6f0;font-family:'Inter',sans-serif;font-size:13px;outline:none">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Color de texto</label>
-                    <div style="display:flex;gap:10px;align-items:center">
-                        <input type="color" id="spaceText" value="#000000" style="width:48px;height:40px;padding:2px;border-radius:8px;cursor:pointer;background:none;border:1px solid rgba(255,255,255,0.1)">
-                        <input type="text" id="spaceTextText" maxlength="7" placeholder="#e0e6f0" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e0e6f0;font-family:'Inter',sans-serif;font-size:13px;outline:none">
-                    </div>
-                </div>
+
                 <button type="submit" class="btn" id="spaceBtn">
                     <span class="btn-text">Guardar espacio</span>
                     <span class="spinner"></span>
@@ -866,14 +839,6 @@
                             }
                             renderSpaceIconGallery();
                             document.getElementById('spaceIconUrl').value = '';
-                            document.getElementById('spaceBgText').value = data.space.colorFondo;
-                            document.getElementById('spaceBg').value = data.space.colorFondo;
-                            document.getElementById('spaceSecondaryText').value = data.space.colorSecundario;
-                            document.getElementById('spaceSecondary').value = data.space.colorSecundario;
-                            document.getElementById('spaceAccentText').value = data.space.colorAcento;
-                            document.getElementById('spaceAccent').value = data.space.colorAcento;
-                            document.getElementById('spaceTextText').value = data.space.colorTexto;
-                            document.getElementById('spaceText').value = data.space.colorTexto;
                             openModal('spaceModal');
                         };
                     } else {
@@ -1260,14 +1225,6 @@
         // SPACE (crear espacio)
         // ============================================================
         // Sync color picker <-> text input
-        function syncColorInput(pickerId, textId) {
-            var picker = document.getElementById(pickerId);
-            var text = document.getElementById(textId);
-            picker.addEventListener('input', function() { text.value = this.value; });
-            text.addEventListener('input', function() {
-                if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
-            });
-        }
         // ============================================================
         // SPACE ICON GALLERY (max 1 image)
         // ============================================================
@@ -1348,10 +1305,6 @@
             var btn = document.getElementById('spaceBtn');
             var msg = document.getElementById('spaceMessage');
             var nombre = document.getElementById('spaceName').value.trim();
-            var bg = document.getElementById('spaceBgText').value.trim();
-            var secondary = document.getElementById('spaceSecondaryText').value.trim();
-            var accent = document.getElementById('spaceAccentText').value.trim();
-            var text = document.getElementById('spaceTextText').value.trim();
             if (!nombre) { mostrarMsg(msg, 'El nombre es obligatorio.', 'error'); return; }
             btn.classList.add('loading');
             btn.disabled = true;
@@ -1360,7 +1313,7 @@
             var urlItems    = spaceIconItems.filter(function(i) { return !i.isBase64; });
 
             function finalizarGuardado(iconoURL) {
-                jsonp({ action:'saveSpace', user:sessionUser, pass:sessionPass, nombrePlataforma:nombre, iconoURL:iconoURL || '', colorFondo:bg, colorSecundario:secondary, colorAcento:accent, colorTexto:text }).then(function(resp) {
+                jsonp({ action:'saveSpace', user:sessionUser, pass:sessionPass, nombrePlataforma:nombre, iconoURL:iconoURL || '' }).then(function(resp) {
                     btn.classList.remove('loading');
                     btn.disabled = false;
                     try {
@@ -1405,12 +1358,6 @@
                 }
             });
         });
-
-        // Sync color pickers
-        syncColorInput('spaceBg', 'spaceBgText');
-        syncColorInput('spaceSecondary', 'spaceSecondaryText');
-        syncColorInput('spaceAccent', 'spaceAccentText');
-        syncColorInput('spaceText', 'spaceTextText');
 
         // Initial render of space icon gallery
         renderSpaceIconGallery();

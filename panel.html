@@ -420,6 +420,12 @@
             justify-content: center; transition: background 0.2s;
         }
         .modal-close-btn:hover { background: rgba(239,68,68,0.7); color: #fff; }
+
+        .color-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+        .color-row:last-child { border-bottom:none; }
+        .color-row label { min-width:120px; font-size:13px; color:rgba(224,230,240,0.7); }
+        .color-row input[type="color"] { width:40px; height:34px; padding:2px; border-radius:6px; cursor:pointer; background:none; border:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
+        .color-row input[type="text"] { flex:1; padding:8px 10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e0e6f0; font-size:12px; outline:none; font-family:monospace; }
     </style>
 </head>
 <body>
@@ -445,6 +451,10 @@
                 <button class="nav-item" data-section="marca" onclick="switchSection('marca')">
                     <span class="icon">✦</span> Personalizar marca
                 </button>
+                <div class="nav-item" onclick="mostrarSeccion('secPaleta', this)">
+                    <i class="fas fa-palette"></i>
+                    <span>Paleta de colores</span>
+                </div>
                 <button class="nav-item" data-section="publicar" onclick="switchSection('publicar')">
                     <span class="icon">✚</span> Publicar contenido
                 </button>
@@ -567,6 +577,53 @@
 
                 <button class="btn" id="saveMarcaBtn" onclick="guardarMarca()">
                     <span class="btn-text">Guardar configuracion de marca</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <!-- ===== PALETA DE COLORES ===== -->
+            <div class="section" id="secPaleta">
+                <div class="section-header">
+                    <h2>Paleta de colores</h2>
+                    <p>Personaliza todos los colores de tu espacio.</p>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Colores principales</h3>
+                    <div id="paletaContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="card" style="margin-top:12px">
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Fondo de pantalla</h3>
+                    <div class="form-group">
+                        <label>Imagen de fondo</label>
+                        <div class="imgs-gallery" id="bg-gallery"></div>
+                        <input type="file" id="bg-img-input" accept="image/*" multiple style="display:none" onchange="previewBgImgs(this)">
+                        <div style="display:flex;gap:8px;margin-top:8px">
+                            <button type="button" onclick="document.getElementById('bg-img-input').click()" style="background:rgba(196,168,124,0.1);border:1px solid rgba(196,168,124,0.3);color:#c4a87c;border-radius:6px;padding:9px 14px;cursor:pointer;flex-shrink:0"><i class="fas fa-upload"></i> Subir imagenes</button>
+                            <input type="text" id="bg-img-url" placeholder="https://ejemplo.com/fondo.jpg" style="flex:1;padding:9px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#e0e6f0;outline:none;box-sizing:border-box">
+                            <button type="button" onclick="addBgUrlImages()" style="background:rgba(196,168,124,0.1);border:1px solid rgba(196,168,124,0.3);color:#c4a87c;border-radius:6px;padding:9px 14px;cursor:pointer;flex-shrink:0"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Degradado (CSS, opcional)</label>
+                        <input type="text" id="bgGradient" placeholder="linear-gradient(135deg, #0a0e17, #1a1e2f)" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e0e6f0;outline:none;box-sizing:border-box">
+                    </div>
+                    <div class="form-group">
+                        <label>Opacidad del fondo (%)</label>
+                        <input type="range" id="bgOpacity" min="0" max="100" value="100" style="width:100%">
+                        <span id="bgOpacityLabel" style="font-size:12px;color:rgba(224,230,240,0.5)">100%</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Color de opacidad</label>
+                        <div style="display:flex;gap:10px;align-items:center">
+                            <input type="color" id="bgOpacityColor" value="#000000" style="width:48px;height:40px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:none;cursor:pointer">
+                            <input type="text" id="bgOpacityColorText" maxlength="7" placeholder="#000000" style="flex:1;padding:11px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#e0e6f0;outline:none">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" style="margin-top:16px" id="savePaletaBtn" onclick="guardarPaleta()">
+                    <span class="btn-text">Guardar paleta de colores</span>
                     <span class="spinner"></span>
                 </button>
             </div>
@@ -705,6 +762,22 @@
         var API_URL = 'https://script.google.com/macros/s/AKfycbx7yl9hxkU2MYE6ijNKDZDvLyDkZHI7oBt5LOzGGFn4RDtLoFpXijl07JBoQ3W7KFNk/exec';
         var DEFAULT_CATEGORIAS = ["Addons","Mapas","Shaders","Skins","Texturas","Scripts","Popurris","DLC","Version","Plugins"];
 
+        var COLOR_KEYS = [
+            {id:'fondo', label:'Fondo', def:'#0a0e17'},
+            {id:'secundario', label:'Secundario (tarjetas)', def:'#111827'},
+            {id:'acento', label:'Acento (botones, enlaces)', def:'#c4a87c'},
+            {id:'texto', label:'Texto', def:'#e0e6f0'},
+            {id:'boton', label:'Botones', def:'#c4a87c'},
+            {id:'borde', label:'Bordes', def:'rgba(255,255,255,0.08)'},
+            {id:'barraSuperior', label:'Barra superior', def:'rgba(0,0,0,0.4)'},
+            {id:'marcaAgua', label:'Marca de agua', def:'rgba(196,168,124,0.06)'},
+            {id:'menuFondo', label:'Menu lateral fondo', def:'rgba(0,0,0,0.6)'},
+            {id:'menuTexto', label:'Menu lateral texto', def:'rgba(224,230,240,0.7)'},
+            {id:'buscadorFondo', label:'Buscador fondo', def:'rgba(255,255,255,0.04)'},
+            {id:'buscadorTexto', label:'Buscador texto', def:'#e0e6f0'},
+            {id:'buscadorBorde', label:'Buscador borde', def:'rgba(255,255,255,0.08)'}
+        ];
+
         var sessionUser = '';
         var sessionPass = '';
         try { sessionUser = localStorage.getItem('wl_user') || ''; } catch(e) {}
@@ -828,6 +901,14 @@
             closeSidebar();
         };
 
+        window.mostrarSeccion = function(sectionId, el) {
+            document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+            if (el) el.classList.add('active');
+            closeSidebar();
+        };
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('open');
@@ -888,12 +969,38 @@
             document.getElementById('brandPosition').disabled = !brandOn;
             document.getElementById('brandByText').disabled = !brandOn;
 
+            // Palette
+            var palette = config.palette || {};
+            renderPaleta(palette);
+            var bg = config.background || {};
+            bgImgItems = [];
+            if (bg.imagen) {
+                if (Array.isArray(bg.imagen)) {
+                    bgImgItems = bg.imagen;
+                } else if (typeof bg.imagen === 'string' && bg.imagen) {
+                    bgImgItems = [{ src: bg.imagen, isBase64: false }];
+                }
+            }
+            renderBgGallery();
+            var bgGradEl = document.getElementById('bgGradient');
+            if (bgGradEl) bgGradEl.value = bg.gradiente || '';
+            var bgOpEl = document.getElementById('bgOpacity');
+            if (bgOpEl) bgOpEl.value = bg.opacidad || 100;
+            var bgOpLab = document.getElementById('bgOpacityLabel');
+            if (bgOpLab) bgOpLab.textContent = (bg.opacidad || 100) + '%';
+            var bgOpColTxt = document.getElementById('bgOpacityColorText');
+            if (bgOpColTxt) bgOpColTxt.value = bg.colorOpacidad || '#000000';
+            var bgOpCol = document.getElementById('bgOpacityColor');
+            if (bgOpCol) bgOpCol.value = (bg.colorOpacidad || '#000000').indexOf('#') === 0 ? (bg.colorOpacidad || '#000000') : '#000000';
+            // Complementos (used for dropdown fallback)
+            var complementos = config.complementos || [];
+
             // Load categories
             var activas = [];
             try { activas = JSON.parse(space.categorias || '[]'); } catch(e) {}
             renderCategorias(activas);
             // Populate publicar category dropdown
-            poblarCategoriasDropdown(activas);
+            if (complementos.length) { poblarCategoriasDropdown(complementos); } else { poblarCategoriasDropdown(activas); }
 
             // Brand preview
             actualizarPreview();
@@ -1067,6 +1174,122 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Configuracion de marca guardada.', 'success');
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // PALETA DE COLORES
+        // ============================================================
+        function renderPaleta(palette) {
+            var container = document.getElementById('paletaContainer');
+            container.innerHTML = '';
+            COLOR_KEYS.forEach(function(ck) {
+                var val = palette && palette[ck.id] !== undefined ? palette[ck.id] : ck.def;
+                var row = document.createElement('div');
+                row.className = 'color-row';
+                var label = document.createElement('label');
+                label.textContent = ck.label;
+                var picker = document.createElement('input');
+                picker.type = 'color';
+                picker.value = val.indexOf('#') === 0 ? val : '#000000';
+                picker.id = 'pal_' + ck.id + '_pick';
+                picker.style.width = '40px';
+                picker.style.height = '34px';
+                picker.style.borderRadius = '6px';
+                picker.style.cursor = 'pointer';
+                picker.style.border = '1px solid rgba(255,255,255,0.1)';
+                var text = document.createElement('input');
+                text.type = 'text';
+                text.id = 'pal_' + ck.id + '_txt';
+                text.value = val;
+                text.placeholder = ck.def;
+                picker.addEventListener('input', function() { text.value = this.value; });
+                text.addEventListener('input', function() {
+                    if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
+                });
+                row.appendChild(label);
+                row.appendChild(picker);
+                row.appendChild(text);
+                container.appendChild(row);
+            });
+        }
+
+        // ── Background image gallery (max 1) ──
+        var bgImgItems = [];
+
+        function renderBgGallery() {
+            var container = document.getElementById('bg-gallery');
+            if (!container) return;
+            var html = '';
+            bgImgItems.forEach(function(item, i) {
+                html += '<div class="img-gallery-item"><img src="' + item.src + '" alt="Fondo" onerror="this.src=\'data:image/svg+xml,<svg xmlns=\\\'http://www.w3.org/2000/svg\\\' width=\\\'100\\\' height=\\\'70\\\'><rect fill=\\\'%23333\\\' width=\\\'100\\\' height=\\\'70\\\'/><text x=\\\'50%\\\' y=\\\'50%\\\' fill=\\\'%23666\\\' text-anchor=\\\'middle\\\' dy=\\\'.3em\\\' font-size=\\\'10\\\'>Error</text></svg>\'"><button class="img-remove-btn" onclick="removeBgImage(' + i + ')" title="Eliminar"><i class="fas fa-times"></i></button></div>';
+            });
+            if (!bgImgItems.length) {
+                html += '<div class="img-add-btn" onclick="document.getElementById(\'bg-img-input\').click()"><i class="fas fa-plus"></i><span>Agregar</span></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        window.previewBgImgs = function(input) {
+            var files = Array.from(input.files);
+            if (bgImgItems.length >= 1 || files.length > 1) { showToast('Maximo 1 imagen.', 'error'); return; }
+            var file = files[0];
+            if (file.size > 100 * 1024 * 1024) { showToast('"' + file.name + '" supera los 100MB.', 'error'); return; }
+            comprimirImagen(file, function(dataUrl) {
+                bgImgItems = [{ src: dataUrl, isBase64: true }];
+                renderBgGallery();
+            });
+            input.value = '';
+        };
+
+        window.addBgUrlImages = function() {
+            var input = document.getElementById('bg-img-url');
+            var url = input.value.trim();
+            if (!url) { showToast('Ingresa una URL valida.', 'error'); return; }
+            bgImgItems = [{ src: url, isBase64: false }];
+            input.value = '';
+            renderBgGallery();
+        };
+
+        window.removeBgImage = function(index) {
+            bgImgItems = [];
+            renderBgGallery();
+        };
+
+        window.guardarPaleta = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('savePaletaBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var palette = {};
+            COLOR_KEYS.forEach(function(ck) {
+                var el = document.getElementById('pal_' + ck.id + '_txt');
+                palette[ck.id] = el ? el.value.trim() || ck.def : ck.def;
+            });
+            var bg = {
+                imagen: bgImgItems.length ? bgImgItems : '',
+                gradiente: document.getElementById('bgGradient').value.trim() || '',
+                opacidad: parseInt(document.getElementById('bgOpacity').value) || 100,
+                colorOpacidad: document.getElementById('bgOpacityColorText').value.trim() || '#000000'
+            };
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.palette = palette;
+            config.background = bg;
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Paleta guardada.', 'success');
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
@@ -1583,6 +1806,24 @@
                 result.innerHTML = '❌ Sin conexión al servidor. Reintenta o verifica que el script de Google esté publicado como app web ("Ejecutar como: yo", "Quién tiene acceso: cualquiera").';
             });
         };
+
+        function syncColorInput(pickerId, textId) {
+            var picker = document.getElementById(pickerId);
+            var text = document.getElementById(textId);
+            if (!picker || !text) return;
+            picker.addEventListener('input', function() { text.value = this.value; });
+            text.addEventListener('input', function() {
+                if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
+            });
+        }
+        // Init listeners
+        var bgOpSlider = document.getElementById('bgOpacity');
+        if (bgOpSlider) {
+            bgOpSlider.addEventListener('input', function() {
+                document.getElementById('bgOpacityLabel').textContent = this.value + '%';
+            });
+        }
+        syncColorInput('bgOpacityColor', 'bgOpacityColorText');
 
         // Init
         cargarPanel();
