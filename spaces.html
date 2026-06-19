@@ -229,6 +229,11 @@
             letter-spacing: 0.6px; text-transform: uppercase;
             color: #c4a87c; margin-bottom: 4px;
         }
+        .addon-card-space {
+            font-size: 0.7rem; color: rgba(224,230,240,0.35);
+            margin-bottom: 4px; display: flex; align-items: center; gap: 4px;
+        }
+        .addon-card-space i { font-size: 10px; }
         .addon-card-title {
             font-size: 0.9rem; font-weight: 700;
             color: #e0e6f0; margin-bottom: 6px; line-height: 1.3;
@@ -258,6 +263,33 @@
             color: rgba(224,230,240,0.25); font-size: 14px;
             grid-column: 1 / -1;
         }
+        .addon-card-stats {
+            display: flex; gap: 12px; padding: 8px 0 4px;
+            font-size: 12px; color: rgba(224,230,240,0.45);
+            align-items: center; flex-wrap: wrap;
+        }
+        .addon-card-stats span {
+            display: inline-flex; align-items: center; gap: 3px;
+        }
+        .addon-card-stats .stat-like { color: #ef4444; }
+        .addon-card-stats .stat-dislike { color: #f59e0b; }
+        .addon-card-stats .stat-dl { color: #3b82f6; }
+        .modal-vote-btns {
+            display: flex; gap: 10px; margin-bottom: 14px;
+        }
+        .modal-vote-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: #e0e6f0; font-size: 14px; cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .modal-vote-btn:hover { background: rgba(255,255,255,0.08); }
+        .modal-vote-btn.active-like { border-color: #ef4444; background: rgba(239,68,68,0.15); color: #ef4444; }
+        .modal-vote-btn.active-dislike { border-color: #f59e0b; background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .modal-vote-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .modal-vote-btn .vote-count { font-weight: 600; }
 
         /* === ADDON DETAIL MODAL === */
         .modal-overlay {
@@ -419,6 +451,14 @@
                 <div class="m-title" id="modalTitulo"></div>
                 <div class="m-meta" id="modalMeta"></div>
                 <div class="m-desc" id="modalDescripcion"></div>
+                <div class="modal-vote-btns" id="modalVoteBtns" style="display:none">
+                    <button class="modal-vote-btn" id="voteLikeBtn" onclick="darLike()">
+                        &#10084;&#65039; <span class="vote-count" id="voteLikeCount">0</span>
+                    </button>
+                    <button class="modal-vote-btn" id="voteDislikeBtn" onclick="darDislike()">
+                        &#128148; <span class="vote-count" id="voteDislikeCount">0</span>
+                    </button>
+                </div>
                 <a class="m-download" id="modalLink" href="#" target="_blank" rel="noopener">
                     <i class="fas fa-download"></i> Descargar
                 </a>
@@ -436,7 +476,26 @@
         }
 
         var user = getParam('user');
+        var sessionPass = getParam('sessionPass') || '';
+        var loggedUser = getParam('sessionUser') || '';
+        if (!loggedUser) {
+            loggedUser = 'v_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+            sessionPass = 'anon';
+        }
+        window._voteApi = function(action, espacio, nombre, vote, cb) {
+            var c = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            var u = API_URL + '?action=' + action + '&user=' + encodeURIComponent(loggedUser) + '&pass=' + encodeURIComponent(sessionPass) + '&espacio=' + encodeURIComponent(espacio) + '&nombre=' + encodeURIComponent(nombre);
+            if (vote !== undefined) u += '&vote=' + vote;
+            u += '&callback=' + c;
+            window[c] = function(r) { try { cb(typeof r === 'string' ? JSON.parse(r) : r); } catch(e) {} delete window[c]; if (s.parentNode) s.parentNode.removeChild(s); };
+            var s = document.createElement('script'); s.src = u; s.onerror = function() { delete window[c]; };
+            document.body.appendChild(s);
+            setTimeout(function() { if (window[c]) delete window[c]; }, 10000);
+        };
         var nombrePlataforma = getParam('nombrePlataforma');
+        var allMode = false;
+        var userVoteMap = {};
+        var currentEspacio = '';
         var lookupParam = nombrePlataforma ? 'nombrePlataforma=' + encodeURIComponent(nombrePlataforma) : 'username=' + encodeURIComponent(user);
 
         if (!user && !nombrePlataforma) {
@@ -456,9 +515,17 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK' && data.space) {
                         renderSpace(data.space);
-                        // Use the exact nombrePlataforma from the server (matches what panel saves)
-                        var espacioReal = data.space.nombrePlataforma || espacio;
-                        cargarAddonsEspacio(espacioReal);
+                        var espacioReal = data.space.nombrePlataforma || user;
+                        currentEspacio = espacioReal;
+                        // Si el espacio se llama "all", mostrar addons de todos los espacios
+                        if (espacioReal.toLowerCase() === 'all') {
+                            allMode = true;
+                            document.getElementById('sidebarName').textContent = 'All';
+                            document.getElementById('sidebarIcon').style.display = 'none';
+                            cargarTodosAddons();
+                        } else {
+                            cargarAddonsEspacio(espacioReal);
+                        }
                     } else showError();
                 } catch(e) { showError(); }
                 delete window[cb];
@@ -665,39 +732,72 @@
             currentCategory = null;
             document.getElementById('addonCatLabel').textContent = 'Todas las categorías';
             document.getElementById('addonSearch').value = '';
-            renderAddons(allSpaceAddons);
+            renderAddonsList();
+        }
+
+        var allSpacesMap = {};
+
+        function cargarTodosAddons() {
+            // Load all spaces for name resolution (badges)
+            var cb1 = 'spl_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            var url1 = API_URL + '?action=getAllSpaces&callback=' + cb1;
+            window[cb1] = function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK' && data.spaces) {
+                        data.spaces.forEach(function(s) {
+                            allSpacesMap[s.nombrePlataforma.toLowerCase()] = { nombre: s.nombrePlataforma, icono: s.iconoURL, acento: s.colorAcento };
+                            allSpacesMap[s.usuario.toLowerCase()] = { nombre: s.nombrePlataforma, icono: s.iconoURL, acento: s.colorAcento };
+                        });
+                    }
+                } catch(e) {}
+                delete window[cb1];
+                if (script1.parentNode) script1.parentNode.removeChild(script1);
+            };
+            var script1 = document.createElement('script');
+            script1.src = url1;
+            document.body.appendChild(script1);
+
+            // Load all addons
+            var cb2 = 'sad_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            var url2 = API_URL + '?action=getAllAddons&callback=' + cb2;
+            window[cb2] = function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data && data.status === 'OK' && data.addons) {
+                        allSpaceAddons = data.addons;
+                    }
+                } catch(e) {}
+                delete window[cb2];
+                if (script2.parentNode) script2.parentNode.removeChild(script2);
+                mostrarTodosAddons();
+            };
+            var script2 = document.createElement('script');
+            script2.src = url2;
+            script2.onerror = function() {
+                delete window[cb2];
+                mostrarTodosAddons();
+            };
+            document.body.appendChild(script2);
+            setTimeout(function() {
+                if (window[cb2]) { delete window[cb2]; mostrarTodosAddons(); }
+            }, 15000);
         }
 
         function buscarAddones() {
-            var term = document.getElementById('addonSearch').value.trim().toLowerCase();
-            var list = term
-                ? allSpaceAddons.filter(function(a) { return (a.nombre || '').toLowerCase().indexOf(term) !== -1; })
-                : allSpaceAddons;
-            if (currentCategory) {
-                list = list.filter(function(a) { return a.categoria === currentCategory; });
-            }
-            renderAddons(list);
+            renderAddonsList();
         }
 
         function filtrarPorCategoria(cat) {
             currentCategory = cat;
             document.getElementById('addonCatLabel').textContent = cat;
             document.getElementById('addonSearch').value = '';
-            var filtrados = allSpaceAddons.filter(function(a) { return a.categoria === cat; });
-            renderAddons(filtrados);
+            renderAddonsList();
         }
 
         function ordenarAddons(tipo) {
             currentSort = tipo;
-            var list = currentCategory
-                ? allSpaceAddons.filter(function(a) { return a.categoria === currentCategory; })
-                : allSpaceAddons.slice();
-            if (tipo === 'recent') {
-                list.sort(function(a, b) { return (b.fecha || '').localeCompare(a.fecha || ''); });
-            } else if (tipo === 'oldest') {
-                list.sort(function(a, b) { return (a.fecha || '').localeCompare(b.fecha || ''); });
-            }
-            renderAddons(list);
+            renderAddonsList();
         }
 
         function renderAddons(addons) {
@@ -735,12 +835,26 @@
                 }
                 html += '<div class="addon-card-body">';
                 html += '<div class="addon-card-cat">' + escHtml(item.categoria || '—') + (item.version ? ' &middot; v' + escHtml(item.version) : '') + '</div>';
+                if (allMode && item.espacio) {
+                    var spaceInfo = allSpacesMap[(item.espacio || '').toLowerCase()] || {};
+                    html += '<div class="addon-card-space"><i class="fas fa-layer-group"></i> ' + escHtml(spaceInfo.nombre || item.espacio) + '</div>';
+                }
                 html += '<div class="addon-card-title">' + safeName + '</div>';
                 html += '<div class="addon-card-desc">' + escHtml(item.descripcion || 'Sin descripción.') + '</div>';
+                var likes = item.likes || 0;
+                var dislikes = item.dislikes || 0;
+                var downloads = item.downloads || 0;
+                html += '<div class="addon-card-stats">';
+                html += '<span class="stat-like">&#10084;&#65039; ' + likes + '</span>';
+                html += '<span class="stat-dislike">&#128148; ' + dislikes + '</span>';
+                html += '<span class="stat-dl">&#11015;&#65039; ' + downloads + '</span>';
+                html += '</div>';
                 html += '<div class="addon-card-foot">';
                 if (item.link) {
                     var linkAttr = (item.link || '').replace(/'/g, "\\'");
-                    html += '<span class="addon-link" onclick="event.stopPropagation();verificarDescarga(\'' + linkAttr + '\')"><i class="fas fa-download"></i> Descargar</span>';
+                    var itemEsp = item.espacio || currentEspacio || '';
+                    var itemName = item.nombre || '';
+                    html += '<span class="addon-link" onclick="event.stopPropagation();verificarDescarga(\'' + linkAttr + '\',\'' + itemEsp.replace(/'/g, "\\'") + '\',\'' + itemName.replace(/'/g, "\\'") + '\')"><i class="fas fa-download"></i> Descargar</span>';
                 } else {
                     html += '<span></span>';
                 }
@@ -768,7 +882,10 @@
         }
 
         // ── Addon detail modal ──
+        var currentModalItem = null;
+
         function abrirModal(item) {
+            currentModalItem = item;
             var mediaUrls = item.imagenes ? item.imagenes.split('|') : [];
             var container = document.getElementById('modalMediaContainer');
             var gallery = document.getElementById('modalGallery');
@@ -815,13 +932,32 @@
                 (item.version && item.fecha ? ' \u00B7 ' : '') +
                 (item.fecha ? new Date(item.fecha).toLocaleDateString() : '');
             document.getElementById('modalDescripcion').textContent = item.descripcion || 'Sin descripción.';
+
+            // Vote buttons
+            var voteBtns = document.getElementById('modalVoteBtns');
+            var likeBtn = document.getElementById('voteLikeBtn');
+            var dislikeBtn = document.getElementById('voteDislikeBtn');
+            var likeCount = document.getElementById('voteLikeCount');
+            var dislikeCount = document.getElementById('voteDislikeCount');
+            likeCount.textContent = item.likes || 0;
+            dislikeCount.textContent = item.dislikes || 0;
+            likeBtn.className = 'modal-vote-btn';
+            dislikeBtn.className = 'modal-vote-btn';
+            voteBtns.style.display = 'flex';
+            var itemEspacio2 = item.espacio || currentEspacio;
+            var key = itemEspacio2 + '::' + (item.nombre || '');
+            var uv = userVoteMap[key];
+            if (uv === 'like') likeBtn.classList.add('active-like');
+            else if (uv === 'dislike') dislikeBtn.classList.add('active-dislike');
+
+            // Download link
             var linkEl = document.getElementById('modalLink');
             if (item.link) {
-                linkEl.href = item.link;
-                linkEl.setAttribute('data-link', item.link);
+                var linkAttr = item.link;
+                var itemEspacio = item.espacio || currentEspacio;
                 linkEl.onclick = function(e) {
                     e.preventDefault();
-                    window.open(this.getAttribute('data-link'), '_blank');
+                    verificarDescarga(linkAttr, itemEspacio, item.nombre || '');
                 };
                 linkEl.style.display = 'inline-flex';
             } else {
@@ -875,11 +1011,131 @@
         function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
         // ============================================================
-        // DOWNLOAD (direct, no verification)
+        // DOWNLOAD (counts +1 each click)
         // ============================================================
-        function verificarDescarga(url) {
+        function verificarDescarga(url, espacio, nombre) {
             if (!url) return;
+            var key = espacio + '::' + nombre;
+            // optimistic +1
+            allSpaceAddons.forEach(function(a) {
+                var aEsp = a.espacio || currentEspacio;
+                if ((aEsp + '::' + (a.nombre || '')) === key) {
+                    a.downloads = (a.downloads || 0) + 1;
+                }
+            });
+            renderAddonsList();
+            _voteApi('registerDownload', espacio, nombre, undefined, function(data) {
+                if (data && data.status === 'OK' && data.downloads !== undefined) {
+                    allSpaceAddons.forEach(function(a) {
+                        var aEsp = a.espacio || currentEspacio;
+                        if ((aEsp + '::' + (a.nombre || '')) === key) {
+                            a.downloads = data.downloads;
+                        }
+                    });
+                    renderAddonsList();
+                }
+            });
             window.open(url, '_blank');
+        }
+
+        function voteUI(key, newVote, oldVote, item) {
+            var likes = item.likes || 0;
+            var dislikes = item.dislikes || 0;
+            if (oldVote === 'like') { likes = Math.max(0, likes - 1); userVoteMap[key] = null; }
+            else if (oldVote === 'dislike') { dislikes = Math.max(0, dislikes - 1); userVoteMap[key] = null; }
+            if (newVote === 'like') { likes++; userVoteMap[key] = 'like'; }
+            else if (newVote === 'dislike') { dislikes++; userVoteMap[key] = 'dislike'; }
+            else if (newVote === 'unlike' || newVote === 'undislike') { userVoteMap[key] = null; }
+            item.likes = likes;
+            item.dislikes = dislikes;
+            document.getElementById('voteLikeCount').textContent = likes;
+            document.getElementById('voteDislikeCount').textContent = dislikes;
+            var lb = document.getElementById('voteLikeBtn');
+            var db = document.getElementById('voteDislikeBtn');
+            lb.className = 'modal-vote-btn';
+            db.className = 'modal-vote-btn';
+            if (newVote === 'like') lb.classList.add('active-like');
+            else if (newVote === 'dislike') db.classList.add('active-dislike');
+            allSpaceAddons.forEach(function(a) {
+                var aEsp = a.espacio || currentEspacio;
+                if ((aEsp + '::' + (a.nombre || '')) === key) {
+                    a.likes = likes;
+                    a.dislikes = dislikes;
+                }
+            });
+            renderAddonsList();
+        }
+
+        function darLike() {
+            if (!currentModalItem) return;
+            var espacio = currentModalItem.espacio || currentEspacio;
+            var nombre = currentModalItem.nombre || '';
+            var key = espacio + '::' + nombre;
+            var old = userVoteMap[key] || null;
+            var newVote = old === 'like' ? 'unlike' : (old === 'dislike' ? 'like' : 'like');
+            voteUI(key, newVote, old, currentModalItem);
+            _voteApi('rateAddon', espacio, nombre, newVote, function(data) {
+                if (data && data.status === 'OK') {
+                    currentModalItem.likes = data.likes;
+                    currentModalItem.dislikes = data.dislikes;
+                    document.getElementById('voteLikeCount').textContent = data.likes;
+                    document.getElementById('voteDislikeCount').textContent = data.dislikes;
+                    allSpaceAddons.forEach(function(a) {
+                        var aEsp = a.espacio || currentEspacio;
+                        if ((aEsp + '::' + (a.nombre || '')) === key) {
+                            a.likes = data.likes;
+                            a.dislikes = data.dislikes;
+                        }
+                    });
+                    renderAddonsList();
+                }
+            });
+        }
+
+        function darDislike() {
+            if (!currentModalItem) return;
+            var espacio = currentModalItem.espacio || currentEspacio;
+            var nombre = currentModalItem.nombre || '';
+            var key = espacio + '::' + nombre;
+            var old = userVoteMap[key] || null;
+            var newVote = old === 'dislike' ? 'undislike' : (old === 'like' ? 'dislike' : 'dislike');
+            voteUI(key, newVote, old, currentModalItem);
+            _voteApi('rateAddon', espacio, nombre, newVote, function(data) {
+                if (data && data.status === 'OK') {
+                    currentModalItem.likes = data.likes;
+                    currentModalItem.dislikes = data.dislikes;
+                    document.getElementById('voteLikeCount').textContent = data.likes;
+                    document.getElementById('voteDislikeCount').textContent = data.dislikes;
+                    allSpaceAddons.forEach(function(a) {
+                        var aEsp = a.espacio || currentEspacio;
+                        if ((aEsp + '::' + (a.nombre || '')) === key) {
+                            a.likes = data.likes;
+                            a.dislikes = data.dislikes;
+                        }
+                    });
+                    renderAddonsList();
+                }
+            });
+        }
+
+        function renderAddonsList() {
+            var term = document.getElementById('addonSearch').value.trim().toLowerCase();
+            var list = allSpaceAddons.filter(function(a) {
+                if (term && (a.nombre || '').toLowerCase().indexOf(term) === -1) return false;
+                if (currentCategory && a.categoria !== currentCategory) return false;
+                return true;
+            });
+            list = list.slice();
+            if (currentSort === 'recent') {
+                list.sort(function(a, b) { return (b.fecha || '').localeCompare(a.fecha || ''); });
+            } else if (currentSort === 'oldest') {
+                list.sort(function(a, b) { return (a.fecha || '').localeCompare(b.fecha || ''); });
+            } else if (currentSort === 'downloads') {
+                list.sort(function(a, b) { return (b.downloads || 0) - (a.downloads || 0); });
+            } else if (currentSort === 'popular') {
+                list.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
+            }
+            renderAddons(list);
         }
 
         // Security

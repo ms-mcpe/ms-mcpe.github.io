@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorldLeaf - Plataforma</title>
 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 
     <link rel="icon" type="image/png" href="https://i.ibb.co/5gj0zv84/Background-Eraser-20260615-054353841.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
@@ -193,6 +194,37 @@
             border-color: var(--space-accent); box-shadow: 0 0 0 3px rgba(196,168,124,0.15);
         }
         .form-group textarea { resize: vertical; min-height: 90px; }
+
+        .imgs-gallery {
+            display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px;
+            scrollbar-width: none; min-height: 80px;
+        }
+        .imgs-gallery::-webkit-scrollbar { display: none; }
+        .img-gallery-item {
+            flex-shrink: 0; width: 100px; height: 70px;
+            border-radius: 8px; overflow: hidden; position: relative;
+            border: 2px solid rgba(255,255,255,0.1); cursor: default;
+        }
+        .img-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .img-gallery-item .img-remove-btn {
+            position: absolute; top: 2px; right: 2px;
+            width: 20px; height: 20px; border-radius: 50%; border: none;
+            background: rgba(239,68,68,0.9); color: #fff;
+            font-size: 10px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .img-add-btn {
+            flex-shrink: 0; width: 100px; height: 70px;
+            border-radius: 8px; border: 2px dashed rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.03);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; cursor: pointer;
+            color: rgba(224,230,240,0.4); font-size: 11px; gap: 4px;
+            transition: border-color 0.25s, color 0.25s;
+        }
+        .img-add-btn:hover { border-color: #c4a87c; color: #c4a87c; }
+        .img-add-btn i { font-size: 18px; }
+        .img-counter { font-size: 12px; color: rgba(224,230,240,0.4); margin-bottom: 8px; }
 
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -416,9 +448,14 @@
                     <input type="text" id="spaceName" placeholder="Mi plataforma" maxlength="50">
                 </div>
                 <div class="form-group">
-                    <label>URL del icono</label>
-                    <input type="text" id="spaceIcon" placeholder="https://ejemplo.com/icono.png" maxlength="500">
-                    <div id="spaceIconPreview" style="margin-top:8px;display:none"><img id="spaceIconImg" style="width:60px;height:60px;border-radius:10px;object-fit:cover" alt="preview"></div>
+                    <label>Icono de la plataforma</label>
+                    <div class="img-counter" id="spaceIconCounter">0 / 1 imagenes</div>
+                    <div class="imgs-gallery" id="spaceIconGallery"></div>
+                    <input type="file" id="spaceIconInput" accept="image/*" style="display:none" onchange="previewSpaceIcon(this)">
+                    <div style="display:flex;gap:8px;margin-top:8px">
+                        <input type="text" id="spaceIconUrl" placeholder="https://ejemplo.com/icono.png" style="flex:1">
+                        <button type="button" onclick="addSpaceIconUrl()" style="background:rgba(196,168,124,0.1);border:1px solid rgba(196,168,124,0.3);color:#c4a87c;border-radius:6px;padding:9px 14px;cursor:pointer;flex-shrink:0"><i class="fas fa-plus"></i></button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Color de fondo</label>
@@ -667,6 +704,46 @@
             });
         }
 
+        function gasPost(data, timeoutMs) {
+            timeoutMs = timeoutMs || 120000;
+            return new Promise(function(resolve, reject) {
+                var body = [];
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        body.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+                    }
+                }
+                var bodyStr = body.join('&');
+                var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                var timer = setTimeout(function() {
+                    if (ctrl) ctrl.abort();
+                    reject(new Error('Timeout al conectar con el servidor'));
+                }, timeoutMs);
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: bodyStr,
+                    redirect: 'follow',
+                    signal: ctrl ? ctrl.signal : undefined
+                }).then(function(res) {
+                    clearTimeout(timer);
+                    return res.text();
+                }).then(function(text) {
+                    try { resolve(JSON.parse(text)); }
+                    catch(ex) {
+                        if (text.indexOf('accounts.google.com') !== -1 || text.indexOf('SignIn') !== -1) {
+                            reject(new Error('PERMISOS_REQUERIDOS'));
+                        } else {
+                            resolve({ success: false, status: 'ERROR', message: 'Respuesta inesperada', raw: text.slice(0, 200) });
+                        }
+                    }
+                }).catch(function(err) {
+                    clearTimeout(timer);
+                    reject(err);
+                });
+            });
+        }
+
         // ============================================================
         // MODALS
         // ============================================================
@@ -681,6 +758,11 @@
             forms.forEach(function(f) { f.reset(); });
             var msgs = modal.querySelectorAll('.message');
             msgs.forEach(function(m) { m.style.display = 'none'; });
+            // Reset space icon gallery when closing space modal
+            if (id === 'spaceModal') {
+                spaceIconItems = [];
+                renderSpaceIconGallery();
+            }
             // Reset forgot password steps
             var fp1 = document.getElementById('fpStep1');
             var fp2 = document.getElementById('fpStep2');
@@ -777,7 +859,13 @@
                             document.getElementById('spaceModalTitle').textContent = 'Editar espacio';
                             document.getElementById('spaceModalDesc').textContent = 'Modifica los datos de tu plataforma.';
                             document.getElementById('spaceName').value = data.space.nombrePlataforma;
-                            document.getElementById('spaceIcon').value = data.space.iconoURL || '';
+                            if (data.space.iconoURL) {
+                                spaceIconItems = [{ src: data.space.iconoURL, isBase64: false }];
+                            } else {
+                                spaceIconItems = [];
+                            }
+                            renderSpaceIconGallery();
+                            document.getElementById('spaceIconUrl').value = '';
                             document.getElementById('spaceBgText').value = data.space.colorFondo;
                             document.getElementById('spaceBg').value = data.space.colorFondo;
                             document.getElementById('spaceSecondaryText').value = data.space.colorSecundario;
@@ -798,6 +886,8 @@
                             document.getElementById('spaceModalTitle').textContent = 'Crear espacio';
                             document.getElementById('spaceModalDesc').textContent = 'Personaliza tu plataforma con nombre, icono y colores.';
                             document.getElementById('spaceForm').reset();
+                            spaceIconItems = [];
+                            renderSpaceIconGallery();
                             openModal('spaceModal');
                         };
                         if (wasDeleted) {
@@ -818,6 +908,8 @@
                     document.getElementById('spaceModalTitle').textContent = 'Crear espacio';
                     document.getElementById('spaceModalDesc').textContent = 'Personaliza tu plataforma con nombre, icono y colores.';
                     document.getElementById('spaceForm').reset();
+                    spaceIconItems = [];
+                    renderSpaceIconGallery();
                     openModal('spaceModal');
                 };
             });
@@ -1176,24 +1268,78 @@
                 if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
             });
         }
-        // Icon preview on URL input
-        document.getElementById('spaceIcon').addEventListener('input', function() {
-            try {
-                var preview = document.getElementById('spaceIconPreview');
-                var img = document.getElementById('spaceIconImg');
-                var val = this.value.trim();
-                // Extract image URL if HTML embed was pasted
-                var m = val.match(/src=["']([^"']+)["']/);
-                if (m) val = m[1];
-                // Only show preview if looks like a URL
-                if (val && (val.startsWith('http://') || val.startsWith('https://') || val.startsWith('data:'))) {
-                    preview.style.display = 'block';
-                    img.src = val;
-                } else {
-                    preview.style.display = 'none';
-                }
-            } catch(e) {}
-        });
+        // ============================================================
+        // SPACE ICON GALLERY (max 1 image)
+        // ============================================================
+        var spaceIconItems = [];
+
+        function renderSpaceIconGallery() {
+            var container = document.getElementById('spaceIconGallery');
+            var counter = document.getElementById('spaceIconCounter');
+            if (!container) return;
+            counter.textContent = spaceIconItems.length + ' / 1 imagenes';
+            var html = '';
+            spaceIconItems.forEach(function(item, i) {
+                html += '<div class="img-gallery-item"><img src="' + item.src + '" alt="Icono" onerror="this.src=\'data:image/svg+xml,<svg xmlns=\\\'http://www.w3.org/2000/svg\\\' width=\\\'100\\\' height=\\\'70\\\'><rect fill=\\\'%23333\\\' width=\\\'100\\\' height=\\\'70\\\'/><text x=\\\'50%\\\' y=\\\'50%\\\' fill=\\\'%23666\\\' text-anchor=\\\'middle\\\' dy=\\\'.3em\\\' font-size=\\\'10\\\'>Error</text></svg>\'"><button class="img-remove-btn" onclick="removeSpaceIcon(' + i + ')" title="Eliminar"><i class="fas fa-times"></i></button></div>';
+            });
+            if (spaceIconItems.length < 1) {
+                html += '<div class="img-add-btn" onclick="document.getElementById(\'spaceIconInput\').click()"><i class="fas fa-plus"></i><span>Agregar</span></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        function comprimirImagen(file, cb) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = new Image();
+                img.onload = function() {
+                    var maxW = 1200, maxH = 1200;
+                    var w = img.width, h = img.height;
+                    if (w > maxW) { h = (maxW / w) * h; w = maxW; }
+                    if (h > maxH) { w = (maxH / h) * w; h = maxH; }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    var quality = 0.7;
+                    var dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    while (dataUrl.length > 2000 && quality > 0.1) {
+                        quality -= 0.1;
+                        dataUrl = canvas.toDataURL('image/jpeg', Math.max(quality, 0.1));
+                    }
+                    cb(dataUrl);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.previewSpaceIcon = function(input) {
+            var files = Array.from(input.files);
+            if (spaceIconItems.length >= 1) { showToast('Maximo 1 imagen.', 'error'); return; }
+            files.forEach(function(file) {
+                if (file.size > 100 * 1024 * 1024) { showToast('"' + file.name + '" supera los 100MB.', 'error'); return; }
+                comprimirImagen(file, function(dataUrl) {
+                    spaceIconItems = [{ src: dataUrl, isBase64: true }];
+                    renderSpaceIconGallery();
+                });
+            });
+            input.value = '';
+        };
+
+        window.addSpaceIconUrl = function() {
+            var val = document.getElementById('spaceIconUrl').value.trim();
+            if (!val) return;
+            if (spaceIconItems.length >= 1) { showToast('Maximo 1 imagen.', 'error'); return; }
+            spaceIconItems = [{ src: val, isBase64: false }];
+            document.getElementById('spaceIconUrl').value = '';
+            renderSpaceIconGallery();
+        };
+
+        window.removeSpaceIcon = function(index) {
+            spaceIconItems.splice(index, 1);
+            renderSpaceIconGallery();
+        };
 
         // Space form submit
         document.getElementById('spaceForm').addEventListener('submit', function(e) {
@@ -1202,10 +1348,6 @@
             var btn = document.getElementById('spaceBtn');
             var msg = document.getElementById('spaceMessage');
             var nombre = document.getElementById('spaceName').value.trim();
-            var icono = document.getElementById('spaceIcon').value.trim();
-            var m = icono.match(/src=["']([^"']+)["']/);
-            if (m) icono = m[1];
-            if (icono && !icono.match(/^https?:\/\//i)) icono = '';
             var bg = document.getElementById('spaceBgText').value.trim();
             var secondary = document.getElementById('spaceSecondaryText').value.trim();
             var accent = document.getElementById('spaceAccentText').value.trim();
@@ -1214,21 +1356,53 @@
             btn.classList.add('loading');
             btn.disabled = true;
 
-            jsonp({ action:'saveSpace', user:sessionUser, pass:sessionPass, nombrePlataforma:nombre, iconoURL:icono, colorFondo:bg, colorSecundario:secondary, colorAcento:accent, colorTexto:text }).then(function(resp) {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                try {
-                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
-                    if (data.status === 'OK') {
-                        mostrarMsg(msg, 'Espacio guardado! Visitalo en <a href="#' + encodeURIComponent(nombre) + '" style="color:#c4a87c;text-decoration:underline">#' + escHtml(nombre) + '</a>', 'success');
-                        loadMySpace();
-                        setTimeout(function() { closeModal('spaceModal'); }, 2500);
-                    } else { mostrarMsg(msg, 'Error al guardar.', 'error'); }
-                } catch(e) { mostrarMsg(msg, 'Error al procesar respuesta.', 'error'); }
-            }).catch(function() {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                mostrarMsg(msg, 'Error de conexion.', 'error');
+            var base64Item = spaceIconItems.filter(function(i) { return i.isBase64; });
+            var urlItems    = spaceIconItems.filter(function(i) { return !i.isBase64; });
+
+            function finalizarGuardado(iconoURL) {
+                jsonp({ action:'saveSpace', user:sessionUser, pass:sessionPass, nombrePlataforma:nombre, iconoURL:iconoURL || '', colorFondo:bg, colorSecundario:secondary, colorAcento:accent, colorTexto:text }).then(function(resp) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    try {
+                        var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                        if (data.status === 'OK') {
+                            mostrarMsg(msg, 'Espacio guardado! Visitalo en <a href="#' + encodeURIComponent(nombre) + '" style="color:#c4a87c;text-decoration:underline">#' + escHtml(nombre) + '</a>', 'success');
+                            loadMySpace();
+                            setTimeout(function() { closeModal('spaceModal'); }, 2500);
+                        } else { mostrarMsg(msg, data.mensaje || 'Error al guardar.', 'error'); }
+                    } catch(e) { mostrarMsg(msg, 'Error al procesar respuesta.', 'error'); }
+                }).catch(function() {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    mostrarMsg(msg, 'Error de conexion.', 'error');
+                });
+            }
+
+            if (base64Item.length === 0) {
+                finalizarGuardado(urlItems.length > 0 ? urlItems[0].src : '');
+                return;
+            }
+
+            showToast('Subiendo imagen...', '');
+            gasPost({
+                action: 'uploadSpaceIcon',
+                user: sessionUser,
+                pass: sessionPass,
+                image: base64Item[0].src
+            }, 120000).then(function(resp) {
+                if (resp && resp.success && resp.imageUrl) {
+                    finalizarGuardado(resp.imageUrl);
+                } else {
+                    finalizarGuardado(urlItems.length > 0 ? urlItems[0].src : '');
+                    showToast('Error al subir imagen.', 'error');
+                }
+            }).catch(function(err) {
+                finalizarGuardado(urlItems.length > 0 ? urlItems[0].src : '');
+                if (err && err.message === 'PERMISOS_REQUERIDOS') {
+                    mostrarMsg(msg, 'Permisos requeridos. Ve a "Reactivar permisos" en el menu.', 'error');
+                } else {
+                    mostrarMsg(msg, 'Error al subir imagen.', 'error');
+                }
             });
         });
 
@@ -1237,6 +1411,9 @@
         syncColorInput('spaceSecondary', 'spaceSecondaryText');
         syncColorInput('spaceAccent', 'spaceAccentText');
         syncColorInput('spaceText', 'spaceTextText');
+
+        // Initial render of space icon gallery
+        renderSpaceIconGallery();
 
         // ============================================================
         // URL PARAM: View a space by #nombre-plataforma, ?user=username, or /username
@@ -1265,13 +1442,12 @@
                 document.body.style.overflow = '';
                 return;
             }
-            // If it's a platform name hash, pass it to spaces.html directly
             if (id.type === 'nombrePlataforma') {
-                frame.src = 'spaces.html?nombrePlataforma=' + encodeURIComponent(id.value);
+                frame.src = 'spaces.html?nombrePlataforma=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
             } else if (id.type === 'panel') {
                 frame.src = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
             } else {
-                frame.src = 'spaces.html?user=' + encodeURIComponent(id.value);
+                frame.src = 'spaces.html?user=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
             }
             container.style.display = 'block';
             document.body.style.overflow = 'hidden';
