@@ -61,10 +61,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .restricted-msg{text-align:center;padding:10px;font-size:12px;color:var(--wa-text-muted);flex-shrink:0;border-top:1px solid var(--wa-border);background:var(--wa-bg-chat);}
 .restricted-msg span{color:var(--wa-green);font-weight:600;}
 
-.bottom-sheet{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;animation:slideUp .2s ease;}
+.bottom-sheet{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;}
 .bottom-sheet.open{display:block;}
-.bs-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:-1;}
-.bs-menu{background:var(--wa-bg-header);border-radius:16px 16px 0 0;padding:8px 0 16px;border-top:1px solid var(--wa-border);}
+.bs-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);animation:fadeIn .2s ease;}
+.bs-menu{position:absolute;bottom:0;left:0;right:0;background:var(--wa-bg-header);border-radius:16px 16px 0 0;padding:8px 0 16px;border-top:1px solid var(--wa-border);animation:slideUp .2s ease;}
 .bs-item{display:flex;align-items:center;gap:12px;padding:14px 20px;font-size:15px;color:var(--wa-text);cursor:pointer;transition:background .1s;}
 .bs-item:hover{background:var(--wa-bg-hover);}
 .bs-item .bs-icon{font-size:20px;width:28px;text-align:center;}
@@ -75,6 +75,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 </style>
 </head>
 <body>
@@ -145,6 +146,10 @@ var userPhotos = {};
 var replyTo = null;
 var selectedMsgId = null;
 var selectedMsgEl = null;
+var initialLoadDone = false;
+
+var allRooms = ['general','soporte','anuncios'];
+var roomIndexMap = { general:0, soporte:1, anuncios:2 };
 
 if (!canWrite) {
   document.getElementById('msgInput').disabled = true;
@@ -164,9 +169,9 @@ document.getElementById('backBtn').addEventListener('click', function() {
 document.getElementById('replyClose').addEventListener('click', cancelReply);
 document.getElementById('bsOverlay').addEventListener('click', closeSheet);
 document.getElementById('bsCancel').addEventListener('click', closeSheet);
-document.getElementById('bsReply').addEventListener('click', function() { closeSheet(); iniciarRespuesta(); });
-document.getElementById('bsEdit').addEventListener('click', function() { closeSheet(); iniciarEdicion(); });
-document.getElementById('bsDelete').addEventListener('click', function() { closeSheet(); eliminarMsg(); });
+document.getElementById('bsReply').addEventListener('click', function() { iniciarRespuesta(); closeSheet(); });
+document.getElementById('bsEdit').addEventListener('click', function() { iniciarEdicion(); closeSheet(); });
+document.getElementById('bsDelete').addEventListener('click', function() { eliminarMsg(); closeSheet(); });
 
 function escHtml(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -461,6 +466,12 @@ function fetchMsgs() {
           messages.push(newMsgs[k]);
         }
         renderAllMsgs();
+        if (!initialLoadDone && newMsgs.length) {
+          initialLoadDone = true;
+          localStorage.setItem('lastRead_' + room, newMsgs[newMsgs.length - 1].fecha);
+          localStorage.setItem('unread_' + room, '0');
+          try{window.parent.postMessage({type:'unreadUpdate', room:room, count:0},'*');}catch(e){}
+        }
       } else {
         for (var i = 0; i < newMsgs.length; i++) {
           var exists = false;
@@ -535,6 +546,36 @@ function sendMsg() {
 
 fetchMsgs();
 pollTimer = setInterval(fetchMsgs, 1000);
+
+setInterval(function() {
+  allRooms.forEach(function(r) {
+    if (r === room) return;
+    jsonp({ action:'getMessages', user:sessionUser, pass:sessionPass, room:r }).then(function(resp) {
+      try {
+        var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+        if (data.status !== 'OK' || !data.messages) return;
+        if (data.fotos) { for (var fu in data.fotos) { if (data.fotos.hasOwnProperty(fu)) userPhotos[fu] = data.fotos[fu]; } }
+        var msgs = data.messages;
+        var lastRead = localStorage.getItem('lastRead_' + r);
+        if (!lastRead) {
+          var c = msgs.length > 0 ? Math.min(2, msgs.length) : 0;
+          localStorage.setItem('unread_' + r, String(c));
+          try{window.parent.postMessage({type:'unreadUpdate', room:r, count:c},'*');}catch(e){}
+          return;
+        }
+        var count = 0;
+        for (var i = 0; i < msgs.length; i++) {
+          if (msgs[i].fecha > lastRead) count++;
+        }
+        var prev = localStorage.getItem('unread_' + r);
+        localStorage.setItem('unread_' + r, String(count));
+        if (String(count) !== prev) {
+          try{window.parent.postMessage({type:'unreadUpdate', room:r, count:count},'*');}catch(e){}
+        }
+      } catch(e) {}
+    }).catch(function(){});
+  });
+}, 5000);
 </script>
 </body>
 </html>

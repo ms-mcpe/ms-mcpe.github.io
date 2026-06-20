@@ -222,10 +222,18 @@
   var sessionPass = localStorage.getItem('sessionPass');
   if (!sessionUser || !sessionPass) window.location.href = 'login.html';
 
+  var roomKeyMap = { general:'General', soporte:'Soporte', anuncios:'Anuncios' };
+  var roomNames = ['general','soporte','anuncios'];
+
+  function getUnread(roomKey, fallback) {
+    var v = parseInt(localStorage.getItem('unread_' + roomKey));
+    return isNaN(v) ? fallback : v;
+  }
+
   var users = [
-    { name:'General', lastMsg:'Bienvenido al chat grupal', time:'12:30', unread:2, avatar:null },
-    { name:'Soporte', lastMsg:'¿En qué podemos ayudarte?', time:'11:15', unread:0, avatar:null },
-    { name:'Anuncios', lastMsg:'Nueva actualización disponible', time:'10:00', unread:1, avatar:null },
+    { name:'General', lastMsg:'Bienvenido al chat grupal', time:'12:30', unread:getUnread('general',2), avatar:null, key:'general' },
+    { name:'Soporte', lastMsg:'¿En qué podemos ayudarte?', time:'11:15', unread:getUnread('soporte',0), avatar:null, key:'soporte' },
+    { name:'Anuncios', lastMsg:'Nueva actualización disponible', time:'10:00', unread:getUnread('anuncios',1), avatar:null, key:'anuncios' },
   ];
 
   var chatOpen = false;
@@ -317,7 +325,29 @@
   // ─── Listen for iframe messages ─────────────────────────
   window.addEventListener('message', function(e) {
     if (e.data && e.data.type === 'closeChat') cerrarChat();
+    if (e.data && e.data.type === 'unreadUpdate') {
+      for (var ui = 0; ui < users.length; ui++) {
+        if (users[ui].key === e.data.room) {
+          users[ui].unread = e.data.count;
+          renderChats();
+          break;
+        }
+      }
+    }
   });
+
+  // ─── Periodic unread sync from localStorage ─────────────
+  setInterval(function() {
+    var changed = false;
+    for (var ui = 0; ui < users.length; ui++) {
+      var stored = parseInt(localStorage.getItem('unread_' + users[ui].key));
+      if (!isNaN(stored) && users[ui].unread !== stored) {
+        users[ui].unread = stored;
+        changed = true;
+      }
+    }
+    if (changed) renderChats();
+  }, 3000);
 
   // ─── Init ────────────────────────────────────────────────
   renderChats();
