@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>WorldLeaf Chat</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --wa-bg: #111b21;
@@ -14,21 +13,15 @@
       --wa-bg-bubble-own: #005c4b;
       --wa-bg-bubble-other: #1f2c33;
       --wa-green: #00a884;
-      --wa-green-light: #25d366;
       --wa-teal: #00a884;
       --wa-text: #e9edef;
       --wa-text-secondary: #aebac1;
       --wa-text-muted: #667781;
       --wa-border: #313d45;
       --wa-divider: #182229;
-      --wa-bg-tab: #1f2c33;
       --wa-bg-hover: #2a3942;
       --wa-bg-selected: #2a3942;
       --wa-bg-search: #1f2c33;
-      --wa-bg-unread: #00a884;
-      --wa-bg-check: #53bdeb;
-      --wa-shadow: 0 1px 3px rgba(0,0,0,0.3);
-      --wa-radius: 8px;
     }
     *,::before,::after{box-sizing:border-box;margin:0;padding:0;}
     ::-webkit-scrollbar{width:5px;}
@@ -36,7 +29,7 @@
     ::-webkit-scrollbar-thumb{background:var(--wa-border);border-radius:99px;}
     html,body{height:100%;overflow:hidden;}
     body{
-      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
       background:var(--wa-bg);color:var(--wa-text);
       -webkit-user-select:none;user-select:none;
       display:flex;flex-direction:column;
@@ -57,7 +50,6 @@
       font-size:17px;font-weight:700;color:var(--wa-text);
       letter-spacing:-0.3px;
     }
-    .wa-header .wa-subtitle{font-size:11px;color:var(--wa-text-muted);font-weight:500;}
     .wa-header-btn{
       width:40px;height:40px;border-radius:50%;
       background:none;border:none;color:var(--wa-text-secondary);
@@ -144,25 +136,6 @@
     .wa-empty .wa-empty-icon{font-size:64px;margin-bottom:16px;opacity:0.5;}
     .wa-empty h3{font-size:20px;font-weight:600;color:var(--wa-text);margin-bottom:8px;}
     .wa-empty p{font-size:14px;line-height:1.5;}
-
-    .wa-bottombar{
-      display:flex;background:var(--wa-bg-header);border-top:1px solid var(--wa-border);
-      flex-shrink:0;height:54px;
-    }
-    .wa-bottombar-item{
-      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-      border:none;background:none;cursor:pointer;color:var(--wa-text-muted);
-      font-size:10px;font-weight:600;font-family:inherit;transition:color 0.15s;
-      padding:4px 0;
-    }
-    .wa-bottombar-item .icon{font-size:22px;line-height:1;}
-    .wa-bottombar-item.active,.wa-bottombar-item:hover{color:var(--wa-teal);}
-
-    .unread-badge{
-      background:var(--wa-green);color:#fff;font-size:10px;font-weight:700;
-      min-width:18px;height:18px;border-radius:9px;
-      display:flex;align-items:center;justify-content:center;padding:0 4px;
-    }
 
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
@@ -256,7 +229,7 @@
   ];
 
   var chatOpen = false;
-  var chatFiles = { 0:'general.html', 1:'soporte.html', 2:'anuncios.html' };
+  var chatFiles = { 0:'chat.html?room=general', 1:'chat.html?room=soporte', 2:'chat.html?room=anuncios' };
 
   function escHtml(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -349,9 +322,7 @@
   // ─── Init ────────────────────────────────────────────────
   renderChats();
 
-  var _histNav = false;
   window.addEventListener('hashchange', function() {
-    if (_histNav) { _histNav = false; return; }
     var h = window.location.hash.replace('#','') || 'chats';
     if (['chats','addons','market','coins','perfil'].indexOf(h) !== -1) cambiarView(h);
   });
