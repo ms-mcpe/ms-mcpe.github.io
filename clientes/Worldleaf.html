@@ -3,54 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>addons</title>
+    <title>WorldLEaf - Pantalla Completa</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Elimina los márgenes por defecto del navegador y oculta las barras de scroll */
+        html, body {
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .iframe-container {
+            padding: 0;
             width: 100%;
-            height: 600px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
+            height: 100%;
             overflow: hidden;
+            background-color: #000; /* Fondo negro por si tarda en cargar */
         }
+
+        /* Configura el iframe para ocupar el 100% de la ventana */
         iframe {
             width: 100%;
             height: 100%;
             border: none;
+            display: block; /* Elimina un pequeño espacio en blanco inferior por defecto */
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Visualización de WorldLEaf</h1>
-        <hr>
-        
-        <!-- Contenedor del iFrame -->
-        <div class="iframe-container">
-            <iframe 
-                src="https://ms-mcpe.github.io/#WorldLEaf" 
-                title="WorldLEaf">
-            </iframe>
-        </div>
-    </div>
+    <iframe 
+        src="https://ms-mcpe.github.io/#WorldLEaf" 
+        title="WorldLEaf"
+        allow="fullscreen">
+    </iframe>
 
 </body>
 </html>
