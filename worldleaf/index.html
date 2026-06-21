@@ -780,7 +780,7 @@ body {
     <span class="verify-icon">🔒</span>
     <h2>Verificaci\u00f3n necesaria</h2>
     <p>Debes verificarte para poder descargar addons. La verificaci\u00f3n dura <strong>24 horas</strong>.</p>
-    <a class="verify-btn" id="verifyLink" href="https://cuty.io/jWcXJCZxVE" target="_blank" rel="noopener noreferrer">🔓 Verificarse ahora</a>
+    <a class="verify-btn" id="verifyLink" href="https://cuty.io/jWcXJCZxVE">🔓 Verificarse ahora</a>
     <button class="verify-skip" id="verifySkip">Ya me verifiqu\u00e9</button>
     <div class="verify-time" id="verifyTime"></div>
   </div>
@@ -1292,26 +1292,14 @@ body {
     verifyBackdrop.classList.remove('open');
   }
 
-  // When user clicks the verification link, it opens in new tab
-  // When they come back, we need to check if they verified
-  verifyLink.addEventListener('click', function() {
-    // Poll for when they come back
-    var pollInterval = setInterval(function() {
-      if (isVerified()) {
-        clearInterval(pollInterval);
-        hideVerification();
-      }
-    }, 1000);
-    // Stop polling after 5 minutes
-    setTimeout(function() { clearInterval(pollInterval); }, 300000);
-  });
+  // Click en verificarse = navega a cuty.io (misma pestaña)
+  // cuty.io redirige de vuelta con ?verified=true
+  // initVerification() lo detecta al recargar la página
 
   verifySkip.addEventListener('click', function() {
-    // Re-check verification status
     if (isVerified()) {
       hideVerification();
     } else {
-      // Try to detect if URL has verified=true
       var params = new URLSearchParams(location.search);
       if (params.get('verified') === 'true') {
         localStorage.setItem(VERIFY_KEY, Date.now().toString());
