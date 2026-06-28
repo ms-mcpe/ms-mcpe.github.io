@@ -261,120 +261,35 @@
 
 <script>
 (function() {
-    var GAS_URL = 'https://script.google.com/macros/s/AKfycbyI52B-s7qz8wPMfRXLHaYRDuy1Lq_NfpzEA6IrxcQfKDTXA_TsWmDrfwS6b4L8m7oE9g/exec';
-    var CACHE_KEY = 'wl_stats';
-    var gen = 0;
+    var GAS_URL = 'https://script.google.com/macros/s/AKfycbwCPig856nHfy0zRN4O9kdKpxs7VltqBFGEvD5WOlnFLLU7Db6SLkaux6t2Yi6g_HNC5w/exec';
 
-    function formatNumber(n) {
-        n = parseInt(n) || 0;
-        if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-        return String(n);
-    }
+    function fmt(n) { return n >= 1000000 ? (n/1000000).toFixed(1).replace(/\.0$/,'')+'M' : n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
 
-    function getCache() {
-        try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch(e) { return null; }
-    }
-
-    function setCache(data) {
-        try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-                total_addons: data.addons,
-                total_descargas: data.downloads,
-                hash: String(data.addons) + '|' + String(data.downloads),
-                ts: Date.now()
-            }));
-        } catch(e) {}
-    }
-
-    function getJSON(action) {
-        return fetch(GAS_URL + '?action=' + encodeURIComponent(action))
-            .then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
-            });
-    }
-
-    var addonEl = document.getElementById('addonCount');
     var dlEl = document.getElementById('downloadCount');
-    var errEl = document.getElementById('errorMsg');
+    var acEl = document.getElementById('addonCount');
 
-    function renderStats(addons, downloads) {
-        addonEl.textContent = formatNumber(addons);
-        dlEl.textContent = formatNumber(downloads);
-        addonEl.classList.remove('loading');
-        dlEl.classList.remove('loading');
+    var cached = localStorage.getItem('wl_stats');
+    if (cached) {
+      try { var c = JSON.parse(cached); acEl.textContent = fmt(c.a); dlEl.textContent = fmt(c.d); } catch(e) {}
     }
+    window._statsCb = function(d) {
+      if (d && d.ok) {
+        acEl.textContent = fmt(d.total_addons);
+        dlEl.textContent = fmt(d.total_descargas);
+        localStorage.setItem('wl_stats', JSON.stringify({a:d.total_addons, d:d.total_descargas}));
+      }
+    };
+    var s = document.createElement('script');
+    s.src = GAS_URL + '?action=getStats&callback=_statsCb&_=' + Date.now();
+    document.body.appendChild(s);
+    setTimeout(function() { document.body.removeChild(s); }, 2000);
 
-    function loadStats() {
-        var cached = getCache();
-        if (cached) {
-            renderStats(cached.total_addons, cached.total_descargas);
-        } else {
-            addonEl.classList.add('loading');
-            dlEl.classList.add('loading');
-        }
-
-        var myGen = ++gen;
-
-        getJSON('getStats').then(function(data) {
-            if (myGen !== gen) return;
-            if (data && data.ok) {
-                var newHash = String(data.total_addons) + '|' + String(data.total_descargas);
-                if (!cached || cached.hash !== newHash) {
-                    renderStats(data.total_addons, data.total_descargas);
-                    setCache({ addons: data.total_addons, downloads: data.total_descargas });
-                }
-                errEl.style.display = 'none';
-            } else {
-                throw new Error('Invalid response');
-            }
-        }).catch(function() {
-            if (myGen !== gen) return;
-            if (!getCache()) {
-                addonEl.textContent = '?';
-                dlEl.textContent = '?';
-                errEl.style.display = 'block';
-                addonEl.classList.remove('loading');
-                dlEl.classList.remove('loading');
-            }
-        });
-    }
-
-    function trackDownload() {
-        var myGen = ++gen;
-        var cached = getCache();
-        var prevDownloads = cached ? parseInt(cached.total_descargas) || 0 : 0;
-        var next = prevDownloads + 1;
-
-        renderStats(cached ? cached.total_addons : 0, next);
-        setCache({ addons: cached ? cached.total_addons : 0, downloads: next });
-
-        getJSON('incrementDescargas').then(function(data) {
-            if (myGen !== gen) return;
-            if (data && data.total !== undefined) {
-                renderStats(cached ? cached.total_addons : 0, data.total);
-                setCache({ addons: cached ? cached.total_addons : 0, downloads: data.total });
-            }
-        }).catch(function() {});
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        loadStats();
-
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            trackDownload();
-        });
-    });
-
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'F12') { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); return false; }
-        if (e.ctrlKey && (e.key === 'C' || e.key === 'c')) { e.preventDefault(); return false; }
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        dlEl.textContent = fmt((parseInt(dlEl.textContent) || 0) + 1);
+        var s = document.createElement('script');
+        s.src = GAS_URL + '?action=incrementDescargas&callback=_statsCb&_=' + Date.now();
+        document.body.appendChild(s);
+        setTimeout(function() { document.body.removeChild(s); }, 2000);
     });
 })();
 </script>
