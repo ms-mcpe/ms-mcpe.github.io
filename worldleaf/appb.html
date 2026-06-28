@@ -262,12 +262,29 @@
 <script>
 (function() {
     var GAS_URL = 'https://script.google.com/macros/s/AKfycbyI52B-s7qz8wPMfRXLHaYRDuy1Lq_NfpzEA6IrxcQfKDTXA_TsWmDrfwS6b4L8m7oE9g/exec';
+    var CACHE_KEY = 'wl_stats';
+    var gen = 0;
 
     function formatNumber(n) {
         n = parseInt(n) || 0;
         if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
         if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
         return String(n);
+    }
+
+    function getCache() {
+        try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch(e) { return null; }
+    }
+
+    function setCache(data) {
+        try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                total_addons: data.addons,
+                total_descargas: data.downloads,
+                hash: String(data.addons) + '|' + String(data.downloads),
+                ts: Date.now()
+            }));
+        } catch(e) {}
     }
 
     function getJSON(action) {
@@ -282,32 +299,62 @@
     var dlEl = document.getElementById('downloadCount');
     var errEl = document.getElementById('errorMsg');
 
+    function renderStats(addons, downloads) {
+        addonEl.textContent = formatNumber(addons);
+        dlEl.textContent = formatNumber(downloads);
+        addonEl.classList.remove('loading');
+        dlEl.classList.remove('loading');
+    }
+
     function loadStats() {
-        addonEl.classList.add('loading');
-        dlEl.classList.add('loading');
+        var cached = getCache();
+        if (cached) {
+            renderStats(cached.total_addons, cached.total_descargas);
+        } else {
+            addonEl.classList.add('loading');
+            dlEl.classList.add('loading');
+        }
+
+        var myGen = ++gen;
 
         getJSON('getStats').then(function(data) {
+            if (myGen !== gen) return;
             if (data && data.ok) {
-                addonEl.textContent = formatNumber(data.total_addons);
-                dlEl.textContent = formatNumber(data.total_descargas);
+                var newHash = String(data.total_addons) + '|' + String(data.total_descargas);
+                if (!cached || cached.hash !== newHash) {
+                    renderStats(data.total_addons, data.total_descargas);
+                    setCache({ addons: data.total_addons, downloads: data.total_descargas });
+                }
                 errEl.style.display = 'none';
             } else {
                 throw new Error('Invalid response');
             }
         }).catch(function() {
-            addonEl.textContent = '?';
-            dlEl.textContent = '?';
-            errEl.style.display = 'block';
-        }).finally(function() {
-            addonEl.classList.remove('loading');
-            dlEl.classList.remove('loading');
+            if (myGen !== gen) return;
+            if (!getCache()) {
+                addonEl.textContent = '?';
+                dlEl.textContent = '?';
+                errEl.style.display = 'block';
+                addonEl.classList.remove('loading');
+                dlEl.classList.remove('loading');
+            }
         });
     }
 
     function trackDownload() {
+        var myGen = ++gen;
+        var cached = getCache();
+        var prevDownloads = cached ? parseInt(cached.total_descargas) || 0 : 0;
+        var next = prevDownloads + 1;
+
+        renderStats(cached ? cached.total_addons : 0, next);
+        setCache({ addons: cached ? cached.total_addons : 0, downloads: next });
+
         getJSON('incrementDescargas').then(function(data) {
+            if (myGen !== gen) return;
             if (data && data.total !== undefined) {
-                dlEl.textContent = formatNumber(data.total);
+                renderStats(cached ? cached.total_addons : 0, data.total);
+                setCache({ addons: cached ? cached.total_addons : 0, downloads: data.total });
             }
         }).catch(function() {});
     }
