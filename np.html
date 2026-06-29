@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addon No Disponible</title>
+    <style>
+        /* Reset básico y bloqueo de selección nativo por CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* IE10+ */
+            user-select: none;         /* Estándar */
+            -webkit-touch-callout: none; /* Bloquea el menú contextual en iOS al dejar presionado */
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Fondo degradado neón animado */
+            background: linear-gradient(135deg, #09000f 0%, #1a0033 50%, #000000 100%);
+            background-size: 400% 400%;
+            animation: gradientBg 10s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* Animación suave para el fondo */
+        @keyframes gradientBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Contenedor de la tarjeta */
+        .card {
+            background: rgba(25, 10, 40, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid #bd00ff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            /* Sombra con efecto Neón */
+            box-shadow: 0 0 20px rgba(189, 0, 255, 0.2),
+                        inset 0 0 15px rgba(189, 0, 255, 0.2);
+            animation: neonGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes neonGlow {
+            from {
+                box-shadow: 0 0 15px rgba(189, 0, 255, 0.3), inset 0 0 10px rgba(189, 0, 255, 0.2);
+            }
+            to {
+                box-shadow: 0 0 30px rgba(189, 0, 255, 0.6), inset 0 0 20px rgba(189, 0, 255, 0.4);
+            }
+        }
+
+        /* Icono de advertencia estilo neón */
+        .icon {
+            font-size: 64px;
+            color: #00f0ff;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        p {
+            font-size: 16px;
+            color: #b3b3b3;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Detalle de estado en espera */
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        /* Evitar que las imágenes se puedan arrastrar */
+        img {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="icon">⚡</div>
+        <h1>Addon No Disponible</h1>
+        <p>El complemento que estás buscando actualmente no se encuentra disponible. Posiblemente se está añadiendo una nueva actualización o está en lista de espera.</p>
+        <div class="status-badge">Mantenimiento / Espera</div>
+    </div>
+
+    <script>
+        /* 1. Bloquear clic derecho (Evita menús contextuales e inspección rápida) */
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        /* 2. Bloquear combinaciones de teclas típicas para copiar o inspeccionar */
+        document.addEventListener('keydown', function(e) {
+            // Bloquear Ctrl+C, Ctrl+U, Ctrl+S, Ctrl+Shift+I, F12
+            if (
+                e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S') ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) ||
+                e.key === 'F12'
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        /* 3. Protección extra para pantallas táctiles (Evita mantener presionado) */
+        window.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }, { passive: false });
+    </script>
+</body>
+</html>
