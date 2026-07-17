@@ -212,6 +212,61 @@
             display: none;
         }
 
+        .platform-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 0;
+            justify-content: center;
+        }
+
+        .platform-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #8899a0;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .platform-tab:hover {
+            background: rgba(255,255,255,0.08);
+            color: #c0cdd4;
+        }
+
+        .platform-tab.active {
+            background: rgba(74, 222, 128, 0.12);
+            border-color: rgba(74, 222, 128, 0.25);
+            color: #4ade80;
+        }
+
+        .platform-tab svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-download-win {
+            background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.25) !important;
+        }
+
+        .btn-download-win:hover {
+            box-shadow: 0 12px 36px rgba(59, 130, 246, 0.35) !important;
+        }
+
+        .btn-download-win:active {
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2) !important;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         @media (max-width: 420px) {
             .card { padding: 28px 20px 24px; }
             .brand { font-size: 28px; }
@@ -229,11 +284,22 @@
 
     <div class="brand">World</div>
 
-    <div class="version-badge">v1.10.0</div>
+    <div class="version-badge">v1.11.0</div>
 
     <div class="subtitle">WorldLeaf — Complementos Minecraft Completamente gratis</div>
 
-    <div class="stats">
+    <div class="platform-tabs">
+        <button class="platform-tab active" data-platform="android" id="tabAndroid">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.523 15.3414c-.0515.0438-.103.0807-.1482.1245-.5745.5527-1.1786.9453-1.8014 1.1939-.2068.0819-.4212.1411-.6424.1753-.0641.01-.1289.0149-.1939.0149-.3459 0-.6698-.1245-.9218-.3473l-.0018-.0018c-.1163-.1049-.215-.2311-.2947-.3726-.0413-.0734-.0776-.1498-.1105-.2283-.0054-.0129-.0105-.0259-.0158-.0388-.1216-.2265-.198-.4751-.2283-.7416-.003-.0259-.0054-.052-.0073-.0781-.0065-.0894-.0105-.1798-.0105-.2715 0-.0877.004-.1742.0105-.2606.0019-.0261.0043-.0522.0073-.0781.0303-.2665.1067-.5151.2283-.7416.0053-.0129.0104-.0259.0158-.0388.0329-.0785.0692-.1549.1105-.2283.0797-.1415.1784-.2677.2947-.3726C7.5532 14.8545 7.8771 14.73 8.223 14.73c.065 0 .1298.0049.1939.0149.2212.0342.4356.0934.6424.1753.6228.2486 1.2269.6412 1.8014 1.1939.0452.0438.0967.0807.1482.1245l.0105.0087c.1478.1227.2826.219.4081.2947.0413.025.0847.0457.1283.0638.0087.0036.0175.0068.0263.01.0648.0237.132.04.2005.0485.0087.0011.0175.0018.0263.0022.138.0075.2811-.0173.4251-.0766a1.676 1.676 0 00.4914-.2836c.1324-.1221.2438-.2758.3275-.4503.014-.029.0269-.059.0388-.0899.0207-.0527.0388-.1072.054-.1634.0046-.0171.0089-.0343.0132-.0516.0244-.0983.042-.2.0515-.3056.002-.0214.0037-.0428.005-.0644.0035-.058.0057-.1167.0057-.1761 0-.0594-.0022-.1181-.0057-.1761-.0013-.0216-.003-.043-.005-.0644-.0095-.1053-.0271-.2073-.0515-.3056a3.218 3.218 0 00-.0132-.0516c-.0152-.0562-.0333-.1107-.054-.1634-.0119-.0309-.0248-.061-.0388-.0899-.0837-.1745-.1951-.3282-.3275-.4503a1.676 1.676 0 00-.4914-.2836c-.144-.0593-.2871-.0841-.4251-.0766a1.56 1.56 0 00-.2005.0022c-.0087.0004-.0176.0011-.0263.0022-.0685.0085-.1357.0248-.2005.0485a.937.937 0 00-.0263.01c-.0436.0181-.087.0388-.1283.0638-.1255.0757-.2603.172-.4081.2947zM8.5 2C6.567 2 5 3.567 5 5.5V19c0 1.933 1.567 3.5 3.5 3.5h1v2c0 .552.448 1 1 1s1-.448 1-1v-2h2v2c0 .552.448 1 1 1s1-.448 1-1v-2h1c1.933 0 3.5-1.567 3.5-3.5v-2H8.5V2z"/></svg>
+            Android
+        </button>
+        <button class="platform-tab" data-platform="windows" id="tabWindows">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 12V6.75l8-1.25V12H3zm0 .5h8v5.75l-8-1.25V12.5zM11.5 12V5.25l9.5-1.5V12h-9.5zm0 .5h9.5v7.75l-9.5-1.5V12.5z"/></svg>
+            Windows
+        </button>
+    </div>
+
+    <div class="stats" id="stats-android">
         <div class="stat-item">
             <div class="stat-icon">📦</div>
             <div class="stat-num loading" id="addonCount">--</div>
@@ -243,7 +309,21 @@
         <div class="stat-item">
             <div class="stat-icon">⬇️</div>
             <div class="stat-num loading" id="downloadCount">--</div>
-            <div class="stat-label">Descargas</div>
+            <div class="stat-label">Descargas APK</div>
+        </div>
+    </div>
+
+    <div class="stats hidden" id="stats-windows">
+        <div class="stat-item">
+            <div class="stat-icon">📦</div>
+            <div class="stat-num loading" id="addonCountWin">--</div>
+            <div class="stat-label">Complementos</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-icon">⬇️</div>
+            <div class="stat-num loading" id="downloadCountWin">--</div>
+            <div class="stat-label">Descargas EXE</div>
         </div>
     </div>
 
@@ -254,6 +334,15 @@
             <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
         </svg>
         Descargar APK
+    </a>
+
+    <a href="https://example.com/worldleaf-windows.exe"
+       class="btn-download btn-download-win hidden" id="downloadBtnWin" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
+            <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
+        </svg>
+        Descargar EXE
     </a>
 
     <div class="error-msg" id="errorMsg">Error al conectar con el servidor</div>
@@ -267,27 +356,62 @@
 
     var dlEl = document.getElementById('downloadCount');
     var acEl = document.getElementById('addonCount');
+    var dlWinEl = document.getElementById('downloadCountWin');
+    var acWinEl = document.getElementById('addonCountWin');
+    var currentPlatform = 'android';
 
     var cached = localStorage.getItem('wl_stats');
     if (cached) {
-      try { var c = JSON.parse(cached); acEl.textContent = fmt(c.a); dlEl.textContent = fmt(c.d); } catch(e) {}
+      try {
+        var c = JSON.parse(cached);
+        acEl.textContent = fmt(c.a);
+        dlEl.textContent = fmt(c.d);
+        acWinEl.textContent = fmt(c.a);
+        dlWinEl.textContent = fmt(c.dw || 0);
+      } catch(e) {}
     }
+
     window._statsCb = function(d) {
       if (d && d.ok) {
         acEl.textContent = fmt(d.total_addons);
         dlEl.textContent = fmt(d.total_descargas);
-        localStorage.setItem('wl_stats', JSON.stringify({a:d.total_addons, d:d.total_descargas}));
+        acWinEl.textContent = fmt(d.total_addons);
+        dlWinEl.textContent = fmt(d.total_descargas_windows || 0);
+        localStorage.setItem('wl_stats', JSON.stringify({a:d.total_addons, d:d.total_descargas, dw:d.total_descargas_windows || 0}));
       }
     };
+
     var s = document.createElement('script');
     s.src = GAS_URL + '?action=getStats&callback=_statsCb&_=' + Date.now();
     document.body.appendChild(s);
     setTimeout(function() { document.body.removeChild(s); }, 2000);
 
+    document.querySelectorAll('.platform-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        currentPlatform = this.dataset.platform;
+        document.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+
+        var isWin = currentPlatform === 'windows';
+        document.getElementById('stats-android').classList.toggle('hidden', isWin);
+        document.getElementById('stats-windows').classList.toggle('hidden', !isWin);
+        document.getElementById('downloadBtn').classList.toggle('hidden', isWin);
+        document.getElementById('downloadBtnWin').classList.toggle('hidden', !isWin);
+      });
+    });
+
     document.getElementById('downloadBtn').addEventListener('click', function() {
-        dlEl.textContent = fmt((parseInt(dlEl.textContent) || 0) + 1);
+        dlEl.textContent = fmt((parseInt(dlEl.textContent.replace(/[^0-9]/g,'')) || 0) + 1);
         var s = document.createElement('script');
         s.src = GAS_URL + '?action=incrementDescargas&callback=_statsCb&_=' + Date.now();
+        document.body.appendChild(s);
+        setTimeout(function() { document.body.removeChild(s); }, 2000);
+    });
+
+    document.getElementById('downloadBtnWin').addEventListener('click', function() {
+        dlWinEl.textContent = fmt((parseInt(dlWinEl.textContent.replace(/[^0-9]/g,'')) || 0) + 1);
+        var s = document.createElement('script');
+        s.src = GAS_URL + '?action=incrementDescargasWindows&callback=_statsCb&_=' + Date.now();
         document.body.appendChild(s);
         setTimeout(function() { document.body.removeChild(s); }, 2000);
     });
