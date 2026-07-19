@@ -2,7 +2,7 @@
   "name": "NekoCraft Addons",
   "short_name": "NekoCraft",
   "description": "Descubre los mejores addons para Minecraft Bedrock Edition",
-  "start_url": "instalador-nekocraft.html",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],

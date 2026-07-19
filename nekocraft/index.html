@@ -178,22 +178,7 @@
       });
     }
 
-    /* ── PWA: Redirect to installer if not installed as app ── */
-    (function checkPWAInstall() {
-      function isStandalone() {
-        return window.matchMedia('(display-mode: standalone)').matches ||
-               window.navigator.standalone === true;
-      }
-      function isInIframe() {
-        try { return window.self !== window.top; } catch (e) { return true; }
-      }
-      // Only redirect the top-level page, not iframes
-      if (isInIframe()) return;
-      // If not standalone and not already redirected
-      if (!isStandalone() && !localStorage.getItem('nekocraft_skipped')) {
-        window.location.href = 'instalador-nekocraft.html';
-      }
-    })();
+    /* ── PWA: If installed as standalone, show app. Otherwise just use web normally. ── */
   </script>
 </body>
 </html>

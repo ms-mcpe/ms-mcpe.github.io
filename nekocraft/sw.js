@@ -1,7 +1,6 @@
 const CACHE_NAME = 'nekocraft-v1';
 const ASSETS = [
   './',
-  './instalador-nekocraft.html',
   './index.html',
   './home.html',
   './populars.html',
