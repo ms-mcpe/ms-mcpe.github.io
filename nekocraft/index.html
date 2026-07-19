@@ -4,8 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#FFF0F3">
-  <meta name="description" content="Pinkcraft Addons — Descubre los mejores addons para Minecraft Bedrock Edition">
-  <title>Pinkcraft Addons</title>
+  <meta name="description" content="NekoCraft Addons — Descubre los mejores addons para Minecraft Bedrock Edition">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NekoCraft">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+  <title>NekoCraft Addons</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,7 +25,7 @@
         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div class="header-title">
-        <span class="header-title-main">PINKCRAFT</span>
+        <span class="header-title-main">NEKOCRAFT</span>
         <span class="header-title-sub">ADDONS</span>
       </div>
       <button class="header-btn" id="btn-search" onclick="toggleSearch()" aria-label="Buscar">
@@ -38,7 +47,7 @@
     <!-- ═══ Sidebar ═══ -->
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-logo">Pinkcraft</div>
+        <div class="sidebar-logo">NekoCraft</div>
         <div class="sidebar-subtitle">♥ Addon Marketplace ♥</div>
       </div>
       <div class="sidebar-nav">
@@ -49,7 +58,7 @@
         </button>
       </div>
       <div class="sidebar-footer">
-        Pinkcraft Addons © 2026
+        NekoCraft Addons © 2026
       </div>
     </nav>
 
@@ -153,6 +162,30 @@
         }
       }
     });
+
+    /* ── PWA: Register Service Worker ── */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+
+    /* ── PWA: Redirect to installer if not installed as app ── */
+    (function checkPWAInstall() {
+      function isStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true;
+      }
+      function isInIframe() {
+        try { return window.self !== window.top; } catch (e) { return true; }
+      }
+      // Only redirect the top-level page, not iframes
+      if (isInIframe()) return;
+      // If not standalone and not already redirected
+      if (!isStandalone() && !localStorage.getItem('nekocraft_skipped')) {
+        window.location.href = 'instalador-nekocraft.html';
+      }
+    })();
   </script>
 </body>
 </html>
