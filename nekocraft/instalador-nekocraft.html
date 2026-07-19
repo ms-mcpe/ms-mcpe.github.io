@@ -510,34 +510,19 @@
       return 'ready';
     }
 
-    function goToApp() {
-      window.location.href = 'index.html';
-    }
-
     function showInstalledState() {
       const btn = document.getElementById('install-btn');
       btn.innerHTML = `
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        App instalada
+        NekoCraft listo
       `;
-      btn.classList.add('install-btn-installed');
+      btn.classList.remove('install-btn');
+      btn.style.cursor = 'default';
+      btn.style.boxShadow = 'none';
       document.getElementById('show-instructions').style.display = 'none';
       const statusEl = document.getElementById('install-status');
       statusEl.className = 'install-status success';
-      statusEl.textContent = 'NekoCraft instalado. Redirigiendo en 15 segundos...';
-
-      let segundos = 15;
-      const interval = setInterval(() => {
-        segundos--;
-        if (segundos > 0) {
-          statusEl.textContent = `NekoCraft instalado. Redirigiendo en ${segundos} segundos...`;
-        }
-      }, 1000);
-
-      setTimeout(() => {
-        clearInterval(interval);
-        goToApp();
-      }, 15000);
+      statusEl.textContent = 'NekoCraft ha sido instalado. Ya puedes abrir la app desde la pantalla de inicio de tu dispositivo.';
     }
 
     function doInstall() {
