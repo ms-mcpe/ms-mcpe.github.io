@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="28" fill="#FF7597"/>
+  <circle cx="96" cy="96" r="68" fill="#FFF0F3"/>
+  <!-- Cat ears -->
+  <path d="M56 80 L66 40 L86 68Z" fill="#FF5E85"/>
+  <path d="M136 80 L126 40 L106 68Z" fill="#FF5E85"/>
+  <!-- Eyes -->
+  <ellipse cx="78" cy="98" rx="8" ry="10" fill="#5C2D37"/>
+  <ellipse cx="114" cy="98" rx="8" ry="10" fill="#5C2D37"/>
+  <ellipse cx="80.5" cy="95" rx="3" ry="4" fill="#FFF"/>
+  <ellipse cx="116.5" cy="95" rx="3" ry="4" fill="#FFF"/>
+  <!-- Nose -->
+  <path d="M96 110 L92 118 L100 118Z" fill="#FF7597"/>
+  <!-- Mouth -->
+  <path d="M92 118 Q96 124 100 118" fill="none" stroke="#5C2D37" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="96" y1="118" x2="96" y2="122" stroke="#5C2D37" stroke-width="1.2" stroke-linecap="round"/>
+</svg>
