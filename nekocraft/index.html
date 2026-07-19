@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FFF0F3">
+  <meta name="description" content="Pinkcraft Addons — Descubre los mejores addons para Minecraft Bedrock Edition">
+  <title>Pinkcraft Addons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- ═══ Header ═══ -->
+    <header class="header" id="main-header">
+      <button class="header-btn" id="btn-menu" onclick="toggleSidebar()" aria-label="Menú">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="header-title">
+        <span class="header-title-main">PINKCRAFT</span>
+        <span class="header-title-sub">ADDONS</span>
+      </div>
+      <button class="header-btn" id="btn-search" onclick="toggleSearch()" aria-label="Buscar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+
+      <!-- Search Overlay -->
+      <div class="search-overlay" id="search-overlay">
+        <button class="search-back" onclick="toggleSearch()">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <input type="text" class="search-input" id="search-input" placeholder="Buscar addons..." autocomplete="off" oninput="onSearchInput(this.value)">
+      </div>
+    </header>
+
+    <!-- ═══ Sidebar Overlay ═══ -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- ═══ Sidebar ═══ -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Pinkcraft</div>
+        <div class="sidebar-subtitle">♥ Addon Marketplace ♥</div>
+      </div>
+      <div class="sidebar-nav">
+        <div class="sidebar-section-title">Categorías</div>
+        <button class="sidebar-item active" onclick="selectCategory('Marcketplace')">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Marcketplace
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        Pinkcraft Addons © 2026
+      </div>
+    </nav>
+
+    <!-- ═══ Content Area (iframe) ═══ -->
+    <div class="content-area">
+      <iframe id="main-iframe" src="home.html" title="Contenido"></iframe>
+    </div>
+
+    <!-- ═══ Bottom Navigation ═══ -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-item active" data-page="home.html" onclick="navigateTo('home.html', this)">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <span class="nav-label">Inicio</span>
+      </button>
+      <button class="nav-item" data-page="populars.html" onclick="navigateTo('populars.html', this)">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2c0 4-4 6-4 10a4 4 0 0 0 8 0c0-4-4-6-4-10z"/></svg>
+        </div>
+        <span class="nav-label">Populares</span>
+      </button>
+      <button class="nav-item" data-page="favorite.html" onclick="navigateTo('favorite.html', this)">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <span class="nav-label">Favoritos</span>
+      </button>
+      <button class="nav-item" data-page="downloads.html" onclick="navigateTo('downloads.html', this)">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <span class="nav-label">Descargas</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    /* ── Navigation ── */
+    function navigateTo(page, btn) {
+      const iframe = document.getElementById('main-iframe');
+      iframe.src = page;
+
+      // Update active state
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      // Close search if open
+      const searchOverlay = document.getElementById('search-overlay');
+      if (searchOverlay.classList.contains('active')) {
+        searchOverlay.classList.remove('active');
+        document.getElementById('search-input').value = '';
+      }
+    }
+
+    /* ── Sidebar ── */
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+
+    function selectCategory(cat) {
+      // For now only Marcketplace exists
+      toggleSidebar();
+    }
+
+    /* ── Search ── */
+    function toggleSearch() {
+      const overlay = document.getElementById('search-overlay');
+      overlay.classList.toggle('active');
+      if (overlay.classList.contains('active')) {
+        setTimeout(() => document.getElementById('search-input').focus(), 350);
+      } else {
+        document.getElementById('search-input').value = '';
+        onSearchInput('');
+      }
+    }
+
+    function onSearchInput(value) {
+      try {
+        const iframe = document.getElementById('main-iframe');
+        if (iframe.contentWindow && typeof iframe.contentWindow.filterAddons === 'function') {
+          iframe.contentWindow.filterAddons(value);
+        }
+      } catch(e) {
+        // Cross-origin or not loaded yet
+      }
+    }
+
+    /* ── Keyboard shortcut: Escape closes search/sidebar ── */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const searchOverlay = document.getElementById('search-overlay');
+        if (searchOverlay.classList.contains('active')) {
+          toggleSearch();
+          return;
+        }
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar.classList.contains('active')) {
+          toggleSidebar();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

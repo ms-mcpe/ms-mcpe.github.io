@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Populares — Pinkcraft Addons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page" id="populars-page">
+    <!-- Page Title -->
+    <div class="page-title-bar">
+      <h1 class="page-title">🔥 Populares</h1>
+      <p class="page-subtitle">Los addons con más corazones de la comunidad</p>
+    </div>
+
+    <!-- Addon List -->
+    <div class="addon-list" id="populars-list"></div>
+
+    <!-- Loading -->
+    <div id="populars-loader"></div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let popularsAddons = [];
+
+    async function initPopulars() {
+      const loaderEl = document.getElementById('populars-loader');
+      loaderEl.innerHTML = renderLoader();
+
+      try {
+        const addons = await getAddons();
+        allLoadedAddons = addons;
+        popularsAddons = addons.slice().sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        loaderEl.innerHTML = '';
+
+        renderPopulars(popularsAddons);
+      } catch (err) {
+        loaderEl.innerHTML = renderEmptyState(
+          ICONS.fire || ICONS.package,
+          'Error al cargar',
+          'No se pudieron cargar los addons populares.'
+        );
+      }
+    }
+
+    function renderPopulars(addons) {
+      const container = document.getElementById('populars-list');
+
+      if (addons.length === 0) {
+        container.innerHTML = renderEmptyState(
+          ICONS.heart,
+          'Sin populares',
+          'Aún no hay addons con likes.'
+        );
+        return;
+      }
+
+      container.innerHTML = addons.map((addon, i) => renderAddonCard(addon, i)).join('');
+    }
+
+    /* ── Search filter ── */
+    window.onFilterAddons = function(query) {
+      query = (query || '').trim().toLowerCase();
+      if (!query) {
+        renderPopulars(popularsAddons);
+        return;
+      }
+
+      const filtered = popularsAddons.filter(a =>
+        a.nombre.toLowerCase().includes(query) ||
+        (a.descripcion || '').toLowerCase().includes(query)
+      );
+
+      const container = document.getElementById('populars-list');
+
+      if (filtered.length === 0) {
+        container.innerHTML = renderEmptyState(
+          '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+          'Sin resultados',
+          'No se encontraron addons populares con ese nombre.'
+        );
+        return;
+      }
+
+      container.innerHTML = filtered.map((addon, i) => renderAddonCard(addon, i)).join('');
+    };
+
+    initPopulars();
+  </script>
+</body>
+</html>

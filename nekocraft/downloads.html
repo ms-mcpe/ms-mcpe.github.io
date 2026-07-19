@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargas — Pinkcraft Addons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page" id="downloads-page">
+    <!-- Page Title -->
+    <div class="page-title-bar">
+      <h1 class="page-title">⬇ Descargas</h1>
+      <p class="page-subtitle">Tus descargas recientes</p>
+    </div>
+
+    <!-- Downloads List -->
+    <div class="addon-list" id="downloads-list"></div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function initDownloads() {
+      renderDownloads();
+    }
+
+    function renderDownloads() {
+      const container = document.getElementById('downloads-list');
+      const downloads = getDownloadsHistory();
+
+      if (downloads.length === 0) {
+        container.innerHTML = renderEmptyState(
+          ICONS.downloads,
+          'Sin descargas',
+          'Los addons que descargues aparecerán aquí.'
+        );
+        return;
+      }
+
+      container.innerHTML = downloads.map((dl, i) => {
+        const img = getFirstImage(dl.imagenes);
+        const fechaStr = dl.fecha ? formatFecha(dl.fecha) : '';
+        return `
+          <div class="addon-card" style="animation-delay:${i * 0.03}s">
+            <img class="addon-img" src="${escapeHtml(img)}" alt="${escapeHtml(dl.nombre)}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 72 72%22><rect fill=%22%23FFE8EE%22 width=%2272%22 height=%2272%22/><text x=%2236%22 y=%2240%22 text-anchor=%22middle%22 font-size=%2224%22>📦</text></svg>'">
+            <div class="addon-info">
+              <div class="addon-name">${escapeHtml(dl.nombre)}</div>
+              <div class="addon-meta">
+                <span class="addon-category">${escapeHtml(dl.categoria || 'Addon')}</span>
+              </div>
+              <div class="download-date">${fechaStr}</div>
+            </div>
+            <div class="addon-actions">
+              <button class="addon-download-btn" onclick="reDownload('${escapeHtml(dl.nombre)}', '${escapeHtml(dl.link)}')" title="Descargar de nuevo">
+                ${ICONS.download}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatFecha(isoStr) {
+      try {
+        const d = new Date(isoStr);
+        const now = new Date();
+        const diff = now - d;
+        const mins = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (mins < 1) return 'Justo ahora';
+        if (mins < 60) return `Hace ${mins} min`;
+        if (hours < 24) return `Hace ${hours}h`;
+        if (days < 7) return `Hace ${days} día${days > 1 ? 's' : ''}`;
+        return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+      } catch {
+        return '';
+      }
+    }
+
+    function reDownload(nombre, link) {
+      if (link) window.open(link, '_blank');
+    }
+
+    /* ── Search filter ── */
+    window.onFilterAddons = function(query) {
+      query = (query || '').trim().toLowerCase();
+      const container = document.getElementById('downloads-list');
+      const downloads = getDownloadsHistory();
+
+      if (!query) {
+        renderDownloads();
+        return;
+      }
+
+      const filtered = downloads.filter(dl => dl.nombre.toLowerCase().includes(query));
+
+      if (filtered.length === 0) {
+        container.innerHTML = renderEmptyState(
+          '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+          'Sin resultados',
+          'No se encontraron descargas con ese nombre.'
+        );
+        return;
+      }
+
+      // Re-render only filtered
+      container.innerHTML = filtered.map((dl, i) => {
+        const img = getFirstImage(dl.imagenes);
+        const fechaStr = dl.fecha ? formatFecha(dl.fecha) : '';
+        return `
+          <div class="addon-card" style="animation-delay:${i * 0.03}s">
+            <img class="addon-img" src="${escapeHtml(img)}" alt="${escapeHtml(dl.nombre)}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 72 72%22><rect fill=%22%23FFE8EE%22 width=%2272%22 height=%2272%22/><text x=%2236%22 y=%2240%22 text-anchor=%22middle%22 font-size=%2224%22>📦</text></svg>'">
+            <div class="addon-info">
+              <div class="addon-name">${escapeHtml(dl.nombre)}</div>
+              <div class="addon-meta">
+                <span class="addon-category">${escapeHtml(dl.categoria || 'Addon')}</span>
+              </div>
+              <div class="download-date">${fechaStr}</div>
+            </div>
+            <div class="addon-actions">
+              <button class="addon-download-btn" onclick="reDownload('${escapeHtml(dl.nombre)}', '${escapeHtml(dl.link)}')" title="Descargar de nuevo">
+                ${ICONS.download}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    initDownloads();
+  </script>
+</body>
+</html>
