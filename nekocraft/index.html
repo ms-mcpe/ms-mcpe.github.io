@@ -140,12 +140,20 @@
     function onSearchInput(value) {
       try {
         const iframe = document.getElementById('main-iframe');
-        if (iframe.contentWindow && typeof iframe.contentWindow.filterAddons === 'function') {
-          iframe.contentWindow.filterAddons(value);
+        const send = (win) => {
+          if (win && typeof win.filterAddons === 'function') {
+            win.filterAddons(value);
+            return true;
+          }
+          return false;
+        };
+        if (!send(iframe.contentWindow)) {
+          iframe.addEventListener('load', function onLoad() {
+            send(iframe.contentWindow);
+            iframe.removeEventListener('load', onLoad);
+          }, { once: true });
         }
-      } catch(e) {
-        // Cross-origin or not loaded yet
-      }
+      } catch(e) {}
     }
 
     /* ── Keyboard shortcut: Escape closes search/sidebar ── */

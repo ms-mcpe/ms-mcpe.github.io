@@ -166,8 +166,12 @@
       query = (query || '').trim().toLowerCase();
       const container = document.getElementById('catalog-grid');
       const previewContainer = document.getElementById('populars-preview');
+      const heroSlider = document.getElementById('hero-slider');
+      const sections = document.querySelectorAll('.section-header');
 
       if (!query) {
+        heroSlider.classList.remove('hidden');
+        sections.forEach(s => s.classList.remove('hidden'));
         renderPopularsPreview(homeAddons);
         renderCatalog(homeAddons);
         return;
@@ -178,8 +182,8 @@
         (a.descripcion || '').toLowerCase().includes(query)
       );
 
-      // Hide populars section when searching
-      previewContainer.parentElement.previousElementSibling.classList.add('hidden');
+      heroSlider.classList.add('hidden');
+      sections.forEach(s => s.classList.add('hidden'));
       previewContainer.innerHTML = '';
 
       if (filtered.length === 0) {

@@ -11,27 +11,30 @@
   <meta name="description" content="NekoCraft Addons — Descubre los mejores addons para Minecraft Bedrock Edition">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
   <title>Instalar NekoCraft</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    * { user-select: none !important; -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; }
+    img { -webkit-touch-callout: none !important; -webkit-user-drag: none !important; }
+
     .install-page {
       min-height: 100vh;
       min-height: 100dvh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 30px 24px;
       background: linear-gradient(145deg, #FFE0E8 0%, #FFF5F7 50%, #FFE8EE 100%);
       position: relative;
-      overflow: hidden;
+      overflow: auto;
+      overflow-x: hidden;
     }
 
     .install-bg-decor {
-      position: absolute;
+      position: fixed;
       top: -80px;
       right: -80px;
       width: 300px;
@@ -43,7 +46,7 @@
     }
 
     .install-bg-decor-2 {
-      position: absolute;
+      position: fixed;
       bottom: -120px;
       left: -60px;
       width: 400px;
@@ -69,6 +72,7 @@
       text-align: center;
       position: relative;
       z-index: 1;
+      margin: auto;
       animation: cardEntry 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -87,18 +91,20 @@
       width: 100px;
       height: 100px;
       border-radius: 24px;
-      background: var(--accent-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 30px var(--accent-glow);
       margin-bottom: 20px;
       position: relative;
+      overflow: hidden;
     }
 
-    .install-logo svg {
-      width: 60px;
-      height: 60px;
+    .install-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .install-logo-shine {
@@ -199,6 +205,7 @@
       letter-spacing: 0.3px;
       position: relative;
       overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .install-btn::before {
@@ -221,6 +228,7 @@
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      flex-shrink: 0;
     }
 
     .install-btn-installed {
@@ -231,24 +239,6 @@
 
     .install-btn-installed:active {
       transform: none;
-    }
-
-    .install-skip {
-      margin-top: 16px;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      cursor: pointer;
-      padding: 8px;
-      transition: var(--transition);
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    .install-skip:hover {
-      color: var(--text-secondary);
     }
 
     .install-status {
@@ -295,6 +285,121 @@
       color: var(--text-secondary);
     }
 
+    .show-instructions-btn {
+      margin-top: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 8px 12px;
+      transition: var(--transition);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .show-instructions-btn:hover {
+      color: var(--text-secondary);
+    }
+
+    .instructions-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .instructions-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .instructions-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(92, 45, 55, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .instructions-content {
+      background: var(--bg-main);
+      border-radius: 24px;
+      padding: 28px 24px;
+      max-width: 340px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      animation: cardEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .instructions-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .instructions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-align: left;
+    }
+
+    .instructions-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .instructions-item-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--accent-gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 13px;
+      margin-top: 1px;
+    }
+
+    .instructions-close {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: var(--accent-gradient);
+      color: var(--white);
+      border-radius: 14px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 18px;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .instructions-close:active {
+      transform: scale(0.97);
+    }
+
     @media (display-mode: standalone) {
       .install-card {
         background: rgba(255, 255, 255, 0.9);
@@ -308,33 +413,15 @@
     <div class="install-bg-decor-2"></div>
 
     <div class="install-card">
-      <!-- Logo -->
       <div class="install-logo">
         <div class="install-logo-shine"></div>
-        <svg viewBox="0 0 512 512" fill="none">
-          <circle cx="256" cy="256" r="250" fill="#FFF"/>
-          <path d="M140 200 L160 100 L220 180Z" fill="#FFF"/>
-          <path d="M372 200 L352 100 L292 180Z" fill="#FFF"/>
-          <ellipse cx="256" cy="280" rx="100" ry="90" fill="#FFF"/>
-          <ellipse cx="220" cy="260" rx="18" ry="22" fill="#5C2D37"/>
-          <ellipse cx="292" cy="260" rx="18" ry="22" fill="#5C2D37"/>
-          <ellipse cx="224" cy="254" rx="6" ry="8" fill="#FFF"/>
-          <ellipse cx="296" cy="254" rx="6" ry="8" fill="#FFF"/>
-          <path d="M256 290 L248 300 L264 300Z" fill="#FF7597"/>
-          <path d="M248 300 Q256 312 264 300" fill="none" stroke="#5C2D37" stroke-width="8" stroke-linecap="round"/>
-          <line x1="256" y1="300" x2="256" y2="308" stroke="#5C2D37" stroke-width="6" stroke-linecap="round"/>
-          <line x1="170" y1="280" x2="210" y2="290" stroke="#5C2D37" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-          <line x1="170" y1="300" x2="210" y2="300" stroke="#5C2D37" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-          <line x1="342" y1="280" x2="302" y2="290" stroke="#5C2D37" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-          <line x1="342" y1="300" x2="302" y2="300" stroke="#5C2D37" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
-        </svg>
+        <img src="icons/icon-192.png" alt="NekoCraft" width="100" height="100">
       </div>
 
       <h1 class="install-title">NekoCraft</h1>
       <p class="install-subtitle">Addons para Minecraft Bedrock</p>
       <p class="install-desc">Descarga e instala la app para acceder al catálogo completo de addons desde tu pantalla de inicio.</p>
 
-      <!-- Features -->
       <div class="install-features">
         <div class="install-feature">
           <div class="install-feature-icon">📦</div>
@@ -359,7 +446,6 @@
         </div>
       </div>
 
-      <!-- Install Button -->
       <button class="install-btn" id="install-btn">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Instalar NekoCraft
@@ -367,13 +453,35 @@
 
       <div class="install-status" id="install-status"></div>
 
-      <button class="install-skip" id="skip-btn">Usar en el navegador</button>
+      <button class="show-instructions-btn" id="show-instructions">¿Problemas para instalar?</button>
 
       <div class="install-platform-hint">
         <strong>NekoCraft</strong> es una Progressive Web App (PWA).<br>
-        Se instalará en tu pantalla de inicio como una app normal.<br>
         Compatible con Chrome, Safari, Edge y Samsung Internet.
       </div>
+    </div>
+  </div>
+
+  <!-- Instructions Modal -->
+  <div class="instructions-modal" id="instructions-modal">
+    <div class="instructions-overlay" id="instructions-overlay"></div>
+    <div class="instructions-content">
+      <div class="instructions-title">Instalación manual</div>
+      <div class="instructions-list">
+        <div class="instructions-item">
+          <div class="instructions-item-icon">📱</div>
+          <div><strong>Android (Chrome):</strong> Toca los 3 puntos ⋮ > "Instalar app"</div>
+        </div>
+        <div class="instructions-item">
+          <div class="instructions-item-icon">🍎</div>
+          <div><strong>iPhone/iPad (Safari):</strong> Toca Compartir 📤 > "Añadir a pantalla de inicio"</div>
+        </div>
+        <div class="instructions-item">
+          <div class="instructions-item-icon">💻</div>
+          <div><strong>Windows/Mac:</strong> Haz clic en el icono de instalación ⬇ en la barra de direcciones de Chrome o Edge</div>
+        </div>
+      </div>
+      <button class="instructions-close" id="instructions-close">Entendido</button>
     </div>
   </div>
 
@@ -398,14 +506,7 @@
     function getInstallStatus() {
       if (isRunningStandalone()) return 'installed';
       if (localStorage.getItem('nekocraft_installed') === 'true') return 'installed';
-      if (localStorage.getItem('nekocraft_skipped') === 'true') return 'skipped';
       if (!('serviceWorker' in navigator)) return 'unsupported';
-      if (!('BeforeInstallPromptEvent' in window)) {
-        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-          return 'ready-chrome';
-        }
-        return 'ready-manual';
-      }
       return 'ready';
     }
 
@@ -413,134 +514,123 @@
       window.location.href = 'index.html';
     }
 
-    async function showInstalledState() {
+    function showInstalledState() {
       const btn = document.getElementById('install-btn');
       btn.innerHTML = `
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         App instalada
       `;
       btn.classList.add('install-btn-installed');
-      document.getElementById('skip-btn').style.display = 'none';
-      document.getElementById('install-status').className = 'install-status success';
-      document.getElementById('install-status').textContent = 'NekoCraft está instalado en tu dispositivo. Abriendo la app...';
+      document.getElementById('show-instructions').style.display = 'none';
+      const statusEl = document.getElementById('install-status');
+      statusEl.className = 'install-status success';
+      statusEl.textContent = 'NekoCraft instalado. Abriendo la app...';
 
       setTimeout(() => {
         goToApp();
       }, 1500);
     }
 
-    function showManualInstructions() {
+    function doInstall() {
+      if (installResolved) return;
+      if (!deferredPrompt) return;
+
+      installResolved = true;
+
+      const btn = document.getElementById('install-btn');
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" class="spin"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none" stroke-width="2" stroke-dasharray="31.4 31.4" stroke-linecap="round"/></svg>
+        Instalando...
+      `;
+      document.getElementById('install-status').className = 'install-status info';
+      document.getElementById('install-status').textContent = 'Esperando confirmación...';
+
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(result => {
+        if (result.outcome === 'accepted') {
+          localStorage.setItem('nekocraft_installed', 'true');
+          showInstalledState();
+        } else {
+          installResolved = false;
+          resetInstallButton();
+          document.getElementById('install-status').className = 'install-status info';
+          document.getElementById('install-status').textContent = 'Toca "Instalar" de nuevo para continuar.';
+        }
+      }).catch(() => {
+        installResolved = false;
+        resetInstallButton();
+      });
+    }
+
+    function resetInstallButton() {
       const btn = document.getElementById('install-btn');
       btn.innerHTML = `
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Instalar NekoCraft
       `;
       btn.classList.remove('install-btn-installed');
-
-      const statusEl = document.getElementById('install-status');
-      statusEl.className = 'install-status info';
-      statusEl.innerHTML = 'Para instalar NekoCraft en tu dispositivo:<br><br>' +
-        '<strong>Android (Chrome):</strong> Toca los 3 puntos ⋮ > "Instalar app"<br><br>' +
-        '<strong>iPhone/iPad (Safari):</strong> Toca el icono Compartir 📤 > "Añadir a pantalla de inicio"<br><br>' +
-        '<strong>Desktop:</strong> Haz clic en el icono de instalación en la barra de direcciones';
     }
 
     async function initInstaller() {
-      const status = getInstallStatus();
-
       if (isRunningStandalone() && !isRunningInIframe()) {
-        await showInstalledState();
+        showInstalledState();
         return;
       }
 
+      const status = getInstallStatus();
       if (status === 'installed') {
-        await showInstalledState();
-        return;
-      }
-
-      if (status === 'skipped') {
-        goToApp();
+        showInstalledState();
         return;
       }
 
       if (status === 'unsupported') {
-        showManualInstructions();
-        const btn = document.getElementById('install-btn');
-        btn.style.display = 'none';
+        document.getElementById('install-btn').style.display = 'none';
+        document.getElementById('show-instructions').style.display = 'block';
         return;
       }
 
-      if (status === 'ready-manual' || status === 'ready-chrome') {
-        showManualInstructions();
-        return;
-      }
-
-      // Wait for the beforeinstallprompt event
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        isInstalled = false;
       });
 
       window.addEventListener('appinstalled', () => {
         isInstalled = true;
         localStorage.setItem('nekocraft_installed', 'true');
         showInstalledState();
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1000);
       });
 
       if (!deferredPrompt) {
-        // Prompt might have already fired, or device doesnt support it
-        // Check if we're on mobile and show manual instructions
-        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-          showManualInstructions();
-        }
+        window.addEventListener('load', () => {
+          if (!deferredPrompt && !('BeforeInstallPromptEvent' in window)) {
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+              document.getElementById('show-instructions').textContent = 'Toca para ver instrucciones de instalación';
+            }
+          }
+        });
       }
     }
 
-    document.getElementById('install-btn').addEventListener('click', async () => {
-      if (installResolved) return;
+    document.getElementById('install-btn').addEventListener('click', doInstall);
 
-      if (deferredPrompt) {
-        installResolved = true;
-        deferredPrompt.prompt();
-        const result = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-
-        if (result.outcome === 'accepted') {
-          localStorage.setItem('nekocraft_installed', 'true');
-          showInstalledState();
-        } else {
-          installResolved = false;
-          const statusEl = document.getElementById('install-status');
-          statusEl.className = 'install-status warning';
-          statusEl.textContent = 'Puedes instalar NekoCraft más tarde desde el menú del navegador.';
-        }
-      } else {
-        // Fallback: show manual instructions
-        showManualInstructions();
-      }
+    document.getElementById('show-instructions').addEventListener('click', () => {
+      document.getElementById('instructions-modal').classList.add('active');
     });
 
-    document.getElementById('skip-btn').addEventListener('click', () => {
-      localStorage.setItem('nekocraft_skipped', 'true');
-      goToApp();
+    document.getElementById('instructions-close').addEventListener('click', () => {
+      document.getElementById('instructions-modal').classList.remove('active');
     });
 
-    // Register service worker
+    document.getElementById('instructions-overlay').addEventListener('click', () => {
+      document.getElementById('instructions-modal').classList.remove('active');
+    });
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').then((reg) => {
-          console.log('SW registered:', reg.scope);
-        }).catch((err) => {
-          console.error('SW registration failed:', err);
-        });
+        navigator.serviceWorker.register('sw.js').catch(() => {});
       });
     }
 
-    // Init
     initInstaller();
   </script>
 </body>
