@@ -1,14 +1,14 @@
 /* ═══════════════════════════════════════════════════════════
-   PINKCRAFT ADDONS — Shared App Logic (app.js)
+   NEKOCRAFT ADDONS — Shared App Logic (app.js)
    Used by: home.html, populars.html, favorite.html, downloads.html
    ═══════════════════════════════════════════════════════════ */
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbyI52B-s7qz8wPMfRXLHaYRDuy1Lq_NfpzEA6IrxcQfKDTXA_TsWmDrfwS6b4L8m7oE9g/exec';
-const CACHE_KEY = 'pinkcraft_addons_cache';
-const CACHE_TIME_KEY = 'pinkcraft_addons_cache_time';
-const FAVS_KEY = 'pinkcraft_favorites';
-const DOWNLOADS_KEY = 'pinkcraft_downloads';
-const VERIFY_EXPIRY_KEY = 'pinkcraft_verification_expiry';
+const CACHE_KEY = 'nekocraft_addons_cache';
+const CACHE_TIME_KEY = 'nekocraft_addons_cache_time';
+const FAVS_KEY = 'nekocraft_favorites';
+const DOWNLOADS_KEY = 'nekocraft_downloads';
+const VERIFY_EXPIRY_KEY = 'nekocraft_verification_expiry';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 min cache
 const TARGET_CATEGORY = 'Marcketplace';
 
@@ -58,6 +58,26 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+
+/* ── Migrate old storage keys ── */
+(function migrateKeys() {
+  const oldKeys = {
+    'pinkcraft_addons_cache': CACHE_KEY,
+    'pinkcraft_addons_cache_time': CACHE_TIME_KEY,
+    'pinkcraft_favorites': FAVS_KEY,
+    'pinkcraft_downloads': DOWNLOADS_KEY,
+    'pinkcraft_verification_expiry': VERIFY_EXPIRY_KEY
+  };
+  for (const [oldKey, newKey] of Object.entries(oldKeys)) {
+    try {
+      const val = localStorage.getItem(oldKey);
+      if (val !== null && localStorage.getItem(newKey) === null) {
+        localStorage.setItem(newKey, val);
+      }
+      localStorage.removeItem(oldKey);
+    } catch {}
+  }
+})();
 
 /* ── LocalStorage Helpers ── */
 function getFavorites() {
@@ -124,7 +144,7 @@ function sendDownload(nombre) {
 /* ── Data Loading via JSONP ── */
 function loadAddonsJSONP() {
   return new Promise((resolve, reject) => {
-    const callbackName = '__pinkcraft_cb_' + Date.now();
+    const callbackName = '__nekocraft_cb_' + Date.now();
     const script = document.createElement('script');
     const timeout = setTimeout(() => {
       cleanup();

@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verificación — Pinkcraft Addons</title>
+  <title>Verificación — NekoCraft Addons</title>
   <link rel="stylesheet" href="style.css">
+  <script>if (window.self === window.top && !window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone && !localStorage.getItem('nekocraft_skipped')) { window.location.href = 'instalador-nekocraft.html'; }</script>
   <style>
     body {
       background: var(--bg-main);
@@ -246,7 +247,7 @@
 
         // Set verification expiry to 12 hours from now
         try {
-          localStorage.setItem('pinkcraft_verification_expiry', String(Date.now() + 12 * 60 * 60 * 1000));
+          localStorage.setItem('nekocraft_verification_expiry', String(Date.now() + 12 * 60 * 60 * 1000));
         } catch (e) {
           console.error("Failed to save verification status:", e);
         }
