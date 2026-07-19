@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio — NekoCraft Addons</title>
+  <link rel="stylesheet" href="style.css">
+  <script>if (window.self === window.top && !window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone && !localStorage.getItem('nekocraft_skipped')) { window.location.href = 'instalador-nekocraft.html'; }</script>
+</head>
+<body>
+  <div class="page" id="home-page">
+    <!-- Hero Slider -->
+    <div class="hero-slider" id="hero-slider">
+      <div class="hero-track" id="hero-track"></div>
+      <div class="hero-dots" id="hero-dots"></div>
+    </div>
+
+    <!-- Populares Preview -->
+    <div class="section-header">
+      <h2 class="section-title">Populares</h2>
+      <a class="section-link" onclick="goToPopulars()">Ver todo</a>
+    </div>
+    <div class="addon-list" id="populars-preview"></div>
+
+    <!-- Catálogo Completo -->
+    <div class="section-header">
+      <h2 class="section-title">Catálogo</h2>
+    </div>
+    <div class="addon-grid" id="catalog-grid"></div>
+
+    <!-- Loading -->
+    <div id="home-loader"></div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let currentSlide = 0;
+    let sliderInterval = null;
+    let homeAddons = [];
+
+    /* ── Init ── */
+    async function initHome() {
+      const loaderEl = document.getElementById('home-loader');
+      loaderEl.innerHTML = renderLoader();
+
+      try {
+        const addons = await getAddons();
+        allLoadedAddons = addons;
+        homeAddons = addons.slice();
+        loaderEl.innerHTML = '';
+
+        renderSlider(addons);
+        renderPopularsPreview(addons);
+        renderCatalog(addons);
+      } catch (err) {
+        loaderEl.innerHTML = renderEmptyState(
+          ICONS.package,
+          'Error al cargar',
+          'No se pudieron cargar los addons. Intenta de nuevo más tarde.'
+        );
+      }
+    }
+
+    /* ── Hero Slider ── */
+    function renderSlider(addons) {
+      if (addons.length === 0) {
+        document.getElementById('hero-slider').classList.add('hidden');
+        return;
+      }
+
+      const sliderAddons = shuffleArray(addons).slice(0, 5).filter(a => getFirstImage(a.imagenes));
+      if (sliderAddons.length === 0) {
+        document.getElementById('hero-slider').classList.add('hidden');
+        return;
+      }
+
+      const track = document.getElementById('hero-track');
+      const dots = document.getElementById('hero-dots');
+
+      track.innerHTML = sliderAddons.map(addon => {
+        const img = getFirstImage(addon.imagenes);
+        return `
+          <div class="hero-slide" style="background-image:url('${escapeHtml(img)}')" onclick="openModal('${escapeHtml(addon.nombre)}')">
+            <div class="hero-slide-overlay">
+              <span class="hero-badge">Nuevo Addon</span>
+              <h3 class="hero-title">${escapeHtml(addon.nombre)}</h3>
+              <button class="hero-btn" onclick="event.stopPropagation(); openModal('${escapeHtml(addon.nombre)}')">Ver más</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      dots.innerHTML = sliderAddons.map((_, i) =>
+        `<button class="hero-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></button>`
+      ).join('');
+
+      // Auto-rotate
+      if (sliderAddons.length > 1) {
+        sliderInterval = setInterval(() => {
+          currentSlide = (currentSlide + 1) % sliderAddons.length;
+          updateSlider();
+        }, 4000);
+      }
+    }
+
+    function goToSlide(idx) {
+      currentSlide = idx;
+      updateSlider();
+      // Reset auto-rotate timer
+      clearInterval(sliderInterval);
+      const totalSlides = document.querySelectorAll('.hero-slide').length;
+      if (totalSlides > 1) {
+        sliderInterval = setInterval(() => {
+          currentSlide = (currentSlide + 1) % totalSlides;
+          updateSlider();
+        }, 4000);
+      }
+    }
+
+    function updateSlider() {
+      const track = document.getElementById('hero-track');
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.hero-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    /* ── Populars Preview (top 3) ── */
+    function renderPopularsPreview(addons) {
+      const container = document.getElementById('populars-preview');
+      const sorted = addons.slice().sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      const top3 = sorted.slice(0, 3);
+
+      if (top3.length === 0) {
+        container.innerHTML = renderEmptyState(ICONS.heart, 'Sin populares', 'Aún no hay addons populares.');
+        return;
+      }
+
+      container.innerHTML = top3.map((addon, i) => renderAddonCard(addon, i)).join('');
+    }
+
+    /* ── Full Catalog (grid) ── */
+    function renderCatalog(addons) {
+      const container = document.getElementById('catalog-grid');
+      const shuffled = shuffleArray(addons);
+
+      if (shuffled.length === 0) {
+        container.innerHTML = renderEmptyState(ICONS.package, 'Sin addons', 'No hay addons disponibles.');
+        return;
+      }
+
+      container.innerHTML = shuffled.map((addon, i) => renderAddonGridCard(addon, i)).join('');
+    }
+
+    /* ── Navigate to Populars via parent ── */
+    function goToPopulars() {
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.navigateTo('populars.html', window.parent.document.querySelector('[data-page="populars.html"]'));
+        }
+      } catch(e) {}
+    }
+
+    /* ── Search filter ── */
+    window.onFilterAddons = function(query) {
+      query = (query || '').trim().toLowerCase();
+      const container = document.getElementById('catalog-grid');
+      const previewContainer = document.getElementById('populars-preview');
+
+      if (!query) {
+        renderPopularsPreview(homeAddons);
+        renderCatalog(homeAddons);
+        return;
+      }
+
+      const filtered = homeAddons.filter(a =>
+        a.nombre.toLowerCase().includes(query) ||
+        (a.descripcion || '').toLowerCase().includes(query)
+      );
+
+      // Hide populars section when searching
+      previewContainer.parentElement.previousElementSibling.classList.add('hidden');
+      previewContainer.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = renderEmptyState(
+          '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+          'Sin resultados',
+          `No se encontraron addons con "${escapeHtml(query)}"`
+        );
+        return;
+      }
+
+      container.innerHTML = filtered.map((addon, i) => renderAddonGridCard(addon, i)).join('');
+    };
+
+    // Init
+    initHome();
+  </script>
+</body>
+</html>
