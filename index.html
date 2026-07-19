@@ -1,191 +1,1505 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#FFF0F3">
-  <meta name="description" content="NekoCraft Addons — Descubre los mejores addons para Minecraft Bedrock Edition">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="NekoCraft">
-  <meta name="mobile-web-app-capable" content="yes">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-  <title>NekoCraft Addons</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldLeaf - Plataforma</title>
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/png" href="https://i.ibb.co/5gj0zv84/Background-Eraser-20260615-054353841.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --space-bg: #0a0e17;
+            --space-secondary: #111827;
+            --space-accent: #c4a87c;
+            --space-text: #e0e6f0;
+        }
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+            -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; -o-user-drag: none;
+            -webkit-touch-callout: none;
+        }
+        input, textarea, select, [contenteditable="true"] {
+            -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--space-bg); color: var(--space-text); min-height: 100vh; line-height: 1.6;
+            font-size: clamp(14px, 1.2vw, 16px);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* === HEADER === */
+        header {
+            padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(10,14,23,0.9); backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-content { display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; color: #e0e6f0; }
+        .logo-img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; pointer-events: none; }
+        .logo-text { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #f0e6d0, #c4a87c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .logo-text span { font-weight: 300; -webkit-text-fill-color: rgba(224,230,240,0.6); }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+
+        .btn-header {
+            padding: 8px 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);
+            background: transparent; color: #e0e6f0; font-family: 'Inter', sans-serif;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-header:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+        .btn-header.primary {
+            background: linear-gradient(135deg, #c4a87c, #a08050); color: #0a0e17; border: none;
+        }
+        .btn-header.primary:hover { opacity: 0.9; }
+
+        .user-badge {
+            display: flex; align-items: center; gap: 10px;
+            padding: 6px 14px 6px 6px; border-radius: 30px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+        }
+        .user-avatar {
+            width: 30px; height: 30px; border-radius: 50%; object-fit: cover;
+            background: linear-gradient(135deg, #c4a87c, #a08050);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; color: #0a0e17;
+        }
+        .user-name { font-size: 13px; font-weight: 600; }
+        .user-rol {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            padding: 2px 8px; border-radius: 20px;
+            background: rgba(196,168,124,0.15); color: var(--space-accent);
+        }
+        .btn-logout {
+            background: none; border: none; color: rgba(224,230,240,0.4);
+            cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s;
+        }
+        .btn-logout:hover { color: #ef4444; }
+        .footer-link { color: rgba(224,230,240,0.25); text-decoration: none; transition: color 0.2s; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 12px; }
+        .footer-link:hover { color: rgba(224,230,240,0.6); }
+        .footer-sep { color: rgba(224,230,240,0.15); margin: 0 10px; }
+
+        /* === HERO === */
+        .hero { padding: 60px 0 40px; text-align: center; }
+        .hero-icon { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; margin-bottom: 24px; pointer-events: none; box-shadow: 0 20px 60px rgba(196,168,124,0.15); }
+        .hero h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 800; line-height: 1.15; background: linear-gradient(135deg, #f0e6d0 0%, #c4a87c 50%, #a08050 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+        .hero p { font-size: 16px; color: rgba(224,230,240,0.5); max-width: 500px; margin: 0 auto 24px; }
+
+        /* === DASHBOARD === */
+        .dashboard { display: none; padding: 40px 0 60px; }
+        .dashboard.active { display: block; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 24px; }
+        .dash-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 24px; backdrop-filter: blur(8px);
+        }
+        .dash-card h3 { font-size: 13px; font-weight: 600; color: rgba(224,230,240,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .dash-card .value { font-size: 28px; font-weight: 800; color: var(--space-accent); }
+        .dash-card p { font-size: 14px; color: rgba(224,230,240,0.6); margin-top: 4px; }
+
+        /* === CHAT === */
+        .chat-bubble {
+            position: fixed; bottom: 24px; right: 24px; z-index: 999;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #c4a87c, #a08050);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(196,168,124,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #0a0e17; border: none;
+        }
+        .chat-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(196,168,124,0.4); }
+        .chat-panel {
+            position: fixed; bottom: 92px; right: 24px; z-index: 999;
+            width: 360px; height: 480px; max-height: calc(100vh - 140px);
+            background: #131a2b; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; display: none; flex-direction: column;
+            box-shadow: 0 16px 60px rgba(0,0,0,0.5); overflow: hidden;
+        }
+        .chat-panel.open { display: flex; }
+        .chat-header {
+            padding: 14px 18px; background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 700; font-size: 14px; color: #e0e6f0;
+        }
+        .chat-messages {
+            flex: 1; overflow-y: auto; padding: 14px 16px;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .chat-messages .msg {
+            max-width: 80%; padding: 10px 14px; border-radius: 14px;
+            font-size: 13px; line-height: 1.45; word-wrap: break-word;
+        }
+        .chat-messages .msg.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #c4a87c, #a08050);
+            color: #0a0e17; border-bottom-right-radius: 4px;
+        }
+        .chat-messages .msg.admin {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.06); color: #e0e6f0;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-messages .msg .time {
+            font-size: 10px; opacity: 0.5; margin-top: 4px; display: block;
+        }
+        .chat-messages .empty-msg {
+            text-align: center; color: rgba(224,230,240,0.3);
+            font-size: 13px; margin: auto; padding: 20px;
+        }
+        .chat-input-area {
+            padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; gap: 8px; align-items: flex-end;
+        }
+        .chat-input {
+            flex: 1; padding: 10px 14px; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+            color: #e0e6f0; font-family: 'Inter', sans-serif; font-size: 13px;
+            outline: none; resize: none; max-height: 80px; line-height: 1.4;
+        }
+        .chat-input:focus { border-color: #c4a87c; }
+        .chat-send {
+            width: 38px; height: 38px; border-radius: 50%; border: none;
+            background: linear-gradient(135deg, #c4a87c, #a08050);
+            color: #0a0e17; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; flex-shrink: 0; transition: opacity 0.2s;
+        }
+        .chat-send:hover { opacity: 0.85; }
+        .chat-send:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .not-logged-in-msg {
+            text-align: center; color: rgba(224,230,240,0.4);
+            font-size: 13px; padding: 20px; margin: auto;
+        }
+        .not-logged-in-msg a { color: #c4a87c; cursor: pointer; text-decoration: underline; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: rgba(224,230,240,0.6); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 11px 14px; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #e0e6f0;
+            font-family: 'Inter', sans-serif; font-size: 14px; transition: border-color 0.25s, box-shadow 0.25s; outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--space-accent); box-shadow: 0 0 0 3px rgba(196,168,124,0.15);
+        }
+        .form-group textarea { resize: vertical; min-height: 90px; }
+
+        .imgs-gallery {
+            display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px;
+            scrollbar-width: none; min-height: 80px;
+        }
+        .imgs-gallery::-webkit-scrollbar { display: none; }
+        .img-gallery-item {
+            flex-shrink: 0; width: 100px; height: 70px;
+            border-radius: 8px; overflow: hidden; position: relative;
+            border: 2px solid rgba(255,255,255,0.1); cursor: default;
+        }
+        .img-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .img-gallery-item .img-remove-btn {
+            position: absolute; top: 2px; right: 2px;
+            width: 20px; height: 20px; border-radius: 50%; border: none;
+            background: rgba(239,68,68,0.9); color: #fff;
+            font-size: 10px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .img-add-btn {
+            flex-shrink: 0; width: 100px; height: 70px;
+            border-radius: 8px; border: 2px dashed rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.03);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; cursor: pointer;
+            color: rgba(224,230,240,0.4); font-size: 11px; gap: 4px;
+            transition: border-color 0.25s, color 0.25s;
+        }
+        .img-add-btn:hover { border-color: #c4a87c; color: #c4a87c; }
+        .img-add-btn i { font-size: 18px; }
+        .img-counter { font-size: 12px; color: rgba(224,230,240,0.4); margin-bottom: 8px; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 12px 28px; background: linear-gradient(135deg, #c4a87c, #a08050);
+            color: #0a0e17; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+            border: none; border-radius: 10px; cursor: pointer; transition: opacity 0.25s, transform 0.15s;
+            width: 100%;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
+
+        .links { text-align: center; margin-top: 18px; font-size: 13px; color: rgba(224,230,240,0.5); }
+        .links a { color: var(--space-accent); text-decoration: none; font-weight: 600; cursor: pointer; transition: color 0.2s; }
+        .links a:hover { color: #e0d5b0; text-decoration: underline; }
+        .links .separator { color: rgba(255,255,255,0.08); margin: 0 8px; }
+
+        .message {
+            padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 18px;
+            display: none; text-align: center; font-weight: 500;
+        }
+        .message.error { display: block; background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+        .message.success { display: block; background: rgba(76,175,80,0.1); color: #4caf50; border: 1px solid rgba(76,175,80,0.2); }
+
+        .spinner {
+            display: none; width: 20px; height: 20px;
+            border: 2px solid rgba(10,14,23,0.2); border-top-color: #0a0e17; border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        .btn.loading .spinner { display: inline-block; }
+        .btn.loading .btn-text { display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* === MODALS === */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #111827; border-radius: 20px; padding: 32px;
+            max-width: 420px; width: 100%; position: relative;
+            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        @keyframes modalIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-logo { text-align: center; margin-bottom: 24px; }
+        .modal-logo h2 { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #f0e6d0, #c4a87c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .modal-logo p { font-size: 13px; color: rgba(224,230,240,0.5); margin-top: 4px; }
+
+        .modal-close {
+            position: absolute; top: 14px; right: 14px;
+            background: rgba(255,255,255,0.04); border: none; font-size: 20px;
+            cursor: pointer; color: rgba(224,230,240,0.4); width: 32px; height: 32px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.1); color: #e0e6f0; }
+
+        .modal .btn { margin-top: 4px; }
+
+        /* === TOAST === */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(10,14,23,0.95); border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 24px; border-radius: 10px; font-size: 13px;
+            backdrop-filter: blur(12px); opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            z-index: 9999; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { border-color: rgba(76,175,80,0.4); }
+        .toast.error { border-color: rgba(239,68,54,0.4); }
+
+        /* === FOOTER === */
+        footer { text-align: center; padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.06); color: rgba(224,230,240,0.25); font-size: 12px; }
+
+        @media (max-width: 900px) {
+            .container { padding: 0 16px; }
+            .logo-text { font-size: 18px; }
+            .logo-img { width: 34px; height: 34px; }
+        }
+        @media (max-width: 600px) {
+            .hero { padding: 24px 0 16px; }
+            .hero-icon { width: 64px; height: 64px; }
+            .hero h1 { font-size: clamp(22px, 6vw, 28px); }
+            .hero p { font-size: 14px; }
+            .modal { padding: 20px 16px; margin: 0 8px; max-width: 100%; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .header-actions .btn-header { padding: 6px 10px; font-size: 11px; }
+            header { padding: 12px 0; }
+            .logo-text { font-size: 16px; }
+            .logo-img { width: 30px; height: 30px; }
+            .user-badge { padding: 4px 10px 4px 4px; }
+            .user-name { font-size: 12px; }
+            .user-rol { font-size: 9px; padding: 1px 6px; }
+            .dash-card { padding: 18px; }
+            .dash-card .value { font-size: 22px; }
+            .chat-panel { width: calc(100vw - 32px); right: 16px; bottom: 80px; height: 60vh; max-height: 400px; }
+            .chat-bubble { bottom: 16px; right: 16px; width: 48px; height: 48px; }
+            .btn-header.primary { font-size: 11px; padding: 6px 10px; }
+
+            footer { padding: 24px 0; font-size: 11px; }
+        }
+        @media (max-width: 400px) {
+            .header-content { flex-wrap: wrap; gap: 8px; justify-content: center; }
+            .header-actions { width: 100%; justify-content: center; }
+            .hero h1 { font-size: 20px; }
+            .modal-logo h2 { font-size: 18px; }
+            .form-group input { font-size: 13px; padding: 10px 12px; }
+            .btn { padding: 10px 20px; font-size: 13px; }
+            .chat-panel { width: calc(100vw - 16px); right: 8px; bottom: 72px; }
+            .chat-bubble { bottom: 8px; right: 8px; }
+            .dash-card h3 { font-size: 11px; }
+        }
+        @media (min-width: 601px) and (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal { max-width: 460px; }
+            .chat-panel { width: 340px; }
+        }
+        @media (min-width: 901px) {
+            .dashboard-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 1200px) {
+            .container { padding: 0 32px; }
+        }
+        @media (hover: none) and (pointer: coarse) {
+            .dash-card { cursor: default; }
+            .dash-card:active { transform: scale(0.98); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
-  <div class="app-shell">
-    <!-- ═══ Header ═══ -->
-    <header class="header" id="main-header">
-      <button class="header-btn" id="btn-menu" onclick="toggleSidebar()" aria-label="Menú">
-        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <div class="header-title">
-        <span class="header-title-main">NEKOCRAFT</span>
-        <span class="header-title-sub">ADDONS</span>
-      </div>
-      <button class="header-btn" id="btn-search" onclick="toggleSearch()" aria-label="Buscar">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
 
-      <!-- Search Overlay -->
-      <div class="search-overlay" id="search-overlay">
-        <button class="search-back" onclick="toggleSearch()">
-          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <input type="text" class="search-input" id="search-input" placeholder="Buscar addons..." autocomplete="off" oninput="onSearchInput(this.value)">
-      </div>
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <img src="https://i.ibb.co/5gj0zv84/Background-Eraser-20260615-054353841.png" alt="WorldLeaf" class="logo-img" draggable="false">
+                <span class="logo-text">World<span>Leaf</span></span>
+            </a>
+            <div class="header-actions" id="headerActions">
+                <button class="btn-header" id="btnLogin" onclick="openModal('loginModal')">Iniciar sesión</button>
+                <button class="btn-header primary" id="btnRegister" onclick="openModal('registerModal')">Crear cuenta</button>
+            </div>
+            <div class="header-actions hidden" id="headerUser">
+                <div class="user-badge">
+                    <div class="user-avatar" id="userAvatar">W</div>
+                    <div>
+                        <div class="user-name" id="userName">Usuario</div>
+                        <div class="user-rol" id="userRol">User</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()" title="Cerrar sesión">&times;</button>
+            </div>
+        </div>
     </header>
 
-    <!-- ═══ Sidebar Overlay ═══ -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="container">
+            <img src="https://i.ibb.co/5gj0zv84/Background-Eraser-20260615-054353841.png" alt="WorldLeaf" class="hero-icon" draggable="false" onerror="this.style.display='none'">
+            <h1>WorldLeaf</h1>
+            <p id="heroSub">Gestiona tu información de forma segura.</p>
+        </div>
+    </section>
 
-    <!-- ═══ Sidebar ═══ -->
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">NekoCraft</div>
-        <div class="sidebar-subtitle">♥ Addon Marketplace ♥</div>
-      </div>
-      <div class="sidebar-nav">
-        <div class="sidebar-section-title">Categorías</div>
-        <button class="sidebar-item active" onclick="selectCategory('Marcketplace')">
-          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          Marcketplace
-        </button>
-      </div>
-      <div class="sidebar-footer">
-        NekoCraft Addons © 2026
-      </div>
-    </nav>
+    <!-- ===== DASHBOARD (logueado) ===== -->
+    <section class="dashboard" id="dashboard">
+        <div class="container">
+            <h2 style="font-size:20px;font-weight:700;">Bienvenido, <span id="dashUser" style="color:#c4a87c;">Usuario</span></h2>
+            <p style="color:rgba(224,230,240,0.45);font-size:13px;margin-top:4px;">Panel de control de tu cuenta</p>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <h3>Estado</h3>
+                    <div class="value" id="dashEstado">Activo</div>
+                </div>
+                <div class="dash-card">
+                    <h3>Rol</h3>
+                    <div class="value" id="dashRol">User</div>
+                </div>
+                <div class="dash-card">
+                    <h3>Verificacion</h3>
+                    <div class="value" id="dashVerif">-</div>
+                </div>
+                <div class="dash-card">
+                    <h3>Coins</h3>
+                    <div class="value" id="dashCoins">0</div>
+                </div>
+                <div class="dash-card" id="spaceCard" style="cursor:pointer;transition:border-color 0.2s" onclick="openModal('spaceModal')" onmouseover="this.style.borderColor='#c4a87c'" onmouseout="this.style.borderColor=''">
+                    <h3 id="spaceCardTitle" style="color:#c4a87c">Crear espacio</h3>
+                    <p id="spaceCardDesc" style="font-size:13px;color:rgba(224,230,240,0.5);margin-top:4px">Personaliza tu plataforma</p>
+                </div>
+                <div class="dash-card" id="panelCard" style="display:none;cursor:pointer;transition:border-color 0.2s" onclick="abrirPanel()" onmouseover="this.style.borderColor='#c4a87c'" onmouseout="this.style.borderColor=''">
+                    <h3 style="color:#c4a87c">Panel de configuracion</h3>
+                    <p style="font-size:13px;color:rgba(224,230,240,0.5);margin-top:4px">Categorias, marca, watermark y personalizacion avanzada</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- ═══ Content Area (iframe) ═══ -->
-    <div class="content-area">
-      <iframe id="main-iframe" src="home.html" title="Contenido"></iframe>
+    <!-- ===== SPACE VIEW (iframe) ===== -->
+    <div id="spaceView" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:#0a0e17;border:none">
+        <iframe id="spaceFrame" style="width:100%;height:100%;border:none" sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation" title="Space"></iframe>
     </div>
 
-    <!-- ═══ Bottom Navigation ═══ -->
-    <nav class="bottom-nav" id="bottom-nav">
-      <button class="nav-item active" data-page="home.html" onclick="navigateTo('home.html', this)">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <!-- ===== MODAL CREAR ESPACIO ===== -->
+    <div class="modal-overlay" id="spaceModal">
+        <div class="modal" style="max-width:480px">
+            <button class="modal-close" onclick="closeModal('spaceModal')">&times;</button>
+            <div class="modal-logo"><h2 id="spaceModalTitle">Crear espacio</h2><p id="spaceModalDesc">Personaliza tu plataforma con nombre e icono.</p></div>
+            <div id="spaceMessage" class="message"></div>
+            <form id="spaceForm">
+                <div class="form-group">
+                    <label>Nombre de tu plataforma</label>
+                    <input type="text" id="spaceName" placeholder="Mi plataforma" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label>Icono de la plataforma</label>
+                    <div class="img-counter" id="spaceIconCounter">0 / 1 imagenes</div>
+                    <div class="imgs-gallery" id="spaceIconGallery"></div>
+                    <input type="file" id="spaceIconInput" accept="image/*" style="display:none" onchange="previewSpaceIcon(this)">
+                    <div style="display:flex;gap:8px;margin-top:8px">
+                        <input type="text" id="spaceIconUrl" placeholder="https://ejemplo.com/icono.png" style="flex:1">
+                        <button type="button" onclick="addSpaceIconUrl()" style="background:rgba(196,168,124,0.1);border:1px solid rgba(196,168,124,0.3);color:#c4a87c;border-radius:6px;padding:9px 14px;cursor:pointer;flex-shrink:0"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="spaceBtn">
+                    <span class="btn-text">Guardar espacio</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
         </div>
-        <span class="nav-label">Inicio</span>
-      </button>
-      <button class="nav-item" data-page="populars.html" onclick="navigateTo('populars.html', this)">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2c0 4-4 6-4 10a4 4 0 0 0 8 0c0-4-4-6-4-10z"/></svg>
+    </div>
+
+    <!-- ===== CHAT ===== -->
+    <div class="chat-bubble" id="chatBubble">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <span>Chat WorldLeaf</span>
+            <button id="chatCloseBtn" style="background:none;border:none;color:#e0e6f0;font-size:20px;cursor:pointer;padding:0 4px">&times;</button>
         </div>
-        <span class="nav-label">Populares</span>
-      </button>
-      <button class="nav-item" data-page="favorite.html" onclick="navigateTo('favorite.html', this)">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <div class="chat-messages" id="chatMessages">
+            <div class="not-logged-in-msg" id="chatNotLoggedIn">
+                Inicia sesion para chatear con nosotros.
+            </div>
         </div>
-        <span class="nav-label">Favoritos</span>
-      </button>
-      <button class="nav-item" data-page="downloads.html" onclick="navigateTo('downloads.html', this)">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <div class="chat-input-area" id="chatInputArea">
+            <textarea class="chat-input" id="chatInput" placeholder="Escribe un mensaje..." maxlength="500" rows="1"></textarea>
+            <button class="chat-send" id="chatSendBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
         </div>
-        <span class="nav-label">Descargas</span>
-      </button>
-    </nav>
-  </div>
+    </div>
 
-  <script>
-    /* ── Navigation ── */
-    function navigateTo(page, btn) {
-      const iframe = document.getElementById('main-iframe');
-      iframe.src = page;
+    <!-- ===== LOGIN MODAL ===== -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            <div class="modal-logo"><h2>WorldLeaf</h2><p>Inicia sesion en tu cuenta</p></div>
+            <div id="loginMessage" class="message"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUser">Usuario</label>
+                    <input type="text" id="loginUser" placeholder="Tu nombre de usuario" required maxlength="20" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="loginPass">Contrasena</label>
+                    <input type="password" id="loginPass" placeholder="8-20 caracteres" required maxlength="20" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn" id="loginBtn">
+                    <span class="btn-text">Iniciar sesion</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+            <div class="links">
+                <a onclick="closeModal('loginModal');openModal('forgotModal')">Olvidaste tu contraseña?</a>
+                <span class="separator">|</span>
+                <a onclick="closeModal('loginModal');openModal('registerModal')">Crear cuenta</a>
+            </div>
+        </div>
+    </div>
 
-      // Update active state
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      if (btn) btn.classList.add('active');
+    <!-- ===== REGISTER MODAL ===== -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            <div class="modal-logo"><h2>WorldLeaf</h2><p>Crea tu cuenta gratuita</p></div>
+            <div id="registerMessage" class="message"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regUser">Usuario</label>
+                    <input type="text" id="regUser" placeholder="Elige un nombre de usuario" required minlength="3" maxlength="20" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Correo</label>
+                    <input type="email" id="regEmail" placeholder="tu@correo.com" required maxlength="30" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="regPass">Contrasena</label>
+                    <input type="password" id="regPass" placeholder="8-20 caracteres, debe empezar con letra" required maxlength="20" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="regConfirm">Confirmar contraseña</label>
+                    <input type="password" id="regConfirm" placeholder="Repite la contraseña" required maxlength="20" autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn" id="registerBtn">
+                    <span class="btn-text">Crear cuenta</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+            <div class="links">
+                Ya tienes cuenta? <a onclick="closeModal('registerModal');openModal('loginModal')">Inicia sesion</a>
+            </div>
+        </div>
+    </div>
 
-      // Close search if open
-      const searchOverlay = document.getElementById('search-overlay');
-      if (searchOverlay.classList.contains('active')) {
-        searchOverlay.classList.remove('active');
-        document.getElementById('search-input').value = '';
-      }
-    }
+    <!-- ===== FORGOT PASSWORD MODAL ===== -->
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('forgotModal')">&times;</button>
+            <div class="modal-logo"><h2>Recuperar contraseña</h2><p>Te enviaremos un código de verificación</p></div>
+            <div id="forgotMessage" class="message"></div>
 
-    /* ── Sidebar ── */
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('active');
-      document.getElementById('sidebar-overlay').classList.toggle('active');
-    }
+            <div id="fpStep1">
+                <form id="fpForm1">
+                    <div class="form-group">
+                        <label for="fpEmail">Correo electrónico</label>
+                        <input type="email" id="fpEmail" placeholder="tu@correo.com" required maxlength="30">
+                    </div>
+                    <button type="submit" class="btn" id="fpSendBtn">
+                        <span class="btn-text">Enviar código</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
 
-    function selectCategory(cat) {
-      // For now only Marcketplace exists
-      toggleSidebar();
-    }
+            <div id="fpStep2" style="display:none;">
+                <form id="fpForm2">
+                    <div class="form-group">
+                        <label for="fpCode">Codigo de verificación</label>
+                        <input type="text" id="fpCode" placeholder="Código de 6 dígitos" maxlength="6" required>
+                    </div>
+                    <button type="submit" class="btn" id="fpVerifyBtn">
+                        <span class="btn-text">Verificar código</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
 
-    /* ── Search ── */
-    function toggleSearch() {
-      const overlay = document.getElementById('search-overlay');
-      overlay.classList.toggle('active');
-      if (overlay.classList.contains('active')) {
-        setTimeout(() => document.getElementById('search-input').focus(), 350);
-      } else {
-        document.getElementById('search-input').value = '';
-        onSearchInput('');
-      }
-    }
+            <div id="fpStep3" style="display:none;">
+                <p style="font-size:14px;color:#4caf50;font-weight:600;margin-bottom:16px;text-align:center;">Codigo verificado. Elige una nueva contraseña.</p>
+                <form id="fpForm3">
+                    <div class="form-group">
+                        <label for="fpNewPass">Nueva contraseña</label>
+                        <input type="password" id="fpNewPass" placeholder="8-20 caracteres" required minlength="8" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="fpConfirmPass">Confirmar contraseña</label>
+                        <input type="password" id="fpConfirmPass" placeholder="Repite la contraseña" required minlength="8" maxlength="20">
+                    </div>
+                    <button type="submit" class="btn" id="fpChangeBtn">
+                        <span class="btn-text">Cambiar contraseña</span>
+                        <span class="spinner"></span>
+                    </button>
+                </form>
+            </div>
 
-    function onSearchInput(value) {
-      try {
-        const iframe = document.getElementById('main-iframe');
-        if (iframe.contentWindow && typeof iframe.contentWindow.filterAddons === 'function') {
-          iframe.contentWindow.filterAddons(value);
+            <div id="fpStep4" style="display:none;text-align:center;padding:20px 0;">
+                <div style="font-size:44px;margin-bottom:10px;color:#4caf50;">&#10004;</div>
+                <p style="font-size:18px;font-weight:600;color:#4caf50;">Contrasena actualizada</p>
+                <p style="font-size:13px;color:rgba(224,230,240,0.5);margin:8px 0 20px;">Tu contraseña se ha restablecido correctamente.</p>
+                <button class="btn btn-sm" onclick="closeModal('forgotModal')">Volver</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">&copy; 2026 WorldLeaf. Todos los derechos reservados. <span class="footer-sep">|</span> <button class="footer-link" onclick="limpiarDatos()">Eliminar datos</button></div>
+    </footer>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // CONFIG
+        // ============================================================
+        var API_URL = 'https://script.google.com/macros/s/AKfycbx7yl9hxkU2MYE6ijNKDZDvLyDkZHI7oBt5LOzGGFn4RDtLoFpXijl07JBoQ3W7KFNk/exec';
+
+        // ============================================================
+        // SESSION
+        // ============================================================
+        var sessionUser = localStorage.getItem('wl_user') || '';
+        var sessionPass = localStorage.getItem('wl_pass') || '';
+
+        function isLoggedIn() {
+            return !!(sessionUser && sessionPass);
         }
-      } catch(e) {
-        // Cross-origin or not loaded yet
-      }
-    }
 
-    /* ── Keyboard shortcut: Escape closes search/sidebar ── */
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        const searchOverlay = document.getElementById('search-overlay');
-        if (searchOverlay.classList.contains('active')) {
-          toggleSearch();
-          return;
+        // ============================================================
+        // JSONP
+        // ============================================================
+        function jsonp(data) {
+            return new Promise(function(resolve, reject) {
+                var cb = 'wlc_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+                var params = [];
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        params.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+                    }
+                }
+                params.push('callback=' + cb);
+                var url = API_URL + '?' + params.join('&');
+                window[cb] = function(resp) {
+                    delete window[cb];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    resolve(resp);
+                };
+                var script = document.createElement('script');
+                script.src = url;
+                script.onerror = function() {
+                    console.error('[JSONP Error]', url.substring(0,200));
+                    delete window[cb];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    reject(new Error('Error de conexion'));
+                };
+                document.body.appendChild(script);
+                setTimeout(function() {
+                    if (window[cb]) {
+                        console.warn('[JSONP Timeout]', url.substring(0,200));
+                        delete window[cb];
+                        if (script.parentNode) script.parentNode.removeChild(script);
+                        reject(new Error('Error de conexion'));
+                    }
+                }, 30000);
+            });
         }
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar.classList.contains('active')) {
-          toggleSidebar();
+
+        function gasPost(data, timeoutMs) {
+            timeoutMs = timeoutMs || 120000;
+            return new Promise(function(resolve, reject) {
+                var body = [];
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        body.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+                    }
+                }
+                var bodyStr = body.join('&');
+                var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                var timer = setTimeout(function() {
+                    if (ctrl) ctrl.abort();
+                    reject(new Error('Timeout al conectar con el servidor'));
+                }, timeoutMs);
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: bodyStr,
+                    redirect: 'follow',
+                    signal: ctrl ? ctrl.signal : undefined
+                }).then(function(res) {
+                    clearTimeout(timer);
+                    return res.text();
+                }).then(function(text) {
+                    try { resolve(JSON.parse(text)); }
+                    catch(ex) {
+                        if (text.indexOf('accounts.google.com') !== -1 || text.indexOf('SignIn') !== -1) {
+                            reject(new Error('PERMISOS_REQUERIDOS'));
+                        } else {
+                            resolve({ success: false, status: 'ERROR', message: 'Respuesta inesperada', raw: text.slice(0, 200) });
+                        }
+                    }
+                }).catch(function(err) {
+                    clearTimeout(timer);
+                    reject(err);
+                });
+            });
         }
-      }
-    });
 
-    /* ── PWA: Register Service Worker ── */
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      });
-    }
+        // ============================================================
+        // MODALS
+        // ============================================================
+        window.openModal = function(id) {
+            document.getElementById(id).classList.add('active');
+        };
+        window.closeModal = function(id) {
+            document.getElementById(id).classList.remove('active');
+            var modal = document.getElementById(id);
+            // Reset forms inside
+            var forms = modal.querySelectorAll('form');
+            forms.forEach(function(f) { f.reset(); });
+            var msgs = modal.querySelectorAll('.message');
+            msgs.forEach(function(m) { m.style.display = 'none'; });
+            // Reset space icon gallery when closing space modal
+            if (id === 'spaceModal') {
+                spaceIconItems = [];
+                renderSpaceIconGallery();
+            }
+            // Reset forgot password steps
+            var fp1 = document.getElementById('fpStep1');
+            var fp2 = document.getElementById('fpStep2');
+            var fp3 = document.getElementById('fpStep3');
+            var fp4 = document.getElementById('fpStep4');
+            if (fp1) { fp1.style.display = 'block'; fp2.style.display = 'none'; fp3.style.display = 'none'; fp4.style.display = 'none'; }
+        };
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    var id = this.getAttribute('id');
+                    closeModal(id);
+                }
+            });
+        });
 
-    /* ── PWA: Redirect to installer if not installed as app ── */
-    (function checkPWAInstall() {
-      function isStandalone() {
-        return window.matchMedia('(display-mode: standalone)').matches ||
-               window.navigator.standalone === true;
-      }
-      function isInIframe() {
-        try { return window.self !== window.top; } catch (e) { return true; }
-      }
-      // Only redirect the top-level page, not iframes
-      if (isInIframe()) return;
-      // If not standalone and not already redirected
-      if (!isStandalone() && !localStorage.getItem('nekocraft_skipped')) {
-        window.location.href = 'instalador-nekocraft.html';
-      }
+        // ============================================================
+        // TOAST
+        // ============================================================
+        var toast = document.getElementById('toast');
+        var toastTimeout = null;
+        function showToast(msg, type) {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toast.textContent = msg;
+            toast.className = 'toast ' + (type || '');
+            void toast.offsetWidth;
+            toast.classList.add('show');
+            toastTimeout = setTimeout(function() { toast.classList.remove('show'); }, 4000);
+        }
+
+        // ============================================================
+        // UI HELPERS
+        // ============================================================
+        function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        function mostrarMsg(el, texto, tipo) {
+            el.innerHTML = texto;
+            el.className = 'message ' + tipo;
+            el.style.display = 'block';
+        }
+        function validarPassword(pass) {
+            if (pass.length < 8) return 'La contraseña debe tener al menos 8 caracteres.';
+            if (pass.length > 20) return 'La contraseña debe tener máximo 20 caracteres.';
+            if (!/^[a-zA-Z]/.test(pass)) return 'La contraseña debe comenzar con una letra.';
+            return null;
+        }
+
+        // ============================================================
+        // UPDATE UI (logueado / no logueado)
+        // ============================================================
+        function updateUI() {
+            var loggedIn = isLoggedIn();
+            document.getElementById('headerActions').classList.toggle('hidden', loggedIn);
+            document.getElementById('headerUser').classList.toggle('hidden', !loggedIn);
+
+            if (loggedIn) {
+                var profile = JSON.parse(localStorage.getItem('wl_profile') || '{}');
+                document.getElementById('userName').textContent = profile.user || sessionUser;
+                document.getElementById('userRol').textContent = profile.rol || 'User';
+                document.getElementById('userAvatar').textContent = (profile.user || sessionUser).charAt(0).toUpperCase();
+                document.getElementById('heroSub').textContent = 'Bienvenido de nuevo, ' + escHtml(profile.user || sessionUser) + '.';
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('dashUser').textContent = escHtml(profile.user || sessionUser);
+                document.getElementById('dashEstado').textContent = profile.estado || 'Activo';
+                document.getElementById('dashRol').textContent = profile.rol || 'User';
+                document.getElementById('dashVerif').textContent = profile.verificacion || '-';
+                document.getElementById('dashCoins').textContent = profile.coins || 0;
+                // Load my space info
+                loadMySpace();
+            } else {
+                document.getElementById('heroSub').textContent = 'Gestiona tu información de forma segura.';
+                document.getElementById('dashboard').classList.remove('active');
+            }
+        }
+
+        function loadMySpace() {
+            if (!isLoggedIn()) return;
+            jsonp({ action:'getSpace', username:sessionUser }).then(function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    var card = document.getElementById('spaceCard');
+                    var title = document.getElementById('spaceCardTitle');
+                    var desc = document.getElementById('spaceCardDesc');
+                    if (data.status === 'OK' && data.space) {
+                        window._mySpace = data.space;
+                        document.getElementById('panelCard').style.display = 'block';
+                        title.innerHTML = '<span style="color:#e0e6f0">' + escHtml(data.space.nombrePlataforma) + '</span>';
+                        desc.innerHTML = '<a href="#' + encodeURIComponent(data.space.nombrePlataforma) + '" style="color:#c4a87c;text-decoration:underline">#' + escHtml(data.space.nombrePlataforma) + '</a> &middot; ' +
+                            '<span style="color:' + data.space.colorAcento + '">' + data.space.colorAcento + '</span>';
+                        if (data.space.iconoURL) {
+                            desc.innerHTML += '<br><img src="' + data.space.iconoURL + '" style="width:32px;height:32px;border-radius:6px;margin-top:6px;object-fit:cover" alt="icon">';
+                        }
+                        card.onclick = function(){
+                            document.getElementById('spaceModalTitle').textContent = 'Editar espacio';
+                            document.getElementById('spaceModalDesc').textContent = 'Modifica los datos de tu plataforma.';
+                            document.getElementById('spaceName').value = data.space.nombrePlataforma;
+                            if (data.space.iconoURL) {
+                                spaceIconItems = [{ src: data.space.iconoURL, isBase64: false }];
+                            } else {
+                                spaceIconItems = [];
+                            }
+                            renderSpaceIconGallery();
+                            document.getElementById('spaceIconUrl').value = '';
+                            openModal('spaceModal');
+                        };
+                    } else {
+                        var wasDeleted = window._mySpace && window._mySpace.nombrePlataforma;
+                        window._mySpace = null;
+                        document.getElementById('panelCard').style.display = 'none';
+                        title.textContent = 'Crear espacio';
+                        desc.textContent = 'Personaliza tu plataforma';
+                        card.onclick = function(){
+                            document.getElementById('spaceModalTitle').textContent = 'Crear espacio';
+                            document.getElementById('spaceModalDesc').textContent = 'Personaliza tu plataforma con nombre, icono y colores.';
+                            document.getElementById('spaceForm').reset();
+                            spaceIconItems = [];
+                            renderSpaceIconGallery();
+                            openModal('spaceModal');
+                        };
+                        if (wasDeleted) {
+                            showToast('Tu espacio fue eliminado. Crea uno nuevo.', 'error');
+                        }
+                    }
+                } catch(e) {}
+            }).catch(function() {
+                // JSONP failed — show default state
+                var card = document.getElementById('spaceCard');
+                var title = document.getElementById('spaceCardTitle');
+                var desc = document.getElementById('spaceCardDesc');
+                window._mySpace = null;
+                document.getElementById('panelCard').style.display = 'none';
+                title.textContent = 'Crear espacio';
+                desc.textContent = 'Personaliza tu plataforma';
+                card.onclick = function(){
+                    document.getElementById('spaceModalTitle').textContent = 'Crear espacio';
+                    document.getElementById('spaceModalDesc').textContent = 'Personaliza tu plataforma con nombre, icono y colores.';
+                    document.getElementById('spaceForm').reset();
+                    spaceIconItems = [];
+                    renderSpaceIconGallery();
+                    openModal('spaceModal');
+                };
+            });
+        }
+
+        window.abrirPanel = function() {
+            if (!window._mySpace) { showToast('Primero crea un espacio.', 'error'); return; }
+            window.location.hash = '__panel__';
+        };
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('loginBtn');
+            var msg = document.getElementById('loginMessage');
+            var user = document.getElementById('loginUser').value.trim();
+            var pass = document.getElementById('loginPass').value;
+            if (!user || !pass) { mostrarMsg(msg, 'Completa todos los campos.', 'error'); return; }
+            btn.classList.add('loading');
+            msg.style.display = 'none';
+
+            jsonp({ action:'login', user:user, pass:pass }).then(function(resp) {
+                btn.classList.remove('loading');
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'LOGIN_OK') {
+                        sessionUser = user;
+                        sessionPass = pass;
+                        localStorage.setItem('wl_user', user);
+                        localStorage.setItem('wl_pass', pass);
+                        if (data.profile) localStorage.setItem('wl_profile', JSON.stringify(data.profile));
+                        closeModal('loginModal');
+                        updateUI();
+                        showToast('Sesion iniciada como ' + escHtml(user), 'success');
+                    } else if (data.status === 'LOGIN_BLOCKED') {
+                        mostrarMsg(msg, 'Tu cuenta ha sido suspendida.', 'error');
+                    } else {
+                        mostrarMsg(msg, 'Usuario o contraseña incorrectos.', 'error');
+                    }
+                } catch(e) { mostrarMsg(msg, 'Error al procesar la respuesta.', 'error'); }
+            }).catch(function(err) {
+                btn.classList.remove('loading');
+                mostrarMsg(msg, err.message || 'Error de conexión.', 'error');
+            });
+        });
+
+        // ============================================================
+        // REGISTER
+        // ============================================================
+        var _userCheckTimeout = null;
+        function checkUserExists(username) {
+            if (_userCheckTimeout) clearTimeout(_userCheckTimeout);
+            if (username.length < 3) return;
+            _userCheckTimeout = setTimeout(function() {
+                jsonp({ action:'getUserProfile', username:username }).then(function(resp) {
+                    try {
+                        var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                        if (data.status === 'PROFILE_OK') {
+                            document.getElementById('regUser')._exists = true;
+                            mostrarMsg(document.getElementById('registerMessage'), 'El usuario "' + escHtml(username) + '" ya esta en uso.', 'error');
+                        } else {
+                            document.getElementById('regUser')._exists = false;
+                        }
+                    } catch(e) {}
+                }).catch(function() {});
+            }, 500);
+        }
+        document.getElementById('regUser').addEventListener('blur', function() {
+            checkUserExists(this.value.trim());
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('registerBtn');
+            var msg = document.getElementById('registerMessage');
+            var user = document.getElementById('regUser').value.trim();
+            var email = document.getElementById('regEmail').value.trim();
+            var pass = document.getElementById('regPass').value;
+            var confirm = document.getElementById('regConfirm').value;
+
+            if (!user || !email || !pass || !confirm) { mostrarMsg(msg, 'Completa todos los campos.', 'error'); return; }
+            if (user.length < 3) { mostrarMsg(msg, 'El usuario debe tener al menos 3 caracteres.', 'error'); return; }
+            var errPass = validarPassword(pass);
+            if (errPass) { mostrarMsg(msg, errPass, 'error'); return; }
+            if (pass !== confirm) { mostrarMsg(msg, 'Las contraseñas no coinciden.', 'error'); return; }
+            if (document.getElementById('regUser')._exists) { mostrarMsg(msg, 'El usuario ya esta en uso.', 'error'); return; }
+
+            btn.classList.add('loading');
+            msg.style.display = 'none';
+
+            jsonp({ action:'register', user:user, pass:pass, email:email }).then(function(resp) {
+                btn.classList.remove('loading');
+                if (resp === 'USER_EXISTS') {
+                    mostrarMsg(msg, 'El nombre de usuario ya esta en uso.', 'error');
+                } else if (resp === 'REGISTER_OK') {
+                    mostrarMsg(msg, 'Cuenta creada con éxito.', 'success');
+                    setTimeout(function() {
+                        closeModal('registerModal');
+                        openModal('loginModal');
+                        document.getElementById('loginUser').value = user;
+                    }, 1200);
+                } else {
+                    mostrarMsg(msg, 'Error al registrar.', 'error');
+                }
+            }).catch(function(err) {
+                btn.classList.remove('loading');
+                mostrarMsg(msg, err.message || 'Error de conexión.', 'error');
+            });
+        });
+
+        // ============================================================
+        // FORGOT PASSWORD
+        // ============================================================
+        // Step 1: send code
+        document.getElementById('fpForm1').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('fpSendBtn');
+            var msg = document.getElementById('forgotMessage');
+            var email = document.getElementById('fpEmail').value.trim();
+            if (!email) { mostrarMsg(msg, 'Ingresa tu correo.', 'error'); return; }
+            btn.classList.add('loading');
+            msg.style.display = 'none';
+            jsonp({ action:'forgotPassword', email:email }).then(function(resp) {
+                btn.classList.remove('loading');
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.exito) {
+                        mostrarMsg(msg, 'Codigo enviado a ' + escHtml(email), 'success');
+                        document.getElementById('fpStep1').style.display = 'none';
+                        document.getElementById('fpStep2').style.display = 'block';
+                    } else {
+                        mostrarMsg(msg, data.mensaje || 'Error al enviar código.', 'error');
+                    }
+                } catch(e) { mostrarMsg(msg, 'Error al procesar respuesta.', 'error'); }
+            }).catch(function(err) {
+                btn.classList.remove('loading');
+                mostrarMsg(msg, 'Error: ' + err.message, 'error');
+            });
+        });
+
+        // Step 2: verify code
+        document.getElementById('fpForm2').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('fpVerifyBtn');
+            var msg = document.getElementById('forgotMessage');
+            var code = document.getElementById('fpCode').value.trim();
+            var email = document.getElementById('fpEmail').value.trim();
+            if (!code) { mostrarMsg(msg, 'Ingresa el código.', 'error'); return; }
+            btn.classList.add('loading');
+            msg.style.display = 'none';
+            jsonp({ action:'verifyCodeOnly', email:email, code:code }).then(function(resp) {
+                btn.classList.remove('loading');
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.exito) {
+                        document.getElementById('fpStep2').style.display = 'none';
+                        document.getElementById('fpStep3').style.display = 'block';
+                    } else {
+                        mostrarMsg(msg, data.mensaje || 'Codigo incorrecto.', 'error');
+                    }
+                } catch(e) { mostrarMsg(msg, 'Error al procesar respuesta.', 'error'); }
+            }).catch(function(err) {
+                btn.classList.remove('loading');
+                mostrarMsg(msg, 'Error: ' + err.message, 'error');
+            });
+        });
+
+        // Step 3: change password
+        document.getElementById('fpForm3').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = document.getElementById('fpChangeBtn');
+            var msg = document.getElementById('forgotMessage');
+            var code = document.getElementById('fpCode').value.trim();
+            var newPass = document.getElementById('fpNewPass').value;
+            var confirmPass = document.getElementById('fpConfirmPass').value;
+            var email = document.getElementById('fpEmail').value.trim();
+            if (!newPass || !confirmPass) { mostrarMsg(msg, 'Completa todos los campos.', 'error'); return; }
+            if (newPass !== confirmPass) { mostrarMsg(msg, 'Las contraseñas no coinciden.', 'error'); return; }
+            var errPass = validarPassword(newPass);
+            if (errPass) { mostrarMsg(msg, errPass, 'error'); return; }
+            btn.classList.add('loading');
+            msg.style.display = 'none';
+            jsonp({ action:'verifyCodeAndChangePassword', email:email, code:code, newPassword:newPass }).then(function(resp) {
+                btn.classList.remove('loading');
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.exito) {
+                        document.getElementById('fpStep3').style.display = 'none';
+                        document.getElementById('fpStep4').style.display = 'block';
+                    } else {
+                        mostrarMsg(msg, data.mensaje || 'Error al cambiar contraseña.', 'error');
+                    }
+                } catch(e) { mostrarMsg(msg, 'Error al procesar respuesta.', 'error'); }
+            }).catch(function(err) {
+                btn.classList.remove('loading');
+                mostrarMsg(msg, 'Error: ' + err.message, 'error');
+            });
+        });
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        window.logout = function() {
+            localStorage.removeItem('wl_user');
+            localStorage.removeItem('wl_pass');
+            localStorage.removeItem('wl_profile');
+            sessionUser = '';
+            sessionPass = '';
+            updateUI();
+            showToast('Sesion cerrada.', 'success');
+        };
+
+        // ============================================================
+        // ANTI-SELECCION / ANTI-COPIAR / ANTI-ARRATRAR
+        // ============================================================
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+        function isEditable(el) {
+            return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+        }
+        document.addEventListener('copy', function(e) { if (!isEditable(e.target)) { e.preventDefault(); return false; } });
+        document.addEventListener('cut', function(e) { if (!isEditable(e.target)) { e.preventDefault(); return false; } });
+        document.addEventListener('paste', function(e) { if (!isEditable(e.target)) { e.preventDefault(); return false; } });
+        document.addEventListener('keydown', function(e) {
+            if (isEditable(e.target)) return;
+            var mod = e.ctrlKey || e.metaKey;
+            if (mod) {
+                if (e.key === 'c' || e.key === 'C') { e.preventDefault(); return false; }
+                if (e.key === 'u' || e.key === 'U') { e.preventDefault(); return false; }
+                if (e.key === 's' || e.key === 'S') { e.preventDefault(); return false; }
+                if (e.key === 'p' || e.key === 'P') { e.preventDefault(); return false; }
+            }
+            if (e.key === 'F12') { e.preventDefault(); return false; }
+        });
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG') { e.preventDefault(); return false; }
+        });
+        document.addEventListener('drop', function(e) { e.preventDefault(); return false; });
+        document.addEventListener('dragover', function(e) { e.preventDefault(); return false; });
+
+        // ============================================================
+        // ANTI-SCRIPT INJECTION (sanitizacion en vivo)
+        // ============================================================
+        function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+        // ============================================================
+        // CHAT
+        // ============================================================
+        var chatTimer = null;
+
+        function toggleChat() {
+            var panel = document.getElementById('chatPanel');
+            var open = panel.classList.toggle('open');
+            if (open) {
+                loadChatMessages();
+                if (chatTimer) clearInterval(chatTimer);
+                chatTimer = setInterval(loadChatMessages, 3000);
+                document.getElementById('chatInput').focus();
+            } else {
+                if (chatTimer) { clearInterval(chatTimer); chatTimer = null; }
+            }
+        }
+
+        function loadChatMessages() {
+            var container = document.getElementById('chatMessages');
+            var inputArea = document.getElementById('chatInputArea');
+            if (!isLoggedIn()) {
+                container.innerHTML = '<div class="not-logged-in-msg"><a onclick="closeModal(\'registerModal\');openModal(\'loginModal\')" style="color:#c4a87c;cursor:pointer;text-decoration:underline">Inicia sesion</a> para chatear con nosotros.</div>';
+                inputArea.style.display = 'none';
+                return;
+            }
+            inputArea.style.display = 'flex';
+            jsonp({ action:'getMessages', user:sessionUser }).then(function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status !== 'OK') return;
+                    var msgs = data.messages || [];
+                    var html = '';
+                    if (msgs.length === 0) {
+                        html = '<div class="empty-msg">Sin mensajes aún. Envíanos un mensaje.</div>';
+                    } else {
+                        for (var i = 0; i < msgs.length; i++) {
+                            var m = msgs[i];
+                            var isUser = m.fromUser === sessionUser;
+                            var fromName = isUser ? 'Tú' : 'WorldLeaf';
+                            var time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
+                            html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">' +
+                                '<strong>' + escHtml(fromName) + '</strong><br>' +
+                                escHtml(m.message) +
+                                '<span class="time">' + time + '</span></div>';
+                        }
+                    }
+                    container.innerHTML = html;
+                    container.scrollTop = container.scrollHeight;
+                } catch(e) {}
+            }).catch(function() {});
+        }
+
+        function sendChatMessage() {
+            if (!isLoggedIn()) { showToast('Debes iniciar sesión para chatear.', 'error'); return; }
+            var input = document.getElementById('chatInput');
+            var msg = input.value.trim();
+            if (!msg) return;
+            if (msg.length > 500) { showToast('Mensaje muy largo (máx 500 caracteres).', 'error'); return; }
+            var btn = document.querySelector('.chat-send');
+            btn.disabled = true;
+            jsonp({ action:'sendMessage', user:sessionUser, toUser:'WorldLeaf', message:msg }).then(function(resp) {
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        input.value = '';
+                        input.style.height = 'auto';
+                        loadChatMessages();
+                    } else {
+                        showToast('Error al enviar mensaje.', 'error');
+                    }
+                } catch(e) { showToast('Error al enviar mensaje.', 'error'); }
+            }).catch(function() {
+                btn.disabled = false;
+                showToast('Error de conexión.', 'error');
+            });
+        }
+
+        // Chat event listeners
+        (function() {
+            document.getElementById('chatBubble').addEventListener('click', toggleChat);
+            document.getElementById('chatCloseBtn').addEventListener('click', toggleChat);
+            document.getElementById('chatSendBtn').addEventListener('click', sendChatMessage);
+
+            var chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage();
+                    }
+                });
+                chatInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                });
+            }
+        })();
+
+        // ============================================================
+        // SPACE (crear espacio)
+        // ============================================================
+        // Sync color picker <-> text input
+        // ============================================================
+        // SPACE ICON GALLERY (max 1 image)
+        // ============================================================
+        var spaceIconItems = [];
+
+        function renderSpaceIconGallery() {
+            var container = document.getElementById('spaceIconGallery');
+            var counter = document.getElementById('spaceIconCounter');
+            if (!container) return;
+            counter.textContent = spaceIconItems.length + ' / 1 imagenes';
+            var html = '';
+            spaceIconItems.forEach(function(item, i) {
+                html += '<div class="img-gallery-item"><img src="' + item.src + '" alt="Icono" onerror="this.src=\'data:image/svg+xml,<svg xmlns=\\\'http://www.w3.org/2000/svg\\\' width=\\\'100\\\' height=\\\'70\\\'><rect fill=\\\'%23333\\\' width=\\\'100\\\' height=\\\'70\\\'/><text x=\\\'50%\\\' y=\\\'50%\\\' fill=\\\'%23666\\\' text-anchor=\\\'middle\\\' dy=\\\'.3em\\\' font-size=\\\'10\\\'>Error</text></svg>\'"><button class="img-remove-btn" onclick="removeSpaceIcon(' + i + ')" title="Eliminar"><i class="fas fa-times"></i></button></div>';
+            });
+            if (spaceIconItems.length < 1) {
+                html += '<div class="img-add-btn" onclick="document.getElementById(\'spaceIconInput\').click()"><i class="fas fa-plus"></i><span>Agregar</span></div>';
+            }
+            container.innerHTML = html;
+        }
+
+        function comprimirImagen(file, cb) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = new Image();
+                img.onload = function() {
+                    var maxW = 1200, maxH = 1200;
+                    var w = img.width, h = img.height;
+                    if (w > maxW) { h = (maxW / w) * h; w = maxW; }
+                    if (h > maxH) { w = (maxH / h) * w; h = maxH; }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    var quality = 0.7;
+                    var dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    while (dataUrl.length > 2000 && quality > 0.1) {
+                        quality -= 0.1;
+                        dataUrl = canvas.toDataURL('image/jpeg', Math.max(quality, 0.1));
+                    }
+                    cb(dataUrl);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.previewSpaceIcon = function(input) {
+            var files = Array.from(input.files);
+            if (spaceIconItems.length >= 1) { showToast('Maximo 1 imagen.', 'error'); return; }
+            files.forEach(function(file) {
+                if (file.size > 100 * 1024 * 1024) { showToast('"' + file.name + '" supera los 100MB.', 'error'); return; }
+                comprimirImagen(file, function(dataUrl) {
+                    spaceIconItems = [{ src: dataUrl, isBase64: true }];
+                    renderSpaceIconGallery();
+                });
+            });
+            input.value = '';
+        };
+
+        window.addSpaceIconUrl = function() {
+            var val = document.getElementById('spaceIconUrl').value.trim();
+            if (!val) return;
+            if (spaceIconItems.length >= 1) { showToast('Maximo 1 imagen.', 'error'); return; }
+            spaceIconItems = [{ src: val, isBase64: false }];
+            document.getElementById('spaceIconUrl').value = '';
+            renderSpaceIconGallery();
+        };
+
+        window.removeSpaceIcon = function(index) {
+            spaceIconItems.splice(index, 1);
+            renderSpaceIconGallery();
+        };
+
+        // Space form submit
+        document.getElementById('spaceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isLoggedIn()) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('spaceBtn');
+            var msg = document.getElementById('spaceMessage');
+            var nombre = document.getElementById('spaceName').value.trim();
+            if (!nombre) { mostrarMsg(msg, 'El nombre es obligatorio.', 'error'); return; }
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            var base64Item = spaceIconItems.filter(function(i) { return i.isBase64; });
+            var urlItems    = spaceIconItems.filter(function(i) { return !i.isBase64; });
+
+            function finalizarGuardado(iconoURL) {
+                jsonp({ action:'saveSpace', user:sessionUser, pass:sessionPass, nombrePlataforma:nombre, iconoURL:iconoURL || '' }).then(function(resp) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    try {
+                        var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                        if (data.status === 'OK') {
+                            mostrarMsg(msg, 'Espacio guardado! Visitalo en <a href="#' + encodeURIComponent(nombre) + '" style="color:#c4a87c;text-decoration:underline">#' + escHtml(nombre) + '</a>', 'success');
+                            loadMySpace();
+                            setTimeout(function() { closeModal('spaceModal'); }, 2500);
+                        } else { mostrarMsg(msg, data.mensaje || 'Error al guardar.', 'error'); }
+                    } catch(e) { mostrarMsg(msg, 'Error al procesar respuesta.', 'error'); }
+                }).catch(function() {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    mostrarMsg(msg, 'Error de conexion.', 'error');
+                });
+            }
+
+            if (base64Item.length === 0) {
+                finalizarGuardado(urlItems.length > 0 ? urlItems[0].src : '');
+                return;
+            }
+
+            showToast('Subiendo imagen...', '');
+            gasPost({
+                action: 'uploadSpaceIcon',
+                user: sessionUser,
+                pass: sessionPass,
+                image: base64Item[0].src
+            }, 120000).then(function(resp) {
+                if (resp && resp.success && resp.imageUrl) {
+                    finalizarGuardado(resp.imageUrl);
+                } else {
+                    finalizarGuardado(urlItems.length > 0 ? urlItems[0].src : '');
+                    showToast('Error al subir imagen.', 'error');
+                }
+            }).catch(function(err) {
+                finalizarGuardado(urlItems.length > 0 ? urlItems[0].src : '');
+                if (err && err.message === 'PERMISOS_REQUERIDOS') {
+                    mostrarMsg(msg, 'Permisos requeridos. Ve a "Reactivar permisos" en el menu.', 'error');
+                } else {
+                    mostrarMsg(msg, 'Error al subir imagen.', 'error');
+                }
+            });
+        });
+
+        // Initial render of space icon gallery
+        renderSpaceIconGallery();
+
+        // ============================================================
+        // URL PARAM: View a space by #nombre-plataforma, ?user=username, or /username
+        // ============================================================
+        function getSpaceIdentifierFromURL() {
+            var hash = window.location.hash.replace(/^#/, '').trim();
+            if (hash) {
+                if (hash === '__panel__') return { type:'panel', value: '__panel__' };
+                return { type:'nombrePlataforma', value: decodeURIComponent(hash) };
+            }
+            var params = new URLSearchParams(window.location.search);
+            if (params.get('user')) return { type:'username', value: params.get('user') };
+            var path = window.location.pathname.replace(/\/+$/g, '').replace(/index\.html$/i, '');
+            var parts = path.split('/').filter(Boolean);
+            if (parts.length === 1 && parts[0] !== '') return { type:'username', value: parts[0] };
+            return null;
+        }
+
+        function loadSpaceFromURL() {
+            var frame = document.getElementById('spaceFrame');
+            var container = document.getElementById('spaceView');
+            var id = getSpaceIdentifierFromURL();
+            if (!id) {
+                container.style.display = 'none';
+                frame.src = '';
+                document.body.style.overflow = '';
+                return;
+            }
+            if (id.type === 'nombrePlataforma') {
+                frame.src = 'spaces.html?nombrePlataforma=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
+            } else if (id.type === 'panel') {
+                frame.src = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
+            } else {
+                frame.src = 'spaces.html?user=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
+            }
+            container.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', function() {
+            loadSpaceFromURL();
+        });
+
+        // Listen for messages from iframe
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'cerrarPanel') {
+                window.location.hash = '';
+            }
+        });
+
+
+
+        function applySpaceTheme(space) {
+            var root = document.documentElement;
+            root.style.setProperty('--space-bg', space.colorFondo);
+            root.style.setProperty('--space-secondary', space.colorSecundario);
+            root.style.setProperty('--space-accent', space.colorAcento);
+            root.style.setProperty('--space-text', space.colorTexto);
+            // Header
+            var header = document.querySelector('header');
+            if (header) header.style.background = 'rgba(' + hexToRgb(space.colorFondo) + ',0.9)';
+            // Toast
+            var toast = document.querySelector('.toast');
+            if (toast) toast.style.background = 'rgba(' + hexToRgb(space.colorFondo) + ',0.95)';
+            // Hero overlay
+            var modalOverlays = document.querySelectorAll('.modal-overlay');
+            for (var i = 0; i < modalOverlays.length; i++) {
+                modalOverlays[i].style.background = 'rgba(' + hexToRgb(space.colorFondo) + ',0.85)';
+            }
+            // Dash cards, modals, chat panel
+            var cards = document.querySelectorAll('.dash-card, .modal, .chat-panel, .form-card');
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].style.background = space.colorSecundario;
+            }
+            // Icon
+            if (space.iconoURL) {
+                var logoImg = document.querySelector('.logo-img');
+                if (logoImg) logoImg.src = space.iconoURL;
+                var heroIcon = document.querySelector('.hero-icon');
+                if (heroIcon) heroIcon.src = space.iconoURL;
+            }
+            // Title
+            if (space.nombrePlataforma) {
+                var logoText = document.querySelector('.logo-text');
+                if (logoText) logoText.innerHTML = space.nombrePlataforma;
+                document.title = space.nombrePlataforma + ' - ' + space.usuario;
+            }
+        }
+
+        function hexToRgb(hex) {
+            if (!hex || hex.length < 7) return '10,14,23';
+            hex = hex.replace('#', '');
+            if (hex.length !== 6) return '10,14,23';
+            var r = parseInt(hex.slice(0,2), 16);
+            var g = parseInt(hex.slice(2,4), 16);
+            var b = parseInt(hex.slice(4,6), 16);
+            return (isNaN(r) ? 10 : r) + ',' + (isNaN(g) ? 14 : g) + ',' + (isNaN(b) ? 23 : b);
+        }
+
+        // Load space on init
+        loadSpaceFromURL();
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        updateUI();
+
+        // Auto login check on load
+        if (isLoggedIn()) {
+            jsonp({ action:'getProfile', user:sessionUser, pass:sessionPass }).then(function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'PROFILE_OK' && data.profile) {
+                        localStorage.setItem('wl_profile', JSON.stringify(data.profile));
+                        updateUI();
+                    } else {
+                        logout();
+                    }
+                } catch(e) { logout(); }
+            }).catch(function() { logout(); });
+        }
+
+        console.log('%cWorldLeaf Plataforma v2.0', 'color: #c4a87c; font-size: 14px; font-weight: bold;');
+        console.log('%cEntorno protegido', 'color: #666; font-size: 11px;');
+
+        // ============================================================
+        // LIMPIAR DATOS LOCALES
+        // ============================================================
+        window.limpiarDatos = function() {
+            if (confirm('¿Eliminar todos los datos locales? Se cerrará tu sesión y se recargará la página.')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                showToast('Datos eliminados. Recargando...', 'success');
+                setTimeout(function() { location.reload(); }, 800);
+            }
+        };
     })();
-  </script>
+    </script>
+
 </body>
 </html>
