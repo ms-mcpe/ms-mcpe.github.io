@@ -3,38 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio — NekoCraft Addons</title>
+  <title>Versiones — NekoCraft Addons</title>
   <link rel="stylesheet" href="style.css">
-  
 </head>
 <body>
   <div class="page" id="home-page">
-    <!-- Hero Slider -->
     <div class="hero-slider" id="hero-slider">
       <div class="hero-track" id="hero-track"></div>
       <div class="hero-dots" id="hero-dots"></div>
     </div>
 
-    <!-- Más Recientes -->
     <div class="section-header">
-      <h2 class="section-title">Más recientes</h2>
-    </div>
-    <div class="addon-list" id="recents-preview"></div>
-
-    <!-- Populares Preview -->
-    <div class="section-header">
-      <h2 class="section-title">Populares</h2>
-      <a class="section-link" onclick="goToPopulars()">Ver todo</a>
-    </div>
-    <div class="addon-list" id="populars-preview"></div>
-
-    <!-- Catálogo Completo -->
-    <div class="section-header">
-      <h2 class="section-title">Catálogo</h2>
+      <h2 class="section-title">Todas las versiones</h2>
     </div>
     <div class="addon-grid" id="catalog-grid"></div>
 
-    <!-- Loading -->
     <div id="home-loader"></div>
   </div>
 
@@ -44,64 +27,54 @@
     let sliderInterval = null;
     let homeAddons = [];
 
-    /* ── Init ── */
     async function initHome() {
       const loaderEl = document.getElementById('home-loader');
       loaderEl.innerHTML = renderLoader();
 
       try {
-        const addons = await getAddons();
+        const addons = await getVersiones();
         allLoadedAddons = addons;
         homeAddons = addons.slice();
         loaderEl.innerHTML = '';
 
         renderSlider(addons);
-        renderRecentPreview(addons);
-        renderPopularsPreview(addons);
         renderCatalog(addons);
       } catch (err) {
         loaderEl.innerHTML = renderEmptyState(
           ICONS.package,
           'Error al cargar',
-          'No se pudieron cargar los addons. Intenta de nuevo más tarde.'
+          'No se pudieron cargar las versiones. Intenta de nuevo más tarde.'
         );
       }
     }
 
-    /* ── Hero Slider ── */
     function renderSlider(addons) {
       if (addons.length === 0) {
         document.getElementById('hero-slider').classList.add('hidden');
         return;
       }
-
       const sliderAddons = shuffleArray(addons).slice(0, 5).filter(a => getFirstImage(a.imagenes));
       if (sliderAddons.length === 0) {
         document.getElementById('hero-slider').classList.add('hidden');
         return;
       }
-
       const track = document.getElementById('hero-track');
       const dots = document.getElementById('hero-dots');
-
       track.innerHTML = sliderAddons.map(addon => {
         const img = getFirstImage(addon.imagenes);
         return `
           <div class="hero-slide" style="background-image:url('${escapeHtml(img)}')" onclick="openModal('${escapeHtml(addon.nombre)}')">
             <div class="hero-slide-overlay">
-              <span class="hero-badge">Nuevo Addon</span>
+              <span class="hero-badge">Versiones</span>
               <h3 class="hero-title">${escapeHtml(addon.nombre)}</h3>
               <button class="hero-btn" onclick="event.stopPropagation(); openModal('${escapeHtml(addon.nombre)}')">Ver más</button>
             </div>
           </div>
         `;
       }).join('');
-
       dots.innerHTML = sliderAddons.map((_, i) =>
         `<button class="hero-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></button>`
       ).join('');
-
-      // Auto-rotate
       if (sliderAddons.length > 1) {
         sliderInterval = setInterval(() => {
           currentSlide = (currentSlide + 1) % sliderAddons.length;
@@ -113,7 +86,6 @@
     function goToSlide(idx) {
       currentSlide = idx;
       updateSlider();
-      // Reset auto-rotate timer
       clearInterval(sliderInterval);
       const totalSlides = document.querySelectorAll('.hero-slide').length;
       if (totalSlides > 1) {
@@ -132,101 +104,42 @@
       });
     }
 
-    /* ── Populars Preview (top 3) ── */
-    function renderPopularsPreview(addons) {
-      const container = document.getElementById('populars-preview');
-      const sorted = addons.slice().sort((a, b) => (b.likes || 0) - (a.likes || 0));
-      const top3 = sorted.slice(0, 3);
-
-      if (top3.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.heart, 'Sin populares', 'Aún no hay addons populares.');
-        return;
-      }
-
-      container.innerHTML = top3.map((addon, i) => renderAddonCard(addon, i)).join('');
-    }
-
-    /* ── Recent Preview (top 5 most recent) ── */
-    function renderRecentPreview(addons) {
-      const container = document.getElementById('recents-preview');
-      const sorted = addons.slice().sort((a, b) => {
-        const da = new Date(a.fecha || 0);
-        const db = new Date(b.fecha || 0);
-        return db - da;
-      });
-      const recent5 = sorted.slice(0, 5);
-
-      if (recent5.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.package, 'Sin recientes', 'Aún no hay addons recientes.');
-        return;
-      }
-
-      container.innerHTML = recent5.map((addon, i) => renderAddonCard(addon, i)).join('');
-    }
-
-    /* ── Full Catalog (grid) ── */
     function renderCatalog(addons) {
       const container = document.getElementById('catalog-grid');
       const shuffled = shuffleArray(addons);
-
       if (shuffled.length === 0) {
-        container.innerHTML = renderEmptyState(ICONS.package, 'Sin addons', 'No hay addons disponibles.');
+        container.innerHTML = renderEmptyState(ICONS.package, 'Sin versiones', 'No hay versiones disponibles.');
         return;
       }
-
       container.innerHTML = shuffled.map((addon, i) => renderAddonGridCard(addon, i)).join('');
     }
 
-    /* ── Navigate to Populars via parent ── */
-    function goToPopulars() {
-      try {
-        if (window.parent && window.parent !== window) {
-          window.parent.navigateTo('populars.html', window.parent.document.querySelector('[data-page="populars.html"]'));
-        }
-      } catch(e) {}
-    }
-
-    /* ── Search filter ── */
     window.onFilterAddons = function(query) {
       query = (query || '').trim().toLowerCase();
       const container = document.getElementById('catalog-grid');
-      const previewContainer = document.getElementById('populars-preview');
-      const recentsContainer = document.getElementById('recents-preview');
       const heroSlider = document.getElementById('hero-slider');
-      const sections = document.querySelectorAll('.section-header');
 
       if (!query) {
         heroSlider.classList.remove('hidden');
-        sections.forEach(s => s.classList.remove('hidden'));
-        renderRecentPreview(homeAddons);
-        renderPopularsPreview(homeAddons);
         renderCatalog(homeAddons);
         return;
       }
-
       const filtered = homeAddons.filter(a =>
         a.nombre.toLowerCase().includes(query) ||
         (a.descripcion || '').toLowerCase().includes(query)
       );
-
       heroSlider.classList.add('hidden');
-      sections.forEach(s => s.classList.add('hidden'));
-      recentsContainer.innerHTML = '';
-      previewContainer.innerHTML = '';
-
       if (filtered.length === 0) {
         container.innerHTML = renderEmptyState(
           '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
           'Sin resultados',
-          `No se encontraron addons con "${escapeHtml(query)}"`
+          `No se encontraron versiones con "${escapeHtml(query)}"`
         );
         return;
       }
-
       container.innerHTML = filtered.map((addon, i) => renderAddonGridCard(addon, i)).join('');
     };
 
-    // Init
     initHome();
 
     /* ── Theme Sync from localStorage ── */

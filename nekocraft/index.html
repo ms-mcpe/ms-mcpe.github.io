@@ -56,9 +56,18 @@
           <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           Marcketplace
         </button>
+        <button class="sidebar-item" onclick="selectCategory('Versiones')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Versiones
+        </button>
       </div>
       <div class="sidebar-footer">
-        NekoCraft Addons © 2026
+        <button class="sidebar-theme-btn" id="theme-toggle" onclick="toggleTheme()">
+          <svg viewBox="0 0 24 24" class="theme-icon-light"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg viewBox="0 0 24 24" class="theme-icon-dark"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <span id="theme-label">Tema oscuro</span>
+        </button>
+        <div class="sidebar-copyright">NekoCraft Addons © 2026</div>
       </div>
     </nav>
 
@@ -121,8 +130,17 @@
     }
 
     function selectCategory(cat) {
-      // For now only Marcketplace exists
       toggleSidebar();
+      // Update active state
+      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      // Reload iframe with category
+      const iframe = document.getElementById('main-iframe');
+      if (cat === 'Versiones') {
+        iframe.src = 'versiones.html';
+      } else {
+        iframe.src = 'home.html';
+      }
     }
 
     /* ── Search ── */
@@ -177,6 +195,40 @@
         navigator.serviceWorker.register('sw.js').catch(() => {});
       });
     }
+
+    /* ── Theme Toggle ── */
+    const THEME_KEY = 'nekocraft_theme';
+
+    function applyTheme(dark) {
+      const root = document.documentElement;
+      if (dark) {
+        root.classList.add('dark');
+        document.querySelector('meta[name="theme-color"]').content = '#1a0f14';
+      } else {
+        root.classList.remove('dark');
+        document.querySelector('meta[name="theme-color"]').content = '#FFF0F3';
+      }
+      updateThemeBtn(dark);
+      // Save to localStorage so iframes can read it
+      localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+    }
+
+    function updateThemeBtn(dark) {
+      const label = document.getElementById('theme-label');
+      if (label) label.textContent = dark ? 'Tema claro' : 'Tema oscuro';
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      applyTheme(isDark);
+    }
+
+    // Load saved theme (default: light)
+    (function() {
+      const saved = localStorage.getItem(THEME_KEY);
+      const isDark = saved === 'dark';
+      applyTheme(isDark);
+    })();
 
     /* ── PWA: If installed as standalone, show app. Otherwise just use web normally. ── */
   </script>

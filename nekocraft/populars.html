@@ -89,6 +89,20 @@
     };
 
     initPopulars();
+
+    /* ── Theme Sync from localStorage ── */
+    (function syncTheme() {
+      const THEME_KEY = 'nekocraft_theme';
+      function applyLocalTheme() {
+        const saved = localStorage.getItem(THEME_KEY);
+        const isDark = saved === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+      }
+      applyLocalTheme();
+      window.addEventListener('storage', function(e) {
+        if (e.key === THEME_KEY) applyLocalTheme();
+      });
+    })();
   </script>
 </body>
 </html>

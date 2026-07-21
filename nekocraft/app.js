@@ -11,6 +11,9 @@ const DOWNLOADS_KEY = 'nekocraft_downloads';
 const VERIFY_EXPIRY_KEY = 'nekocraft_verification_expiry';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 min cache
 const TARGET_CATEGORY = 'Marcketplace';
+const VERSIONES_CATEGORY = 'Versiones';
+const CACHE_KEY_VERSIONES = 'nekocraft_versiones_cache';
+const CACHE_TIME_KEY_VERSIONES = 'nekocraft_versiones_cache_time';
 
 function isUserVerified() {
   try {
@@ -149,7 +152,7 @@ function loadAddonsJSONP() {
     const timeout = setTimeout(() => {
       cleanup();
       reject(new Error('Timeout'));
-    }, 15000);
+    }, 30000);
 
     function cleanup() {
       clearTimeout(timeout);
@@ -169,6 +172,18 @@ function loadAddonsJSONP() {
     script.src = API_URL + '?action=getMcpedlAddons&callback=' + callbackName;
     script.onerror = function() { cleanup(); reject(new Error('Network error')); };
     document.head.appendChild(script);
+  });
+}
+
+function loadAddonsWithRetry(retries) {
+  retries = retries || 2;
+  return loadAddonsJSONP().catch(function(err) {
+    if (retries > 0) {
+      return new Promise(function(ok) { setTimeout(ok, 1500); }).then(function() {
+        return loadAddonsWithRetry(retries - 1);
+      });
+    }
+    throw err;
   });
 }
 
@@ -195,17 +210,102 @@ async function getAddons() {
   const cached = getCachedAddons();
   if (cached) {
     // Refresh in background
-    loadAddonsJSONP().then(fresh => {
+    loadAddonsWithRetry(2).then(fresh => {
       const filtered = fresh.filter(a => a.categoria === TARGET_CATEGORY);
       cacheAddons(filtered);
     }).catch(() => {});
     return cached;
   }
-  // Load fresh
-  const fresh = await loadAddonsJSONP();
-  const filtered = fresh.filter(a => a.categoria === TARGET_CATEGORY);
-  cacheAddons(filtered);
-  return filtered;
+  // Try fresh load with retries
+  try {
+    const fresh = await loadAddonsWithRetry(2);
+    const filtered = fresh.filter(a => a.categoria === TARGET_CATEGORY);
+    cacheAddons(filtered);
+    return filtered;
+  } catch (err) {
+    // Fallback: try stale cache
+    try {
+      const stale = localStorage.getItem(CACHE_KEY);
+      if (stale) return JSON.parse(stale);
+    } catch (e) {}
+    throw err;
+  }
+}
+
+/* ── Versiones JSONP ── */
+function loadVersionesJSONP() {
+  return new Promise((resolve, reject) => {
+    const callbackName = '__nekocraft_vb_cb_' + Date.now();
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => { cleanup(); reject(new Error('Timeout')); }, 30000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[callbackName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = function(data) {
+      cleanup();
+      if (data && data.status === 'OK' && data.versiones) {
+        resolve(data.versiones);
+      } else {
+        reject(new Error('Invalid response'));
+      }
+    };
+
+    script.src = API_URL + '?action=getMcpeplVersiones&callback=' + callbackName;
+    script.onerror = function() { cleanup(); reject(new Error('Network error')); };
+    document.head.appendChild(script);
+  });
+}
+
+function loadVersionesWithRetry(retries) {
+  retries = retries || 2;
+  return loadVersionesJSONP().catch(function(err) {
+    if (retries > 0) {
+      return new Promise(function(ok) { setTimeout(ok, 1500); }).then(function() {
+        return loadVersionesWithRetry(retries - 1);
+      });
+    }
+    throw err;
+  });
+}
+function getCachedVersiones() {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY_VERSIONES);
+    const cachedTime = parseInt(localStorage.getItem(CACHE_TIME_KEY_VERSIONES)) || 0;
+    if (cached && (Date.now() - cachedTime) < CACHE_DURATION) {
+      return JSON.parse(cached);
+    }
+  } catch {}
+  return null;
+}
+
+function cacheVersiones(addons) {
+  try {
+    localStorage.setItem(CACHE_KEY_VERSIONES, JSON.stringify(addons));
+    localStorage.setItem(CACHE_TIME_KEY_VERSIONES, String(Date.now()));
+  } catch {}
+}
+
+async function getVersiones() {
+  const cached = getCachedVersiones();
+  if (cached) {
+    loadVersionesWithRetry(2).then(fresh => { cacheVersiones(fresh); }).catch(() => {});
+    return cached;
+  }
+  try {
+    const fresh = await loadVersionesWithRetry(2);
+    cacheVersiones(fresh);
+    return fresh;
+  } catch (err) {
+    try {
+      const stale = localStorage.getItem(CACHE_KEY_VERSIONES);
+      if (stale) return JSON.parse(stale);
+    } catch (e) {}
+    throw err;
+  }
 }
 
 /* ── Card HTML Rendering ── */
@@ -438,13 +538,16 @@ function handleDownload(nombre) {
 
 /* ── Modal ── */
 let allLoadedAddons = [];
+let modalImages = [];
+let modalImageIndex = 0;
 
 function openModal(nombre) {
   const addons = allLoadedAddons.length ? allLoadedAddons : (getCachedAddons() || []);
   const addon = addons.find(a => a.nombre === nombre);
   if (!addon) return;
 
-  const img = getFirstImage(addon.imagenes);
+  modalImages = getAllImages(addon.imagenes);
+  modalImageIndex = 0;
   const liked = isFavorite(addon.nombre);
 
   let overlay = document.getElementById('modal-overlay');
@@ -456,10 +559,39 @@ function openModal(nombre) {
     document.body.appendChild(overlay);
   }
 
+  const hasMultiple = modalImages.length > 1;
+  const counterHTML = hasMultiple
+    ? `<div class="modal-img-counter"><span id="modal-img-current">1</span> / ${modalImages.length}</div>`
+    : '';
+
+  const arrowsHTML = hasMultiple
+    ? `<button class="modal-arrow modal-arrow-left" onclick="event.stopPropagation(); modalImgPrev()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+       </button>
+       <button class="modal-arrow modal-arrow-right" onclick="event.stopPropagation(); modalImgNext()">
+        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+       </button>`
+    : '';
+
+  const dotsHTML = hasMultiple
+    ? `<div class="modal-img-dots" id="modal-img-dots">
+        ${modalImages.map((_, i) => `<button class="modal-img-dot ${i === 0 ? 'active' : ''}" onclick="event.stopPropagation(); modalImgGoTo(${i})"></button>`).join('')}
+       </div>`
+    : '';
+
   overlay.innerHTML = `
     <div class="modal">
       <div class="modal-handle"></div>
-      <img class="modal-img" src="${escapeHtml(img)}" alt="${escapeHtml(addon.nombre)}" onerror="this.style.display='none'">
+      <div class="modal-img-carousel" id="modal-img-carousel">
+        ${arrowsHTML}
+        ${counterHTML}
+        <div class="modal-img-track" id="modal-img-track">
+          ${modalImages.map((src, i) => `
+            <img class="modal-img-slide" src="${escapeHtml(src)}" alt="${escapeHtml(addon.nombre)} ${i + 1}" onerror="this.style.display='none'">
+          `).join('')}
+        </div>
+        ${dotsHTML}
+      </div>
       <div class="modal-body">
         <div class="modal-title">${escapeHtml(addon.nombre)}</div>
         ${addon.version ? `<span class="modal-version">v${escapeHtml(addon.version)}</span>` : ''}
@@ -487,6 +619,26 @@ function openModal(nombre) {
   `;
 
   requestAnimationFrame(() => overlay.classList.add('active'));
+}
+
+function modalImgGoTo(idx) {
+  if (idx < 0 || idx >= modalImages.length) return;
+  modalImageIndex = idx;
+  const track = document.getElementById('modal-img-track');
+  if (track) track.style.transform = `translateX(-${idx * 100}%)`;
+  const counter = document.getElementById('modal-img-current');
+  if (counter) counter.textContent = idx + 1;
+  document.querySelectorAll('.modal-img-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === idx);
+  });
+}
+
+function modalImgNext() {
+  modalImgGoTo((modalImageIndex + 1) % modalImages.length);
+}
+
+function modalImgPrev() {
+  modalImgGoTo((modalImageIndex - 1 + modalImages.length) % modalImages.length);
 }
 
 function closeModal() {
