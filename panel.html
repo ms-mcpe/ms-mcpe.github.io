@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - WorldLeaf</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com; connect-src 'self' https://script.google.com https://*.script.google.com https://script.googleusercontent.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com; connect-src 'self' https://script.google.com https://*.script.google.com https://script.googleusercontent.com;">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; -webkit-user-drag:none; -khtml-user-drag:none; -moz-user-drag:none; -o-user-drag:none; -webkit-touch-callout:none; }
         input, textarea, select, [contenteditable="true"] { -webkit-user-select:text; -moz-user-select:text; -ms-user-select:text; user-select:text; }
@@ -397,6 +398,18 @@
             position: relative;
         }
 
+        .addon-search-wrap { margin-bottom: 14px; }
+        .addon-search {
+            width: 100%; box-sizing: border-box;
+            padding: 10px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: #e0e6f0; font-size: 14px; outline: none;
+            transition: border-color 0.2s;
+        }
+        .addon-search:focus { border-color: #c4a87c; }
+        .addon-search::placeholder { color: rgba(224,230,240,0.25); }
+
         /* === EDIT MODAL === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -426,6 +439,19 @@
         .color-row label { min-width:120px; font-size:13px; color:rgba(224,230,240,0.7); }
         .color-row input[type="color"] { width:40px; height:34px; padding:2px; border-radius:6px; cursor:pointer; background:none; border:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
         .color-row input[type="text"] { flex:1; padding:8px 10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e0e6f0; font-size:12px; outline:none; font-family:monospace; }
+        .layout-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:8px; }
+        @media(max-width:640px){ .layout-grid{ grid-template-columns:repeat(2,1fr); } }
+        .layout-option { display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 8px; border-radius:12px; border:2px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.2s; }
+        .layout-option:hover { border-color:rgba(196,168,124,0.3); background:rgba(255,255,255,0.04); }
+        .layout-option.active { border-color:#c4a87c; background:rgba(196,168,124,0.08); }
+        .layout-option span { font-size:11px; color:rgba(224,230,240,0.6); font-weight:500; }
+        .layout-option.active span { color:#c4a87c; }
+        .layout-mini { width:100%; aspect-ratio:4/3; border-radius:6px; overflow:hidden; display:flex; flex-direction:column; gap:3px; padding:4px; background:rgba(0,0,0,0.3); }
+        .layout-mini .lm-row { display:flex; gap:3px; flex:1; }
+        .layout-mini .lm-cell { flex:1; background:rgba(196,168,124,0.25); border-radius:2px; }
+        .layout-mini.lineal .lm-row { flex:unset; }
+        .layout-mini.lineal .lm-cell { height:10px; flex:unset; width:100%; }
+        .layout-mini.lineal .lm-row { flex-direction:column; gap:3px; }
     </style>
 </head>
 <body>
@@ -454,6 +480,18 @@
                 <div class="nav-item" onclick="mostrarSeccion('secPaleta', this)">
                     <i class="fas fa-palette"></i>
                     <span>Paleta de colores</span>
+                </div>
+                <div class="nav-item" onclick="mostrarSeccion('secDiseno', this)">
+                    <i class="fas fa-th-large"></i>
+                    <span>Diseño del grid</span>
+                </div>
+                <div class="nav-item" onclick="mostrarSeccion('secRedes', this)">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Redes sociales</span>
+                </div>
+                <div class="nav-item" onclick="mostrarSeccion('secModal', this)">
+                    <i class="fas fa-window-maximize"></i>
+                    <span>Colores del modal</span>
                 </div>
                 <button class="nav-item" data-section="publicar" onclick="switchSection('publicar')">
                     <span class="icon">✚</span> Publicar contenido
@@ -628,6 +666,111 @@
                 </button>
             </div>
 
+            <!-- ===== SECCION DISENO ===== -->
+            <div class="section" id="secDiseno">
+                <div class="section-header">
+                    <h2>Diseño del grid</h2>
+                    <p>Elige como se muestran los addons en tu espacio. Se adapta automaticamente al tamaño de pantalla.</p>
+                </div>
+                <div class="card">
+                    <div class="layout-grid" id="layoutGrid">
+                        <div class="layout-option" data-layout="automatico" onclick="selectLayout(this)">
+                            <div class="layout-mini">
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                            </div>
+                            <span>Automatico</span>
+                        </div>
+                        <div class="layout-option" data-layout="lineal" onclick="selectLayout(this)">
+                            <div class="layout-mini lineal">
+                                <div class="lm-row"><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div></div>
+                            </div>
+                            <span>Lineal</span>
+                        </div>
+                        <div class="layout-option" data-layout="compacto" onclick="selectLayout(this)">
+                            <div class="layout-mini">
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                            </div>
+                            <span>Compacto</span>
+                        </div>
+                        <div class="layout-option" data-layout="grande" onclick="selectLayout(this)">
+                            <div class="layout-mini">
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                            </div>
+                            <span>Grande</span>
+                        </div>
+                        <div class="layout-option" data-layout="cuadricula" onclick="selectLayout(this)">
+                            <div class="layout-mini">
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                                <div class="lm-row"><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div><div class="lm-cell"></div></div>
+                            </div>
+                            <span>Cuadricula</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" style="margin-top:16px" id="saveDisenoBtn" onclick="guardarDiseno()">
+                    <span class="btn-text">Guardar diseño</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <!-- ===== SECCION REDES SOCIALES ===== -->
+            <div class="section" id="secRedes">
+                <div class="section-header">
+                    <h2>Redes sociales</h2>
+                    <p>Agrega tus enlaces de redes sociales para que los visitantes los vean en tu espacio.</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Discord (URL de invitacion)</label>
+                        <input type="text" id="redDiscord" placeholder="https://discord.gg/...">
+                    </div>
+                    <div class="form-group">
+                        <label>YouTube (URL del canal)</label>
+                        <input type="text" id="redYoutube" placeholder="https://youtube.com/@...">
+                    </div>
+                    <div class="form-group">
+                        <label>Facebook (URL del perfil o pagina)</label>
+                        <input type="text" id="redFacebook" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp (URL de grupo, canal o enlace de invitacion)</label>
+                        <input type="text" id="redWhatsapp" placeholder="https://chat.whatsapp.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Telegram (URL del grupo o canal)</label>
+                        <input type="text" id="redTelegram" placeholder="https://t.me/...">
+                    </div>
+                </div>
+                <button class="btn" style="margin-top:16px" id="saveRedesBtn" onclick="guardarRedes()">
+                    <span class="btn-text">Guardar redes sociales</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <!-- ===== SECCION COLORES DEL MODAL ===== -->
+            <div class="section" id="secModal">
+                <div class="section-header">
+                    <h2>Colores del modal</h2>
+                    <p>Personaliza los colores del modal que se abre al ver un addon.</p>
+                </div>
+                <div class="card">
+                    <div id="modalColorsContainer"></div>
+                </div>
+                <button class="btn" style="margin-top:16px" id="saveModalBtn" onclick="guardarModalColors()">
+                    <span class="btn-text">Guardar colores del modal</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
             <!-- ===== SECCION PUBLICAR ===== -->
             <div class="section" id="secPublicar">
                 <div class="section-header">
@@ -695,6 +838,9 @@
                     <p>Todos tus addons, mapas, shaders, etc. publicados en tu espacio.</p>
                 </div>
                 <div class="card">
+                    <div class="addon-search-wrap" style="margin-bottom:14px">
+                        <input type="text" id="contenidoSearch" class="addon-search" placeholder="Buscar addon..." oninput="buscarContenido()">
+                    </div>
                     <div class="addons-grid" id="contenidoList"></div>
                     <div id="contenidoEmpty" style="display:none;text-align:center;padding:30px;color:rgba(224,230,240,0.25)">No has publicado nada aún.</div>
                 </div>
@@ -969,6 +1115,11 @@
             document.getElementById('brandPosition').disabled = !brandOn;
             document.getElementById('brandByText').disabled = !brandOn;
 
+            // Grid layout
+            var gridLayout = config.gridLayout || 'automatico';
+            var layoutEl = document.querySelector('.layout-option[data-layout="' + gridLayout + '"]');
+            if (layoutEl) { document.querySelectorAll('.layout-option').forEach(function(o) { o.classList.remove('active'); }); layoutEl.classList.add('active'); }
+
             // Palette
             var palette = config.palette || {};
             renderPaleta(palette);
@@ -994,6 +1145,12 @@
             if (bgOpCol) bgOpCol.value = (bg.colorOpacidad || '#000000').indexOf('#') === 0 ? (bg.colorOpacidad || '#000000') : '#000000';
             // Complementos (used for dropdown fallback)
             var complementos = config.complementos || [];
+
+            // Social links
+            renderRedes(config.socialLinks || {});
+
+            // Modal colors
+            renderModalColors(config.modalColors || {});
 
             // Load categories
             var activas = [];
@@ -1158,15 +1315,15 @@
             var btn = document.getElementById('saveMarcaBtn');
             btn.classList.add('loading');
             btn.disabled = true;
-            var config = {
-                showTop: document.getElementById('chkShowTop').checked,
-                showIcon: document.getElementById('chkShowIcon').checked,
-                showName: document.getElementById('chkShowName').checked,
-                showUser: document.getElementById('chkShowUser').checked,
-                showBrand: document.getElementById('chkShowBrand').checked,
-                brandPosition: document.getElementById('brandPosition').value,
-                brandByText: document.getElementById('brandByText').value.trim()
-            };
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.showTop = document.getElementById('chkShowTop').checked;
+            config.showIcon = document.getElementById('chkShowIcon').checked;
+            config.showName = document.getElementById('chkShowName').checked;
+            config.showUser = document.getElementById('chkShowUser').checked;
+            config.showBrand = document.getElementById('chkShowBrand').checked;
+            config.brandPosition = document.getElementById('brandPosition').value;
+            config.brandByText = document.getElementById('brandByText').value.trim();
             jsonp({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
                 btn.classList.remove('loading');
                 btn.disabled = false;
@@ -1290,6 +1447,155 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Paleta guardada.', 'success');
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // DISENO GRID
+        // ============================================================
+        window.selectLayout = function(el) {
+            document.querySelectorAll('.layout-option').forEach(function(o) { o.classList.remove('active'); });
+            el.classList.add('active');
+        };
+
+        window.guardarDiseno = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveDisenoBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var active = document.querySelector('.layout-option.active');
+            var layout = active ? active.dataset.layout : 'automatico';
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.gridLayout = layout;
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Diseno guardado.', 'success');
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // REDES SOCIALES
+        // ============================================================
+        function renderRedes(socialLinks) {
+            var sl = socialLinks || {};
+            document.getElementById('redDiscord').value = sl.discord || '';
+            document.getElementById('redYoutube').value = sl.youtube || '';
+            document.getElementById('redFacebook').value = sl.facebook || '';
+            document.getElementById('redWhatsapp').value = sl.whatsapp || '';
+            document.getElementById('redTelegram').value = sl.telegram || '';
+        }
+
+        window.guardarRedes = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveRedesBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var socialLinks = {
+                discord: document.getElementById('redDiscord').value.trim(),
+                youtube: document.getElementById('redYoutube').value.trim(),
+                facebook: document.getElementById('redFacebook').value.trim(),
+                whatsapp: document.getElementById('redWhatsapp').value.trim(),
+                telegram: document.getElementById('redTelegram').value.trim()
+            };
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.socialLinks = socialLinks;
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Redes sociales guardadas.', 'success');
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // COLORES DEL MODAL
+        // ============================================================
+        var MODAL_COLOR_KEYS = [
+            {id:'modalBg', label:'Fondo del modal', def:'#111827'},
+            {id:'modalTexto', label:'Texto del modal', def:'#e0e6f0'},
+            {id:'modalBorde', label:'Borde del modal', def:'rgba(255,255,255,0.1)'},
+            {id:'modalAcento', label:'Acento del modal (botones)', def:''},
+            {id:'modalMeta', label:'Meta info (version, fecha)', def:'rgba(224,230,240,0.35)'}
+        ];
+
+        function renderModalColors(modalColors) {
+            var container = document.getElementById('modalColorsContainer');
+            container.innerHTML = '';
+            MODAL_COLOR_KEYS.forEach(function(ck) {
+                var val = modalColors && modalColors[ck.id] !== undefined ? modalColors[ck.id] : ck.def;
+                var row = document.createElement('div');
+                row.className = 'color-row';
+                var label = document.createElement('label');
+                label.textContent = ck.label;
+                var picker = document.createElement('input');
+                picker.type = 'color';
+                picker.value = val && val.indexOf('#') === 0 ? val : '#000000';
+                picker.id = 'mcl_' + ck.id + '_pick';
+                var text = document.createElement('input');
+                text.type = 'text';
+                text.id = 'mcl_' + ck.id + '_txt';
+                text.value = val;
+                text.placeholder = ck.def || 'transparent';
+                picker.addEventListener('input', function() { text.value = this.value; });
+                text.addEventListener('input', function() {
+                    if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
+                });
+                row.appendChild(label);
+                row.appendChild(picker);
+                row.appendChild(text);
+                container.appendChild(row);
+            });
+        }
+
+        window.guardarModalColors = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveModalBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var modalColors = {};
+            MODAL_COLOR_KEYS.forEach(function(ck) {
+                var el = document.getElementById('mcl_' + ck.id + '_txt');
+                modalColors[ck.id] = el ? el.value.trim() : ck.def;
+            });
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.modalColors = modalColors;
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Colores del modal guardados.', 'success');
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
@@ -1563,6 +1869,8 @@
         // ============================================================
         // TU CONTENIDO
         // ============================================================
+        var contenidoAddons = [];
+
         function cargarContenido() {
             if (!spaceData) return;
             var espacio = spaceData.nombrePlataforma || sessionUser + "'s Space";
@@ -1575,46 +1883,71 @@
                 try {
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK' && data.addons && data.addons.length) {
-                        empty.style.display = 'none';
-                        list.innerHTML = '';
-                        data.addons.slice().reverse().forEach(function(item) {
-                            var imgs = item.imagenes ? item.imagenes.split('|') : [];
-                            var firstImg = imgs.length ? imgs[0] : '';
-                            var safeName = escHtml(item.nombre);
-                            var nameAttr = (item.nombre || '').replace(/'/g, "\\'");
-                            var itemStr = JSON.stringify(item).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
-
-                            var html = '<div class="addon-card-wrap">';
-                            html += '<button class="addon-delete-btn" onclick="eliminarAddonContenido(\'' + nameAttr + '\')" title="Eliminar">&times;</button>';
-                            html += '<button class="addon-edit-btn" onclick="editarAddon(' + itemStr + ')" title="Editar">✎</button>';
-                            html += '<div class="addon-card">';
-                            if (firstImg) {
-                                html += '<img class="addon-card-thumb" src="' + escHtml(firstImg) + '" alt="' + safeName + '" loading="lazy" onerror="this.style.display=\'none\'">';
-                            }
-                            html += '<div class="addon-card-body">';
-                            html += '<div class="addon-card-cat">' + escHtml(item.categoria || '—') + (item.version ? ' &middot; v' + escHtml(item.version) : '') + '</div>';
-                            html += '<div class="addon-card-title">' + safeName + '</div>';
-                            html += '<div class="addon-card-desc">' + escHtml(item.descripcion || 'Sin descripci&oacute;n.') + '</div>';
-                            html += '<div class="addon-card-foot">';
-                            if (item.link) {
-                                html += '<a class="addon-link" href="' + escHtml(item.link) + '" target="_blank" rel="noopener"><i class="fas fa-download"></i> Descargar</a>';
-                            }
-                            html += (item.fecha ? '<span class="addon-date">' + new Date(item.fecha).toLocaleDateString() + '</span>' : '');
-                            html += '</div></div></div></div>';
-
-                            var div = document.createElement('div');
-                            div.innerHTML = html;
-                            list.appendChild(div.firstElementChild);
-                        });
+                        contenidoAddons = data.addons;
+                        renderContenido(data.addons);
                     } else {
+                        contenidoAddons = [];
                         list.innerHTML = '';
                         empty.style.display = '';
                     }
-                } catch(e) { list.innerHTML = '<div style="text-align:center;padding:30px;color:rgba(224,230,240,0.25)">Error al cargar.</div>'; }
+                } catch(e) { contenidoAddons = []; list.innerHTML = '<div style="text-align:center;padding:30px;color:rgba(224,230,240,0.25)">Error al cargar.</div>'; }
             }).catch(function() {
+                contenidoAddons = [];
                 list.innerHTML = '<div style="text-align:center;padding:30px;color:rgba(224,230,240,0.25)">Error de conexion.</div>';
             });
         }
+
+        function renderContenido(addons) {
+            var list = document.getElementById('contenidoList');
+            var empty = document.getElementById('contenidoEmpty');
+            if (!addons || !addons.length) {
+                list.innerHTML = '';
+                empty.style.display = '';
+                return;
+            }
+            empty.style.display = 'none';
+            list.innerHTML = '';
+            addons.slice().reverse().forEach(function(item) {
+                var imgs = item.imagenes ? item.imagenes.split('|') : [];
+                var firstImg = imgs.length ? imgs[0] : '';
+                var safeName = escHtml(item.nombre);
+                var nameAttr = (item.nombre || '').replace(/'/g, "\\'");
+                var itemStr = JSON.stringify(item).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+
+                var html = '<div class="addon-card-wrap">';
+                html += '<button class="addon-delete-btn" onclick="eliminarAddonContenido(\'' + nameAttr + '\')" title="Eliminar">&times;</button>';
+                html += '<button class="addon-edit-btn" onclick="editarAddon(' + itemStr + ')" title="Editar">✎</button>';
+                html += '<div class="addon-card">';
+                if (firstImg) {
+                    html += '<img class="addon-card-thumb" src="' + escHtml(firstImg) + '" alt="' + safeName + '" loading="lazy" onerror="this.style.display=\'none\'">';
+                }
+                html += '<div class="addon-card-body">';
+                html += '<div class="addon-card-cat">' + escHtml(item.categoria || '—') + (item.version ? ' &middot; v' + escHtml(item.version) : '') + '</div>';
+                html += '<div class="addon-card-title">' + safeName + '</div>';
+                html += '<div class="addon-card-desc">' + escHtml(item.descripcion || 'Sin descripci&oacute;n.') + '</div>';
+                html += '<div class="addon-card-foot">';
+                if (item.link) {
+                    html += '<a class="addon-link" href="' + escHtml(item.link) + '" target="_blank" rel="noopener"><i class="fas fa-download"></i> Descargar</a>';
+                }
+                html += (item.fecha ? '<span class="addon-date">' + new Date(item.fecha).toLocaleDateString() + '</span>' : '');
+                html += '</div></div></div></div>';
+
+                var div = document.createElement('div');
+                div.innerHTML = html;
+                list.appendChild(div.firstElementChild);
+            });
+        }
+
+        window.buscarContenido = function() {
+            var term = (document.getElementById('contenidoSearch').value || '').trim().toLowerCase();
+            if (!term) { renderContenido(contenidoAddons); return; }
+            var filtered = contenidoAddons.filter(function(a) {
+                return (a.nombre || '').toLowerCase().indexOf(term) !== -1 ||
+                       (a.categoria || '').toLowerCase().indexOf(term) !== -1 ||
+                       (a.descripcion || '').toLowerCase().indexOf(term) !== -1;
+            });
+            renderContenido(filtered);
+        };
 
         var editingAddon = null;
 

@@ -198,6 +198,45 @@
         @media (min-width: 900px) {
             .addons-grid { grid-template-columns: repeat(3, 1fr); }
         }
+        /* ── Layout: Lineal (1 col, horizontal) ── */
+        .layout-lineal .addons-grid { grid-template-columns:1fr; gap:10px; }
+        .layout-lineal .addon-card { display:flex; flex-direction:row; }
+        .layout-lineal .addon-card-thumb-wrap { width:160px; flex-shrink:0; }
+        .layout-lineal .addon-card-thumb { height:100%; aspect-ratio:unset; }
+        .layout-lineal .addon-card-body { flex:1; display:flex; flex-direction:column; justify-content:center; padding:12px 16px; }
+        .layout-lineal .addon-card-desc { -webkit-line-clamp:1; }
+        /* ── Layout: Compacto (siempre 2 col, mas gap) ── */
+        .layout-compacto .addons-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+        .layout-compacto .addon-card-thumb { aspect-ratio:16/9; }
+        .layout-compacto .addon-card-body { padding:10px; }
+        .layout-compacto .addon-card-desc { -webkit-line-clamp:1; font-size:0.7rem; }
+        /* ── Layout: Grande (2 col tablet, 3 col desktop, cards grandes) ── */
+        .layout-grande .addons-grid { gap:16px; }
+        @media (min-width:600px) { .layout-grande .addons-grid { grid-template-columns:repeat(2,1fr); } }
+        @media (min-width:900px) { .layout-grande .addons-grid { grid-template-columns:repeat(3,1fr); } }
+        .layout-grande .addon-card-body { padding:16px; }
+        .layout-grande .addon-card-title { font-size:1rem; }
+        .layout-grande .addon-card-desc { -webkit-line-clamp:3; }
+        /* ── Layout: Cuadricula (4 col desktop) ── */
+        .layout-cuadricula .addons-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+        @media (min-width:600px) { .layout-cuadricula .addons-grid { grid-template-columns:repeat(3,1fr); } }
+        @media (min-width:900px) { .layout-cuadricula .addons-grid { grid-template-columns:repeat(4,1fr); } }
+        .layout-cuadricula .addon-card-thumb { aspect-ratio:1; }
+        .layout-cuadricula .addon-card-body { padding:8px; }
+        .layout-cuadricula .addon-card-desc { display:none; }
+        .layout-cuadricula .addon-card-title { font-size:0.78rem; margin-bottom:4px; }
+        .layout-cuadricula .addon-card-cat { font-size:0.55rem; }
+        /* ── Mobile: all layouts go 1 col (solo muy pequeño) ── */
+        @media (max-width:359px) {
+            .layout-compacto .addons-grid,
+            .layout-grande .addons-grid,
+            .layout-cuadricula .addons-grid { grid-template-columns:1fr; }
+            .layout-lineal .addon-card { flex-direction:column; }
+            .layout-lineal .addon-card-thumb-wrap { width:100%; }
+            .layout-lineal .addon-card-thumb { aspect-ratio:16/9; height:auto; }
+            .layout-cuadricula .addon-card-thumb { aspect-ratio:16/9; }
+            .layout-cuadricula .addon-card-desc { display:block; }
+        }
         .addon-card {
             background: rgba(255,255,255,0.04);
             border: 1px solid var(--pal-borde);
@@ -217,6 +256,7 @@
             display: block;
         }
         .addon-card-thumb.hidden { display: none; }
+        .addon-card-thumb-wrap:has(.addon-card-thumb.hidden) { display: none; }
         .play-badge {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: center;
@@ -308,7 +348,7 @@
         }
         .modal-overlay.open { display: flex; }
         .modal {
-            background: #111827; border: 1px solid rgba(255,255,255,0.1);
+            background: var(--modal-bg, #111827); border: 1px solid var(--modal-borde, rgba(255,255,255,0.1));
             border-radius: 16px; max-width: 560px; width: 100%;
             max-height: 90vh; overflow-y: auto;
             padding: 0; position: relative;
@@ -353,22 +393,22 @@
             text-transform: uppercase; color: var(--pal-boton); margin-bottom: 4px;
         }
         .modal-body .m-title {
-            font-size: 1.2rem; font-weight: 800; color: #e0e6f0;
+            font-size: 1.2rem; font-weight: 800; color: var(--modal-texto, #e0e6f0);
             margin-bottom: 4px; line-height: 1.3;
         }
         .modal-body .m-meta {
-            font-size: 12px; color: rgba(224,230,240,0.35);
+            font-size: 12px; color: var(--modal-meta, rgba(224,230,240,0.35));
             margin-bottom: 14px;
         }
         .modal-body .m-desc {
-            font-size: 14px; color: rgba(224,230,240,0.7);
+            font-size: 14px; color: var(--modal-texto, rgba(224,230,240,0.7));
             line-height: 1.6; margin-bottom: 18px;
             white-space: pre-wrap;
         }
         .modal-body .m-download {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 12px 28px;
-            background: var(--pal-boton);
+            background: var(--modal-acento, var(--pal-boton));
             color: #0a0e17; font-weight: 700; font-size: 14px;
             border-radius: 10px; text-decoration: none;
             transition: opacity 0.2s;
@@ -380,6 +420,65 @@
             .modal-body .m-title { font-size: 1rem; }
         }
 
+        /* === SOCIAL LINKS === */
+        .social-links {
+            display: flex; gap: 10px; justify-content: center;
+            padding: 12px 16px; flex-wrap: wrap;
+        }
+        .social-link {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 14px; border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--pal-borde);
+            color: var(--pal-menu-texto);
+            text-decoration: none; font-size: 13px; font-weight: 500;
+            transition: background 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+        .social-link:hover { background: rgba(255,255,255,0.1); border-color: var(--pal-boton); }
+        .social-link i { font-size: 16px; }
+        @media (max-width: 480px) {
+            .social-links { gap: 6px; padding: 10px 12px; }
+            .social-link { padding: 6px 10px; font-size: 12px; }
+        }
+        /* === DARK/LIGHT MODE TOGGLE === */
+        .theme-toggle {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 16px; cursor: pointer;
+        }
+        .theme-toggle-icon { font-size: 18px; }
+        .theme-toggle-label { font-size: 13px; color: var(--pal-menu-texto); }
+        /* === STATS PANEL === */
+        .stats-section {
+            margin-top: 24px; padding: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--pal-borde);
+            border-radius: 12px; text-align: left;
+        }
+        .stats-section h3 {
+            font-size: 16px; font-weight: 700;
+            margin-bottom: 14px; color: var(--pal-boton);
+        }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+        }
+        .stat-card {
+            text-align: center; padding: 14px 8px;
+            background: rgba(0,0,0,0.2); border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        .stat-card .stat-num {
+            font-size: 22px; font-weight: 800; color: var(--pal-boton);
+        }
+        .stat-card .stat-label {
+            font-size: 11px; color: rgba(224,230,240,0.4);
+            margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .stat-card { padding: 10px 4px; }
+            .stat-card .stat-num { font-size: 18px; }
+        }
         /* === CUSTOM SCROLLBARS === */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -426,6 +525,11 @@
             <span class="sidebar-name" id="sidebarName">Nombre</span>
         </div>
         <div class="nav-list" id="navList"></div>
+        <div class="social-links" id="socialLinks" style="display:none"></div>
+        <div class="theme-toggle" id="themeToggle" style="display:none" onclick="toggleTheme()">
+            <span class="theme-toggle-icon" id="themeIcon">🌙</span>
+            <span class="theme-toggle-label" id="themeLabel">Modo oscuro</span>
+        </div>
     </nav>
 
     <!-- Main content -->
@@ -445,6 +549,24 @@
                 <input type="text" id="addonSearch" class="addon-search" placeholder="Buscar addon..." oninput="buscarAddones()">
             </div>
             <div class="addons-grid" id="addonsGrid"></div>
+        </div>
+
+        <div class="stats-section" id="statsSection" style="display:none">
+            <h3>Estadisticas</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-num" id="statVisits">0</div>
+                    <div class="stat-label">Visitas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statDownloads">0</div>
+                    <div class="stat-label">Descargas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statLikes">0</div>
+                    <div class="stat-label">Likes</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -476,7 +598,7 @@
 
     <script>
         var API_URL = 'https://script.google.com/macros/s/AKfycbx7yl9hxkU2MYE6ijNKDZDvLyDkZHI7oBt5LOzGGFn4RDtLoFpXijl07JBoQ3W7KFNk/exec';
-        var SUBMENU_ITEMS = ["Mas recientes","Mas viejos","Mas descargados","Mas populares"];
+        var SUBMENU_ITEMS = ["Mas recientes","Mas viejos","Mas descargados","Mas populares","Aleatorio"];
 
         function getParam(name) {
             var p = new URLSearchParams(window.location.search);
@@ -595,6 +717,9 @@
             document.documentElement.style.setProperty('--pal-buscador-fondo', pal.buscadorFondo || 'rgba(255,255,255,0.04)');
             document.documentElement.style.setProperty('--pal-buscador-texto', pal.buscadorTexto || '#e0e6f0');
             document.documentElement.style.setProperty('--pal-buscador-borde', pal.buscadorBorde || 'rgba(255,255,255,0.08)');
+            // Grid layout
+            var gridLayout = config.gridLayout || 'automatico';
+            document.body.className = 'layout-' + gridLayout;
 
             // Topbar
             document.getElementById('topbarTitle').textContent = space.nombrePlataforma || space.usuario;
@@ -643,6 +768,20 @@
             var categorias = config.complementos || [];
             if (!categorias.length) { try { categorias = JSON.parse(space.categorias || '[]'); } catch(e) {} }
             renderNav(categorias, accent);
+
+            // Social links
+            renderSocialLinks(config.socialLinks || {});
+
+            // Modal colors
+            applyModalColors(config.modalColors || {});
+
+            // Theme toggle - show in sidebar
+            document.getElementById('themeToggle').style.display = 'flex';
+            // Check saved theme preference
+            try {
+                var savedTheme = localStorage.getItem('wl_theme_' + (space.usuario || user));
+                if (savedTheme === 'light') { isLightMode = true; applyTheme(); }
+            } catch(e) {}
         }
 
         function aplicarBranding(space, config, iconUrl, brandPosition, brandByText, showIcon, showName, showUser) {
@@ -720,6 +859,7 @@
                     else if (s === 'Mas viejos') ordenarAddons('oldest');
                     else if (s === 'Mas descargados') ordenarAddons('downloads');
                     else if (s === 'Mas populares') ordenarAddons('popular');
+                    else if (s === 'Aleatorio') ordenarAddons('random');
                 });
                 filtrosSub.appendChild(sb);
             });
@@ -929,7 +1069,7 @@
                 var html = '<div class="addon-card' + (isVideo ? ' addon-card-video' : '') + '" style="cursor:pointer" onclick="abrirModal(' + itemStr + ')">';
                 if (thumbSrc) {
                     html += '<div class="addon-card-thumb-wrap">';
-                    html += '<img class="addon-card-thumb" src="' + escHtml(thumbSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.classList.add(\'hidden\')">';
+                    html += '<img class="addon-card-thumb" src="' + escHtml(thumbSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.classList.add(\'hidden\');this.parentNode.classList.add(\'hidden\')">';
                     if (isVideo) html += '<span class="play-badge"><i class="fas fa-play"></i></span>';
                     html += '</div>';
                 }
@@ -1223,8 +1363,152 @@
                 list.sort(function(a, b) { return (b.downloads || 0) - (a.downloads || 0); });
             } else if (currentSort === 'popular') {
                 list.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
+            } else if (currentSort === 'random') {
+                for (var i = list.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+                }
             }
             renderAddons(list);
+            renderStats(allSpaceAddons);
+        }
+
+        // ============================================================
+        // SOCIAL LINKS
+        // ============================================================
+        function renderSocialLinks(socialLinks) {
+            var container = document.getElementById('socialLinks');
+            if (!socialLinks || !container) return;
+            var items = [];
+            if (socialLinks.discord) items.push({ url: socialLinks.discord, icon: 'fa-brands fa-discord', label: 'Discord' });
+            if (socialLinks.youtube) items.push({ url: socialLinks.youtube, icon: 'fa-brands fa-youtube', label: 'YouTube' });
+            if (socialLinks.facebook) items.push({ url: socialLinks.facebook, icon: 'fa-brands fa-facebook', label: 'Facebook' });
+            if (socialLinks.whatsapp) items.push({ url: socialLinks.whatsapp, icon: 'fa-brands fa-whatsapp', label: 'WhatsApp' });
+            if (socialLinks.telegram) items.push({ url: socialLinks.telegram, icon: 'fa-brands fa-telegram', label: 'Telegram' });
+            if (!items.length) { container.style.display = 'none'; return; }
+            container.innerHTML = '';
+            container.style.display = 'flex';
+            items.forEach(function(item) {
+                var a = document.createElement('a');
+                a.className = 'social-link';
+                a.href = item.url;
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = '<i class="' + item.icon + '"></i> ' + item.label;
+                container.appendChild(a);
+            });
+        }
+
+        // ============================================================
+        // DARK/LIGHT MODE
+        // ============================================================
+        var isLightMode = false;
+        var lightThemeOverrides = {
+            fondo: '#f5f5f5',
+            secundario: '#ffffff',
+            texto: '#1a1a1a',
+            borde: 'rgba(0,0,0,0.1)',
+            menuFondo: 'rgba(255,255,255,0.95)',
+            menuTexto: 'rgba(0,0,0,0.7)',
+            barraSuperior: 'rgba(255,255,255,0.8)',
+            buscadorFondo: 'rgba(0,0,0,0.04)',
+            buscadorTexto: '#1a1a1a',
+            buscadorBorde: 'rgba(0,0,0,0.1)'
+        };
+        var darkThemeOriginals = {};
+
+        function toggleTheme() {
+            isLightMode = !isLightMode;
+            applyTheme();
+            try { localStorage.setItem('wl_theme_' + user, isLightMode ? 'light' : 'dark'); } catch(e) {}
+        }
+
+        function applyTheme() {
+            var root = document.documentElement;
+            if (isLightMode) {
+                darkThemeOriginals.fondo = root.style.getPropertyValue('background');
+                darkThemeOriginals.color = root.style.getPropertyValue('color');
+                darkThemeOriginals.boton = getComputedStyle(root).getPropertyValue('--pal-boton');
+                document.body.style.background = lightThemeOverrides.fondo;
+                document.body.style.color = lightThemeOverrides.texto;
+                root.style.setProperty('--pal-borde', lightThemeOverrides.borde);
+                root.style.setProperty('--pal-barra-superior', lightThemeOverrides.barraSuperior);
+                root.style.setProperty('--pal-menu-fondo', lightThemeOverrides.menuFondo);
+                root.style.setProperty('--pal-menu-texto', lightThemeOverrides.menuTexto);
+                root.style.setProperty('--pal-buscador-fondo', lightThemeOverrides.buscadorFondo);
+                root.style.setProperty('--pal-buscador-texto', lightThemeOverrides.buscadorTexto);
+                root.style.setProperty('--pal-buscador-borde', lightThemeOverrides.buscadorBorde);
+                document.querySelectorAll('.addon-card').forEach(function(c) {
+                    c.style.background = 'rgba(0,0,0,0.03)';
+                    c.style.borderColor = lightThemeOverrides.borde;
+                });
+                document.querySelectorAll('.addon-card-title').forEach(function(t) { t.style.color = '#1a1a1a'; });
+                document.querySelectorAll('.addon-card-desc').forEach(function(t) { t.style.color = 'rgba(0,0,0,0.55)'; });
+                document.getElementById('themeIcon').textContent = '☀️';
+                document.getElementById('themeLabel').textContent = 'Modo claro';
+                var sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.style.borderRightColor = lightThemeOverrides.borde;
+            } else {
+                // Restore dark theme
+                document.body.style.background = '';
+                document.body.style.color = '';
+                root.style.setProperty('--pal-borde', 'rgba(255,255,255,0.08)');
+                root.style.setProperty('--pal-barra-superior', 'rgba(0,0,0,0.4)');
+                root.style.setProperty('--pal-menu-fondo', 'rgba(0,0,0,0.6)');
+                root.style.setProperty('--pal-menu-texto', 'rgba(224,230,240,0.7)');
+                root.style.setProperty('--pal-buscador-fondo', 'rgba(255,255,255,0.04)');
+                root.style.setProperty('--pal-buscador-texto', '#e0e6f0');
+                root.style.setProperty('--pal-buscador-borde', 'rgba(255,255,255,0.08)');
+                document.querySelectorAll('.addon-card').forEach(function(c) {
+                    c.style.background = '';
+                    c.style.borderColor = '';
+                });
+                document.querySelectorAll('.addon-card-title').forEach(function(t) { t.style.color = ''; });
+                document.querySelectorAll('.addon-card-desc').forEach(function(t) { t.style.color = ''; });
+                document.getElementById('themeIcon').textContent = '🌙';
+                document.getElementById('themeLabel').textContent = 'Modo oscuro';
+                var sidebar2 = document.getElementById('sidebar');
+                if (sidebar2) sidebar2.style.borderRightColor = '';
+            }
+        }
+
+        // ============================================================
+        // STATS (owner only)
+        // ============================================================
+        function renderStats(addons) {
+            var section = document.getElementById('statsSection');
+            if (!section || !addons || !addons.length) { if (section) section.style.display = 'none'; return; }
+            var totalDownloads = 0;
+            var totalLikes = 0;
+            addons.forEach(function(a) {
+                totalDownloads += (a.downloads || 0);
+                totalLikes += (a.likes || 0);
+            });
+            document.getElementById('statDownloads').textContent = totalDownloads.toLocaleString();
+            document.getElementById('statLikes').textContent = totalLikes.toLocaleString();
+            // Visit count placeholder - we'll increment a local counter
+            var visitKey = 'wl_visits_' + (currentEspacio || user);
+            var visits = 0;
+            try { visits = parseInt(localStorage.getItem(visitKey)) || 0; } catch(e) {}
+            visits++;
+            try { localStorage.setItem(visitKey, visits); } catch(e) {}
+            document.getElementById('statVisits').textContent = visits.toLocaleString();
+            // Only show if the current visitor is the owner
+            var isOwner = (loggedUser === user || loggedUser === currentEspacio);
+            section.style.display = isOwner ? '' : 'none';
+        }
+
+        // ============================================================
+        // MODAL COLORS
+        // ============================================================
+        function applyModalColors(modalColors) {
+            if (!modalColors) return;
+            var root = document.documentElement;
+            if (modalColors.modalBg) root.style.setProperty('--modal-bg', modalColors.modalBg);
+            if (modalColors.modalTexto) root.style.setProperty('--modal-texto', modalColors.modalTexto);
+            if (modalColors.modalBorde) root.style.setProperty('--modal-borde', modalColors.modalBorde);
+            if (modalColors.modalAcento) root.style.setProperty('--modal-acento', modalColors.modalAcento);
+            if (modalColors.modalMeta) root.style.setProperty('--modal-meta', modalColors.modalMeta);
         }
 
         // Security
