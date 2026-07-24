@@ -482,21 +482,23 @@
         /* === AD OVERLAY === */
         .ad-overlay {
             position: fixed; inset: 0; z-index: 600;
+            background: rgba(0,0,0,0.9);
             display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px);
         }
         .ad-overlay.open { display: flex; }
-        .ad-click-zone {
-            position: absolute; inset: 0; cursor: pointer; z-index: 1;
-        }
         .ad-center {
-            position: relative; z-index: 2;
-            display: flex; flex-direction: column; align-items: center; gap: 12px;
-            pointer-events: none;
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+        }
+        .ad-adsterra {
+            width: 300px; height: 250px;
+            border-radius: 8px; overflow: hidden;
+            background: rgba(255,255,255,0.05);
         }
         .ad-ring-wrap {
-            position: relative; width: 80px; height: 80px;
+            position: relative; width: 64px; height: 64px;
         }
-        .ad-ring-wrap svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+        .ad-ring-wrap svg { width: 64px; height: 64px; transform: rotate(-90deg); }
         .ad-ring-bg { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 5; }
         .ad-ring-progress {
             fill: none; stroke: var(--pal-boton, #c0a85c); stroke-width: 5;
@@ -506,13 +508,11 @@
         .ad-ring-num {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; font-weight: 800; color: #fff;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+            font-size: 22px; font-weight: 800; color: #fff;
         }
         .ad-msg {
-            font-size: 14px; color: rgba(255,255,255,0.7);
-            text-shadow: 0 1px 8px rgba(0,0,0,0.8);
-            text-align: center; pointer-events: none;
+            font-size: 13px; color: rgba(255,255,255,0.45);
+            text-align: center;
         }
         /* === CUSTOM SCROLLBARS === */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -631,15 +631,15 @@
         </div>
     </div>
 
-    <!-- Ad gate overlay — fullscreen click zone + countdown -->
+    <!-- Ad gate overlay -->
     <div class="ad-overlay" id="adOverlay">
-        <a class="ad-click-zone" id="adClickZone" href="#" target="_blank" rel="noopener"></a>
         <div class="ad-center">
+            <div class="ad-adsterra" id="adSterraBox"></div>
             <div class="ad-ring-wrap">
-                <svg viewBox="0 0 80 80"><circle class="ad-ring-bg" cx="40" cy="40" r="30"/><circle class="ad-ring-progress" id="adProgress" cx="40" cy="40" r="30"/></svg>
+                <svg viewBox="0 0 64 64"><circle class="ad-ring-bg" cx="32" cy="32" r="30"/><circle class="ad-ring-progress" id="adProgress" cx="32" cy="32" r="30"/></svg>
                 <div class="ad-ring-num" id="adCountdown">5</div>
             </div>
-            <div class="ad-msg">Haz clic en pantalla para ver el anuncio<br>Descarga en <span id="adSecLabel">5</span>s...</div>
+            <div class="ad-msg">Descarga en <span id="adSecLabel">5</span>s...</div>
         </div>
     </div>
 
@@ -1298,9 +1298,8 @@
         function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
         // ============================================================
-        // DOWNLOAD WITH AD GATE (fullscreen smartlink)
+        // DOWNLOAD WITH AD GATE
         // ============================================================
-        var SMARTLINK_URL = 'https://www.effectivecpmnetwork.com/w3p3q042a?key=f434414e2725d8e0fe98a16302c651f2';
         var AD_CIRC = 2 * Math.PI * 30;
         var pendingDownloadUrl = '';
         var pendingDownloadEsp = '';
@@ -1317,16 +1316,25 @@
 
         function showAdGate() {
             var overlay = document.getElementById('adOverlay');
-            var clickZone = document.getElementById('adClickZone');
+            var box = document.getElementById('adSterraBox');
             var countdownEl = document.getElementById('adCountdown');
             var secLabel = document.getElementById('adSecLabel');
             var progress = document.getElementById('adProgress');
-
-            // Set smartlink as click target
-            clickZone.href = SMARTLINK_URL;
             progress.style.strokeDashoffset = '0';
             overlay.classList.add('open');
 
+            // Inject invoke.js ad
+            box.innerHTML = '';
+            try {
+                var s1 = document.createElement('script');
+                s1.textContent = 'var atOptions={"key":"a0082d89d50ee2582d54e84972c04961","format":"iframe","height":250,"width":300,"params":{}};';
+                box.appendChild(s1);
+                var s2 = document.createElement('script');
+                s2.src = 'https://www.highperformanceformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js';
+                box.appendChild(s2);
+            } catch(e) {}
+
+            // Countdown 5s
             var remaining = 5;
             countdownEl.textContent = remaining;
             secLabel.textContent = remaining;
@@ -1347,8 +1355,7 @@
 
         function closeAdGate() {
             if (adTimer) { clearInterval(adTimer); adTimer = null; }
-            var overlay = document.getElementById('adOverlay');
-            overlay.classList.remove('open');
+            document.getElementById('adOverlay').classList.remove('open');
         }
 
         function doDownload(url, espacio, nombre) {
