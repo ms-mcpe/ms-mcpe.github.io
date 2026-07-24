@@ -514,6 +514,87 @@
             font-size: 13px; color: rgba(255,255,255,0.45);
             text-align: center;
         }
+        /* === INSTALL APP BUTTON === */
+        .install-btn {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; padding: 12px 16px;
+            background: var(--pal-boton, #c4a87c);
+            color: #0a0e17; border: none; border-radius: 10px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: opacity 0.2s; margin: 8px 16px 12px;
+            justify-content: center;
+        }
+        .install-btn:hover { opacity: 0.85; }
+        .install-btn i { font-size: 16px; }
+        /* === INSTALL NOTIFICATION === */
+        .install-notify {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            z-index: 700;
+            background: rgba(20,24,36,0.96);
+            border: 1px solid var(--pal-borde);
+            border-radius: 16px;
+            padding: 20px 24px;
+            width: 320px; max-width: 90vw;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            display: none;
+            animation: notifyIn 0.4s ease;
+        }
+        .install-notify.open { display: block; }
+        @keyframes notifyIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .install-notify-head {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 12px;
+        }
+        .install-notify-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            object-fit: cover; flex-shrink: 0;
+            border: 2px solid var(--pal-boton);
+        }
+        .install-notify-info { flex: 1; }
+        .install-notify-title {
+            font-size: 15px; font-weight: 700; color: #e0e6f0;
+        }
+        .install-notify-sub {
+            font-size: 12px; color: rgba(224,230,240,0.4);
+            margin-top: 2px;
+        }
+        .install-notify-desc {
+            font-size: 13px; color: rgba(224,230,240,0.55);
+            line-height: 1.5; margin-bottom: 16px;
+        }
+        .install-notify-btns {
+            display: flex; gap: 10px;
+        }
+        .install-notify-btns button {
+            flex: 1; padding: 11px 0;
+            border-radius: 10px; border: none;
+            font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .install-notify-btns .btn-accept {
+            background: var(--pal-boton, #c4a87c);
+            color: #0a0e17;
+        }
+        .install-notify-btns .btn-accept:hover { opacity: 0.85; }
+        .install-notify-btns .btn-dismiss {
+            background: rgba(255,255,255,0.06);
+            color: rgba(224,230,240,0.5);
+            border: 1px solid var(--pal-borde);
+        }
+        .install-notify-btns .btn-dismiss:hover { background: rgba(255,255,255,0.1); color: #e0e6f0; }
+        .install-notify-close {
+            position: absolute; top: 10px; right: 10px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: rgba(255,255,255,0.06); border: none;
+            color: rgba(224,230,240,0.4); font-size: 16px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .install-notify-close:hover { background: rgba(239,68,68,0.3); color: #ef4444; }
         /* === CUSTOM SCROLLBARS === */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -640,6 +721,23 @@
                 <div class="ad-ring-num" id="adCountdown">5</div>
             </div>
             <div class="ad-msg">Descarga en <span id="adSecLabel">5</span>s...</div>
+        </div>
+    </div>
+
+    <!-- Install app notification -->
+    <div class="install-notify" id="installNotify">
+        <button class="install-notify-close" id="installNotifyClose">&times;</button>
+        <div class="install-notify-head">
+            <img class="install-notify-icon" id="installNotifyIcon" src="" alt="">
+            <div class="install-notify-info">
+                <div class="install-notify-title" id="installNotifyName"></div>
+                <div class="install-notify-sub">App disponible para instalar</div>
+            </div>
+        </div>
+        <div class="install-notify-desc">Instala esta app en tu dispositivo para acceso rapido y una experiencia como app nativa.</div>
+        <div class="install-notify-btns">
+            <button class="btn-accept" id="installNotifyAccept">Instalar</button>
+            <button class="btn-dismiss" id="installNotifyDismiss">Ahora no</button>
         </div>
     </div>
 
@@ -832,6 +930,9 @@
 
             // Modal colors
             applyModalColors(config.modalColors || {});
+
+            // PWA - Manifest dinamico + install
+            initPWA(space, config);
 
             // Theme toggle - show in sidebar
             document.getElementById('themeToggle').style.display = 'flex';
@@ -1629,6 +1730,130 @@
             if (modalColors.modalBorde) root.style.setProperty('--modal-borde', modalColors.modalBorde);
             if (modalColors.modalAcento) root.style.setProperty('--modal-acento', modalColors.modalAcento);
             if (modalColors.modalMeta) root.style.setProperty('--modal-meta', modalColors.modalMeta);
+        }
+
+        // ============================================================
+        // PWA - MANIFEST DINAMICO + INSTALL APP
+        // ============================================================
+        var deferredInstallPrompt = null;
+
+        function initPWA(space, config) {
+            var pal = config.palette || {};
+            var accent = pal.acento || space.colorAcento || '#c4a87c';
+            var fondo = pal.fondo || space.colorFondo || '#0a0e17';
+            var iconUrl = space.iconoURL || '';
+            var spaceName = space.nombrePlataforma || space.usuario + "'s Space";
+
+            // Create dynamic manifest blob
+            var manifest = {
+                name: spaceName,
+                short_name: spaceName,
+                description: 'Espacio de ' + spaceName,
+                start_url: window.location.href.split('?')[0] + '?wo',
+                display: 'standalone',
+                background_color: fondo,
+                theme_color: accent,
+                orientation: 'any',
+                icons: []
+            };
+
+            if (iconUrl) {
+                manifest.icons.push({ src: iconUrl, sizes: '192x192', type: 'image/png', purpose: 'any maskable' });
+                manifest.icons.push({ src: iconUrl, sizes: '512x512', type: 'image/png', purpose: 'any maskable' });
+            }
+
+            var blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            var manifestUrl = URL.createObjectURL(blob);
+            var link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = manifestUrl;
+            document.head.appendChild(link);
+
+            // Apple touch icon
+            if (iconUrl) {
+                var apple = document.createElement('link');
+                apple.rel = 'apple-touch-icon';
+                apple.href = iconUrl;
+                document.head.appendChild(apple);
+            }
+
+            // Theme color meta
+            var meta = document.createElement('meta');
+            meta.name = 'theme-color';
+            meta.content = accent;
+            document.head.appendChild(meta);
+
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(function() {});
+            }
+
+            // Install button in sidebar
+            var installBtn = document.createElement('button');
+            installBtn.className = 'install-btn';
+            installBtn.id = 'installAppBtn';
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Instalar App';
+            installBtn.style.display = 'none';
+            installBtn.onclick = function() {
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    deferredInstallPrompt.userChoice.then(function(choice) {
+                        if (choice.outcome === 'accepted') installBtn.style.display = 'none';
+                        deferredInstallPrompt = null;
+                    });
+                }
+            };
+            var sidebar = document.getElementById('sidebar');
+            sidebar.appendChild(installBtn);
+
+            // Notification elements
+            var notifyEl = document.getElementById('installNotify');
+            var notifyIcon = document.getElementById('installNotifyIcon');
+            var notifyName = document.getElementById('installNotifyName');
+            var notifyClose = document.getElementById('installNotifyClose');
+            var notifyAccept = document.getElementById('installNotifyAccept');
+            var notifyDismiss = document.getElementById('installNotifyDismiss');
+
+            // Set icon and name
+            if (iconUrl) { notifyIcon.src = iconUrl; } else { notifyIcon.style.display = 'none'; }
+            notifyName.textContent = spaceName;
+
+            function dismissNotify() {
+                notifyEl.classList.remove('open');
+                try { localStorage.setItem('wl_install_dismissed_' + (space.usuario || ''), '1'); } catch(e) {}
+            }
+
+            function acceptInstall() {
+                notifyEl.classList.remove('open');
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; });
+                }
+            }
+
+            notifyClose.onclick = dismissNotify;
+            notifyDismiss.onclick = dismissNotify;
+            notifyAccept.onclick = acceptInstall;
+
+            // Listen for install prompt
+            window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                deferredInstallPrompt = e;
+                installBtn.style.display = 'flex';
+
+                // Auto-show notification after 3s if not dismissed
+                var alreadyDismissed = false;
+                try { alreadyDismissed = localStorage.getItem('wl_install_dismissed_' + (space.usuario || '')) === '1'; } catch(e) {}
+                if (!alreadyDismissed) {
+                    setTimeout(function() { notifyEl.classList.add('open'); }, 3000);
+                }
+            });
+
+            window.addEventListener('appinstalled', function() {
+                installBtn.style.display = 'none';
+                notifyEl.classList.remove('open');
+                deferredInstallPrompt = null;
+            });
         }
 
         // Security
