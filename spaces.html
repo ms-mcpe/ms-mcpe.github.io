@@ -1736,6 +1736,7 @@
         // PWA - MANIFEST DINAMICO + INSTALL APP
         // ============================================================
         var deferredInstallPrompt = null;
+        var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         function initPWA(space, config) {
             var pal = config.palette || {};
@@ -1795,13 +1796,7 @@
             installBtn.innerHTML = '<i class="fas fa-download"></i> Instalar App';
             installBtn.style.display = 'none';
             installBtn.onclick = function() {
-                if (deferredInstallPrompt) {
-                    deferredInstallPrompt.prompt();
-                    deferredInstallPrompt.userChoice.then(function(choice) {
-                        if (choice.outcome === 'accepted') installBtn.style.display = 'none';
-                        deferredInstallPrompt = null;
-                    });
-                }
+                triggerInstall();
             };
             var sidebar = document.getElementById('sidebar');
             sidebar.appendChild(installBtn);
@@ -1810,6 +1805,7 @@
             var notifyEl = document.getElementById('installNotify');
             var notifyIcon = document.getElementById('installNotifyIcon');
             var notifyName = document.getElementById('installNotifyName');
+            var notifyDesc = document.querySelector('.install-notify-desc');
             var notifyClose = document.getElementById('installNotifyClose');
             var notifyAccept = document.getElementById('installNotifyAccept');
             var notifyDismiss = document.getElementById('installNotifyDismiss');
@@ -1818,36 +1814,68 @@
             if (iconUrl) { notifyIcon.src = iconUrl; } else { notifyIcon.style.display = 'none'; }
             notifyName.textContent = spaceName;
 
+            // Adjust text for desktop vs mobile
+            if (!isMobile) {
+                notifyDesc.textContent = 'Instala esta app en tu navegador para acceso rapido desde tu escritorio.';
+                notifyAccept.textContent = 'Instalar';
+            }
+
             function dismissNotify() {
                 notifyEl.classList.remove('open');
                 try { localStorage.setItem('wl_install_dismissed_' + (space.usuario || ''), '1'); } catch(e) {}
             }
 
-            function acceptInstall() {
+            function triggerInstall() {
                 notifyEl.classList.remove('open');
                 if (deferredInstallPrompt) {
+                    // Android: use beforeinstallprompt
                     deferredInstallPrompt.prompt();
                     deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; });
+                } else {
+                    // Desktop: show instructions
+                    showDesktopInstallHint();
                 }
+            }
+
+            function showDesktopInstallHint() {
+                var hint = document.createElement('div');
+                hint.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:800;background:rgba(20,24,36,0.96);border:1px solid var(--pal-borde);border-radius:12px;padding:16px 20px;width:340px;max-width:90vw;backdrop-filter:blur(12px);box-shadow:0 12px 40px rgba(0,0,0,0.5);text-align:center;animation:notifyIn 0.3s ease;';
+                var browser = navigator.userAgent.includes('Edg') ? 'Edge' : (navigator.userAgent.includes('Opera') ? 'Opera' : 'Chrome');
+                hint.innerHTML = '<div style="font-size:14px;font-weight:700;color:#e0e6f0;margin-bottom:8px;">Como instalar</div>' +
+                    '<div style="font-size:13px;color:rgba(224,230,240,0.55);line-height:1.6;">Haz clic en el icono de instalar en la barra de direcciones de ' + browser + ' <i class="fas fa-arrow-up" style="color:var(--pal-boton)"></i> y selecciona <b>"Instalar ' + escHtml(spaceName) + '"</b></div>' +
+                    '<button onclick="this.parentNode.remove()" style="margin-top:12px;padding:8px 20px;border-radius:8px;border:none;background:var(--pal-boton);color:#0a0e17;font-weight:700;font-size:13px;cursor:pointer;">Entendido</button>';
+                document.body.appendChild(hint);
+                setTimeout(function() { if (hint.parentNode) hint.remove(); }, 8000);
             }
 
             notifyClose.onclick = dismissNotify;
             notifyDismiss.onclick = dismissNotify;
-            notifyAccept.onclick = acceptInstall;
+            notifyAccept.onclick = triggerInstall;
 
-            // Listen for install prompt
+            // Listen for install prompt (Android)
             window.addEventListener('beforeinstallprompt', function(e) {
                 e.preventDefault();
                 deferredInstallPrompt = e;
                 installBtn.style.display = 'flex';
 
-                // Auto-show notification after 3s if not dismissed
                 var alreadyDismissed = false;
                 try { alreadyDismissed = localStorage.getItem('wl_install_dismissed_' + (space.usuario || '')) === '1'; } catch(e) {}
                 if (!alreadyDismissed) {
                     setTimeout(function() { notifyEl.classList.add('open'); }, 3000);
                 }
             });
+
+            // Desktop: show notification even without beforeinstallprompt
+            if (!isMobile) {
+                var alreadyDismissed = false;
+                try { alreadyDismissed = localStorage.getItem('wl_install_dismissed_' + (space.usuario || '')) === '1'; } catch(e) {}
+                if (!alreadyDismissed) {
+                    setTimeout(function() {
+                        notifyEl.classList.add('open');
+                        installBtn.style.display = 'flex';
+                    }, 3000);
+                }
+            }
 
             window.addEventListener('appinstalled', function() {
                 installBtn.style.display = 'none';
