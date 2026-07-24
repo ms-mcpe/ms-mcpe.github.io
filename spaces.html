@@ -479,6 +479,41 @@
             .stat-card { padding: 10px 4px; }
             .stat-card .stat-num { font-size: 18px; }
         }
+        /* === AD OVERLAY === */
+        .ad-overlay {
+            position: fixed; inset: 0; z-index: 600;
+            display: none; align-items: center; justify-content: center;
+        }
+        .ad-overlay.open { display: flex; }
+        .ad-click-zone {
+            position: absolute; inset: 0; cursor: pointer; z-index: 1;
+        }
+        .ad-center {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            pointer-events: none;
+        }
+        .ad-ring-wrap {
+            position: relative; width: 80px; height: 80px;
+        }
+        .ad-ring-wrap svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+        .ad-ring-bg { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 5; }
+        .ad-ring-progress {
+            fill: none; stroke: var(--pal-boton, #c0a85c); stroke-width: 5;
+            stroke-dasharray: 188.5; stroke-dashoffset: 0;
+            stroke-linecap: round; transition: stroke-dashoffset 1s linear;
+        }
+        .ad-ring-num {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; font-weight: 800; color: #fff;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+        }
+        .ad-msg {
+            font-size: 14px; color: rgba(255,255,255,0.7);
+            text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+            text-align: center; pointer-events: none;
+        }
         /* === CUSTOM SCROLLBARS === */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -593,6 +628,18 @@
                     <i class="fas fa-download"></i> Descargar
                 </a>
             </div>
+        </div>
+    </div>
+
+    <!-- Ad gate overlay — fullscreen click zone + countdown -->
+    <div class="ad-overlay" id="adOverlay">
+        <a class="ad-click-zone" id="adClickZone" href="#" target="_blank" rel="noopener"></a>
+        <div class="ad-center">
+            <div class="ad-ring-wrap">
+                <svg viewBox="0 0 80 80"><circle class="ad-ring-bg" cx="40" cy="40" r="30"/><circle class="ad-ring-progress" id="adProgress" cx="40" cy="40" r="30"/></svg>
+                <div class="ad-ring-num" id="adCountdown">5</div>
+            </div>
+            <div class="ad-msg">Haz clic en pantalla para ver el anuncio<br>Descarga en <span id="adSecLabel">5</span>s...</div>
         </div>
     </div>
 
@@ -1251,12 +1298,61 @@
         function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
         // ============================================================
-        // DOWNLOAD (counts +1 each click)
+        // DOWNLOAD WITH AD GATE (fullscreen smartlink)
         // ============================================================
+        var SMARTLINK_URL = 'https://www.effectivecpmnetwork.com/w3p3q042a?key=f434414e2725d8e0fe98a16302c651f2';
+        var AD_CIRC = 2 * Math.PI * 30;
+        var pendingDownloadUrl = '';
+        var pendingDownloadEsp = '';
+        var pendingDownloadName = '';
+        var adTimer = null;
+
         function verificarDescarga(url, espacio, nombre) {
             if (!url) return;
+            pendingDownloadUrl = url;
+            pendingDownloadEsp = espacio;
+            pendingDownloadName = nombre;
+            showAdGate();
+        }
+
+        function showAdGate() {
+            var overlay = document.getElementById('adOverlay');
+            var clickZone = document.getElementById('adClickZone');
+            var countdownEl = document.getElementById('adCountdown');
+            var secLabel = document.getElementById('adSecLabel');
+            var progress = document.getElementById('adProgress');
+
+            // Set smartlink as click target
+            clickZone.href = SMARTLINK_URL;
+            progress.style.strokeDashoffset = '0';
+            overlay.classList.add('open');
+
+            var remaining = 5;
+            countdownEl.textContent = remaining;
+            secLabel.textContent = remaining;
+            if (adTimer) clearInterval(adTimer);
+            adTimer = setInterval(function() {
+                remaining--;
+                countdownEl.textContent = remaining;
+                secLabel.textContent = remaining;
+                progress.style.strokeDashoffset = String(((5 - remaining) / 5) * AD_CIRC);
+                if (remaining <= 0) {
+                    clearInterval(adTimer);
+                    adTimer = null;
+                    closeAdGate();
+                    doDownload(pendingDownloadUrl, pendingDownloadEsp, pendingDownloadName);
+                }
+            }, 1000);
+        }
+
+        function closeAdGate() {
+            if (adTimer) { clearInterval(adTimer); adTimer = null; }
+            var overlay = document.getElementById('adOverlay');
+            overlay.classList.remove('open');
+        }
+
+        function doDownload(url, espacio, nombre) {
             var key = espacio + '::' + nombre;
-            // optimistic +1
             allSpaceAddons.forEach(function(a) {
                 var aEsp = a.espacio || currentEspacio;
                 if ((aEsp + '::' + (a.nombre || '')) === key) {
@@ -1545,7 +1641,5 @@
         console.log('%cWorldLeaf Space v2.0', 'color: ' + getComputedStyle(document.documentElement).getPropertyValue('--pal-boton').trim() + '; font-size: 14px; font-weight: bold;');
         console.log('%cEntorno protegido', 'color: #666; font-size: 11px;');
     </script>
-    <script>var atOptions = {'key':'a0082d89d50ee2582d54e84972c04961','format':'iframe','height':250,'width':300,'params':{}};</script>
- <script src="https://www.highperformanceformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js"></script>
 </body>
 </html>
