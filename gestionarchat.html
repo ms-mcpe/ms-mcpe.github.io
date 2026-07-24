@@ -77,6 +77,8 @@
         .user-item .preview { font-size: 12px; color: rgba(224,230,240,0.4); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
         .user-item .badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 8px; background: #c4a87c; color: #0a0e17; margin-left: 6px; font-weight: 700; }
         .user-item .badge.responded { background: rgba(34,197,94,0.2); color: #86efac; font-weight: 600; }
+        .user-item .badge.escalated { background: rgba(239,68,68,0.2); color: #fca5a5; font-weight: 700; animation: pulseBadge 1.5s infinite; }
+        @keyframes pulseBadge { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
 
         .chat-area {
             flex: 1; display: flex; flex-direction: column;
@@ -258,6 +260,7 @@ var adminUser = localStorage.getItem('wl_admin_user') || '';
 var adminPass = localStorage.getItem('wl_admin_pass') || '';
 var selectedUser = '';
 var allMessages = [];
+var escalatedUsers = {};
 var refreshTimer = null;
 
 function escHtml(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -383,6 +386,7 @@ function loadConversations() {
             var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
             if (data.status !== 'OK') return;
             allMessages = data.messages || [];
+            escalatedUsers = data.escalated || {};
             renderUserList();
             if (selectedUser) renderConversation(selectedUser);
         } catch(e) {}
@@ -403,6 +407,12 @@ function getUsersFromMessages(msgs) {
 
 function renderUserList() {
     var users = getUsersFromMessages(allMessages);
+    users.sort(function(a, b) {
+        var ea = escalatedUsers[a] ? 1 : 0;
+        var eb = escalatedUsers[b] ? 1 : 0;
+        if (eb !== ea) return eb - ea;
+        return 0;
+    });
     var container = document.getElementById('userListContainer');
     var html = '';
     for (var i = 0; i < users.length; i++) {
@@ -424,7 +434,9 @@ function renderUserList() {
         }
         var activeClass = selectedUser === users[i] ? 'active' : '';
         var badge = '';
-        if (hasReply) {
+        if (escalatedUsers[users[i]]) {
+            badge = '<span class="badge escalated">Necesita agente</span>';
+        } else if (hasReply) {
             badge = '<span class="badge responded">Respondido</span>';
         } else if (count > 0) {
             badge = '<span class="badge">' + count + '</span>';
@@ -453,6 +465,7 @@ function selectUser(username) {
 function renderConversation(username) {
     var container = document.getElementById('convMessages');
     var msgs = allMessages.filter(function(m) {
+        if (m.message === '__ESCALATED__') return false;
         return m.fromUser === username || m.toUser === username;
     });
     var html = '';
@@ -485,6 +498,10 @@ function sendAdminReply() {
             if (data.status === 'OK') {
                 input.value = '';
                 input.style.height = 'auto';
+                if (escalatedUsers[selectedUser]) {
+                    delete escalatedUsers[selectedUser];
+                    renderUserList();
+                }
                 loadConversations();
             } else { alert('Error al enviar.'); }
         } catch(e) { alert('Error al enviar.'); }

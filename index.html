@@ -176,6 +176,26 @@
         }
         .chat-send:hover { opacity: 0.85; }
         .chat-send:disabled { opacity: 0.3; cursor: not-allowed; }
+        .chat-quick-btns { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 8px; }
+        .chat-quick-btn {
+            padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(196,168,124,0.3);
+            background: rgba(196,168,124,0.08); color: #c4a87c;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .chat-quick-btn:hover { background: rgba(196,168,124,0.18); border-color: #c4a87c; }
+        .chat-quick-btn.back-btn {
+            border-color: rgba(224,230,240,0.15);
+            background: rgba(255,255,255,0.04);
+            color: rgba(224,230,240,0.5);
+        }
+        .chat-quick-btn.back-btn:hover { background: rgba(255,255,255,0.08); color: #e0e6f0; }
+        .chat-quick-btn.human-btn {
+            border-color: rgba(239,68,68,0.3);
+            background: rgba(239,68,68,0.08);
+            color: #ef4444;
+        }
+        .chat-quick-btn.human-btn:hover { background: rgba(239,68,68,0.18); border-color: #ef4444; }
 
         .not-logged-in-msg {
             text-align: center; color: rgba(224,230,240,0.4);
@@ -1123,18 +1143,177 @@
         // CHAT
         // ============================================================
         var chatTimer = null;
+        var chatBotMode = true;
+
+        var BOT_RESPONSES = {
+            crear_espacio: {
+                title: 'Crear Espacio',
+                text: 'Para crear tu espacio en WorldLeaf:\n\n1. Inicia sesion en tu cuenta\n2. Haz clic en "Crear Espacio" en el menu principal\n3. Completa los campos: nombre del espacio, icono, colores\n4. Guarda y listo, tu espacio esta creado\n\nPuedes personalizar colores de fondo, acento, texto y mas desde el panel.',
+                subtopics: ['cambiar_icono', 'cambiar_colores']
+            },
+            modificar_espacio: {
+                title: 'Modificar Espacio',
+                text: 'Puedes modificar tu espacio desde el panel:\n\n1. Entra a tu espacio\n2. Abre el menu lateral (hamburger)\n3. Selecciona "Panel"\n4. Desde ahi puedes cambiar: nombre, icono, colores, fondo, categorias, layout y mas\n\nLos cambios se reflejan al instante.',
+                subtopics: ['cambiar_icono', 'cambiar_colores', 'cambiar_fondo', 'cambiar_layout']
+            },
+            publicar_addons: {
+                title: 'Publicar Addons',
+                text: 'Para publicar un addon en tu espacio:\n\n1. Entra a tu espacio y abre el Panel\n2. Busca la seccion "Addons"\n3. Haz clic en "Agregar Addon"\n4. Completa: nombre, descripcion, categoria, version, link de descarga\n5. Puedes agregar imagenes o videos de YouTube\n6. Guarda y el addon aparece en tu espacio\n\nEl link de descarga debe ser la URL real de tu archivo.',
+                subtopics: ['agregar_imagenes', 'agregar_video']
+            },
+            gestionar_addons: {
+                title: 'Gestionar Addons',
+                text: 'Desde el Panel puedes:\n\n- Ver todos tus addons\n- Editar nombre, descripcion, link, categoria\n- Eliminar addons\n- Ver estadisticas: likes, dislikes, descargas\n- Reordenar y filtrar por categoria\n\nLos usuarios pueden dar like/dislike y descargar tus addons.',
+                subtopics: ['ver_stats', 'editar_addon']
+            },
+            cuenta: {
+                title: 'Cuenta y Seguridad',
+                text: 'Gestiona tu cuenta:\n\n- Cambiar contrasena: desde el panel de usuario\n- Recuperar contrasena: haz clic en "Olvide mi contrasena" en login\n- Cambiar email: desde configuracion de perfil\n- Eliminar cuenta: contacta a soporte\n\nTu cuenta es segura con encriptacion SHA-256.',
+                subtopics: ['recuperar_contrasena', 'cambiar_email']
+            },
+            general: {
+                title: 'Que es WorldLeaf',
+                text: 'WorldLeaf es una plataforma donde:\n\n- Puedes crear tu propio espacio personalizado\n- Publicar y compartir addons con la comunidad\n- Personalizar colores, fondos, layouts y mas\n- Los visitantes pueden like, descargar y ver stats\n- Todo gratis y sin codigo\n\nUn espacio es como tu pagina personal dentro de WorldLeaf.',
+                subtopics: ['crear_espacio', 'publicar_addons']
+            }
+        };
+
+        var BOT_SUBTOPICS = {
+            cambiar_icono: { text: 'Para cambiar el icono: Panel > Configuracion > Icono del Espacio > Seleccionar imagen. Se recomienda una imagen cuadrada de al menos 128x128px.' },
+            cambiar_colores: { text: 'Para cambiar colores: Panel > Paleta de Colores. Puedes modificar: color de fondo, color de texto, color de acento (botones y links), borde de tarjetas y mas.' },
+            cambiar_fondo: { text: 'Para cambiar el fondo: Panel > Configuracion de Fondo. Puedes subir una imagen, agregar un gradiente, ajustar opacidad y color de superposicion.' },
+            cambiar_layout: { text: 'Para cambiar el layout: Panel > Disposicion. Opciones: Automatico, Lineal (1 columna horizontal), Compacto (2 columnas), Grande (3 columnas), Cuadricula (4 columnas).' },
+            agregar_imagenes: { text: 'Para agregar imagenes: En el formulario de addon, usa la seccion de imagenes. Puedes agregar multiples imagenes que se mostraran como galeria en el modal del addon.' },
+            agregar_video: { text: 'Para agregar video: Pega el link de YouTube en el campo de imagenes. El sistema lo detecta automaticamente y muestra un thumbnail con boton de play.' },
+            ver_stats: { text: 'Las estadisticas aparecen en la seccion "Estadisticas" del Panel. Muestra: total de visitas, total de descargas y total de likes de todos tus addons.' },
+            editar_addon: { text: 'Para editar un addon: En el Panel, busca el addon en la lista, haz clic en el icono de editar. Puedes cambiar todos los campos y guardar los cambios.' },
+            recuperar_contrasena: { text: 'Para recuperar tu contrasena: En la pantalla de login, haz clic en "Olvide mi contrasena". Ingresa tu email y recibiras un codigo de verificacion para crear una nueva contrasena.' },
+            cambiar_email: { text: 'Para cambiar tu email: Inicia sesion, ve a tu perfil, haz clic en editar email. Se enviara un codigo de verificacion a tu nuevo email para confirmar el cambio.' }
+        };
+
+        var BOT_CATEGORIES = [
+            { id: 'crear_espacio', label: 'Crear espacio', icon: 'fa-plus-circle' },
+            { id: 'modificar_espacio', label: 'Modificar espacio', icon: 'fa-edit' },
+            { id: 'publicar_addons', label: 'Publicar addons', icon: 'fa-upload' },
+            { id: 'gestionar_addons', label: 'Gestionar addons', icon: 'fa-cog' },
+            { id: 'cuenta', label: 'Cuenta y seguridad', icon: 'fa-shield-alt' },
+            { id: 'general', label: 'Que es WorldLeaf', icon: 'fa-info-circle' }
+        ];
 
         function toggleChat() {
             var panel = document.getElementById('chatPanel');
             var open = panel.classList.toggle('open');
             if (open) {
-                loadChatMessages();
                 if (chatTimer) clearInterval(chatTimer);
                 chatTimer = setInterval(loadChatMessages, 3000);
-                document.getElementById('chatInput').focus();
+                if (isLoggedIn() && chatBotMode) {
+                    showBotGreeting();
+                } else if (isLoggedIn()) {
+                    loadChatMessages();
+                }
             } else {
                 if (chatTimer) { clearInterval(chatTimer); chatTimer = null; }
             }
+        }
+
+        function showBotGreeting() {
+            var container = document.getElementById('chatMessages');
+            var inputArea = document.getElementById('chatInputArea');
+            if (!isLoggedIn()) {
+                container.innerHTML = '<div class="not-logged-in-msg"><a onclick="closeModal(\'registerModal\');openModal(\'loginModal\')" style="color:#c4a87c;cursor:pointer;text-decoration:underline">Inicia sesion</a> para chatear con nosotros.</div>';
+                inputArea.style.display = 'none';
+                return;
+            }
+            inputArea.style.display = 'flex';
+            var name = sessionUser || 'usuario';
+            var html = '<div class="msg admin"><strong>WorldLeaf Bot</strong><br>Hola ' + escHtml(name) + ', soy el asistente de WorldLeaf. \u00BFQue duda tienes hoy?</div>';
+            html += '<div class="chat-quick-btns" id="botMainBtns">';
+            BOT_CATEGORIES.forEach(function(cat) {
+                html += '<button class="chat-quick-btn" onclick="botShowCategory(\'' + cat.id + '\')"><i class="fas ' + cat.icon + '"></i> ' + cat.label + '</button>';
+            });
+            html += '<button class="chat-quick-btn human-btn" onclick="botEscalate(\'No encontré lo que busco\')"><i class="fas fa-headset"></i> Hablar con humano</button>';
+            html += '</div>';
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function botShowCategory(catId) {
+            var cat = BOT_RESPONSES[catId];
+            if (!cat) return;
+            var container = document.getElementById('chatMessages');
+            var oldBtns = document.getElementById('botMainBtns');
+            if (oldBtns) oldBtns.remove();
+            var catLabel = BOT_CATEGORIES.find(function(c) { return c.id === catId; });
+            var userHtml = '<div class="msg user"><strong>Tu</strong><br>' + escHtml(catLabel ? catLabel.label : catId) + '</div>';
+            container.insertAdjacentHTML('beforeend', userHtml);
+
+            var botHtml = '<div class="msg admin"><strong>WorldLeaf Bot</strong><br>' + cat.text.replace(/\n/g, '<br>') + '</div>';
+            botHtml += '<div class="chat-quick-btns" id="botSubBtns">';
+            if (cat.subtopics && cat.subtopics.length) {
+                cat.subtopics.forEach(function(stId) {
+                    var st = BOT_SUBTOPICS[stId];
+                    if (st) {
+                        var label = stId.replace(/_/g, ' ');
+                        botHtml += '<button class="chat-quick-btn" onclick="botShowSubtopic(\'' + stId + '\', \'' + catId + '\')">' + label.charAt(0).toUpperCase() + label.slice(1) + '</button>';
+                    }
+                });
+            }
+            botHtml += '<button class="chat-quick-btn back-btn" onclick="botBackToMain()"><i class="fas fa-arrow-left"></i> Volver</button>';
+            botHtml += '<button class="chat-quick-btn human-btn" onclick="botEscalate(\'Necesito mas ayuda con: ' + escHtml(cat.title) + '\')"><i class="fas fa-headset"></i> Hablar con humano</button>';
+            botHtml += '</div>';
+            container.insertAdjacentHTML('beforeend', botHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function botShowSubtopic(subId, parentId) {
+            var st = BOT_SUBTOPICS[subId];
+            if (!st) return;
+            var container = document.getElementById('chatMessages');
+            var oldBtns = document.getElementById('botSubBtns');
+            if (oldBtns) oldBtns.remove();
+            var label = subId.replace(/_/g, ' ');
+            var userHtml = '<div class="msg user"><strong>Tu</strong><br>' + label.charAt(0).toUpperCase() + label.slice(1) + '</div>';
+            container.insertAdjacentHTML('beforeend', userHtml);
+
+            var botHtml = '<div class="msg admin"><strong>WorldLeaf Bot</strong><br>' + st.text.replace(/\n/g, '<br>') + '</div>';
+            botHtml += '<div class="chat-quick-btns" id="botSubBtns">';
+            botHtml += '<button class="chat-quick-btn back-btn" onclick="botShowCategory(\'' + parentId + '\')"><i class="fas fa-arrow-left"></i> Volver</button>';
+            botHtml += '<button class="chat-quick-btn back-btn" onclick="botBackToMain()"><i class="fas fa-home"></i> Menu principal</button>';
+            botHtml += '<button class="chat-quick-btn human-btn" onclick="botEscalate(\'Necesito mas ayuda\')"><i class="fas fa-headset"></i> Hablar con humano</button>';
+            botHtml += '</div>';
+            container.insertAdjacentHTML('beforeend', botHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function botBackToMain() {
+            var container = document.getElementById('chatMessages');
+            var oldBtns = document.getElementById('botSubBtns');
+            if (oldBtns) oldBtns.remove();
+            var html = '<div class="chat-quick-btns" id="botMainBtns">';
+            BOT_CATEGORIES.forEach(function(cat) {
+                html += '<button class="chat-quick-btn" onclick="botShowCategory(\'' + cat.id + '\')"><i class="fas ' + cat.icon + '"></i> ' + cat.label + '</button>';
+            });
+            html += '<button class="chat-quick-btn human-btn" onclick="botEscalate(\'No encontré lo que busco\')"><i class="fas fa-headset"></i> Hablar con humano</button>';
+            html += '</div>';
+            container.insertAdjacentHTML('beforeend', html);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function botEscalate(reason) {
+            var container = document.getElementById('chatMessages');
+            var oldBtns = document.getElementById('botMainBtns');
+            if (oldBtns) oldBtns.remove();
+            oldBtns = document.getElementById('botSubBtns');
+            if (oldBtns) oldBtns.remove();
+            var userHtml = '<div class="msg user"><strong>Tu</strong><br>' + escHtml(reason) + '</div>';
+            container.insertAdjacentHTML('beforeend', userHtml);
+            var botHtml = '<div class="msg admin"><strong>WorldLeaf Bot</strong><br>Voy a conectarte con un agente. Por favor espera un momento. Te notificaremos cuando un agente este disponible.</div>';
+            container.insertAdjacentHTML('beforeend', botHtml);
+            container.scrollTop = container.scrollHeight;
+            chatBotMode = false;
+            jsonp({ action: 'escalateChat', user: sessionUser, message: reason }).then(function() {
+                loadChatMessages();
+            }).catch(function() {});
         }
 
         function loadChatMessages() {
@@ -1151,23 +1330,38 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status !== 'OK') return;
                     var msgs = data.messages || [];
-                    var html = '';
-                    if (msgs.length === 0) {
-                        html = '<div class="empty-msg">Sin mensajes aún. Envíanos un mensaje.</div>';
-                    } else {
+                    if (data.escalated) {
+                        chatBotMode = false;
+                        var html = '';
                         for (var i = 0; i < msgs.length; i++) {
                             var m = msgs[i];
                             var isUser = m.fromUser === sessionUser;
-                            var fromName = isUser ? 'Tú' : 'WorldLeaf';
+                            var fromName = isUser ? 'Tu' : 'WorldLeaf';
                             var time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
                             html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">' +
                                 '<strong>' + escHtml(fromName) + '</strong><br>' +
                                 escHtml(m.message) +
                                 '<span class="time">' + time + '</span></div>';
                         }
+                        container.innerHTML = html;
+                        container.scrollTop = container.scrollHeight;
+                    } else if (msgs.length === 0 && chatBotMode) {
+                        showBotGreeting();
+                    } else if (!chatBotMode) {
+                        var html = '';
+                        for (var i = 0; i < msgs.length; i++) {
+                            var m = msgs[i];
+                            var isUser = m.fromUser === sessionUser;
+                            var fromName = isUser ? 'Tu' : 'WorldLeaf';
+                            var time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
+                            html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">' +
+                                '<strong>' + escHtml(fromName) + '</strong><br>' +
+                                escHtml(m.message) +
+                                '<span class="time">' + time + '</span></div>';
+                        }
+                        container.innerHTML = html;
+                        container.scrollTop = container.scrollHeight;
                     }
-                    container.innerHTML = html;
-                    container.scrollTop = container.scrollHeight;
                 } catch(e) {}
             }).catch(function() {});
         }
@@ -1180,6 +1374,52 @@
             if (msg.length > 500) { showToast('Mensaje muy largo (máx 500 caracteres).', 'error'); return; }
             var btn = document.querySelector('.chat-send');
             btn.disabled = true;
+
+            if (chatBotMode) {
+                var container = document.getElementById('chatMessages');
+                var oldBtns = document.getElementById('botMainBtns');
+                if (oldBtns) oldBtns.remove();
+                oldBtns = document.getElementById('botSubBtns');
+                if (oldBtns) oldBtns.remove();
+                var userHtml = '<div class="msg user"><strong>Tu</strong><br>' + escHtml(msg) + '</div>';
+                container.insertAdjacentHTML('beforeend', userHtml);
+                var matched = false;
+                var msgLower = msg.toLowerCase();
+                var keywords = {
+                    crear_espacio: ['crear', 'espacio', 'nuevo', 'crear espacio', 'como creo', 'como creo un'],
+                    modificar_espacio: ['modificar', 'cambiar', 'editar espacio', 'configurar', 'configuracion'],
+                    publicar_addons: ['publicar', 'addon', 'subir', 'agregar addon', 'publicar addon', 'upload'],
+                    gestionar_addons: ['gestionar', 'administrar', 'eliminar addon', 'editar addon', 'stats', 'estadisticas'],
+                    cuenta: ['cuenta', 'contrasena', 'password', 'email', 'correo', 'recuperar', 'olvide'],
+                    general: ['que es', 'worldleaf', 'plataforma', 'ayuda', 'help', 'como funciona']
+                };
+                for (var catId in keywords) {
+                    for (var k = 0; k < keywords[catId].length; k++) {
+                        if (msgLower.indexOf(keywords[catId][k]) !== -1) {
+                            matched = true;
+                            setTimeout(function(cid) { botShowCategory(cid); }, 500, catId);
+                            break;
+                        }
+                    }
+                    if (matched) break;
+                }
+                if (!matched) {
+                    var botHtml = '<div class="msg admin"><strong>WorldLeaf Bot</strong><br>No encontré una respuesta para eso. Puedes explorar las categorias o hablar con un agente humano.</div>';
+                    botHtml += '<div class="chat-quick-btns" id="botSubBtns">';
+                    BOT_CATEGORIES.forEach(function(cat) {
+                        botHtml += '<button class="chat-quick-btn" onclick="botShowCategory(\'' + cat.id + '\')"><i class="fas ' + cat.icon + '"></i> ' + cat.label + '</button>';
+                    });
+                    botHtml += '<button class="chat-quick-btn human-btn" onclick="botEscalate(\'' + escHtml(msg).replace(/'/g, "\\'") + '\')"><i class="fas fa-headset"></i> Hablar con humano</button>';
+                    botHtml += '</div>';
+                    container.insertAdjacentHTML('beforeend', botHtml);
+                    container.scrollTop = container.scrollHeight;
+                }
+                btn.disabled = false;
+                input.value = '';
+                input.style.height = 'auto';
+                return;
+            }
+
             jsonp({ action:'sendMessage', user:sessionUser, toUser:'WorldLeaf', message:msg }).then(function(resp) {
                 btn.disabled = false;
                 try {

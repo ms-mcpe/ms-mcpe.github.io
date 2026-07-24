@@ -499,6 +499,10 @@
                 <button class="nav-item" data-section="contenido" onclick="switchSection('contenido')">
                     <span class="icon">📦</span> Tu contenido
                 </button>
+                <div class="nav-item" onclick="mostrarSeccion('secCompartir', this)">
+                    <i class="fas fa-link"></i>
+                    <span>Compartir espacio</span>
+                </div>
             </div>
             <div class="sidebar-footer">
                 <button class="btn-back" onclick="cerrarPanel()">&larr; Volver</button>
@@ -903,6 +907,21 @@
         </div>
     </div>
 
+    <!-- ===== SECCION COMPARTIR ===== -->
+    <div class="section" id="secCompartir">
+        <div class="section-header">
+            <h2>Compartir espacio</h2>
+            <p>Copia el enlace publico para compartir con tus usuarios. Esta URL no tiene acceso de administrador.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:12px">
+            <label style="font-size:13px;color:rgba(224,230,240,0.5)">URL publica (para usuarios)</label>
+            <div style="display:flex;gap:8px;align-items:center">
+                <input type="text" id="publicUrlDisplay" readonly style="flex:1;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#e0e6f0;font-size:13px">
+                <button class="btn" onclick="copyPublicUrl()" style="white-space:nowrap"><i class="fas fa-copy"></i> Copiar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
     (function() {
         var API_URL = 'https://script.google.com/macros/s/AKfycbx7yl9hxkU2MYE6ijNKDZDvLyDkZHI7oBt5LOzGGFn4RDtLoFpXijl07JBoQ3W7KFNk/exec';
@@ -1098,6 +1117,10 @@
         function renderPanel(space) {
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('panelContent').style.display = 'flex';
+
+            // Public URL for sharing
+            var publicUrl = window.location.origin + window.location.pathname.replace(/panel\.html.*$/, '') + 'spaces.html?' + encodeURIComponent(space.nombrePlataforma || '');
+            document.getElementById('publicUrlDisplay').value = publicUrl;
 
             // Load config
             var config = {};
@@ -2157,6 +2180,21 @@
             });
         }
         syncColorInput('bgOpacityColor', 'bgOpacityColorText');
+
+        function copyPublicUrl() {
+            var input = document.getElementById('publicUrlDisplay');
+            input.select();
+            try {
+                document.execCommand('copy');
+                showToast('URL publica copiada', 'success');
+            } catch(e) {
+                navigator.clipboard.writeText(input.value).then(function() {
+                    showToast('URL publica copiada', 'success');
+                }).catch(function() {
+                    showToast('Copia manualmente: Ctrl+C', 'error');
+                });
+            }
+        }
 
         // Init
         cargarPanel();
