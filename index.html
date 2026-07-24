@@ -431,10 +431,8 @@
         </div>
     </section>
 
-    <!-- ===== SPACE VIEW (iframe) ===== -->
-    <div id="spaceView" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:#0a0e17;border:none">
-        <iframe id="spaceFrame" style="width:100%;height:100%;border:none" sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation" title="Space"></iframe>
-    </div>
+    <!-- ===== SPACE VIEW ===== -->
+    <div id="spaceView" style="display:none"></div>
 
     <!-- ===== MODAL CREAR ESPACIO ===== -->
     <div class="modal-overlay" id="spaceModal">
@@ -1380,36 +1378,24 @@
         }
 
         function loadSpaceFromURL() {
-            var frame = document.getElementById('spaceFrame');
-            var container = document.getElementById('spaceView');
             var id = getSpaceIdentifierFromURL();
-            if (!id) {
-                container.style.display = 'none';
-                frame.src = '';
-                document.body.style.overflow = '';
-                return;
-            }
+            if (!id) return;
+            var url = '';
             if (id.type === 'nombrePlataforma') {
-                frame.src = 'spaces.html?nombrePlataforma=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
+                url = 'spaces.html?nombrePlataforma=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
             } else if (id.type === 'panel') {
-                frame.src = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
+                url = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
+                window.location.href = url;
+                return;
             } else {
-                frame.src = 'spaces.html?user=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
+                url = 'spaces.html?user=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
             }
-            container.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            window.location.href = url;
         }
 
         // Listen for hash changes
         window.addEventListener('hashchange', function() {
             loadSpaceFromURL();
-        });
-
-        // Listen for messages from iframe
-        window.addEventListener('message', function(e) {
-            if (e.data && e.data.type === 'cerrarPanel') {
-                window.location.hash = '';
-            }
         });
 
 
