@@ -1380,17 +1380,20 @@
         function loadSpaceFromURL() {
             var id = getSpaceIdentifierFromURL();
             if (!id) return;
-            var url = '';
-            if (id.type === 'nombrePlataforma') {
-                url = 'spaces.html?nombrePlataforma=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
-            } else if (id.type === 'panel') {
-                url = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
-                window.location.href = url;
+            try {
+                sessionStorage.setItem('wl_sessionUser', sessionUser || '');
+                sessionStorage.setItem('wl_sessionPass', sessionPass || '');
+                sessionStorage.setItem('wl_admin', '1');
+            } catch(e) {}
+            if (id.type === 'panel') {
+                window.location.href = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
                 return;
-            } else {
-                url = 'spaces.html?user=' + encodeURIComponent(id.value) + '&sessionUser=' + encodeURIComponent(sessionUser) + '&sessionPass=' + encodeURIComponent(sessionPass);
             }
-            window.location.href = url;
+            if (id.type === 'nombrePlataforma') {
+                window.location.href = 'spaces.html?' + encodeURIComponent(id.value);
+            } else {
+                window.location.href = 'spaces.html?u=' + encodeURIComponent(id.value);
+            }
         }
 
         // Listen for hash changes

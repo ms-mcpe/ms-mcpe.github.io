@@ -605,12 +605,24 @@
             return p.get(name) || '';
         }
 
-        var user = getParam('user');
-        var sessionPass = getParam('sessionPass') || '';
-        var loggedUser = getParam('sessionUser') || '';
+        var rawQuery = window.location.search.substring(1).trim();
+        var user = getParam('u') || getParam('user') || '';
+        var nombrePlataforma = getParam('n') || getParam('nombrePlataforma') || '';
+        if (!user && !nombrePlataforma && rawQuery && rawQuery.indexOf('=') === -1) {
+            nombrePlataforma = decodeURIComponent(rawQuery);
+        }
+        var sessionPass = '';
+        var loggedUser = '';
+        var isAdmin = false;
+        try {
+            sessionPass = sessionStorage.getItem('wl_sessionPass') || '';
+            loggedUser = sessionStorage.getItem('wl_sessionUser') || '';
+            isAdmin = sessionStorage.getItem('wl_admin') === '1';
+        } catch(e) {}
         if (!loggedUser) {
             loggedUser = 'v_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
             sessionPass = 'anon';
+            isAdmin = false;
         }
         window._voteApi = function(action, espacio, nombre, vote, cb) {
             var c = 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
@@ -622,11 +634,10 @@
             document.body.appendChild(s);
             setTimeout(function() { if (window[c]) delete window[c]; }, 10000);
         };
-        var nombrePlataforma = getParam('nombrePlataforma');
         var allMode = false;
         var userVoteMap = {};
         var currentEspacio = '';
-        var lookupParam = nombrePlataforma ? 'nombrePlataforma=' + encodeURIComponent(nombrePlataforma) : 'username=' + encodeURIComponent(user);
+        var lookupParam = nombrePlataforma ? 'nombrePlataforma=' + encodeURIComponent(nombrePlataforma) : (user ? 'username=' + encodeURIComponent(user) : '');
 
         if (!user && !nombrePlataforma) {
             document.getElementById('loadingState').style.display = 'none';
@@ -1535,6 +1546,6 @@
         console.log('%cEntorno protegido', 'color: #666; font-size: 11px;');
     </script>
     <script>var atOptions = {'key':'a0082d89d50ee2582d54e84972c04961','format':'iframe','height':250,'width':300,'params':{}};</script>
-    <script src="https://www.highperformanceformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js"></script>
+ <script src="https://www.highperformanceformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js"></script>
 </body>
 </html>
