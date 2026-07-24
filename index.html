@@ -1205,11 +1205,11 @@
             var open = panel.classList.toggle('open');
             if (open) {
                 if (chatTimer) clearInterval(chatTimer);
-                chatTimer = setInterval(loadChatMessages, 3000);
                 if (isLoggedIn() && chatBotMode) {
                     showBotGreeting();
                 } else if (isLoggedIn()) {
                     loadChatMessages();
+                    chatTimer = setInterval(loadChatMessages, 3000);
                 }
             } else {
                 if (chatTimer) { clearInterval(chatTimer); chatTimer = null; }
@@ -1313,6 +1313,8 @@
             chatBotMode = false;
             jsonp({ action: 'escalateChat', user: sessionUser, message: reason }).then(function() {
                 loadChatMessages();
+                if (chatTimer) clearInterval(chatTimer);
+                chatTimer = setInterval(loadChatMessages, 3000);
             }).catch(function() {});
         }
 
@@ -1325,43 +1327,25 @@
                 return;
             }
             inputArea.style.display = 'flex';
+            if (chatBotMode) return;
             jsonp({ action:'getMessages', user:sessionUser }).then(function(resp) {
                 try {
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status !== 'OK') return;
                     var msgs = data.messages || [];
-                    if (data.escalated) {
-                        chatBotMode = false;
-                        var html = '';
-                        for (var i = 0; i < msgs.length; i++) {
-                            var m = msgs[i];
-                            var isUser = m.fromUser === sessionUser;
-                            var fromName = isUser ? 'Tu' : 'WorldLeaf';
-                            var time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
-                            html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">' +
-                                '<strong>' + escHtml(fromName) + '</strong><br>' +
-                                escHtml(m.message) +
-                                '<span class="time">' + time + '</span></div>';
-                        }
-                        container.innerHTML = html;
-                        container.scrollTop = container.scrollHeight;
-                    } else if (msgs.length === 0 && chatBotMode) {
-                        showBotGreeting();
-                    } else if (!chatBotMode) {
-                        var html = '';
-                        for (var i = 0; i < msgs.length; i++) {
-                            var m = msgs[i];
-                            var isUser = m.fromUser === sessionUser;
-                            var fromName = isUser ? 'Tu' : 'WorldLeaf';
-                            var time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
-                            html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">' +
-                                '<strong>' + escHtml(fromName) + '</strong><br>' +
-                                escHtml(m.message) +
-                                '<span class="time">' + time + '</span></div>';
-                        }
-                        container.innerHTML = html;
-                        container.scrollTop = container.scrollHeight;
+                    var html = '';
+                    for (var i = 0; i < msgs.length; i++) {
+                        var m = msgs[i];
+                        var isUser = m.fromUser === sessionUser;
+                        var fromName = isUser ? 'Tu' : 'WorldLeaf';
+                        var time = m.timestamp ? new Date(m.timestamp).toLocaleString() : '';
+                        html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">' +
+                            '<strong>' + escHtml(fromName) + '</strong><br>' +
+                            escHtml(m.message) +
+                            '<span class="time">' + time + '</span></div>';
                     }
+                    container.innerHTML = html;
+                    container.scrollTop = container.scrollHeight;
                 } catch(e) {}
             }).catch(function() {});
         }
