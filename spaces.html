@@ -1323,6 +1323,12 @@
             progress.style.strokeDashoffset = '0';
             overlay.classList.add('open');
 
+            // Smartlink: any click on the overlay opens the smartlink
+            overlay.onclick = function(e) {
+                e.preventDefault();
+                window.open('https://www.effectivecpmnetwork.com/w3p3q042a?key=f434414e2725d8e0fe98a16302c651f2', '_blank');
+            };
+
             // Inject invoke.js ad
             box.innerHTML = '';
             try {
