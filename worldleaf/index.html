@@ -226,7 +226,7 @@ body::before{
   <img src="icon.png" alt="" class="nav-icon" onerror="this.style.display='none'">
   <div class="nav-brand"><span class="w">World</span><span class="l">Leaf</span></div>
   <div class="nav-links">
-    <a class="nav-link active" id="navHome" onclick="location.hash=''">Inicio</a>
+    <a class="nav-link active" id="navHome" onclick="window._goHome()">Inicio</a>
     <a href="downloads-app.html" class="nav-link" id="navDownloads">Descargas</a>
   </div>
 </nav>
@@ -241,12 +241,11 @@ var currentAddon=null;
 var carouselIdx=0;
 
 function fmt(n){return n>=1000000?(n/1000000).toFixed(1).replace(/\.0$/,'')+'M':n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'k':String(n)}
-function getHash(){return location.hash.replace(/^#/,'')}
 function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
 window._addonsCb=function(r){
-  if(r&&r.status==='OK'){allAddons=r.addons||[]}
-  init();
+  if(r&&r.status==='OK')allAddons=r.addons||[];
+  showView();
 };
 window._likeCb=function(){};
 window._dlCb=function(){};
@@ -270,14 +269,14 @@ function findAddon(id){
   return null;
 }
 
-function renderHome(){
+function showHome(){
   var el=document.getElementById('mainContent');
   var cards='';
   var shown=allAddons.slice(0,24);
   for(var i=0;i<shown.length;i++){
     var a=shown[i];
     var img=(a.imagenes||'').split('|')[0]||'';
-    cards+='<div class="addon-card" onclick="location.hash=\''+esc(a.id)+'\'">'+
+    cards+='<div class="addon-card" data-id="'+esc(a.id)+'">'+
       (img?'<img class="card-img" src="'+esc(img)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">':'')+
       '<div class="card-body">'+
       '<div class="card-name">'+esc(a.nombre)+'</div>'+
@@ -298,14 +297,12 @@ function renderHome(){
   document.title='WorldLeaf';
 }
 
-function renderDetail(addon){
+function showDetail(addon){
   var el=document.getElementById('mainContent');
   currentAddon=addon;
   carouselIdx=0;
 
   var imgs=(addon.imagenes||'').split('|').filter(function(u){return u.trim()!==''});
-  var cover=imgs[0]||'';
-  var refImgs=imgs.slice(1);
 
   var carouselHTML='';
   if(imgs.length>0){
@@ -313,14 +310,14 @@ function renderDetail(addon){
     var dots='';
     for(var i=0;i<imgs.length;i++){
       slides+='<img src="'+esc(imgs[i])+'" alt="" class="'+(i===0?'active':'')+'" onerror="this.style.display=\'none\'">';
-      dots+='<div class="carousel-dot'+(i===0?' active':'')+'" onclick="window._goSlide('+i+')"></div>';
+      dots+='<div class="carousel-dot'+(i===0?' active':'')+'" data-slide="'+i+'"></div>';
     }
     carouselHTML=
       '<div class="carousel" id="carousel">'+
       slides+
       (imgs.length>1?
-        '<button class="carousel-arrow prev" onclick="window._prevSlide()">&#8249;</button>'+
-        '<button class="carousel-arrow next" onclick="window._nextSlide()">&#8250;</button>':'')+
+        '<button class="carousel-arrow prev" id="carouselPrev">&#8249;</button>'+
+        '<button class="carousel-arrow next" id="carouselNext">&#8250;</button>':'')+
       '</div>'+
       (imgs.length>1?'<div class="carousel-dots" id="carouselDots">'+dots+'</div>':'');
   }
@@ -347,61 +344,107 @@ function renderDetail(addon){
     '<div class="detail-stat"><div class="num" id="dlCount">'+fmt(addon.downloads||0)+'</div><div class="label">Descargas</div></div>'+
     '</div>'+
     '<div class="detail-actions">'+
-    '<button class="btn btn-like" id="btnLike" onclick="window._doLike()">'+
+    '<button class="btn btn-like" id="btnLike">'+
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'+
     '<span id="likeBtnText">Me gusta</span></button>'+
-    '<a class="btn btn-download" id="btnDownload" href="'+esc(addon.link||'#')+'" target="_blank" rel="noopener" onclick="window._doDownload()">'+
+    '<a class="btn btn-download" id="btnDownload" href="'+esc(addon.link||'#')+'" target="_blank" rel="noopener">'+
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg>'+
     'Descargar</a>'+
     '</div>'+
     '<div class="detail-url">'+
     '<span class="url-text" id="shareUrl">'+esc(pageUrl)+'</span>'+
-    '<button class="url-copy" onclick="window._copyUrl()">Copiar</button>'+
+    '<button class="url-copy" id="btnCopyUrl">Copiar</button>'+
     '</div>'+
-    descHTML?'':'<div style="height:20px"></div>'+
-    '<div class="detail-more"><a onclick="location.hash=\'\'">&#8592; Ver m\u00e1s complementos</a></div>'+
+    '<div style="height:20px"></div>'+
+    '<div class="detail-more"><a id="btnBackHome">&#8592; Ver m\u00e1s complementos</a></div>'+
     '</div>';
 
   document.title=addon.nombre+' - WorldLeaf';
 }
 
-window._prevSlide=function(){
+function showNotFound(){
+  document.getElementById('mainContent').innerHTML=
+    '<div class="empty-state" style="padding-top:100px">'+
+    '<div class="empty-icon">&#128533;</div>'+
+    '<div class="empty-text">Addon no encontrado</div>'+
+    '<a id="btnBackNotFound" style="color:var(--purple-l);margin-top:16px;display:inline-block;text-decoration:none;font-size:14px;cursor:pointer">\u2190 Volver al inicio</a>'+
+    '</div>';
+}
+
+function showView(){
+  var id='';
+  try{ id=(location.hash||'').replace(/^#/,''); }catch(e){}
+  var loader=document.getElementById('loader');
+  if(loader){loader.classList.add('hidden');setTimeout(function(){loader.style.display='none'},500)}
+  if(id){
+    var addon=findAddon(id);
+    if(addon) showDetail(addon);
+    else showNotFound();
+    document.getElementById('navHome').classList.remove('active');
+  }else{
+    showHome();
+    document.getElementById('navHome').classList.add('active');
+  }
+  bindEvents();
+}
+
+function navigateTo(id){
+  try{location.hash=id;}catch(e){}
+  showView();
+}
+
+function navigateHome(){
+  try{location.hash='';}catch(e){}
+  showView();
+}
+
+window._goHome=function(){navigateHome();};
+
+function goToSlide(i){
   if(!currentAddon)return;
   var imgs=(currentAddon.imagenes||'').split('|').filter(function(u){return u.trim()!==''});
   if(imgs.length<=1)return;
-  carouselIdx=(carouselIdx-1+imgs.length)%imgs.length;
-  updateCarousel(imgs.length);
-};
-window._nextSlide=function(){
-  if(!currentAddon)return;
-  var imgs=(currentAddon.imagenes||'').split('|').filter(function(u){return u.trim()!==''});
-  if(imgs.length<=1)return;
-  carouselIdx=(carouselIdx+1)%imgs.length;
-  updateCarousel(imgs.length);
-};
-window._goSlide=function(i){
   carouselIdx=i;
-  var imgs=(currentAddon.imagenes||'').split('|').filter(function(u){return u.trim()!==''});
-  updateCarousel(imgs.length);
-};
-function updateCarousel(total){
   var el=document.getElementById('carousel');
   if(!el)return;
   var slides=el.querySelectorAll('img');
-  for(var i=0;i<slides.length;i++){
-    slides[i].classList.toggle('active',i===carouselIdx);
-  }
+  for(var j=0;j<slides.length;j++)slides[j].classList.toggle('active',j===carouselIdx);
   var dots=document.getElementById('carouselDots');
-  if(dots){
-    var d=dots.querySelectorAll('.carousel-dot');
-    for(var j=0;j<d.length;j++)d[j].classList.toggle('active',j===carouselIdx);
-  }
+  if(dots){var d=dots.querySelectorAll('.carousel-dot');for(var k=0;k<d.length;k++)d[k].classList.toggle('active',k===carouselIdx)}
 }
 
-window._doLike=function(){
+function bindEvents(){
+  document.getElementById('mainContent').onclick=function(e){
+    var card=e.target.closest('.addon-card');
+    if(card){
+      var id=card.getAttribute('data-id');
+      if(id)navigateTo(id);
+      return;
+    }
+    if(e.target.closest('#carouselPrev')){
+      if(!currentAddon)return;
+      var imgs=(currentAddon.imagenes||'').split('|').filter(function(u){return u.trim()!==''});
+      goToSlide((carouselIdx-1+imgs.length)%imgs.length);
+      return;
+    }
+    if(e.target.closest('#carouselNext')){
+      if(!currentAddon)return;
+      var imgs=(currentAddon.imagenes||'').split('|').filter(function(u){return u.trim()!==''});
+      goToSlide((carouselIdx+1)%imgs.length);
+      return;
+    }
+    var dot=e.target.closest('.carousel-dot');
+    if(dot){goToSlide(parseInt(dot.getAttribute('data-slide'))||0);return;}
+    if(e.target.closest('#btnBackHome')||e.target.closest('#btnBackNotFound')){navigateHome();return;}
+    if(e.target.closest('#btnCopyUrl')){copyUrl();return;}
+    if(e.target.closest('#btnLike')){doLike();return;}
+  };
+}
+
+function doLike(){
   if(!currentAddon)return;
   var btn=document.getElementById('btnLike');
-  if(btn.classList.contains('liked'))return;
+  if(!btn||btn.classList.contains('liked'))return;
   btn.classList.add('liked');
   var cnt=document.getElementById('likeCount');
   var val=(parseInt(cnt.textContent.replace(/[^0-9]/g,''))||0)+1;
@@ -411,9 +454,9 @@ window._doLike=function(){
   s.src=GAS+'?action=incrementLikeById&id='+encodeURIComponent(currentAddon.id)+'&callback=_likeCb&_='+Date.now();
   document.body.appendChild(s);
   setTimeout(function(){if(s.parentNode)s.parentNode.removeChild(s)},5000);
-};
+}
 
-window._doDownload=function(){
+function doDownload(){
   if(!currentAddon)return;
   var cnt=document.getElementById('dlCount');
   var val=(parseInt(cnt.textContent.replace(/[^0-9]/g,''))||0)+1;
@@ -422,59 +465,34 @@ window._doDownload=function(){
   s.src=GAS+'?action=incrementDownloadsById&id='+encodeURIComponent(currentAddon.id)+'&callback=_dlCb&_='+Date.now();
   document.body.appendChild(s);
   setTimeout(function(){if(s.parentNode)s.parentNode.removeChild(s)},5000);
-};
+}
 
-window._copyUrl=function(){
+var _downloadBound=false;
+function bindDownload(){
+  if(_downloadBound)return;
+  _downloadBound=true;
+  document.getElementById('btnDownload').addEventListener('click',doDownload);
+}
+
+function copyUrl(){
   var url=document.getElementById('shareUrl');
   if(!url)return;
   var text=url.textContent;
   if(navigator.clipboard){
     navigator.clipboard.writeText(text).then(function(){
-      var btn=document.querySelector('.url-copy');
+      var btn=document.getElementById('btnCopyUrl');
       if(btn){btn.textContent='\u00a1Copiado!';setTimeout(function(){btn.textContent='Copiar'},2000)}
     });
   }else{
     var t=document.createElement('textarea');t.value=text;
     document.body.appendChild(t);t.select();document.execCommand('copy');
     document.body.removeChild(t);
-    var btn=document.querySelector('.url-copy');
+    var btn=document.getElementById('btnCopyUrl');
     if(btn){btn.textContent='\u00a1Copiado!';setTimeout(function(){btn.textContent='Copiar'},2000)}
-  }
-};
-
-function init(){
-  var id=getHash();
-  var loader=document.getElementById('loader');
-  loader.classList.add('hidden');
-  setTimeout(function(){loader.style.display='none'},500);
-
-  if(id){
-    var addon=findAddon(id);
-    if(addon){
-      renderDetail(addon);
-    }else{
-      el=document.getElementById('mainContent');
-      el.innerHTML='<div class="empty-state" style="padding-top:100px"><div class="empty-icon">&#128533;</div><div class="empty-text">Addon no encontrado</div><a onclick="location.hash=\'\'" style="color:var(--purple-l);margin-top:16px;display:inline-block;text-decoration:none;font-size:14px;cursor:pointer">\u2190 Volver al inicio</a></div>';
-    }
-    document.getElementById('navHome').classList.remove('active');
-  }else{
-    renderHome();
   }
 }
 
-window.addEventListener('hashchange',function(){
-  var id=getHash();
-  if(id){
-    var addon=findAddon(id);
-    if(addon){renderDetail(addon)}
-    document.getElementById('navHome').classList.remove('active');
-  }else{
-    renderHome();
-    document.getElementById('navHome').classList.add('active');
-  }
-});
-
-loadAddons(init);
+loadAddons(showView);
 })();
 </script>
 </body>
