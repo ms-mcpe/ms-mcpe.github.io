@@ -289,7 +289,7 @@ function showHome(){
     h+='<span>&#8595; '+fmt(a.downloads||0)+'</span>';
     if(a.categoria)h+='<span>'+a.categoria+'</span>';
     h+='</div></div></div>';
-    if((i+1)%7===0&&i+1<list.length)h+='<div class="home-ad-inline" id="homeAdInline'+i+'"></div>';
+    if(i===7)h+='<div class="home-ad-inline" id="homeAdInline"></div>';
   }
   el.innerHTML='<div class="home-hero">'+
     '<img src="icon.png" alt="" class="hero-icon" onerror="this.style.display=\'none\'">'+
@@ -310,12 +310,12 @@ function showHome(){
     })(cards[c],c);
   }
   try{
-    var adBanners=document.querySelectorAll('.home-ad-inline');
-    for(var b=0;b<adBanners.length;b++){
+    var adBanner=document.getElementById('homeAdInline');
+    if(adBanner){
       window.atOptions={'key':'1d21438c427f31f0fa827d2a4d95279b','format':'iframe','height':300,'width':160,'params':{}};
       var adScript=document.createElement('script');
       adScript.src='https://www.highperformanceformat.com/1d21438c427f31f0fa827d2a4d95279b/invoke.js';
-      adBanners[b].appendChild(adScript);
+      adBanner.appendChild(adScript);
     }
   }catch(e){}
 }
