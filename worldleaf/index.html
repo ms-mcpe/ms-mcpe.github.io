@@ -202,6 +202,8 @@ body::before{
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:13px;color:var(--gray2)}
 
+.home-ad{display:flex;justify-content:center;padding:20px 24px 0}
+
 @media(max-width:600px){
   .navbar{padding:0 16px;height:54px}
   .nav-brand{font-size:17px}
@@ -213,6 +215,15 @@ body::before{
   .detail-actions{flex-direction:column}
   .carousel{border-radius:14px;aspect-ratio:4/3}
 }
+
+.ad-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:adFadeIn .3s}
+@keyframes adFadeIn{from{opacity:0}to{opacity:1}}
+.ad-smartlink{position:absolute;inset:0;z-index:1;cursor:pointer;display:block}
+.ad-container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:none}
+.ad-label{font-size:13px;color:rgba(255,255,255,.6);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.ad-timer{width:64px;height:64px;border-radius:50%;background:rgba(168,85,247,.15);border:3px solid var(--purple);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--white);animation:adPulse 1s infinite}
+@keyframes adPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.3)}50%{box-shadow:0 0 0 12px rgba(168,85,247,0)}}
+.ad-skip{font-size:12px;color:var(--gray3);margin-top:8px}
 </style>
 </head>
 <body>
@@ -263,7 +274,8 @@ function showHome(){
   var el=document.getElementById('mainContent');
   cardIds=[];
   var h='';
-  var list=addons.slice(0,24);
+  var list=addons.slice(0,50);
+  for(var i=list.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=list[i];list[i]=list[j];list[j]=t}
   for(var i=0;i<list.length;i++){
     var a=list[i];
     cardIds[i]=a.id;
@@ -283,6 +295,7 @@ function showHome(){
     '<div class="hero-title">World<span class="l">Leaf</span></div>'+
     '<div class="hero-sub">Complementos, texturas, mapas y m\u00e1s para Minecraft PE. 100% gratis.</div>'+
     '</div>'+
+    '<div class="home-ad"><div id="homeAdBanner"></div></div>'+
     (h?'<div class="home-grid">'+h+'</div>':
     '<div class="empty-state"><div class="empty-icon">&#128269;</div><div class="empty-text">No hay complementos a\u00fan</div></div>');
   document.title='WorldLeaf';
@@ -296,6 +309,13 @@ function showHome(){
       });
     })(cards[c],c);
   }
+  try{
+    window.atOptions={'key':'1d21438c427f31f0fa827d2a4d95279b','format':'iframe','height':300,'width':160,'params':{}};
+    var adScript=document.createElement('script');
+    adScript.src='https://www.highperformanceformat.com/1d21438c427f31f0fa827d2a4d95279b/invoke.js';
+    var banner=document.getElementById('homeAdBanner');
+    if(banner)banner.appendChild(adScript);
+  }catch(e){}
 }
 
 function showDetail(a){
@@ -345,6 +365,38 @@ function showDetail(a){
   bindDetail();
 }
 
+function showAdOverlay(dlUrl){
+  var overlay=document.createElement('div');
+  overlay.className='ad-overlay';
+  overlay.innerHTML=
+    '<a class="ad-smartlink" href="https://www.effectivecpmnetwork.com/w3p3q042a?key=f434414e2725d8e0fe98a16302c651f2" target="_blank" rel="noopener"></a>'+
+    '<div class="ad-container">'+
+    '<div class="ad-label">Anuncio</div>'+
+    '<div class="ad-timer" id="adTimer">5</div>'+
+    '<div class="ad-skip">Espera para descargar...</div>'+
+    '<div id="adBanner"></div>'+
+    '</div>';
+  document.body.appendChild(overlay);
+  var remaining=5;
+  var timerEl=document.getElementById('adTimer');
+  var iv=setInterval(function(){
+    remaining--;
+    if(timerEl)timerEl.textContent=remaining;
+    if(remaining<=0){
+      clearInterval(iv);
+      if(overlay.parentNode)overlay.parentNode.removeChild(overlay);
+      w.location.href=dlUrl;
+    }
+  },1000);
+  try{
+    window.atOptions={'key':'a0082d89d50ee2582d54e84972c04961','format':'iframe','height':250,'width':300,'params':{}};
+    var adScript=document.createElement('script');
+    adScript.src='https://www.highperformanceformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js';
+    var banner=document.getElementById('adBanner');
+    if(banner)banner.appendChild(adScript);
+  }catch(e){}
+}
+
 function bindDetail(){
   var bLike=document.getElementById('bLike');
   if(bLike)bLike.addEventListener('click',function(){
@@ -360,14 +412,17 @@ function bindDetail(){
   });
 
   var bDl=document.getElementById('bDl');
-  if(bDl)bDl.addEventListener('click',function(){
+  if(bDl)bDl.addEventListener('click',function(e){
+    e.preventDefault();
     if(!current)return;
+    var dlUrl=current.link||'#';
     var c=document.getElementById('dCnt');
     if(c)c.textContent=fmt((parseInt(c.textContent.replace(/[^0-9]/g,''))||0)+1);
     var s=document.createElement('script');
     s.src=GAS+'?action=incrementDownloadsById&id='+encodeURIComponent(current.id)+'&callback=_dc&_='+Date.now();
     document.body.appendChild(s);
     setTimeout(function(){try{document.body.removeChild(s)}catch(e){}},5000);
+    showAdOverlay(dlUrl);
   });
 
   var bCopy=document.getElementById('bCopy');
@@ -422,7 +477,7 @@ function showView(){
   var p=getParam();
   var id=p.id||'';
   var ld=document.getElementById('loader');
-  if(ld){ld.classList.add('hidden');setTimeout(function(){ld.style.display='none'},500)}
+    if(ld){ld.style.display='none'}
   if(id){
     var a=find(id);
     if(a)showDetail(a);
