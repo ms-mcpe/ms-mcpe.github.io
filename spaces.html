@@ -595,6 +595,37 @@
             transition: background 0.2s;
         }
         .install-notify-close:hover { background: rgba(239,68,68,0.3); color: #ef4444; }
+        /* === APP-ONLY BLOCK OVERLAY === */
+        .app-only-overlay {
+            position: fixed; inset: 0; z-index: 9000;
+            background: var(--pwa-splash-bg, #0a0e17);
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+            padding: 32px; text-align: center;
+        }
+        .app-only-overlay.active { display: flex; }
+        .app-only-overlay .aoo-icon {
+            width: 80px; height: 80px; border-radius: 20px;
+            object-fit: cover; border: 3px solid var(--pal-boton, #c4a87c);
+        }
+        .app-only-overlay .aoo-name {
+            font-size: 22px; font-weight: 800; color: #e0e6f0;
+        }
+        .app-only-overlay .aoo-desc {
+            font-size: 14px; color: rgba(224,230,240,0.55);
+            line-height: 1.6; max-width: 320px;
+        }
+        .app-only-overlay .aoo-install-btn {
+            padding: 14px 40px; border-radius: 12px; border: none;
+            background: var(--pal-boton, #c4a87c); color: #0a0e17;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            transition: opacity 0.2s; margin-top: 8px;
+        }
+        .app-only-overlay .aoo-install-btn:hover { opacity: 0.85; }
+        .app-only-overlay .aoo-hint {
+            font-size: 12px; color: rgba(224,230,240,0.3);
+            margin-top: 12px;
+        }
         /* === CUSTOM SCROLLBARS === */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -739,6 +770,15 @@
             <button class="btn-accept" id="installNotifyAccept">Instalar</button>
             <button class="btn-dismiss" id="installNotifyDismiss">Ahora no</button>
         </div>
+    </div>
+
+    <!-- App-only mode block overlay -->
+    <div class="app-only-overlay" id="appOnlyOverlay">
+        <img class="aoo-icon" id="appOnlyIcon" src="" alt="" style="display:none">
+        <div class="aoo-name" id="appOnlyName"></div>
+        <div class="aoo-desc">Esta app solo esta disponible como aplicacion instalada. Instala la app para acceder al contenido.</div>
+        <button class="aoo-install-btn" id="appOnlyInstallBtn">Instalar App</button>
+        <div class="aoo-hint" id="appOnlyHint"></div>
     </div>
 
     <script>
@@ -1740,10 +1780,13 @@
 
         function initPWA(space, config) {
             var pal = config.palette || {};
-            var accent = pal.acento || space.colorAcento || '#c4a87c';
-            var fondo = pal.fondo || space.colorFondo || '#0a0e17';
-            var iconUrl = space.iconoURL || '';
-            var spaceName = space.nombrePlataforma || space.usuario + "'s Space";
+            var pwaConfig = config.pwa || {};
+            var accent = pwaConfig.pwaThemeColor || pal.acento || space.colorAcento || '#c4a87c';
+            var fondo = pwaConfig.pwaSplashBg || pal.fondo || space.colorFondo || '#0a0e17';
+            var iconUrl = pwaConfig.icon || space.iconoURL || '';
+            var spaceName = pwaConfig.appName || space.nombrePlataforma || space.usuario + "'s Space";
+            var statusBarColor = pwaConfig.pwaStatusBarColor || '#0a0e17';
+            var navBarColor = pwaConfig.pwaNavBarColor || '#0a0e17';
 
             // Create dynamic manifest blob
             var manifest = {
@@ -1783,6 +1826,22 @@
             meta.name = 'theme-color';
             meta.content = accent;
             document.head.appendChild(meta);
+
+            // Android status bar / navigation bar colors
+            var metaStatusBar = document.createElement('meta');
+            metaStatusBar.name = 'apple-mobile-web-app-status-bar-style';
+            metaStatusBar.content = 'black-translucent';
+            document.head.appendChild(metaStatusBar);
+
+            var metaMsNav = document.createElement('meta');
+            metaMsNav.name = 'msapplication-TileColor';
+            metaMsNav.content = statusBarColor;
+            document.head.appendChild(metaMsNav);
+
+            // Apply status bar color via CSS custom property
+            document.documentElement.style.setProperty('--pwa-status-bar', statusBarColor);
+            document.documentElement.style.setProperty('--pwa-nav-bar', navBarColor);
+            document.documentElement.style.setProperty('--pwa-splash-bg', fondo);
 
             // Register service worker
             if ('serviceWorker' in navigator) {
@@ -1881,7 +1940,43 @@
                 installBtn.style.display = 'none';
                 notifyEl.classList.remove('open');
                 deferredInstallPrompt = null;
+                // App-only: hide overlay after install
+                var overlay = document.getElementById('appOnlyOverlay');
+                if (overlay) overlay.classList.remove('active');
             });
+
+            // App-only mode
+            if (pwaConfig.mode === 'app-only') {
+                var isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+                if (!isStandalone) {
+                    var overlay = document.getElementById('appOnlyOverlay');
+                    var overlayIcon = document.getElementById('appOnlyIcon');
+                    var overlayName = document.getElementById('appOnlyName');
+                    var overlayBtn = document.getElementById('appOnlyInstallBtn');
+                    var overlayHint = document.getElementById('appOnlyHint');
+
+                    if (iconUrl) { overlayIcon.src = iconUrl; overlayIcon.style.display = ''; }
+                    overlayName.textContent = spaceName;
+
+                    overlayBtn.onclick = function() {
+                        if (deferredInstallPrompt) {
+                            deferredInstallPrompt.prompt();
+                            deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; });
+                        } else if (isMobile) {
+                            overlayHint.textContent = 'Busca la opcion "Agregar a pantalla de inicio" en el menu de tu navegador.';
+                        } else {
+                            var browser = navigator.userAgent.includes('Edg') ? 'Edge' : (navigator.userAgent.includes('Opera') ? 'Opera' : 'Chrome');
+                            overlayHint.textContent = 'Haz clic en el icono de instalar en la barra de direcciones de ' + browser + ' y selecciona "Instalar ' + escHtml(spaceName) + '".';
+                        }
+                    };
+
+                    overlay.classList.add('active');
+
+                    // Hide regular install button and notification
+                    installBtn.style.display = 'none';
+                    notifyEl.classList.remove('open');
+                }
+            }
         }
 
         // Security

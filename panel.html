@@ -452,6 +452,47 @@
         .layout-mini.lineal .lm-row { flex:unset; }
         .layout-mini.lineal .lm-cell { height:10px; flex:unset; width:100%; }
         .layout-mini.lineal .lm-row { flex-direction:column; gap:3px; }
+
+        /* === APK MODE RADIO === */
+        .apk-mode-option {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 16px; border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .apk-mode-option:hover { border-color: rgba(196,168,124,0.3); background: rgba(255,255,255,0.04); }
+        .apk-mode-option.active { border-color: #c4a87c; background: rgba(196,168,124,0.08); }
+        .apk-mode-option input[type="radio"] { margin-top: 3px; accent-color: #c4a87c; flex-shrink: 0; }
+        .apk-mode-option .mode-label { font-size: 14px; font-weight: 600; color: #e0e6f0; }
+        .apk-mode-option .mode-desc { font-size: 12px; color: rgba(224,230,240,0.45); margin-top: 2px; }
+        .apk-icon-preview {
+            display: flex; align-items: center; gap: 16px;
+            padding: 16px; border-radius: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+        .apk-icon-preview img {
+            width: 64px; height: 64px; border-radius: 16px;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.1);
+        }
+        .apk-icon-preview .apk-icon-info { flex: 1; }
+        .apk-icon-preview .apk-icon-info label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: rgba(224,230,240,0.6); margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .apk-icon-preview .apk-icon-info .apk-icon-btns { display: flex; gap: 8px; }
+        .apk-icon-preview .apk-icon-info .apk-icon-btns button {
+            padding: 7px 14px; border-radius: 6px; border: none;
+            font-size: 12px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+        }
+        .apk-icon-preview .apk-icon-info .apk-icon-btns .btn-upload {
+            background: rgba(196,168,124,0.15); border: 1px solid rgba(196,168,124,0.3); color: #c4a87c;
+        }
+        .apk-icon-preview .apk-icon-info .apk-icon-btns .btn-url {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(224,230,240,0.6);
+        }
     </style>
 </head>
 <body>
@@ -492,6 +533,10 @@
                 <div class="nav-item" onclick="mostrarSeccion('secModal', this)">
                     <i class="fas fa-window-maximize"></i>
                     <span>Colores del modal</span>
+                </div>
+                <div class="nav-item" onclick="mostrarSeccion('secApk', this)">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Configurar APK</span>
                 </div>
                 <button class="nav-item" data-section="publicar" onclick="switchSection('publicar')">
                     <span class="icon">✚</span> Publicar contenido
@@ -767,6 +812,86 @@
                 </div>
                 <button class="btn" style="margin-top:16px" id="saveModalBtn" onclick="guardarModalColors()">
                     <span class="btn-text">Guardar colores del modal</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <!-- ===== SECCION CONFIGURAR APK ===== -->
+            <div class="section" id="secApk">
+                <div class="section-header">
+                    <h2>Configurar APK / PWA</h2>
+                    <p>Personaliza como se ve tu app y elige el modo de distribucion.</p>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:4px;font-size:14px;color:#c4a87c">Modo de distribucion</h3>
+                    <p style="font-size:12px;color:rgba(224,230,240,0.4);margin-bottom:14px">Elige como los usuarios acceden a tu contenido.</p>
+                    <div style="display:flex;flex-direction:column;gap:12px">
+                        <label class="apk-mode-option active" id="modeBothLabel">
+                            <input type="radio" name="apkMode" value="both" checked onchange="onApkModeChange()">
+                            <div>
+                                <div class="mode-label">App + Web (recomendado)</div>
+                                <div class="mode-desc">Los usuarios pueden usar la web o instalar la app. Se muestra un popup sugerido de instalacion.</div>
+                            </div>
+                        </label>
+                        <label class="apk-mode-option" id="modeAppOnlyLabel">
+                            <input type="radio" name="apkMode" value="app-only" onchange="onApkModeChange()">
+                            <div>
+                                <div class="mode-label">Solo App</div>
+                                <div class="mode-desc">El contenido solo se puede ver desde la app instalada. La web muestra una pantalla de bloqueo con instrucciones para instalar.</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:14px;font-size:14px;color:#c4a87c">Apariencia de la app</h3>
+                    <div class="form-group">
+                        <label>Nombre de la app</label>
+                        <input type="text" id="pwaAppName" maxlength="30" placeholder="Nombre que aparecera en la pantalla de inicio">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Icono de la app (512x512 recomendado)</label>
+                        <div class="apk-icon-preview" id="pwaIconPreview">
+                            <img id="pwaIconImg" src="" alt="Icono" style="display:none">
+                            <div class="apk-icon-info">
+                                <label>Icono de la aplicacion</label>
+                                <div class="apk-icon-btns">
+                                    <button type="button" class="btn-upload" onclick="document.getElementById('pwaIconFileInput').click()"><i class="fas fa-upload"></i> Subir imagen</button>
+                                    <button type="button" class="btn-url" onclick="cambiarIconoPWA()"><i class="fas fa-link"></i> URL</button>
+                                </div>
+                                <input type="file" id="pwaIconFileInput" accept="image/*" style="display:none" onchange="uploadPwaIcon(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c;margin-top:20px">Colores de la app</h3>
+                    <div id="pwaColorsContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="card" id="pwaPreviewCard">
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Vista previa</h3>
+                    <div style="display:flex;justify-content:center">
+                        <div id="pwaPhonePreview" style="width:200px;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,0.1);background:#0a0e17">
+                            <div id="pwaStatusBar" style="height:24px;background:#0a0e17;display:flex;align-items:center;justify-content:center">
+                                <span style="font-size:9px;color:rgba(255,255,255,0.5)">9:41</span>
+                            </div>
+                            <div id="pwaSplashPreview" style="height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#0a0e17">
+                                <img id="pwaPreviewIcon" src="" style="width:48px;height:48px;border-radius:12px;object-fit:cover;display:none" alt="">
+                                <div id="pwaPreviewName" style="font-size:13px;font-weight:700;color:#e0e6f0">Mi App</div>
+                            </div>
+                            <div style="height:20px;background:#111827;display:flex;align-items:center;justify-content:center">
+                                <div style="width:50px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" style="margin-top:16px" id="saveApkBtn" onclick="guardarApk()">
+                    <span class="btn-text">Guardar configuracion APK</span>
                     <span class="spinner"></span>
                 </button>
             </div>
@@ -1151,6 +1276,9 @@
 
             // Modal colors
             renderModalColors(config.modalColors || {});
+
+            // PWA config
+            renderPWAConfig();
 
             // Load categories
             var activas = [];
@@ -1596,6 +1724,161 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Colores del modal guardados.', 'success');
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // CONFIGURAR APK / PWA
+        // ============================================================
+        var PWA_COLOR_KEYS = [
+            {id:'pwaStatusBarColor', label:'Barra de estado (Android)', def:'#0a0e17'},
+            {id:'pwaNavBarColor', label:'Barra de navegacion', def:'#0a0e17'},
+            {id:'pwaSplashBg', label:'Fondo al abrir la app', def:'#0a0e17'},
+            {id:'pwaThemeColor', label:'Theme color (barra del navegador)', def:'#c4a87c'}
+        ];
+        var pwaIconData = { src: '', isBase64: false };
+
+        function renderPWAConfig() {
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            var pwa = config.pwa || {};
+
+            // Mode
+            var mode = pwa.mode || 'both';
+            var modeRadios = document.querySelectorAll('input[name="apkMode"]');
+            modeRadios.forEach(function(r) { r.checked = r.value === mode; });
+            onApkModeChange();
+
+            // App name
+            document.getElementById('pwaAppName').value = pwa.appName || '';
+
+            // Icon
+            pwaIconData = pwa.icon ? { src: pwa.icon, isBase64: false } : { src: '', isBase64: false };
+            updatePwaIconPreview();
+
+            // Colors
+            var container = document.getElementById('pwaColorsContainer');
+            container.innerHTML = '';
+            PWA_COLOR_KEYS.forEach(function(ck) {
+                var val = pwa[ck.id] !== undefined ? pwa[ck.id] : ck.def;
+                var row = document.createElement('div');
+                row.className = 'color-row';
+                var label = document.createElement('label');
+                label.textContent = ck.label;
+                var picker = document.createElement('input');
+                picker.type = 'color';
+                picker.value = val.indexOf('#') === 0 ? val : '#000000';
+                picker.id = 'pwa_' + ck.id + '_pick';
+                var text = document.createElement('input');
+                text.type = 'text';
+                text.id = 'pwa_' + ck.id + '_txt';
+                text.value = val;
+                text.placeholder = ck.def;
+                picker.addEventListener('input', function() { text.value = this.value; updatePwaPreview(); });
+                text.addEventListener('input', function() {
+                    if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
+                    updatePwaPreview();
+                });
+                row.appendChild(label);
+                row.appendChild(picker);
+                row.appendChild(text);
+                container.appendChild(row);
+            });
+
+            updatePwaPreview();
+
+            // App name listener
+            document.getElementById('pwaAppName').addEventListener('input', updatePwaPreview);
+        }
+
+        function updatePwaIconPreview() {
+            var img = document.getElementById('pwaIconImg');
+            if (pwaIconData.src) {
+                img.src = pwaIconData.src;
+                img.style.display = '';
+            } else {
+                img.style.display = 'none';
+            }
+            var previewIcon = document.getElementById('pwaPreviewIcon');
+            if (pwaIconData.src) {
+                previewIcon.src = pwaIconData.src;
+                previewIcon.style.display = '';
+            } else {
+                previewIcon.style.display = 'none';
+            }
+        }
+
+        function updatePwaPreview() {
+            var statusBar = document.getElementById('pwaStatusBar');
+            var splash = document.getElementById('pwaSplashPreview');
+            var name = document.getElementById('pwaPreviewName');
+            var statusBarColor = document.getElementById('pwa_pwaStatusBarColor_txt');
+            var splashBg = document.getElementById('pwa_pwaSplashBg_txt');
+            var appName = document.getElementById('pwaAppName');
+            if (statusBar && statusBarColor) statusBar.style.background = statusBarColor.value || '#0a0e17';
+            if (splash && splashBg) splash.style.background = splashBg.value || '#0a0e17';
+            if (name && appName) name.textContent = appName.value || spaceData.nombrePlataforma || 'Mi App';
+        }
+
+        window.onApkModeChange = function() {
+            var mode = document.querySelector('input[name="apkMode"]:checked').value;
+            document.getElementById('modeBothLabel').classList.toggle('active', mode === 'both');
+            document.getElementById('modeAppOnlyLabel').classList.toggle('active', mode === 'app-only');
+        };
+
+        window.uploadPwaIcon = function(input) {
+            var file = input.files[0];
+            if (!file) return;
+            if (file.size > 10 * 1024 * 1024) { showToast('La imagen supera los 10MB.', 'error'); return; }
+            comprimirImagen(file, function(dataUrl) {
+                pwaIconData = { src: dataUrl, isBase64: true };
+                updatePwaIconPreview();
+            });
+            input.value = '';
+        };
+
+        window.cambiarIconoPWA = function() {
+            var url = prompt('Ingresa la URL del icono de la app (512x512 recomendado):');
+            if (!url) return;
+            try { new URL(url); } catch(e) { showToast('URL invalida.', 'error'); return; }
+            pwaIconData = { src: url, isBase64: false };
+            updatePwaIconPreview();
+        };
+
+        window.guardarApk = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveApkBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            var pwa = {
+                mode: document.querySelector('input[name="apkMode"]:checked').value,
+                appName: document.getElementById('pwaAppName').value.trim(),
+                icon: pwaIconData.src || ''
+            };
+            PWA_COLOR_KEYS.forEach(function(ck) {
+                var el = document.getElementById('pwa_' + ck.id + '_txt');
+                pwa[ck.id] = el ? el.value.trim() || ck.def : ck.def;
+            });
+
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.pwa = pwa;
+
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Configuracion APK guardada.', 'success');
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
