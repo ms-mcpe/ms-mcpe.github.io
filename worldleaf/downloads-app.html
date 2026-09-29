@@ -212,6 +212,10 @@
             display: none;
         }
 
+        .error-msg.on {
+            display: block;
+        }
+
         .platform-tabs {
             display: flex;
             gap: 8px;
@@ -284,7 +288,7 @@
 
     <div class="brand">World</div>
 
-    <div class="version-badge">v1.15.0</div>
+    <div class="version-badge">v1.12.0</div>
 
     <div class="subtitle">WorldLeaf — Complementos Minecraft Completamente gratis</div>
 
@@ -327,7 +331,7 @@
         </div>
     </div>
 
-    <a href="https://www.dropbox.com/scl/fi/o8g3yeez2457u07qi4547/WorldLeaf-1.15.0.apk?rlkey=vjjcsfwrcyijby5i7huv9dd9e&st=p2p66uwb&dl=1"
+    <a href="https://mobidrive.com/sharelink/u/5wwTqSANRujfeHK6zGjUlO3z7u2iqjkMoSXG5zwSRHro"
        class="btn-download" id="downloadBtn" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
@@ -336,7 +340,7 @@
         Descargar APK
     </a>
 
-    <a href="https://www.dropbox.com/scl/fi/0pgx9oeic3k7mdpk7pqvf/WorldLeaf-Setup-1.15.0.exe?rlkey=ncl3hzezce0nyciyko3v8xb5g&st=8691texj&dl=1"
+    <a href="https://mobidrive.com/sharelink/u/5wwTqSANRujfeHK6zGjUlO7YaZis2zv27lPzFfVFi5Yv"
        class="btn-download btn-download-win hidden" id="downloadBtnWin" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
@@ -351,6 +355,7 @@
 <script>
 (function() {
     var GAS_URL = 'https://script.google.com/macros/s/AKfycbwCPig856nHfy0zRN4O9kdKpxs7VltqBFGEvD5WOlnFLLU7Db6SLkaux6t2Yi6g_HNC5w/exec';
+    var TIMEOUT = 25000;
 
     function fmt(n) { return n >= 1000000 ? (n/1000000).toFixed(1).replace(/\.0$/,'')+'M' : n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
 
@@ -358,33 +363,82 @@
     var acEl = document.getElementById('addonCount');
     var dlWinEl = document.getElementById('downloadCountWin');
     var acWinEl = document.getElementById('addonCountWin');
+    var errEl = document.getElementById('errorMsg');
     var currentPlatform = 'android';
 
-    var cached = localStorage.getItem('wl_stats');
-    if (cached) {
-      try {
-        var c = JSON.parse(cached);
-        acEl.textContent = fmt(c.a);
-        dlEl.textContent = fmt(c.d);
-        acWinEl.textContent = fmt(c.a);
-        dlWinEl.textContent = fmt(c.dw || 0);
-      } catch(e) {}
+    function fill(d) {
+      if (!d || !d.ok) return;
+      var android = (d.total_descargas_android !== undefined ? d.total_descargas_android : d.total_descargas) || 0;
+      var windows = d.total_descargas_windows || 0;
+      acEl.textContent = fmt(d.total_addons);
+      acWinEl.textContent = fmt(d.total_addons);
+      dlEl.textContent = fmt(android);
+      dlWinEl.textContent = fmt(windows);
+      document.querySelectorAll('.stat-num').forEach(function(n){ n.classList.remove('loading'); });
+      try { localStorage.setItem('wl_stats_v2', JSON.stringify({ a: d.total_addons, d: android, dw: windows })); } catch(e) {}
     }
 
-    window._statsCb = function(d) {
-      if (d && d.ok) {
-        acEl.textContent = fmt(d.total_addons);
-        dlEl.textContent = fmt(d.total_descargas);
-        acWinEl.textContent = fmt(d.total_addons);
-        dlWinEl.textContent = fmt(d.total_descargas_windows || 0);
-        localStorage.setItem('wl_stats', JSON.stringify({a:d.total_addons, d:d.total_descargas, dw:d.total_descargas_windows || 0}));
-      }
-    };
+    // Muestra la cache de inmediato y refresca despues en segundo plano.
+    // La clave nueva ignora cualquier contador guardado por la version vieja.
+    try {
+      var c = JSON.parse(localStorage.getItem('wl_stats_v2') || 'null');
+      if (c) fill({ ok: true, total_addons: c.a, total_descargas_android: c.d, total_descargas_windows: c.dw });
+    } catch(e) {}
 
-    var s = document.createElement('script');
-    s.src = GAS_URL + '?action=getStats&callback=_statsCb&_=' + Date.now();
-    document.body.appendChild(s);
-    setTimeout(function() { document.body.removeChild(s); }, 2000);
+    function loadStats() {
+      var ctl = ('AbortController' in window) ? new AbortController() : null;
+      var timer = setTimeout(function(){ if (ctl) ctl.abort(); loadStatsJsonp(); }, TIMEOUT);
+      var opt = { credentials: 'omit', cache: 'no-store' };
+      if (ctl) opt.signal = ctl.signal;
+      fetch(GAS_URL + '?action=getStats&_=' + Date.now(), opt)
+        .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(d){ clearTimeout(timer); hideError(); fill(d); })
+        .catch(function(){ clearTimeout(timer); loadStatsJsonp(); });
+    }
+
+    // Alternativa por JSONP: funciona incluso abriendo el archivo con doble
+    // clic, donde el navegador no envia cabeceras CORS.
+    var jsonpDone = false;
+    function loadStatsJsonp() {
+      if (jsonpDone) { showError(); return; }
+      jsonpDone = true;
+      var name = 'wlDlCb' + Date.now();
+      var el = document.createElement('script');
+      var done = false;
+      var timer = setTimeout(function(){ fin(); showError(); }, 30000);
+      function fin() {
+        if (done) return;
+        done = true; clearTimeout(timer);
+        try { delete window[name]; } catch(e) { window[name] = void 0; }
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }
+      window[name] = function(d) {
+        fin();
+        if (d && d.ok) { hideError(); fill(d); } else { showError(); }
+      };
+      el.onerror = function(){ fin(); showError(); };
+      el.src = GAS_URL + '?action=getStats&callback=' + name + '&_=' + Date.now();
+      document.body.appendChild(el);
+    }
+
+    function showError(){ if (errEl) errEl.classList.add('on'); }
+    function hideError(){ if (errEl) errEl.classList.remove('on'); }
+
+    loadStats();
+
+    function countDownload(win) {
+      var el = win ? dlWinEl : dlEl;
+      var cur = parseInt(String(el.textContent).replace(/[^\d]/g, ''), 10);
+      // "1.2k" -> 1200 para que el incremento no rompa el formato
+      if (/k$/i.test(el.textContent)) cur = Math.round((cur || 0) * 1000);
+      if (/M$/i.test(el.textContent)) cur = Math.round((cur || 0) * 1000000);
+      el.textContent = fmt((cur || 0) + 1);
+      var action = win ? 'incrementDescargasWindows' : 'incrementDescargas';
+      var s = document.createElement('script');
+      s.src = GAS_URL + '?action=' + action + '&_=' + Date.now();
+      document.body.appendChild(s);
+      setTimeout(function(){ if (s.parentNode) s.parentNode.removeChild(s); }, 3000);
+    }
 
     document.querySelectorAll('.platform-tab').forEach(function(tab) {
       tab.addEventListener('click', function() {
@@ -400,21 +454,8 @@
       });
     });
 
-    document.getElementById('downloadBtn').addEventListener('click', function() {
-        dlEl.textContent = fmt((parseInt(dlEl.textContent.replace(/[^0-9]/g,'')) || 0) + 1);
-        var s = document.createElement('script');
-        s.src = GAS_URL + '?action=incrementDescargas&callback=_statsCb&_=' + Date.now();
-        document.body.appendChild(s);
-        setTimeout(function() { document.body.removeChild(s); }, 2000);
-    });
-
-    document.getElementById('downloadBtnWin').addEventListener('click', function() {
-        dlWinEl.textContent = fmt((parseInt(dlWinEl.textContent.replace(/[^0-9]/g,'')) || 0) + 1);
-        var s = document.createElement('script');
-        s.src = GAS_URL + '?action=incrementDescargasWindows&callback=_statsCb&_=' + Date.now();
-        document.body.appendChild(s);
-        setTimeout(function() { document.body.removeChild(s); }, 2000);
-    });
+    document.getElementById('downloadBtn').addEventListener('click', function() { countDownload(false); });
+    document.getElementById('downloadBtnWin').addEventListener('click', function() { countDownload(true); });
 })();
 </script>
 
