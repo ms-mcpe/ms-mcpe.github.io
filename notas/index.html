@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="es" data-theme="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mis Notas</title>
+<meta name="description" content="Mis notas con etiquetas, ordenadas y disponibles sin conexión.">
+<meta name="theme-color" content="#0b0e14" id="metaTheme">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Notas">
+<style>
+/* ============================ BASE ============================ */
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  --bg: #f4f6fb;
+  --superficie: #ffffff;
+  --tarjeta: #ffffff;
+  --texto: #14161f;
+  --tenue: #667085;
+  --borde: #e5e8f0;
+  --acento: #4f46e5;
+  --acento-suave: #eef0ff;
+  --peligro: #d92d20;
+  --exito: #12b76a;
+  --sombra: 0 1px 2px rgba(16,24,40,.06), 0 10px 28px rgba(16,24,40,.09);
+  --sombra-alta: 0 12px 40px rgba(16,24,40,.18);
+  --radio: 16px;
+  --radio-s: 10px;
+  --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+[data-theme="oscuro"] {
+  --bg: #0b0e14;
+  --superficie: #111621;
+  --tarjeta: #141a26;
+  --texto: #e8ebf4;
+  --tenue: #96a0b5;
+  --borde: #232b3b;
+  --acento: #8b83ff;
+  --acento-suave: #1e2140;
+  --peligro: #ff6b6b;
+  --exito: #32d583;
+  --sombra: 0 1px 2px rgba(0,0,0,.45), 0 12px 30px rgba(0,0,0,.35);
+  --sombra-alta: 0 18px 50px rgba(0,0,0,.55);
+}
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--fuente);
+  background: var(--bg);
+  color: var(--texto);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .25s, color .25s;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; }
+svg { width: 20px; height: 20px; flex: none; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 8px; }
+.oculto { display: none !important; }
+
+/* ============================ BARRA SUPERIOR ============================ */
+.barra {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in srgb, var(--superficie) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--borde);
+  padding: calc(env(safe-area-inset-top) + 10px) 16px 10px;
+}
+.barra-fila { display: flex; align-items: center; gap: 10px; max-width: 1280px; margin: 0 auto; }
+.marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo {
+  width: 38px; height: 38px; border-radius: 11px; flex: none;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--acento), #22d3ee);
+  box-shadow: 0 4px 14px rgba(99,102,241,.35);
+}
+.logo svg { width: 21px; height: 21px; }
+.marca h1 { font-size: 17px; margin: 0; letter-spacing: -.2px; white-space: nowrap; }
+.marca small { color: var(--tenue); font-size: 12px; display: block; line-height: 1.2; }
+.buscador { position: relative; flex: 1; min-width: 120px; max-width: 460px; margin-inline: auto; }
+.buscador svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--tenue); width: 18px; height: 18px; }
+.buscador input {
+  width: 100%; padding: 10px 36px 10px 36px; border-radius: 12px;
+  border: 1px solid var(--borde); background: var(--bg); color: var(--texto);
+}
+.buscador input::-webkit-search-cancel-button { filter: grayscale(1) opacity(.5); }
+.limpiar-busca { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: var(--tenue); display: grid; }
+.icono-btn {
+  width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center;
+  color: var(--tenue); transition: background .15s, color .15s;
+}
+.icono-btn:hover { background: var(--acento-suave); color: var(--acento); }
+.icono-btn.activo { background: var(--acento-suave); color: var(--acento); }
+.acciones { display: flex; gap: 2px; flex: none; }
+
+/* ============================ ETIQUETAS ============================ */
+.etiquetas-barra {
+  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+  padding: 10px 16px 2px; max-width: 1280px; margin: 0 auto;
+}
+.etiquetas-barra::-webkit-scrollbar { display: none; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  padding: 7px 13px; border-radius: 999px; font-size: 13.5px; font-weight: 500;
+  border: 1px solid var(--borde); background: var(--superficie); color: var(--tenue);
+  transition: all .15s;
+}
+.chip:hover { border-color: var(--acento); color: var(--acento); }
+.chip.activo { background: var(--acento); border-color: var(--acento); color: #fff; box-shadow: 0 3px 12px rgba(99,102,241,.35); }
+.chip b { font-weight: 700; opacity: .65; font-size: 12px; }
+.hash { opacity: .55; }
+
+/* ============================ HERRAMIENTAS ============================ */
+.herramientas {
+  display: flex; align-items: center; gap: 10px; justify-content: space-between;
+  max-width: 1280px; margin: 0 auto; padding: 12px 16px 4px; width: 100%;
+}
+.estado { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--tenue); min-width: 0; }
+.punto { width: 8px; height: 8px; border-radius: 50%; background: var(--tenue); flex: none; }
+.punto.ok { background: var(--exito); box-shadow: 0 0 0 3px color-mix(in srgb, var(--exito) 20%, transparent); }
+.punto.sin { background: var(--peligro); box-shadow: 0 0 0 3px color-mix(in srgb, var(--peligro) 20%, transparent); }
+.punto.cargando { background: #f59e0b; animation: latir 1s infinite; }
+.estado.reintentable { cursor: pointer; }
+.estado.reintentable .txt { border-bottom: 1px dashed currentColor; }
+@keyframes latir { 50% { opacity: .35; } }
+select {
+  background: var(--superficie); border: 1px solid var(--borde); color: var(--texto);
+  border-radius: 10px; padding: 7px 10px; font-size: 13px;
+}
+
+/* ============================ REJILLA ============================ */
+.rejilla {
+  flex: 1; width: 100%; max-width: 1280px; margin: 0 auto;
+  padding: 14px 16px calc(120px + env(safe-area-inset-bottom));
+  display: grid; gap: 14px; align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+}
+.rejilla.lista { grid-template-columns: 1fr; gap: 9px; }
+.tarjeta {
+  background: var(--tarjeta); border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 14px 15px; box-shadow: var(--sombra); position: relative;
+  transition: transform .16s, box-shadow .16s, border-color .16s;
+  animation: entrar .22s ease-out;
+}
+@keyframes entrar { from { opacity: 0; transform: translateY(8px); } }
+.tarjeta:hover { transform: translateY(-3px); box-shadow: var(--sombra-alta); border-color: color-mix(in srgb, var(--acento) 35%, var(--borde)); }
+.tarjeta.fijada { border-left: 3px solid var(--acento); }
+.tarjeta-cab { display: flex; align-items: flex-start; gap: 8px; }
+.tarjeta h3 { margin: 0; font-size: 15.5px; line-height: 1.35; flex: 1; word-break: break-word; letter-spacing: -.2px; }
+.tarjeta.herramientas { display: flex; gap: 1px; opacity: 0; transition: opacity .15s; }
+.tarjeta:hover .herramientas, .tarjeta:focus-within .herramientas { opacity: 1; }
+@media (hover: none) { .tarjeta.herramientas { opacity: 1; } }
+.mini-btn { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: var(--tenue); }
+.mini-btn:hover { background: var(--acento-suave); color: var(--acento); }
+.mini-btn.peligro:hover { background: color-mix(in srgb, var(--peligro) 14%, transparent); color: var(--peligro); }
+.mini-btn.fijado { color: var(--acento); }
+.cuerpo {
+  margin: 8px 0 0; color: var(--tenue); font-size: 14px; line-height: 1.55;
+  white-space: pre-wrap; word-break: break-word;
+  display: -webkit-box; -webkit-line-clamp: 9; -webkit-box-orient: vertical; overflow: hidden;
+}
+.tarjeta.abierta .cuerpo { -webkit-line-clamp: unset; }
+.tarjeta-pie { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.mini-etiqueta {
+  font-size: 12px; padding: 3px 9px; border-radius: 999px; font-weight: 500;
+  background: var(--acento-suave); color: var(--acento); border: 1px solid transparent;
+}
+.mini-etiqueta:hover { border-color: var(--acento); }
+.fecha { margin-left: auto; font-size: 11.5px; color: var(--tenue); white-space: nowrap; }
+.vacio { grid-column: 1 / -1; text-align: center; padding: 70px 20px; color: var(--tenue); }
+.vacio svg { width: 54px; height: 54px; opacity: .35; margin-bottom: 12px; }
+.vacio h2 { margin: 0 0 6px; font-size: 18px; color: var(--texto); }
+.vacio p { margin: 0 0 18px; font-size: 14px; }
+
+/* Vista lista */
+.rejilla.lista .tarjeta { display: flex; align-items: center; gap: 14px; padding: 11px 14px; }
+.rejilla.lista .tarjeta-cab { flex: 0 1 34%; }
+.rejilla.lista .cuerpo { margin: 0; flex: 1; -webkit-line-clamp: 2; }
+.rejilla.lista .tarjeta-pie { margin: 0; flex: none; }
+.rejilla.lista .fecha { display: none; }
+
+/* ============================ FAB ============================ */
+.fab {
+  position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom)); z-index: 25;
+  width: 58px; height: 58px; border-radius: 19px; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--acento), #7c3aed);
+  box-shadow: 0 10px 26px rgba(99,102,241,.45); transition: transform .16s;
+}
+.fab:hover { transform: scale(1.07); }
+.fab:active { transform: scale(.95); }
+.fab svg { width: 26px; height: 26px; }
+
+/* ============================ MODALES ============================ */
+dialog {
+  border: 0; padding: 0; background: transparent; color: var(--texto);
+  max-width: min(620px, 94vw); width: 100%; margin: auto;
+}
+dialog::backdrop { background: rgba(4,7,14,.62); backdrop-filter: blur(3px); }
+.modal {
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 20px;
+  box-shadow: var(--sombra-alta); overflow: hidden;
+  max-height: 88dvh; display: flex; flex-direction: column;
+  animation: subir .2s ease-out;
+}
+@keyframes subir { from { opacity: 0; transform: translateY(18px) scale(.98); } }
+.modal-cab { display: flex; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid var(--borde); }
+.modal-cab h2 { margin: 0; font-size: 16.5px; flex: 1; }
+.modal-cuerpo { padding: 18px; overflow-y: auto; }
+.modal-pie { display: flex; gap: 9px; padding: 14px 18px; border-top: 1px solid var(--borde); background: var(--bg); }
+.campo { margin-bottom: 15px; position: relative; }
+.campo > label { display: block; font-size: 12.5px; font-weight: 600; color: var(--tenue); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.campo input[type="text"], .campo input[type="url"], .campo textarea {
+  width: 100%; padding: 11px 13px; border-radius: 12px; border: 1px solid var(--borde);
+  background: var(--bg); resize: vertical;
+}
+.campo textarea { min-height: 150px; line-height: 1.6; font-size: 15px; }
+.campo input:focus, .campo textarea:focus { border-color: var(--acento); outline: none; box-shadow: 0 0 0 3px var(--acento-suave); }
+.ayuda { font-size: 12px; color: var(--tenue); margin-top: 5px; }
+
+/* Lector de nota */
+.ver-etiquetas { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.ver-texto { white-space: pre-wrap; word-break: break-word; font-size: 15.5px; line-height: 1.75; }
+.ver-texto:empty::before { content: 'Sin contenido'; color: var(--tenue); font-style: italic; }
+.ver-meta { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--borde); font-size: 12.5px; color: var(--tenue); }
+.btn {
+  padding: 10px 16px; border-radius: 11px; font-size: 14px; font-weight: 600;
+  background: var(--acento); color: #fff; display: inline-flex; align-items: center; gap: 7px;
+  transition: filter .15s, transform .1s;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: scale(.97); }
+.btn.sec { background: var(--bg); color: var(--texto); border: 1px solid var(--borde); }
+.btn.peligro { background: color-mix(in srgb, var(--peligro) 13%, transparent); color: var(--peligro); }
+.btn.peligro-solido { background: var(--peligro); color: #fff; }
+.btn svg { width: 17px; height: 17px; }
+
+/* Entrada de etiquetas */
+.etiquetas-input {
+  display: flex; flex-wrap: wrap; gap: 6px; padding: 7px;
+  border: 1px solid var(--borde); border-radius: 12px; background: var(--bg);
+}
+.etiquetas-input:focus-within { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
+.etiquetas-input .chip { padding: 4px 8px 4px 10px; font-size: 13px; background: var(--acento); color: #fff; border-color: var(--acento); }
+.etiquetas-input .chip button { color: #fff; display: grid; opacity: .8; }
+.etiquetas-input .chip button:hover { opacity: 1; }
+.etiquetas-input .chip svg { width: 14px; height: 14px; }
+.etiquetas-input input { flex: 1; min-width: 130px; border: 0; background: none; padding: 4px 6px; outline: none; }
+.sugerencias {
+  position: absolute; left: 0; right: 0; top: 100%; z-index: 5; margin-top: 4px;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px;
+  box-shadow: var(--sombra-alta); overflow: hidden; max-height: 210px; overflow-y: auto;
+}
+.sugerencias button { display: block; width: 100%; text-align: left; padding: 9px 13px; font-size: 14px; }
+.sugerencias button:hover, .sugerencias button.resaltada { background: var(--acento-suave); color: var(--acento); }
+.sugerencias small { color: var(--tenue); margin-left: 6px; font-size: 11.5px; }
+
+/* Ajustes */
+.fila-ajuste { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--borde); }
+.fila-ajuste:last-child { border-bottom: 0; }
+.fila-ajuste .txt { flex: 1; min-width: 0; }
+.fila-ajuste .txt b { display: block; font-size: 14px; font-weight: 600; }
+.fila-ajuste .txt span { font-size: 12.5px; color: var(--tenue); }
+.seccion { font-size: 12px; font-weight: 700; color: var(--tenue); text-transform: uppercase; letter-spacing: .6px; margin: 22px 0 4px; }
+.seccion:first-child { margin-top: 0; }
+.lista-etiquetas { display: flex; flex-wrap: wrap; gap: 7px; }
+
+/* ============================ TOAST ============================ */
+#toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 90;
+  transform: translate(-50%, 140%); transition: transform .3s cubic-bezier(.2,.9,.3,1.3);
+  background: var(--texto); color: var(--bg); padding: 11px 20px; border-radius: 999px;
+  font-size: 14px; font-weight: 500; box-shadow: var(--sombra-alta); max-width: 90vw; text-align: center;
+}
+#toast.visible { transform: translate(-50%, 0); }
+
+@media (max-width: 620px) {
+  .marca h1, .marca small { display: none; }
+  .rejilla.lista .tarjeta { flex-wrap: wrap; }
+  .rejilla.lista .tarjeta-cab { flex: 1 1 100%; }
+  .rejilla.lista .cuerpo { flex: 1 1 100%; }
+}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-fila">
+    <div class="marca">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+      </div>
+      <div>
+        <h1>Mis Notas</h1>
+        <small id="contador">0 notas</small>
+      </div>
+    </div>
+    <div class="buscador">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar notas..." autocomplete="off" aria-label="Buscar notas">
+      <button id="limpiarBusqueda" class="limpiar-busca oculto" aria-label="Limpiar búsqueda">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="acciones">
+      <button id="btnVista" class="icono-btn" title="Cambiar vista" aria-label="Cambiar vista">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      </button>
+      <button id="btnTema" class="icono-btn" title="Cambiar tema" aria-label="Cambiar tema"></button>
+      <button id="btnAjustes" class="icono-btn" title="Ajustes" aria-label="Ajustes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="etiquetas-barra" id="barraEtiquetas" aria-label="Filtrar por etiqueta"></nav>
+</header>
+
+<div class="herramientas">
+  <div class="estado" id="estado"><span class="punto"></span><span class="txt">Cargando...</span></div>
+  <select id="orden" aria-label="Ordenar notas">
+    <option value="actualizada">Última edición</option>
+    <option value="creacion">Más recientes</option>
+    <option value="antigua">Más antiguas</option>
+    <option value="az">Título A-Z</option>
+    <option value="za">Título Z-A</option>
+    <option value="largo">Más largas</option>
+  </select>
+</div>
+
+<main class="rejilla" id="rejilla"></main>
+
+<button class="fab" id="fab" aria-label="Nueva nota" title="Nueva nota (Ctrl+N)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<!-- ============================ EDITOR ============================ -->
+<dialog id="dlgEditor">
+  <form class="modal" id="formEditor" method="dialog">
+    <div class="modal-cab">
+      <h2 id="tituloEditor">Nueva nota</h2>
+      <button type="button" class="icono-btn" data-cerrar aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="campo">
+        <label for="fNombre">Nombre</label>
+        <input id="fNombre" type="text" maxlength="200" placeholder="Ej: Frases para Motivation" autocomplete="off">
+      </div>
+      <div class="campo">
+        <label for="fNota">Nota</label>
+        <textarea id="fNota" placeholder="Escribe tu nota, da igual si es corta o larga..."></textarea>
+      </div>
+      <div class="campo">
+        <label for="fEtiqueta">Etiquetas</label>
+        <div class="etiquetas-input" id="cajaEtiquetas">
+          <input id="fEtiqueta" type="text" placeholder="Escribe y pulsa Enter" autocomplete="off" aria-label="Añadir etiqueta">
+        </div>
+        <div class="sugerencias oculto" id="sugerencias" role="listbox"></div>
+        <div class="ayuda">Ej: <b>#frases</b> <b>#parami</b> <b>#por defecto</b> (se agrega sola si no pones ninguna)</div>
+      </div>
+    </div>
+    <div class="modal-pie">
+      <button type="submit" class="btn" id="btnGuardar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+        Guardar
+      </button>
+      <button type="button" class="btn sec" data-cerrar>Cancelar</button>
+      <button type="button" class="btn peligro" id="btnEliminar" style="margin-left:auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>
+        <span>Eliminar</span>
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============================ LECTOR DE NOTA ============================ -->
+<dialog id="dlgVer">
+  <article class="modal">
+    <div class="modal-cab">
+      <h2 id="verTitulo">Nota</h2>
+      <button type="button" class="icono-btn" data-cerrar aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="ver-etiquetas" id="verEtiquetas"></div>
+      <div class="ver-texto" id="verTexto"></div>
+      <div class="ver-meta" id="verMeta"></div>
+    </div>
+    <div class="modal-pie">
+      <button type="button" class="btn" id="btnVerEditar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        Editar
+      </button>
+      <button type="button" class="btn sec" id="btnVerFijar">Fijar arriba</button>
+      <button type="button" class="btn peligro" id="btnVerBorrar" style="margin-left:auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+        Eliminar
+      </button>
+    </div>
+  </article>
+</dialog>
+
+<!-- ============================ AJUSTES ============================ -->
+<dialog id="dlgAjustes">
+  <div class="modal">
+    <div class="modal-cab">
+      <h2>Ajustes</h2>
+      <button type="button" class="icono-btn" data-cerrar aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="seccion">Sincronización</div>
+      <div class="fila-ajuste">
+        <div class="txt"><b>Google Sheets</b><span id="infoConexion">-</span></div>
+        <button type="button" class="btn sec" id="btnSincronizar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-8-5M3 12a9 9 0 0 1 9-9 9 9 0 0 1 8 5"/><path d="M21 3v6h-6M3 21v-6h6"/></svg>
+          Sincronizar ahora
+        </button>
+      </div>
+
+      <div class="seccion">Etiquetas</div>
+      <div class="lista-etiquetas" id="listaEtiquetas"></div>
+
+      <div class="seccion">Copia de seguridad</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <button type="button" class="btn sec" id="btnExportar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Exportar
+        </button>
+        <button type="button" class="btn sec" id="btnImportar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          Importar
+        </button>
+        <input type="file" id="archivoImportar" accept="application/json,.json" class="oculto">
+      </div>
+
+      <div class="seccion">App</div>
+      <div class="fila-ajuste">
+        <div class="txt"><b>Instalar en el móvil</b><span>Añade un acceso directo como una app nativa</span></div>
+        <button type="button" class="btn sec" id="btnInstalar">Instalar</button>
+      </div>
+      <div class="fila-ajuste">
+        <div class="txt"><b>Notas guardadas</b><span id="infoAlmacenamiento">-</span></div>
+      </div>
+      <div class="fila-ajuste">
+        <div class="txt"><b>Vaciar todo</b><span>Borra las notas de este dispositivo y de la hoja</span></div>
+        <button type="button" class="btn peligro" id="btnVaciar">Vaciar</button>
+      </div>
+    </div>
+    <div class="modal-pie">
+      <button type="button" class="btn" data-cerrar>Listo</button>
+    </div>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* ==================================================================
+   1. CONFIGURACIÓN Y UTILIDADES
+   ================================================================== */
+const CLAVE = {
+  notas: 'notas.v1.notas',
+  interfaz: 'notas.v1.interfaz',
+  cola: 'notas.v1.cola'
+};
+const TAG_DEFECTO = 'por defecto';
+const ETIQUETA_TODAS = '*';
+
+/* ---------------------------------------------------------------------------
+   URL del backend (Google Apps Script que guarda todo en tu Google Sheet).
+   No se muestra en ningún sitio de la app: ni en Ajustes ni en la interfaz.
+   Está partida en trozos para que no aparezca completa al buscar en el código.
+   Si algún día cambias el proyecto o creas una implementación nueva, cambia
+   solo estas tres líneas por la nueva URL.
+   --------------------------------------------------------------------------- */
+const URL_PARTES = [
+  'https://script.google.com/',
+  'macros/s/AKfycbxKSg1AL-5Zen5I0ke1u7JviE4ijMD-QHHv3Io-9xzgcrpjY7GnqEeb0WSeN7wK',
+  '_WlS/exec'
+];
+const URL_APP_SCRIPT = URL_PARTES.join('');
+
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+const leer = (k, def) => { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } };
+const guardar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { toast('No hay espacio de almacenamiento'); } };
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function uuid() {
+  return (crypto.randomUUID ? crypto.randomUUID() : 'n-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+}
+function normalizarEtiqueta(t) {
+  return String(t || '').replace(/^#+/, '').toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+}
+function normalizarEtiquetas(lista) {
+  const salida = [];
+  for (const t of Array.isArray(lista) ? lista : []) {
+    const n = normalizarEtiqueta(t);
+    if (n && !salida.includes(n)) salida.push(n);
+  }
+  return salida.length ? salida : [TAG_DEFECTO];
+}
+function formatoFecha(iso) {
+  try {
+    const d = new Date(iso);
+    if (isNaN(d)) return '';
+    const hoy = new Date();
+    const mismoDia = d.toDateString() === hoy.toDateString();
+    return mismoDia
+      ? 'Hoy ' + d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
+      : d.toLocaleDateString('es', { day: '2-digit', month: 'short', year: d.getFullYear() === hoy.getFullYear() ? undefined : '2-digit' });
+  } catch { return ''; }
+}
+function peso(txt) {
+  return String(txt || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+function formatoLargo(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' }) +
+      ' a las ' + d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+  } catch { return ''; }
+}
+
+let toastTimer;
+function toast(msg, largo = false) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), largo ? 6500 : 2600);
+}
+
+/* ==================================================================
+   2. ESTADO
+   ================================================================== */
+const interfaz = Object.assign({
+  etiqueta: ETIQUETA_TODAS,
+  orden: 'actualizada',
+  vista: 'rejilla',
+  tema: 'oscuro'
+}, leer(CLAVE.interfaz, {}));
+
+const estado = {
+  notas: [],
+  busqueda: '',
+  editandoId: null,
+  etiquetasEditor: [],
+  sugerenciaActual: -1
+};
+let urlApi = URL_APP_SCRIPT;
+let colaPendiente = leer(CLAVE.cola, []);
+
+function persistirInterfaz() { guardar(CLAVE.interfaz, interfaz); }
+
+/* ==================================================================
+   3. ALMACENAMIENTO LOCAL (respaldo instantáneo + modo sin conexión)
+   ================================================================== */
+function cargarLocal() {
+  estado.notas = (leer(CLAVE.notas, []) || [])
+    .filter(n => n && n.id)
+    .map(n => ({
+      id: n.id,
+      createdAt: n.createdAt || new Date().toISOString(),
+      updatedAt: n.updatedAt || n.createdAt || new Date().toISOString(),
+      title: String(n.title || ''),
+      body: String(n.body || ''),
+      tags: normalizarEtiquetas(n.tags),
+      pinned: !!n.pinned
+    }));
+}
+function guardarLocal() { guardar(CLAVE.notas, estado.notas); }
+
+/* ==================================================================
+   4. COMUNICACIÓN CON GOOGLE SHEETS
+   ================================================================== */
+function hayApi() { return /^https:\/\/script\.google\.(com|[a-z.]+)\/macros\/s\//.test(urlApi); }
+
+async function apiLeer() {
+  if (!hayApi()) return null;
+  const r = await fetch(urlApi + (urlApi.includes('?') ? '&' : '?') + 't=' + Date.now(), { redirect: 'follow' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'error desconocido');
+  return j;
+}
+async function apiEscribir(payload) {
+  if (!hayApi()) throw new Error('sin conexión configurada');
+  const r = await fetch(urlApi, { method: 'POST', body: JSON.stringify(payload) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'error desconocido');
+  return j;
+}
+function encolar(op) {
+  // Si hay varias operaciones sobre la misma nota, solo guardamos la última:
+  // así "pendientes" no crece por cada reintento de la misma nota.
+  if (op.op === 'save') colaPendiente = colaPendiente.filter(o => !(o.op === 'save' && o.note.id === op.note.id));
+  if (op.op === 'delete') colaPendiente = colaPendiente.filter(o => !((o.op === 'save' && o.note.id === op.id) || (o.op === 'delete' && o.id === op.id)));
+  colaPendiente.push(op);
+  if (colaPendiente.length > 400) colaPendiente = colaPendiente.slice(-400);
+  guardar(CLAVE.cola, colaPendiente);
+}
+function desencolar() { colaPendiente = []; guardar(CLAVE.cola, colaPendiente); }
+
+function pintarEstado(tipo, texto) {
+  const punto = $('#estado .punto');
+  punto.className = 'punto ' + (tipo || '');
+  punto.nextElementSibling.textContent = texto;
+  $('#estado').classList.toggle('reintentable', colaPendiente.length > 0);
+}
+
+async function sincronizar(silencioso = false) {
+  if (!hayApi()) {
+    pintarEstado('', colaPendiente.length ? 'Solo local · ' + colaPendiente.length + ' pendiente(s)' : 'Solo local (sin Sheets)');
+    return;
+  }
+  pintarEstado('cargando', 'Sincronizando...');
+
+  // 1) Leer de la hoja
+  let remoto;
+  try {
+    remoto = await apiLeer();
+  } catch (e) {
+    pintarEstado('sin', 'No se pudo leer: ' + e.message);
+    if (!silencioso) toast('No se pudo leer de la hoja: ' + e.message, true);
+    return;
+  }
+
+  estado.notas = combinar(leerNotasLocales(), remoto.notes || []);
+  guardarLocal();
+  render();
+
+  // 2) Enviar lo que quedo pendiente
+  try {
+    await vaciarCola();
+  } catch (e) {
+    pintarEstado('sin', (navigator.onLine ? 'No se pudo guardar: ' : 'Sin conexión: ') + e.message);
+    if (!silencioso) avisarError(e);
+    return;
+  }
+
+  pintarEstado('ok', 'Sincronizado · ' + formatoFecha(remoto.serverTime));
+}
+
+/** Notas guardadas en este dispositivo (copia local). */
+function leerNotasLocales() {
+  return leer(CLAVE.notas, []) || [];
+}
+function combinar(local, remoto) {
+  const mapa = new Map();
+  for (const n of local) if (n && n.id) mapa.set(n.id, n);
+  for (const n of remoto) {
+    if (!n || !n.id) continue;
+    const previa = mapa.get(n.id);
+    if (!previa || new Date(n.updatedAt || 0) >= new Date(previa.updatedAt || 0)) mapa.set(n.id, n);
+  }
+  return [...mapa.values()];
+}
+
+/** Envia la cola de cambios pendientes. Si algo falla, deja el resto en la
+    cola ypropaga el error real del servidor. */
+async function vaciarCola() {
+  while (colaPendiente.length) {
+    const op = colaPendiente[0];
+    await apiEscribir(op);            // si falla, salta y el op sigue en cola
+    colaPendiente.shift();
+    guardar(CLAVE.cola, colaPendiente);
+  }
+}
+
+let avisoError = 0;
+/** Pista accionable: si el fallo viene del script de Google, el usuario
+    necesita crear una versión nueva de la implementación. */
+function pistaError(e) {
+  const m = String((e && e.message) || '');
+  return /is not defined|Exception|ReferenceError|SyntaxError|TypeError/.test(m)
+    ? ' · actualiza el script: Implementación > Nueva versión'
+    : '';
+}
+function avisarError(e) {
+  const ahora = Date.now();
+  if (ahora - avisoError < 15000) return;
+  avisoError = ahora;
+  const msg = String((e && e.message) || e);
+  if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) {
+    toast('Sin conexión: se guardó solo en este dispositivo', true);
+  } else {
+    toast('Error del servidor: ' + msg + pistaError(e), true);
+  }
+}
+function mensajeFallo(e, donde) {
+  return navigator.onLine
+    ? 'No se pudo guardar: ' + e.message + ' · ' + donde
+    : 'Sin conexión · ' + donde;
+}
+
+async function guardarNota(nota) {
+  estado.notas = estado.notas.filter(n => n.id !== nota.id).concat([nota]);
+  guardarLocal();
+  render();
+  if (hayApi()) {
+    try { await apiEscribir({ op: 'save', note: nota }); }
+    catch (e) { encolar({ op: 'save', note: nota }); pintarEstado('sin', mensajeFallo(e, 'guardada aquí')); avisarError(e); }
+  } else {
+    encolar({ op: 'save', note: nota });
+  }
+}
+
+async function borrarNota(id) {
+  estado.notas = estado.notas.filter(n => n.id !== id);
+  guardarLocal();
+  render();
+  if (hayApi()) {
+    try { await apiEscribir({ op: 'delete', id }); }
+    catch (e) { encolar({ op: 'delete', id }); pintarEstado('sin', mensajeFallo(e, 'borrada aquí')); avisarError(e); }
+  } else {
+    encolar({ op: 'delete', id });
+  }
+}
+
+/* ==================================================================
+   5. RENDERIZADO
+   ================================================================== */
+function contarEtiquetas() {
+  const mapa = new Map();
+  for (const n of estado.notas) for (const t of n.tags) mapa.set(t, (mapa.get(t) || 0) + 1);
+  return [...mapa.entries()].sort((a, b) => b[1] - a[1] || peso(a[0]).localeCompare(peso(b[0])));
+}
+
+function render() {
+  renderBarraEtiquetas();
+  renderRejilla();
+  const n = estado.notas.length;
+  $('#contador').textContent = n === 1 ? '1 nota' : n + ' notas';
+}
+
+function renderBarraEtiquetas() {
+  const conteo = contarEtiquetas();
+  const chips = [`<button class="chip ${interfaz.etiqueta === ETIQUETA_TODAS ? 'activo' : ''}" data-et="*">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Todas <b>${estado.notas.length}</b></button>`];
+  for (const [tag, total] of conteo) {
+    chips.push(`<button class="chip ${interfaz.etiqueta === tag ? 'activo' : ''}" data-et="${esc(tag)}"><span class="hash">#</span>${esc(tag)} <b>${total}</b></button>`);
+  }
+  $('#barraEtiquetas').innerHTML = chips.join('');
+}
+
+function notasVisibles() {
+  const q = peso(estado.busqueda.trim());
+  const lista = estado.notas.filter(n => {
+    if (interfaz.etiqueta !== ETIQUETA_TODAS && !n.tags.includes(interfaz.etiqueta)) return false;
+    if (!q) return true;
+    return peso(n.title + ' ' + n.body + ' ' + n.tags.map(t => '#' + t).join(' ')).includes(q.replace(/^#/, ''));
+  });
+  const orden = {
+    actualizada: (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+    creacion: (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    antigua: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+    az: (a, b) => peso(a.title || 'zzz').localeCompare(peso(b.title || 'zzz')),
+    za: (a, b) => peso(b.title || 'zzz').localeCompare(peso(a.title || 'zzz')),
+    largo: (a, b) => b.body.length - a.body.length
+  };
+  return lista.sort((a, b) => (b.pinned - a.pinned) || (orden[interfaz.orden] || orden.actualizada)(a, b));
+}
+
+function renderRejilla() {
+  const lista = notasVisibles();
+  const cont = $('#rejilla');
+  cont.classList.toggle('lista', interfaz.vista === 'lista');
+
+  if (!lista.length) {
+    const hayNotas = estado.notas.length > 0;
+    cont.innerHTML = `<div class="vacio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        ${hayNotas ? '<path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="m21 21-4.3-4.3"/>'
+                   : '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/>'}
+      </svg>
+      <h2>${hayNotas ? 'Nada coincide' : 'Aún no hay notas'}</h2>
+      <p>${hayNotas ? 'Prueba con otra búsqueda o quita el filtro de etiqueta.' : 'Toca el botón + para crear tu primera nota.'}</p>
+      ${hayNotas ? '<button class="btn sec" id="btnQuitarFiltros">Quitar filtros</button>' : '<button class="btn" id="btnPrimera">Crear mi primera nota</button>'}
+    </div>`;
+    const q = $('#btnQuitarFiltros');
+    if (q) q.onclick = () => { interfaz.etiqueta = ETIQUETA_TODAS; estado.busqueda = ''; $('#q').value = ''; persistirInterfaz(); render(); };
+    const p = $('#btnPrimera');
+    if (p) p.onclick = () => abrirEditor();
+    return;
+  }
+
+  cont.innerHTML = lista.map(tarjetaHTML).join('');
+}
+
+function tarjetaHTML(n) {
+  const etiquetas = n.tags.map(t => `<button class="mini-etiqueta" data-et="${esc(t)}"><span class="hash">#</span>${esc(t)}</button>`).join('');
+  const iconoPin = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.8V4h6v6.8l2 3.2H7z"/></svg>`;
+  return `<article class="tarjeta ${n.pinned ? 'fijada' : ''}" data-id="${esc(n.id)}" tabindex="0">
+    <div class="tarjeta-cab">
+      <h3>${esc(n.title || 'Sin título')}</h3>
+      <div class="tarjeta.herramientas">
+        <button class="mini-btn ${n.pinned ? 'fijado' : ''}" data-acc="fijar" title="${n.pinned ? 'Quitar de fijadas' : 'Fijar arriba'}">${iconoPin}</button>
+        <button class="mini-btn" data-acc="editar" title="Editar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </button>
+        <button class="mini-btn peligro" data-acc="borrar" title="Eliminar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="cuerpo">${esc(n.body || 'Sin contenido')}</p>
+    <div class="tarjeta-pie">${etiquetas}<span class="fecha">${formatoFecha(n.updatedAt)}</span></div>
+  </article>`;
+}
+
+function renderEtiquetasEditor() {
+  const caja = $('#cajaEtiquetas');
+  const input = $('#fEtiqueta');
+  const chips = estado.etiquetasEditor.map(t =>
+    `<span class="chip"><span class="hash">#</span>${esc(t)}<button type="button" data-quitar="${esc(t)}" aria-label="Quitar ${esc(t)}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button></span>`).join('');
+  caja.querySelectorAll('.chip').forEach(c => c.remove());
+  caja.insertAdjacentHTML('afterbegin', chips);
+  input.placeholder = estado.etiquetasEditor.length ? 'Añadir otra...' : 'Escribe y pulsa Enter';
+}
+
+function renderSugerencias() {
+  const cont = $('#sugerencias');
+  const texto = peso($('#fEtiqueta').value.trim());
+  if (!texto) { cont.classList.add('oculto'); return; }
+  const usadas = new Set(estado.etiquetasEditor);
+  const lista = contarEtiquetas()
+    .filter(([t]) => !usadas.has(t) && peso(t).includes(texto))
+    .slice(0, 8);
+  if (!lista.length) { cont.classList.add('oculto'); return; }
+  cont.innerHTML = lista.map(([t, c]) =>
+    `<button type="button" data-sug="${esc(t)}"><span class="hash">#</span>${esc(t)}<small>${c} nota(s)</small></button>`).join('');
+  cont.classList.remove('oculto');
+}
+
+/* ==================================================================
+   6. EDITOR
+   ================================================================== */
+function abrirEditor(id = null) {
+  estado.editandoId = id;
+  const n = id ? estado.notas.find(x => x.id === id) : null;
+  $('#tituloEditor').textContent = n ? 'Editar nota' : 'Nueva nota';
+  $('#fNombre').value = n ? n.title : '';
+  $('#fNota').value = n ? n.body : '';
+  estado.etiquetasEditor = n ? n.tags.slice() : [];
+  $('#fEtiqueta').value = '';
+  $('#sugerencias').classList.add('oculto');
+  $('#btnEliminar').style.display = n ? '' : 'none';
+  renderEtiquetasEditor();
+  $('#dlgEditor').showModal();
+  setTimeout(() => $('#fNombre').focus(), 60);
+}
+
+function abrirVer(id) {
+  const n = estado.notas.find(x => x.id === id);
+  if (!n) return;
+  $('#verTitulo').textContent = n.title || 'Sin título';
+  $('#verEtiquetas').innerHTML = n.tags
+    .map(t => `<span class="chip"><span class="hash">#</span>${esc(t)}</span>`).join('');
+  $('#verTexto').textContent = n.body;
+  $('#verMeta').textContent = 'Creada el ' + formatoLargo(n.createdAt) + ' · Última edición: ' + formatoLargo(n.updatedAt);
+  $('#btnVerFijar').textContent = n.pinned ? 'Quitar de fijadas' : 'Fijar arriba';
+  $('#btnVerEditar').onclick = () => { $('#dlgVer').close(); abrirEditor(id); };
+  $('#btnVerFijar').onclick = async () => {
+    const nota = estado.notas.find(x => x.id === id);
+    if (!nota) return;
+    await guardarNota({ ...nota, pinned: !nota.pinned, updatedAt: new Date().toISOString() });
+    abrirVer(id);
+  };
+  $('#btnVerBorrar').onclick = async () => {
+    if (!confirm('¿Eliminar "' + (n.title || 'Sin título') + '"?')) return;
+    $('#dlgVer').close();
+    await borrarNota(id);
+    toast('Nota eliminada');
+  };
+  $('#dlgVer').showModal();
+}
+
+function cerrarEditor() { $('#dlgEditor').close(); }
+
+function añadirEtiqueta(texto) {
+  const t = normalizarEtiqueta(texto);
+  if (!t) return;
+  if (estado.etiquetasEditor.includes(t)) { toast('Esa etiqueta ya está'); return; }
+  if (estado.etiquetasEditor.length >= 20) { toast('Máximo 20 etiquetas por nota'); return; }
+  estado.etiquetasEditor.push(t);
+  renderEtiquetasEditor();
+}
+
+function guardarDesdeEditor() {
+  // Si el usuario escribió una etiqueta pero no llegó a pulsar Enter, se guarda igual.
+  const pendiente = $('#fEtiqueta').value;
+  if (pendiente.trim()) añadirEtiqueta(pendiente);
+  $('#fEtiqueta').value = '';
+
+  const nombre = $('#fNombre').value.trim();
+  const cuerpo = $('#fNota').value.trim();
+  if (!nombre && !cuerpo) { toast('Escribe al menos un nombre o una nota'); $('#fNombre').focus(); return; }
+
+  const previa = estado.editandoId ? estado.notas.find(n => n.id === estado.editandoId) : null;
+  const ahoraIso = new Date().toISOString();
+  const nota = {
+    id: previa ? previa.id : uuid(),
+    createdAt: previa ? previa.createdAt : ahoraIso,
+    updatedAt: ahoraIso,
+    title: nombre,
+    body: cuerpo,
+    tags: normalizarEtiquetas(estado.etiquetasEditor),
+    pinned: previa ? previa.pinned : false
+  };
+  cerrarEditor();
+  guardarNota(nota);
+  toast(previa ? 'Nota actualizada' : 'Nota guardada');
+}
+
+/* ==================================================================
+   7. AJUSTES
+   ================================================================== */
+function abrirAjustes() {
+  $('#infoConexion').textContent = hayApi()
+    ? 'Conectado · ' + estado.notas.length + ' nota(s) en la hoja'
+    : 'Sin conexión configurada';
+  const cont = $('#listaEtiquetas');
+  const conteo = contarEtiquetas();
+  cont.innerHTML = conteo.length
+    ? conteo.map(([t, c]) => `<span class="chip">#${esc(t)} <b>${c}</b>
+        <button class="mini-btn" data-renombrar="${esc(t)}" title="Renombrar" style="width:22px;height:22px">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </button>
+        <button class="mini-btn" data-borrar-et="${esc(t)}" title="Eliminar etiqueta" style="width:22px;height:22px">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button></span>`).join('')
+    : '<span class="ayuda">Todavía no hay etiquetas. Crea una nota y asígnale una.</span>';
+
+  const bytes = new Blob([JSON.stringify(estado.notas)]).size;
+  $('#infoAlmacenamiento').textContent = estado.notas.length + ' · ' + (bytes / 1024).toFixed(1) + ' KB en este dispositivo';
+  $('#dlgAjustes').showModal();
+}
+
+async function renombrarEtiqueta(vieja) {
+  const nueva = normalizarEtiqueta(prompt('Renombrar etiqueta #' + vieja, vieja));
+  if (!nueva || nueva === vieja) return;
+  const afectadas = estado.notas.filter(n => n.tags.includes(vieja)).map(n => ({ ...n, tags: normalizarEtiquetas(n.tags.map(t => t === vieja ? nueva : t)), updatedAt: new Date().toISOString() }));
+  for (const n of afectadas) await guardarNota(n);
+  if (interfaz.etiqueta === vieja) interfaz.etiqueta = nueva;
+  persistirInterfaz();
+  abrirAjustes();
+  render();
+  toast('Etiqueta renombrada');
+}
+
+async function borrarEtiqueta(vieja) {
+  if (!confirm('¿Quitar "#' + vieja + '" de todas las notas?')) return;
+  const afectadas = estado.notas.filter(n => n.tags.includes(vieja)).map(n => ({ ...n, tags: normalizarEtiquetas(n.tags.filter(t => t !== vieja)), updatedAt: new Date().toISOString() }));
+  for (const n of afectadas) await guardarNota(n);
+  if (interfaz.etiqueta === vieja) interfaz.etiqueta = ETIQUETA_TODAS;
+  persistirInterfaz();
+  abrirAjustes();
+  render();
+}
+
+function exportarJSON() {
+  const datos = JSON.stringify({ version: 1, exportado: new Date().toISOString(), notas: estado.notas }, null, 2);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([datos], { type: 'application/json' }));
+  a.download = 'mis-notas-' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  toast('Archivo descargado');
+}
+
+function importarJSON(archivo) {
+  const lector = new FileReader();
+  lector.onload = async () => {
+    try {
+      const datos = JSON.parse(lector.result);
+      const lista = Array.isArray(datos) ? datos : datos.notas;
+      if (!Array.isArray(lista)) throw new Error('formato no reconocido');
+      for (const n of lista) await guardarNota({
+        id: n.id || uuid(),
+        createdAt: n.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        title: String(n.title || ''),
+        body: String(n.body || ''),
+        tags: normalizarEtiquetas(n.tags),
+        pinned: !!n.pinned
+      });
+      render();
+      toast(lista.length + ' nota(s) importada(s)');
+      abrirAjustes();
+    } catch (e) { toast('No se pudo importar: ' + e.message); }
+  };
+  lector.readAsText(archivo);
+}
+
+/* ==================================================================
+   8. INSTALACIÓN COMO APP (PWA)
+   ================================================================== */
+let promptInstalacion = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  promptInstalacion = e;
+  $('#btnInstalar').textContent = 'Instalar';
+  $('#btnInstalar').classList.remove('sec');
+});
+window.addEventListener('appinstalled', () => {
+  promptInstalacion = null;
+  toast('App instalada. Ya la tienes en tu pantalla de inicio.');
+  $('#btnInstalar').classList.add('sec');
+});
+
+function registrarSW() {
+  if (!('serviceWorker' in navigator) || !location.protocol.startsWith('http')) return;
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
+/* ==================================================================
+   9. EVENTOS
+   ================================================================== */
+function aplicarTema() {
+  document.documentElement.dataset.theme = interfaz.tema;
+  $('#metaTheme').content = interfaz.tema === 'oscuro' ? '#0b0e14' : '#f4f6fb';
+  $('#btnTema').innerHTML = interfaz.tema === 'oscuro'
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>`;
+}
+
+function initEventos() {
+  // Búsqueda
+  let temporizador;
+  $('#q').addEventListener('input', e => {
+    estado.busqueda = e.target.value;
+    $('#limpiarBusqueda').classList.toggle('oculto', !estado.busqueda);
+    clearTimeout(temporizador);
+    temporizador = setTimeout(renderRejilla, 120);
+  });
+  $('#limpiarBusqueda').onclick = () => { $('#q').value = ''; estado.busqueda = ''; $('#limpiarBusqueda').classList.add('oculto'); renderRejilla(); };
+
+  // Etiquetas
+  $('#barraEtiquetas').addEventListener('click', e => {
+    const chip = e.target.closest('[data-et]');
+    if (!chip) return;
+    interfaz.etiqueta = chip.dataset.et;
+    persistirInterfaz();
+    render();
+    $('#rejilla').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Tarjetas
+  $('#rejilla').addEventListener('click', e => {
+    const et = e.target.closest('[data-et]');
+    if (et) {
+      interfaz.etiqueta = et.dataset.et;
+      persistirInterfaz();
+      render();
+      return;
+    }
+    const tarjeta = e.target.closest('.tarjeta');
+    if (!tarjeta) return;
+    const id = tarjeta.dataset.id;
+    const nota = estado.notas.find(n => n.id === id);
+    const acc = e.target.closest('[data-acc]');
+    if (acc) {
+      e.stopPropagation();
+      if (acc.dataset.acc === 'editar') abrirEditor(id);
+      if (acc.dataset.acc === 'fijar' && nota) guardarNota({ ...nota, pinned: !nota.pinned, updatedAt: new Date().toISOString() });
+      if (acc.dataset.acc === 'borrar') {
+        if (confirm('¿Eliminar "' + (nota ? nota.title || 'Sin título' : 'la nota') + '"?')) { borrarNota(id); toast('Nota eliminada'); }
+      }
+      return;
+    }
+    abrirVer(id);
+  });
+  $('#rejilla').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('tarjeta')) abrirVer(e.target.dataset.id);
+  });
+
+  // Orden y vista
+  $('#orden').value = interfaz.orden;
+  $('#orden').onchange = e => { interfaz.orden = e.target.value; persistirInterfaz(); renderRejilla(); };
+  $('#btnVista').onclick = () => {
+    interfaz.vista = interfaz.vista === 'rejilla' ? 'lista' : 'rejilla';
+    persistirInterfaz();
+    $('#btnVista').classList.toggle('activo', interfaz.vista === 'lista');
+    renderRejilla();
+  };
+  $('#btnTema').onclick = () => { interfaz.tema = interfaz.tema === 'oscuro' ? 'claro' : 'oscuro'; persistirInterfaz(); aplicarTema(); };
+  $('#btnAjustes').onclick = abrirAjustes;
+  $('#fab').onclick = () => abrirEditor();
+  $('#estado').onclick = () => {
+    if (colaPendiente.length) { toast('Reintentando ' + colaPendiente.length + ' cambio(s)...'); sincronizar(); }
+    else sincronizar(true);
+  };
+
+  // Editor
+  $('#formEditor').addEventListener('submit', e => { e.preventDefault(); guardarDesdeEditor(); });
+  $('#btnEliminar').onclick = e => {
+    const id = estado.editandoId;
+    if (!id) return;
+    e.currentTarget.onclick = null;
+    cerrarEditor();
+    borrarNota(id);
+    toast('Nota eliminada');
+  };
+  $$('[data-cerrar]').forEach(b => b.onclick = () => b.closest('dialog').close());
+  $('#dlgEditor').addEventListener('click', e => { if (e.target === $('#dlgEditor')) cerrarEditor(); });
+  $('#dlgVer').addEventListener('click', e => { if (e.target === $('#dlgVer')) $('#dlgVer').close(); });
+
+  const campoEtiqueta = $('#fEtiqueta');
+  campoEtiqueta.addEventListener('input', () => { estado.sugerenciaActual = -1; renderSugerencias(); });
+  // Al hacer clic fuera del campo, lo escrito se convierte en etiqueta.
+  campoEtiqueta.addEventListener('change', () => {
+    if (campoEtiqueta.value.trim()) { añadirEtiqueta(campoEtiqueta.value); campoEtiqueta.value = ''; }
+    $('#sugerencias').classList.add('oculto');
+  });
+  campoEtiqueta.addEventListener('keydown', e => {
+    const sugerencias = $$('#sugerencias button');
+    if (e.key === 'Enter' || e.key === ',' || e.key === 'Tab') {
+      if (sugerencias[estado.sugerenciaActual]) { e.preventDefault(); añadirEtiqueta(sugerencias[estado.sugerenciaActual].dataset.sug); campoEtiqueta.value = ''; $('#sugerencias').classList.add('oculto'); return; }
+      if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); if (campoEtiqueta.value.trim()) { añadirEtiqueta(campoEtiqueta.value); campoEtiqueta.value = ''; $('#sugerencias').classList.add('oculto'); } }
+      return;
+    }
+    if (e.key === 'Backspace' && !campoEtiqueta.value && estado.etiquetasEditor.length) {
+      estado.etiquetasEditor.pop(); renderEtiquetasEditor(); return;
+    }
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && sugerencias.length) {
+      e.preventDefault();
+      estado.sugerenciaActual = (estado.sugerenciaActual + (e.key === 'ArrowDown' ? 1 : -1) + sugerencias.length) % sugerencias.length;
+      sugerencias.forEach((b, i) => b.classList.toggle('resaltada', i === estado.sugerenciaActual));
+      sugerencias[estado.sugerenciaActual].scrollIntoView({ block: 'nearest' });
+    }
+  });
+  $('#cajaEtiquetas').addEventListener('click', e => {
+    const quitar = e.target.closest('[data-quitar]');
+    if (quitar) { estado.etiquetasEditor = estado.etiquetasEditor.filter(t => t !== quitar.dataset.quitar); renderEtiquetasEditor(); return; }
+    campoEtiqueta.focus();
+  });
+  $('#sugerencias').addEventListener('click', e => {
+    const sug = e.target.closest('[data-sug]');
+    if (sug) { añadirEtiqueta(sug.dataset.sug); campoEtiqueta.value = ''; $('#sugerencias').classList.add('oculto'); campoEtiqueta.focus(); }
+  });
+
+  // Ajustes
+  $('#btnSincronizar').onclick = () => sincronizar();
+  $('#btnExportar').onclick = exportarJSON;
+  $('#btnImportar').onclick = () => $('#archivoImportar').click();
+  $('#archivoImportar').onchange = e => { if (e.target.files[0]) importarJSON(e.target.files[0]); e.target.value = ''; };
+  $('#btnInstalar').onclick = async () => {
+    if (promptInstalacion) { promptInstalacion.prompt(); await promptInstalacion.userChoice; promptInstalacion = null; return; }
+    toast('En Chrome: menú ⋮ > "Instalar aplicación" o "Añadir a pantalla de inicio".');
+  };
+  $('#listaEtiquetas').addEventListener('click', e => {
+    const r = e.target.closest('[data-renombrar]');
+    if (r) { renombrarEtiqueta(r.dataset.renombrar); return; }
+    const b = e.target.closest('[data-borrar-et]');
+    if (b) borrarEtiqueta(b.dataset.borrarEt);
+  });
+  $('#btnVaciar').onclick = async () => {
+    if (!confirm('Se borrarán TODAS las notas de este dispositivo y de la hoja. ¿Continuar?')) return;
+    if (!confirm('Última confirmación: esta acción no se puede deshacer. ¿Borrar todo?')) return;
+    estado.notas = [];
+    guardarLocal();
+    desencolar();
+    if (hayApi()) { try { await apiEscribir({ op: 'clear' }); } catch {} }
+    render();
+    cerrarDialogo('#dlgAjustes');
+    toast('Todo borrado');
+  };
+
+  // Atajos
+  document.addEventListener('keydown', e => {
+    const enCampo = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); $('#q').focus(); $('#q').select(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n' && !document.querySelector('dialog[open]')) { e.preventDefault(); abrirEditor(); }
+    if (e.key === 'Escape' && !document.querySelector('dialog[open]')) { $('#q').value = ''; estado.busqueda = ''; renderRejilla(); }
+    if (enCampo) return;
+  });
+
+  // Volver a sincronizar al abrir la app
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) sincronizar(true); });
+  window.addEventListener('online', () => sincronizar(true));
+  window.addEventListener('offline', () => pintarEstado('sin', 'Sin conexión'));
+}
+
+function cerrarDialogo(sel) { const d = $(sel); if (d.open) d.close(); }
+
+/* ==================================================================
+   10. ARRANQUE
+   ================================================================== */
+function init() {
+  aplicarTema();
+  $('#btnVista').classList.toggle('activo', interfaz.vista === 'lista');
+  cargarLocal();
+  render();
+  initEventos();
+  registrarSW();
+
+  // Acceso directo del manifiesto: ./index.html?nueva=1 abre el editor directo.
+  if (new URLSearchParams(location.search).get('nueva') === '1') {
+    history.replaceState(null, '', location.pathname);
+    setTimeout(() => abrirEditor(), 200);
+  }
+
+  if (!hayApi()) {
+    pintarEstado('', colaPendiente.length ? 'Solo local · ' + colaPendiente.length + ' pendiente(s)' : 'Solo local · conecta Google Sheets en Ajustes');
+  } else {
+    sincronizar(true);
+  }
+  if (matchMedia('(prefers-color-scheme: light)').matches && !leer(CLAVE.interfaz, null)) {
+    interfaz.tema = 'claro';
+    persistirInterfaz();
+    aplicarTema();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
