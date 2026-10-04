@@ -592,6 +592,9 @@ const URL_PARTES = [
   '_WlS/exec'
 ];
 const URL_APP_SCRIPT = URL_PARTES.join('');
+/** Versión del script que espera la app. Si la hoja responde con otra,
+    falta republicar el Code.gs y las reacciones no llegan a guardarse. */
+const VERSION_ESPERADA = 'notas-2.2';
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -678,12 +681,11 @@ async function sumarReaccion(id, emoji) {
   const actuales = { ...(nota.reacciones || {}) };
   actuales[emoji] = (actuales[emoji] || 0) + 1;
   nota.reacciones = normalizarReacciones(actuales);
-  guardarLocal();
-  render();
+  nota.rxAt = new Date().toISOString();   // reloj propio: no toca updatedAt
+  await guardarNota(nota);                 // guarda en el dispositivo Y en la hoja
   refrescarLector(id);
   const chip = $(`.reaccion[data-reacc="${CSS.escape(emoji)}"][data-id="${CSS.escape(id)}"]`);
   if (chip) { chip.classList.add('suma'); setTimeout(() => chip.classList.remove('suma'), 340); }
-  sincronizar(true);
 }
 async function restarReaccion(id, emoji) {
   const nota = estado.notas.find(n => n.id === id);
@@ -692,10 +694,9 @@ async function restarReaccion(id, emoji) {
   const total = (actuales[emoji] || 0) - 1;
   if (total > 0) actuales[emoji] = total; else delete actuales[emoji];
   nota.reacciones = normalizarReacciones(actuales);
-  guardarLocal();
-  render();
+  nota.rxAt = new Date().toISOString();
+  await guardarNota(nota);
   refrescarLector(id);
-  sincronizar(true);
 }
 function refrescarLector(id) {
   if (!$('#dlgVer').open || $('#dlgVer').dataset.id !== id) return;
@@ -749,6 +750,7 @@ function cargarLocal() {
       id: n.id,
       createdAt: n.createdAt || new Date().toISOString(),
       updatedAt: n.updatedAt || n.createdAt || new Date().toISOString(),
+      rxAt: n.rxAt || n.updatedAt || n.createdAt || new Date().toISOString(),
       title: String(n.title || ''),
       body: String(n.body || ''),
       tags: normalizarEtiquetas(n.tags),
@@ -814,7 +816,7 @@ async function sincronizar(silencioso = false) {
     return;
   }
 
-  estado.notas = combinar(leerNotasLocales(), remoto.notes || []);
+  estado.notas = combinar(leerNotasLocales(), notasDesdeServidor(remoto.notes));
   guardarLocal();
   render();
 
@@ -827,26 +829,65 @@ async function sincronizar(silencioso = false) {
     return;
   }
 
-  pintarEstado('ok', 'Sincronizado · ' + formatoFecha(remoto.serverTime));
+  // Si el script de la hoja es viejo, avisa: por eso las reacciones no se guardan.
+  const viejo = remoto.version && remoto.version !== VERSION_ESPERADA;
+  pintarEstado(viejo ? 'sin' : 'ok', viejo
+    ? 'Servidor viejo (' + remoto.version + ') · Reactions no se guardan'
+    : 'Sincronizado · ' + formatoFecha(remoto.serverTime));
 }
 
 /** Notas guardadas en este dispositivo (copia local). */
 function leerNotasLocales() {
   return leer(CLAVE.notas, []) || [];
 }
+/** Traduce como viene de la hoja (reactions) a como las usa la app (reacciones). */
+function notasDesdeServidor(lista) {
+  return (Array.isArray(lista) ? lista : []).map(n => ({
+    ...n,
+    tags: normalizarEtiquetas(n.tags),
+    reacciones: normalizarReacciones(n.reacciones != null ? n.reacciones : n.reactions),
+    rxAt: n.rxAt || n.updatedAt
+  }));
+}
+/** Combina la copia local con la de la hoja campo por campo.
+    El contenido (nombre, nota, etiquetas, fijada) usa updatedAt; las reacciones
+    usan su propio reloj rxAt. Si comparten fecha, al sincronizar una reacción
+    se pisaba con la versión vieja de la hoja y desaparecía. */
 function combinar(local, remoto) {
   const mapa = new Map();
   for (const n of local) if (n && n.id) mapa.set(n.id, n);
-  for (const n of remoto) {
-    if (!n || !n.id) continue;
-    const previa = mapa.get(n.id);
-    if (!previa || new Date(n.updatedAt || 0) >= new Date(previa.updatedAt || 0)) {
-      n.reacciones = normalizarReacciones(n.reacciones);
-      n.tags = normalizarEtiquetas(n.tags);
-      mapa.set(n.id, n);
-    }
+  for (const r of remoto) {
+    if (!r || !r.id) continue;
+    const mio = mapa.get(r.id);
+    if (!mio) { mapa.set(r.id, prepararRemota(r)); continue; }
+
+    const ganaMio = new Date(mio.updatedAt || 0) >= new Date(r.updatedAt || 0);
+    const fusion = Object.assign({}, ganaMio ? mio : r);
+    const rx = mejorReacciones(mio.reacciones, mio.rxAt, r.reacciones, r.rxAt);
+    fusion.reacciones = rx.reacciones;
+    fusion.rxAt = rx.rxAt;
+    mapa.set(r.id, prepararRemota(fusion));
   }
   return [...mapa.values()];
+}
+function prepararRemota(n) {
+  n.tags = normalizarEtiquetas(n.tags);
+  n.reacciones = normalizarReacciones(n.reacciones);
+  if (!n.rxAt) n.rxAt = n.updatedAt || new Date().toISOString();
+  return n;
+}
+/** Devuelve las reacciones ganadoras y de quién son. */
+function mejorReacciones(rMio, rxMio, rHoja, rxHoja) {
+  const tMio = new Date(rxMio || 0).getTime();
+  const tHoja = new Date(rxHoja || 0).getTime();
+  if (tMio > tHoja) return { reacciones: normalizarReacciones(rMio), rxAt: rxMio };
+  if (tHoja > tMio) return { reacciones: normalizarReacciones(rHoja), rxAt: rxHoja };
+  // Mismo instante: se suman los contadores para no perder ninguna reacción.
+  const fusion = normalizarReacciones(rHoja);
+  for (const [e, c] of Object.entries(normalizarReacciones(rMio))) {
+    fusion[e] = Math.max(fusion[e] || 0, c);
+  }
+  return { reacciones: fusion, rxAt: rxMio || rxHoja };
 }
 
 /** Envia la cola de cambios pendientes. Si algo falla, deja el resto en la
@@ -1101,10 +1142,12 @@ function guardarDesdeEditor() {
     id: previa ? previa.id : uuid(),
     createdAt: previa ? previa.createdAt : ahoraIso,
     updatedAt: ahoraIso,
+    rxAt: previa ? (previa.rxAt || ahoraIso) : ahoraIso,   // editar texto no borra reacciones
     title: nombre,
     body: cuerpo,
     tags: normalizarEtiquetas(estado.etiquetasEditor),
-    pinned: previa ? previa.pinned : false
+    pinned: previa ? previa.pinned : false,
+    reacciones: normalizarReacciones(previa ? previa.reacciones : {})
   };
   cerrarEditor();
   guardarNota(nota);
@@ -1223,10 +1266,12 @@ function importarJSON(archivo) {
         id: n.id || uuid(),
         createdAt: n.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        rxAt: n.rxAt || n.updatedAt || new Date().toISOString(),
         title: String(n.title || ''),
         body: String(n.body || ''),
         tags: normalizarEtiquetas(n.tags),
-        pinned: !!n.pinned
+        pinned: !!n.pinned,
+        reacciones: normalizarReacciones(n.reacciones)
       });
       render();
       toast(lista.length + ' nota(s) importada(s)');
