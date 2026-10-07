@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="WorldLeaf Seed - El repositorio definitivo de semillas de Minecraft Java y Bedrock">
+  <meta name="theme-color" content="#0a1628">
+  <title>WorldLeaf Seed - Biblioteca de Semillas Minecraft</title>
+
+  <!-- Preconnect para fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Estilos principales -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <!-- Favicon SVG (hoja) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍃</text></svg>">
+</head>
+<body>
+
+  <!-- ============================================================
+       LOADING OVERLAY
+       ============================================================ -->
+  <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+    <div class="loading-content">
+      <div class="loading-leaf">
+        <div class="leaf-pulse"></div>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8.16 20C12.7 20 17.3 16.17 17 8Z" fill="#c6ff00"/>
+          <path d="M17 8C17 8 19 4 23 3C23 3 22 9 17 8Z" fill="#76ff03"/>
+          <path d="M7 20L9 10" stroke="#0a1628" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="loading-text">WorldLeaf Seed</div>
+      <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+      </div>
+      <div class="loading-subtext">Cargando semillas...</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HEADER / NAVBAR
+       ============================================================ -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#" class="logo" id="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8.16 20C12.7 20 17.3 16.17 17 8Z" fill="#c6ff00"/>
+            <path d="M17 8C17 8 19 4 23 3C23 3 22 9 17 8Z" fill="#76ff03"/>
+          </svg>
+        </div>
+        <span class="logo-text">World<span class="accent">Leaf</span> Seed</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="#inicio" class="nav-link active" data-section="inicio">Inicio</a>
+        <a href="#semillas" class="nav-link" data-section="semillas">Semillas</a>
+        <a href="#enviar" class="nav-link" data-section="enviar">Enviar Semilla</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main class="main">
+
+    <!-- ============ SECCIÓN INICIO ============ -->
+    <section class="hero" id="inicio">
+      <div class="hero-bg">
+        <div class="hero-particles" id="particles"></div>
+        <div class="hero-gradient"></div>
+      </div>
+
+      <div class="container hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          Comunidad Minecraft
+        </div>
+
+        <h1 class="hero-title">
+          La biblioteca <span class="text-gradient">definitiva</span><br>
+          de semillas Minecraft
+        </h1>
+
+        <p class="hero-description">
+          Encuentra semillas épicas de <strong>Java</strong> y <strong>Bedrock</strong> en segundos.
+          Sube tus propias creaciones y ayuda a la comunidad a construir el repositorio más completo.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#semillas" class="btn btn-primary btn-lg">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Explorar Semillas
+          </a>
+          <a href="#enviar" class="btn btn-outline btn-lg">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Subir Semilla
+          </a>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="hero-stats" id="heroStats">
+          <div class="stat-card">
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Semillas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statJava">0</div>
+            <div class="stat-label">Java</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statBedrock">0</div>
+            <div class="stat-label">Bedrock</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statCommunity">∞</div>
+            <div class="stat-label">Comunidad</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll">
+        <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+          <path d="M7 13L12 18L17 13M7 7L12 12L17 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN SEMILLAS ============ -->
+    <section class="seeds-section" id="semillas">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Explorar <span class="accent">Semillas</span></h2>
+          <p class="section-subtitle">Encuentra exactamente lo que buscas con nuestros filtros avanzados</p>
+        </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="filters-panel">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="text"
+                   id="searchInput"
+                   placeholder="Buscar por nombre, descripción, bioma o número..."
+                   autocomplete="off"
+                   maxlength="100">
+            <button class="search-clear" id="searchClear" aria-label="Limpiar búsqueda">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="filterVersion">Versión</label>
+              <select id="filterVersion">
+                <option value="">Todas</option>
+                <option value="Java">Java</option>
+                <option value="Bedrock">Bedrock</option>
+                <option value="Ambos">Ambos</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="filterBiome">Bioma</label>
+              <select id="filterBiome">
+                <option value="">Todos</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="filterStructure">Estructura</label>
+              <select id="filterStructure">
+                <option value="">Todas</option>
+              </select>
+            </div>
+
+            <button class="btn btn-ghost" id="btnClearFilters">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                <path d="M3 6H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6L18.2987 18.114C18.2309 18.9213 17.5639 19.5 16.7543 19.5H7.24575C6.43609 19.5 5.76909 18.9213 5.70127 18.114L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Limpiar
+            </button>
+          </div>
+
+          <div class="filters-info">
+            <span id="resultsCount">Cargando semillas...</span>
+            <div class="view-toggle">
+              <button class="view-btn active" data-view="grid" aria-label="Vista cuadrícula">
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                  <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                  <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                  <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </button>
+              <button class="view-btn" data-view="list" aria-label="Vista lista">
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                  <path d="M8 6H21M8 12H21M8 18H21M3 6H3.01M3 12H3.01M3 18H3.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid de Semillas -->
+        <div class="seeds-grid" id="seedsGrid">
+          <!-- Los cards se inyectan dinámicamente -->
+        </div>
+
+        <!-- Estado vacío -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="80" height="80">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>No se encontraron semillas</h3>
+          <p>Intenta ajustar los filtros o sé el primero en subir una semilla</p>
+          <a href="#enviar" class="btn btn-primary">Subir Semilla</a>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination" id="pagination">
+          <!-- Se inyecta dinámicamente -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN ENVIAR SEMILLA ============ -->
+    <section class="submit-section" id="enviar">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Sube tu <span class="accent">Semilla</span></h2>
+          <p class="section-subtitle">Comparte tu creación con la comunidad Minecraft mundial</p>
+        </div>
+
+        <div class="submit-layout">
+          <!-- Formulario -->
+          <form class="submit-form" id="seedForm" novalidate>
+            <div class="form-grid">
+
+              <!-- Nombre -->
+              <div class="form-group full-width">
+                <label for="seedName">Nombre de la semilla <span class="required">*</span></label>
+                <input type="text"
+                       id="seedName"
+                       name="name"
+                       placeholder="Ej: Villa del Volcán con Aldea"
+                       required
+                       maxlength="80"
+                       minlength="3"
+                       autocomplete="off">
+                <span class="field-hint">Mínimo 3 caracteres, máximo 80</span>
+                <span class="field-error" id="nameError"></span>
+              </div>
+
+              <!-- Número de semilla -->
+              <div class="form-group">
+                <label for="seedNumber">Número de semilla <span class="required">*</span></label>
+                <input type="text"
+                       id="seedNumber"
+                       name="seedNumber"
+                       placeholder="Ej: -123456789"
+                       required
+                       maxlength="30"
+                       autocomplete="off">
+                <span class="field-hint">El número que ves al crear el mundo</span>
+                <span class="field-error" id="seedNumberError"></span>
+              </div>
+
+              <!-- Versión -->
+              <div class="form-group">
+                <label for="seedVersion">Versión <span class="required">*</span></label>
+                <select id="seedVersion" name="version" required>
+                  <option value="">Seleccionar...</option>
+                  <option value="Java">Java Edition</option>
+                  <option value="Bedrock">Bedrock Edition</option>
+                  <option value="Ambos">Ambas versiones</option>
+                </select>
+                <span class="field-error" id="versionError"></span>
+              </div>
+
+              <!-- Versión del juego -->
+              <div class="form-group">
+                <label for="gameVersion">Versión del juego</label>
+                <input type="text"
+                       id="gameVersion"
+                       name="versionNumber"
+                       placeholder="Ej: 1.20.4"
+                       maxlength="20"
+                       autocomplete="off">
+              </div>
+
+              <!-- Dimensión -->
+              <div class="form-group">
+                <label for="dimension">Dimensión</label>
+                <select id="dimension" name="dimension">
+                  <option value="Overworld">Overworld</option>
+                  <option value="Nether">Nether</option>
+                  <option value="End">End</option>
+                </select>
+              </div>
+
+              <!-- Coordenadas -->
+              <div class="form-group full-width">
+                <label for="coordinates">Coordenadas de inicio</label>
+                <input type="text"
+                       id="coordinates"
+                       name="coordinates"
+                       placeholder="Ej: X: 128, Y: 64, Z: -256"
+                       maxlength="100"
+                       autocomplete="off">
+                <span class="field-hint">Coordenadas donde aparece el jugador</span>
+              </div>
+
+              <!-- Biomas -->
+              <div class="form-group full-width">
+                <label>Biomas <span class="required">*</span></label>
+                <div class="checkbox-grid" id="biomesGrid">
+                  <!-- Se inyectan dinámicamente -->
+                </div>
+                <span class="field-error" id="biomesError"></span>
+              </div>
+
+              <!-- Estructuras -->
+              <div class="form-group full-width">
+                <label>Estructuras cercanas</label>
+                <div class="checkbox-grid" id="structuresGrid">
+                  <!-- Se inyectan dinámicamente -->
+                </div>
+              </div>
+
+              <!-- Autor -->
+              <div class="form-group full-width">
+                <label for="seedAuthor">Tu nombre (autor)</label>
+                <input type="text"
+                       id="seedAuthor"
+                       name="author"
+                       placeholder="Ej: Steve_Creator"
+                       maxlength="50"
+                       autocomplete="off">
+                <span class="field-hint">Opcional - aparecerá como autor de la semilla</span>
+              </div>
+
+              <!-- Descripción -->
+              <div class="form-group full-width">
+                <label for="seedDescription">Descripción <span class="required">*</span></label>
+                <textarea id="seedDescription"
+                          name="description"
+                          placeholder="Describe tu semilla: qué la hace especial, qué hay cerca, consejos para jugar..."
+                          required
+                          minlength="10"
+                          maxlength="500"
+                          rows="5"></textarea>
+                <div class="textarea-footer">
+                  <span class="field-hint">Mínimo 10 caracteres</span>
+                  <span class="char-counter" id="descCounter">0/500</span>
+                </div>
+                <span class="field-error" id="descriptionError"></span>
+              </div>
+
+              <!-- Imágenes -->
+              <div class="form-group full-width">
+                <label>Imágenes de la semilla</label>
+                <div class="image-upload-zone" id="imageUploadZone">
+                  <input type="file"
+                         id="imageInput"
+                         accept="image/jpeg,image/png,image/gif,image/webp"
+                         multiple
+                         hidden>
+                  <div class="upload-placeholder" id="uploadPlaceholder">
+                    <div class="upload-icon">
+                      <svg viewBox="0 0 24 24" fill="none" width="48" height="48">
+                        <path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 3V15M12 3L7 8M12 3L17 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <p class="upload-text">Haz clic o arrastra imágenes aquí</p>
+                    <p class="upload-hint">PNG, JPG, GIF o WebP • Máx. 10MB c/u • Hasta 10 imágenes</p>
+                  </div>
+                  <div class="image-previews" id="imagePreviews">
+                    <!-- Se inyectan dinámicamente -->
+                  </div>
+                </div>
+                <span class="field-hint">Las imágenes se suben a Google Drive y se muestran como URL pública</span>
+              </div>
+
+            </div>
+
+            <!-- Botón de envío -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg btn-full" id="submitBtn">
+                <span class="btn-text">Enviar Semilla</span>
+                <span class="btn-loading" style="display:none;">
+                  <svg class="spinner" viewBox="0 0 24 24" fill="none" width="20" height="20">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+                    <path d="M4 12A8 8 0 0 1 12 4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  </svg>
+                  Enviando...
+                </span>
+              </button>
+              <p class="form-note">
+                Al enviar, aceptas que tu semilla sea revisada y publicada en la comunidad.
+                Se protege contra contenido malicioso automáticamente.
+              </p>
+            </div>
+          </form>
+
+          <!-- Panel lateral -->
+          <aside class="submit-aside">
+            <div class="aside-card tips-card">
+              <h3>
+                <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#c6ff00" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+                Consejos para buenas semillas
+              </h3>
+              <ul class="tips-list">
+                <li>
+                  <strong>Nombre descriptivo</strong>
+                  <span>Incluye biomas o estructuras destacadas en el nombre</span>
+                </li>
+                <li>
+                  <strong>Imágenes claras</strong>
+                  <span>Toma capturas con buena iluminación y desde ángulos variados</span>
+                </li>
+                <li>
+                  <strong>Descripción útil</strong>
+                  <span>Menciona qué hace especial a tu semilla y consejos para explorarla</span>
+                </li>
+                <li>
+                  <strong>Coordenadas exactas</strong>
+                  <span>Ayuda a otros jugadores a encontrar los puntos de interés rápido</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="aside-card security-card">
+              <h3>
+                <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                  <path d="M12 22S8 18 8 12V5L12 2L16 5V12C16 18 12 22 12 22Z" stroke="#76ff03" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9 12L11 14L15 10" stroke="#76ff03" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Seguridad
+              </h3>
+              <ul class="security-list">
+                <li>
+                  <span class="check">✓</span>
+                  Sanitización de todas las entradas
+                </li>
+                <li>
+                  <span class="check">✓</span>
+                  Validación de imágenes y formatos
+                </li>
+                <li>
+                  <span class="check">✓</span>
+                  Protección XSS y inyección
+                </li>
+                <li>
+                  <span class="check">✓</span>
+                  Límite de envíos anti-spam
+                </li>
+                <li>
+                  <span class="check">✓</span>
+                  Revisión antes de publicar
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8.16 20C12.7 20 17.3 16.17 17 8Z" fill="#c6ff00"/>
+                <path d="M17 8C17 8 19 4 23 3C23 3 22 9 17 8Z" fill="#76ff03"/>
+              </svg>
+            </div>
+            <span class="logo-text">World<span class="accent">Leaf</span> Seed</span>
+          </div>
+          <p>El repositorio definitivo de semillas de Minecraft. Comunidad, calidad y seguridad.</p>
+        </div>
+
+        <div class="footer-links">
+          <h4>Navegación</h4>
+          <a href="#inicio">Inicio</a>
+          <a href="#semillas">Semillas</a>
+          <a href="#enviar">Enviar Semilla</a>
+        </div>
+
+        <div class="footer-info">
+          <h4>Tecnología</h4>
+          <p>Google Apps Script</p>
+          <p>Google Sheets</p>
+          <p>Google Drive</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="container">
+          <p>© 2026 WorldLeaf Seed. Hecho con 💚 para la comunidad Minecraft.</p>
+          <p class="footer-disclaimer">Proyecto comunitario independiente. No está afiliado, asociado ni respaldado por Mojang Studios ni Microsoft. Minecraft es marca registrada de Mojang Studios (Microsoft).</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL - DETALLE DE SEMILLA
+       ============================================================ -->
+  <div class="modal" id="seedModal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <div class="modal-body" id="modalBody">
+        <!-- Se inyecta dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TOAST NOTIFICATIONS
+       ============================================================ -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- ============================================================
+       SCRIPTS
+       ============================================================ -->
+  <script src="js/security.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
