@@ -1,0 +1,533 @@
+/* ============================================================
+   WorldLeaf Seed - Animaciones
+   ============================================================ */
+
+/* ============================================================
+   LOADING OVERLAY
+   ============================================================ */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-content {
+  text-align: center;
+  padding: var(--space-xl);
+}
+
+/* Hoja animada */
+.loading-leaf {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--space-lg);
+  position: relative;
+}
+
+.loading-leaf svg {
+  width: 100%;
+  height: 100%;
+  animation: leafFloat 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px var(--lime-glow));
+}
+
+.leaf-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--lime-primary);
+  opacity: 0.2;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Texto del loading */
+.loading-text {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-lg);
+  letter-spacing: 1px;
+}
+
+/* Barra de progreso */
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--space-md);
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, var(--lime-primary), var(--lime-secondary));
+  border-radius: var(--radius-full);
+  animation: loadingBar 1.5s ease-in-out infinite;
+}
+
+.loading-subtext {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  animation: fadeInOut 1.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   PARTICULAS DEL HERO
+   ============================================================ */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleFloat linear infinite;
+}
+
+.particle-lime {
+  background: var(--lime-primary);
+  box-shadow: 0 0 10px var(--lime-glow);
+}
+
+.particle-blue {
+  background: var(--blue-accent);
+  box-shadow: 0 0 10px var(--blue-glow);
+}
+
+.particle-white {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   ENTRADAS DE TEXTO - EFECTOS
+   ============================================================ */
+
+/* Placeholder animado en búsqueda */
+@keyframes placeholderPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.search-box input:focus::placeholder {
+  animation: placeholderPulse 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   CARDS - ANIMACIONES DE ENTRADA
+   ============================================================ */
+.seed-card {
+  animation: cardFadeIn 0.4s ease-out backwards;
+}
+
+.seed-card:nth-child(1) { animation-delay: 0s; }
+.seed-card:nth-child(2) { animation-delay: 0.05s; }
+.seed-card:nth-child(3) { animation-delay: 0.1s; }
+.seed-card:nth-child(4) { animation-delay: 0.15s; }
+.seed-card:nth-child(5) { animation-delay: 0.2s; }
+.seed-card:nth-child(6) { animation-delay: 0.25s; }
+.seed-card:nth-child(7) { animation-delay: 0.3s; }
+.seed-card:nth-child(8) { animation-delay: 0.35s; }
+.seed-card:nth-child(9) { animation-delay: 0.4s; }
+.seed-card:nth-child(10) { animation-delay: 0.45s; }
+.seed-card:nth-child(11) { animation-delay: 0.5s; }
+.seed-card:nth-child(12) { animation-delay: 0.55s; }
+
+/* ============================================================
+   BOTONES - ANIMACIONES
+   ============================================================ */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+/* Botón con spinner */
+.spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+/* ============================================================
+   FORMULARIO - ANIMACIONES DE VALIDACIÓN
+   ============================================================ */
+.form-group input.shake,
+.form-group select.shake,
+.form-group textarea.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.form-group input.valid {
+  border-color: var(--success);
+}
+
+.form-group input.valid:focus {
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+}
+
+/* ============================================================
+   TOAST - ANIMACIONES
+   ============================================================ */
+.toast {
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+.toast.hide {
+  animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+/* Iconos de toast con bounce */
+.toast-icon {
+  animation: iconBounce 0.4s ease-out;
+}
+
+/* ============================================================
+   MODAL - ANIMACIONES
+   ============================================================ */
+.modal-content {
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal.open .modal-content {
+  animation: modalBounce 0.4s ease-out;
+}
+
+.modal-seed-images img {
+  animation: imageZoom 0.3s ease-out;
+}
+
+.modal-thumbnail {
+  animation: thumbFadeIn 0.2s ease-out backwards;
+}
+
+.modal-thumbnail:nth-child(1) { animation-delay: 0s; }
+.modal-thumbnail:nth-child(2) { animation-delay: 0.05s; }
+.modal-thumbnail:nth-child(3) { animation-delay: 0.1s; }
+.modal-thumbnail:nth-child(4) { animation-delay: 0.15s; }
+.modal-thumbnail:nth-child(5) { animation-delay: 0.2s; }
+
+/* ============================================================
+   SCROLL INDICATOR
+   ============================================================ */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+  40% { transform: translateX(-50%) translateY(-10px); }
+  60% { transform: translateX(-50%) translateY(-5px); }
+}
+
+.hero-scroll svg {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* ============================================================
+   HOJA FLOTANTE (LOGO)
+   ============================================================ */
+@keyframes leafFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(3deg); }
+  75% { transform: translateY(5px) rotate(-3deg); }
+}
+
+.logo-icon svg {
+  animation: leafFloat 3s ease-in-out infinite;
+}
+
+/* ============================================================
+   BADGE DOT - PULSO
+   ============================================================ */
+.badge-dot {
+  position: relative;
+}
+
+.badge-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--lime-primary);
+  opacity: 0.3;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  0% { transform: scale(1); opacity: 0.3; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+/* ============================================================
+   PAGINACIÓN - HOVER EFFECTS
+   ============================================================ */
+.page-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--lime-primary);
+  transition: width var(--transition-base);
+  transform: translateX(-50%);
+}
+
+.page-btn:hover::after {
+  width: 60%;
+}
+
+/* ============================================================
+   CHECKBOX - ANIMACIÓN
+   ============================================================ */
+.checkbox-item input:checked + .checkmark::after {
+  animation: checkBounce 0.3s ease-out;
+}
+
+@keyframes checkBounce {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================================
+   UPLOAD ZONE - DRAG FEEDBACK
+   ============================================================ */
+.image-upload-zone.dragover {
+  animation: dragPulse 1s ease-in-out infinite;
+}
+
+@keyframes dragPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--lime-glow); }
+  50% { box-shadow: 0 0 0 8px rgba(198, 255, 0, 0.1); }
+}
+
+/* ============================================================
+   ESTADOS DE CARGA - SKELETON
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 25%,
+    var(--bg-tertiary) 50%,
+    var(--bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes skeleton {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-card {
+  height: 350px;
+  border-radius: var(--radius-lg);
+}
+
+.skeleton-line {
+  height: 16px;
+  margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-line.medium {
+  width: 80%;
+}
+
+/* ============================================================
+   STAT COUNTER - ANIMACIÓN DE NÚMEROS
+   ============================================================ */
+.stat-value {
+  position: relative;
+}
+
+.stat-value::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: var(--lime-primary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.stat-card:hover .stat-value::after {
+  opacity: 1;
+}
+
+/* ============================================================
+   NAV LINK - SUBRAYADO ANIMADO
+   ============================================================ */
+.nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--lime-subtle), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-link:hover::before {
+  left: 100%;
+}
+
+/* ============================================================
+   SCROLL REVEAL - ENTRADA AL HACER SCROLL
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   PULSO DE ERROR EN CAMPOS
+   ============================================================ */
+@keyframes errorPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(239, 83, 80, 0); }
+}
+
+.field-error:not(:empty) {
+  animation: errorPulse 2s ease-in-out;
+}
+
+/* ============================================================
+   CONFETTI - ÉXITO (usado al enviar semilla)
+   ============================================================ */
+.confetti {
+  position: fixed;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+  z-index: 4000;
+  pointer-events: none;
+  animation: confettiFall 3s ease-out forwards;
+}
+
+.confetti:nth-child(odd) {
+  animation-duration: 2.5s;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   TRANSICIONES DE SECCIÓN
+   ============================================================ */
+.section-enter {
+  animation: sectionFadeIn 0.5s ease-out;
+}
+
+@keyframes sectionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE - REDUCIR ANIMACIONES
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .particle {
+    display: none;
+  }
+
+  .loading-bar-fill {
+    width: 100%;
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .particle {
+    display: none;
+  }
+
+  .loading-leaf {
+    width: 60px;
+    height: 60px;
+  }
+
+  .loading-text {
+    font-size: 1.2rem;
+  }
+}
