@@ -9,6 +9,8 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 
+    <script src="security.js"></script>
+
     <link rel="icon" type="image/png" href="https://i.ibb.co/5gj0zv84/Background-Eraser-20260615-054353841.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -436,8 +438,9 @@
                     <div class="value" id="dashVerif">-</div>
                 </div>
                 <div class="dash-card">
-                    <h3>Coins</h3>
-                    <div class="value" id="dashCoins">0</div>
+                    <h3>Visitas de tu web</h3>
+                    <div class="value" id="dashVisitas">-</div>
+                    <p style="font-size:11px;color:rgba(224,230,240,0.4);margin-top:2px">Últimos 7 días</p>
                 </div>
                 <div class="dash-card" id="spaceCard" style="cursor:pointer;transition:border-color 0.2s" onclick="openModal('spaceModal')" onmouseover="this.style.borderColor='#c4a87c'" onmouseout="this.style.borderColor=''">
                     <h3 id="spaceCardTitle" style="color:#c4a87c">Crear espacio</h3>
@@ -820,13 +823,25 @@
                 document.getElementById('dashEstado').textContent = profile.estado || 'Activo';
                 document.getElementById('dashRol').textContent = profile.rol || 'User';
                 document.getElementById('dashVerif').textContent = profile.verificacion || '-';
-                document.getElementById('dashCoins').textContent = profile.coins || 0;
+                document.getElementById('dashVisitas').textContent = '-';
                 // Load my space info
                 loadMySpace();
             } else {
                 document.getElementById('heroSub').textContent = 'Gestiona tu información de forma segura.';
                 document.getElementById('dashboard').classList.remove('active');
             }
+        }
+
+        function loadVisitas() {
+            if (!isLoggedIn()) return;
+            var el = document.getElementById('dashVisitas');
+            if (!el) return;
+            jsonp({ action:'getVisitas', user:sessionUser, pass:sessionPass }).then(function(resp) {
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data && data.status === 'OK') el.textContent = (data.total != null ? data.total : 0);
+                } catch(e) {}
+            }).catch(function() {});
         }
 
         function loadMySpace() {
@@ -839,6 +854,7 @@
                     var desc = document.getElementById('spaceCardDesc');
                     if (data.status === 'OK' && data.space) {
                         window._mySpace = data.space;
+                        loadVisitas();
                         document.getElementById('panelCard').style.display = 'block';
                         title.innerHTML = '<span style="color:#e0e6f0">' + escHtml(data.space.nombrePlataforma) + '</span>';
                         desc.innerHTML = '<a href="#' + encodeURIComponent(data.space.nombrePlataforma) + '" style="color:#c4a87c;text-decoration:underline">#' + escHtml(data.space.nombrePlataforma) + '</a> &middot; ' +
@@ -1610,7 +1626,7 @@
                 sessionStorage.setItem('wl_admin', '1');
             } catch(e) {}
             if (id.type === 'panel') {
-                window.location.href = 'panel.html?user=' + encodeURIComponent(sessionUser) + '&pass=' + encodeURIComponent(sessionPass);
+                window.location.href = 'panel.html?user=' + encodeURIComponent(sessionUser);
                 return;
             }
             if (id.type === 'nombrePlataforma') {

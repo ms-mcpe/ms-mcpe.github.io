@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel - WorldLeaf</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com; connect-src 'self' https://script.google.com https://*.script.google.com https://script.googleusercontent.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://docs.google.com https://i.ibb.co https://*.ibb.co https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https: ; font-src 'self' https: data:; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://script.google.com https://*.googleusercontent.com https://*.google.com; connect-src 'self' https://script.google.com https://*.script.google.com https://script.googleusercontent.com;">
+    <script src="security.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -439,6 +440,40 @@
         .color-row label { min-width:120px; font-size:13px; color:rgba(224,230,240,0.7); }
         .color-row input[type="color"] { width:40px; height:34px; padding:2px; border-radius:6px; cursor:pointer; background:none; border:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
         .color-row input[type="text"] { flex:1; padding:8px 10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e0e6f0; font-size:12px; outline:none; font-family:monospace; }
+        .color-row { flex-wrap: wrap; }
+        .color-row .alpha-wrap { display:flex; align-items:center; gap:8px; width:100%; padding:4px 0 2px 0; }
+        .color-row .alpha-wrap input[type="range"] { flex:1; accent-color:#c4a87c; height:4px; cursor:pointer; }
+        .color-row .alpha-lbl { font-size:11px; color:rgba(224,230,240,0.5); min-width:38px; text-align:right; font-variant-numeric:tabular-nums; }
+        .preset-grid { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+        .preset-btn { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.03); color:rgba(224,230,240,0.8); font-family:'Inter',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+        .preset-btn:hover { border-color:rgba(196,168,124,0.5); background:rgba(255,255,255,0.06); color:#e0e6f0; }
+        .preset-swatches { display:inline-flex; border-radius:4px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); }
+        .preset-swatches span { width:12px; height:16px; display:block; }
+        .theme-mode-switch { display:inline-flex; gap:4px; padding:4px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); margin-bottom:14px; }
+        .theme-mode-btn { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:9px; border:none; background:transparent; color:rgba(224,230,240,0.6); font-family:'Inter',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+        .theme-mode-btn:hover { color:#e0e6f0; }
+        .theme-mode-btn.active { background:#c4a87c; color:#0a0e17; }
+        .theme-enable-row { display:flex; align-items:center; gap:10px; padding:12px 14px; margin-bottom:14px; border-radius:10px; background:rgba(196,168,124,0.06); border:1px solid rgba(196,168,124,0.2); cursor:pointer; font-size:13px; color:rgba(224,230,240,0.85); }
+        .theme-enable-row input[type="checkbox"] { width:18px; height:18px; accent-color:#c4a87c; cursor:pointer; flex-shrink:0; }
+        .paleta-mode-hint { font-size:12px; color:rgba(224,230,240,0.5); margin-bottom:12px; line-height:1.5; }
+        .paleta-mode-hint b { color:#c4a87c; }
+        .font-preview-box { margin-top:12px; padding:14px; border-radius:10px; background:rgba(0,0,0,0.3); border:1px dashed rgba(255,255,255,0.12); text-align:center; }
+        .font-preview-box .fp-title { font-size:22px; font-weight:800; color:#e0e6f0; }
+        .font-preview-box .fp-body { font-size:13px; color:rgba(224,230,240,0.6); margin-top:6px; }
+        /* Loading preview spinner styles */
+        #loadingPreviewSpinner { }
+        .lp-icon { width:48px; height:48px; border-radius:12px; background:rgba(255,255,255,0.1) center/cover no-repeat; }
+        .lp-ring { width:36px; height:36px; border-radius:50%; border:3px solid rgba(255,255,255,0.15); border-top-color:#c4a87c; animation:spin 0.8s linear infinite; }
+        .lp-dots { display:flex; gap:6px; }
+        .lp-dots span { width:10px; height:10px; border-radius:50%; background:#c4a87c; animation:lpbounce 1s infinite ease-in-out; }
+        .lp-dots span:nth-child(2) { animation-delay:0.15s; }
+        .lp-dots span:nth-child(3) { animation-delay:0.3s; }
+        @keyframes lpbounce { 0%,80%,100% { transform:scale(0.5); opacity:0.5; } 40% { transform:scale(1); opacity:1; } }
+        .lp-pulse { width:36px; height:36px; border-radius:50%; background:#c4a87c; animation:lppulse 1.2s infinite ease-in-out; }
+        @keyframes lppulse { 0% { transform:scale(0.6); opacity:0.6; } 50% { transform:scale(1); opacity:1; } 100% { transform:scale(0.6); opacity:0.6; } }
+        .lp-bar { width:120px; height:4px; border-radius:2px; background:rgba(255,255,255,0.12); overflow:hidden; }
+        .lp-bar::after { content:''; display:block; width:40%; height:100%; background:#c4a87c; animation:lpslide 1.1s infinite ease-in-out; }
+        @keyframes lpslide { 0% { transform:translateX(-100%); } 100% { transform:translateX(300%); } }
         .layout-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:8px; }
         @media(max-width:640px){ .layout-grid{ grid-template-columns:repeat(2,1fr); } }
         .layout-option { display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 8px; border-radius:12px; border:2px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.2s; }
@@ -452,6 +487,38 @@
         .layout-mini.lineal .lm-row { flex:unset; }
         .layout-mini.lineal .lm-cell { height:10px; flex:unset; width:100%; }
         .layout-mini.lineal .lm-row { flex-direction:column; gap:3px; }
+
+        /* === MENU / ESTILO PREVIEWS === */
+        .menu-mini { width:100%; height:46px; border-radius:6px; background:rgba(0,0,0,0.3); display:flex; flex-direction:column; gap:4px; padding:7px; box-sizing:border-box; }
+        .menu-mini .mm { height:6px; border-radius:2px; background:rgba(255,255,255,0.10); width:100%; }
+        .menu-mini .mm.act { background:rgba(196,168,124,0.45); }
+        .menu-mini.mm-minimal .mm { background:transparent; border-left:2px solid rgba(255,255,255,0.16); border-radius:0; }
+        .menu-mini.mm-minimal .mm.act { border-left-color:#c4a87c; background:transparent; }
+        .menu-mini.mm-tarjetas .mm { background:rgba(255,255,255,0.13); border-radius:4px; }
+        .menu-mini.mm-pill .mm { border-radius:999px; }
+        .menu-mini.mm-borde .mm { background:transparent; border:1px solid rgba(255,255,255,0.2); }
+        .menu-mini .mm.act.a-barra { box-shadow:inset 2px 0 0 #c4a87c; background:rgba(196,168,124,0.18); }
+        .menu-mini .mm.act.a-pill { background:rgba(196,168,124,0.4); border-radius:999px; }
+        .menu-mini .mm.act.a-subrayado { background:transparent; border-bottom:2px solid #c4a87c; border-radius:0; }
+        .menu-mini .mm.act.a-glow { background:rgba(196,168,124,0.22); box-shadow:0 0 7px rgba(196,168,124,0.9); }
+        .menu-mini.mm-der { align-items:flex-end; }
+        .menu-mini.mm-der .mm { width:72%; }
+        .menu-mini.mm-der .mm.act { width:88%; }
+        .menu-mini.r-cuadrado { border-radius:4px; }
+        .menu-mini.r-redondeado { border-radius:10px; }
+        .menu-mini.r-muy { border-radius:16px; }
+        .menu-mini.r-pill { border-radius:22px; }
+        .card-mini { width:100%; height:46px; border-radius:6px; background:rgba(0,0,0,0.3); display:flex; gap:4px; padding:7px; box-sizing:border-box; }
+        .card-mini .cc { flex:1; border-radius:4px; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.06); }
+        .card-mini.c-glass .cc { background:rgba(255,255,255,0.18); backdrop-filter:blur(4px); }
+        .card-mini.c-neon .cc { border-color:rgba(196,168,124,0.7); box-shadow:0 0 6px rgba(196,168,124,0.6); background:rgba(196,168,124,0.08); }
+        .card-mini.c-outline .cc { background:transparent; border-color:rgba(196,168,124,0.5); }
+        .top-mini { width:100%; height:46px; border-radius:6px; background:rgba(0,0,0,0.3); display:flex; align-items:center; padding:0 8px; box-sizing:border-box; }
+        .top-mini .tb { width:100%; height:11px; border-radius:4px; background:rgba(255,255,255,0.14); }
+        .top-mini.t-glass .tb { background:rgba(255,255,255,0.24); backdrop-filter:blur(4px); }
+        .top-mini.t-deg .tb { background:linear-gradient(90deg, rgba(255,255,255,0.14), rgba(196,168,124,0.6)); }
+        .style-group-title { font-size:13px; font-weight:600; color:rgba(224,230,240,0.8); margin:18px 0 4px; }
+        .style-group-title:first-child { margin-top:0; }
 
         /* === APK MODE RADIO === */
         .apk-mode-option {
@@ -526,6 +593,10 @@
                     <i class="fas fa-th-large"></i>
                     <span>Diseño del grid</span>
                 </div>
+                <div class="nav-item" onclick="mostrarSeccion('secMenu', this)">
+                    <i class="fas fa-bars"></i>
+                    <span>Menú y estilo</span>
+                </div>
                 <div class="nav-item" onclick="mostrarSeccion('secRedes', this)">
                     <i class="fas fa-share-alt"></i>
                     <span>Redes sociales</span>
@@ -533,6 +604,14 @@
                 <div class="nav-item" onclick="mostrarSeccion('secModal', this)">
                     <i class="fas fa-window-maximize"></i>
                     <span>Colores del modal</span>
+                </div>
+                <div class="nav-item" onclick="mostrarSeccion('secFuentes', this)">
+                    <i class="fas fa-font"></i>
+                    <span>Fuentes</span>
+                </div>
+                <div class="nav-item" onclick="mostrarSeccion('secCarga', this)">
+                    <i class="fas fa-spinner"></i>
+                    <span>Pantalla de carga</span>
                 </div>
                 <div class="nav-item" onclick="mostrarSeccion('secApk', this)">
                     <i class="fas fa-mobile-alt"></i>
@@ -668,16 +747,27 @@
             <div class="section" id="secPaleta">
                 <div class="section-header">
                     <h2>Paleta de colores</h2>
-                    <p>Personaliza todos los colores de tu espacio.</p>
+                    <p>Personaliza todos los colores de tu espacio, en tema oscuro y tema claro.</p>
                 </div>
+                <div class="theme-mode-switch" id="themeModeSwitch">
+                    <button type="button" class="theme-mode-btn active" data-mode="dark" onclick="setPaletaMode('dark')"><i class="fas fa-moon"></i> Tema oscuro</button>
+                    <button type="button" class="theme-mode-btn" data-mode="light" onclick="setPaletaMode('light')"><i class="fas fa-sun"></i> Tema claro</button>
+                </div>
+                <label class="theme-enable-row" for="themeLightEnabled">
+                    <input type="checkbox" id="themeLightEnabled" onchange="onThemeLightToggle()">
+                    <span>Permitir que los visitantes cambien entre tema oscuro y claro (muestra el boton de tema en el espacio)</span>
+                </label>
+                <p class="paleta-mode-hint" id="paletaModeHint">Estas editando el <b>tema oscuro</b>. Este es el tema por defecto de tu espacio.</p>
                 <div class="card">
-                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Colores principales</h3>
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c" id="paletaCardTitle">Colores del tema oscuro</h3>
+                    <p style="font-size:12px;color:rgba(224,230,240,0.4);margin-bottom:10px">Elija una combinacion pre-hecha o personalice cada color. Todos los colores usan formato <code style="color:#c4a87c">#RRGGBB</code>; use el deslizador para la transparencia.</p>
+                    <div class="preset-grid" id="presetPalettes"></div>
                     <div id="paletaContainer">
                         <!-- Populated by JS -->
                     </div>
                 </div>
                 <div class="card" style="margin-top:12px">
-                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Fondo de pantalla</h3>
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Fondo de pantalla <span id="bgModeTag" style="font-size:12px;color:rgba(224,230,240,0.45);font-weight:400">(tema oscuro)</span></h3>
                     <div class="form-group">
                         <label>Imagen de fondo</label>
                         <div class="imgs-gallery" id="bg-gallery"></div>
@@ -767,6 +857,198 @@
                 </button>
             </div>
 
+            <!-- ===== SECCION MENU Y ESTILO ===== -->
+            <div class="section" id="secMenu">
+                <div class="section-header">
+                    <h2>Menú y estilo</h2>
+                    <p>Personaliza el menú lateral de tu espacio y el aspecto general de las tarjetas y la barra superior.</p>
+                </div>
+
+                <div class="card">
+                    <div class="style-group-title">Diseño de los ítems del menú</div>
+                    <div class="layout-grid">
+                        <div class="layout-option" data-group="menuStyle" data-val="clasico" onclick="selectOpt(this)">
+                            <div class="menu-mini"><div class="mm act a-barra"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Clásico</span>
+                        </div>
+                        <div class="layout-option" data-group="menuStyle" data-val="minimal" onclick="selectOpt(this)">
+                            <div class="menu-mini mm-minimal"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Minimal</span>
+                        </div>
+                        <div class="layout-option" data-group="menuStyle" data-val="tarjetas" onclick="selectOpt(this)">
+                            <div class="menu-mini mm-tarjetas"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Tarjetas</span>
+                        </div>
+                        <div class="layout-option" data-group="menuStyle" data-val="pill" onclick="selectOpt(this)">
+                            <div class="menu-mini mm-pill"><div class="mm act a-pill"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Píldora</span>
+                        </div>
+                        <div class="layout-option" data-group="menuStyle" data-val="borde" onclick="selectOpt(this)">
+                            <div class="menu-mini mm-borde"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Borde</span>
+                        </div>
+                    </div>
+
+                    <div class="style-group-title">Indicador del ítem activo</div>
+                    <div class="layout-grid">
+                        <div class="layout-option" data-group="menuActive" data-val="barra" onclick="selectOpt(this)">
+                            <div class="menu-mini"><div class="mm act a-barra"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Barra</span>
+                        </div>
+                        <div class="layout-option" data-group="menuActive" data-val="pill" onclick="selectOpt(this)">
+                            <div class="menu-mini"><div class="mm act a-pill"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Píldora</span>
+                        </div>
+                        <div class="layout-option" data-group="menuActive" data-val="subrayado" onclick="selectOpt(this)">
+                            <div class="menu-mini"><div class="mm act a-subrayado"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Subrayado</span>
+                        </div>
+                        <div class="layout-option" data-group="menuActive" data-val="glow" onclick="selectOpt(this)">
+                            <div class="menu-mini"><div class="mm act a-glow"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Brillo</span>
+                        </div>
+                    </div>
+
+                    <div class="style-group-title">Forma de las esquinas</div>
+                    <div class="layout-grid">
+                        <div class="layout-option" data-group="menuRadius" data-val="cuadrado" onclick="selectOpt(this)">
+                            <div class="menu-mini r-cuadrado"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Cuadrado</span>
+                        </div>
+                        <div class="layout-option" data-group="menuRadius" data-val="redondeado" onclick="selectOpt(this)">
+                            <div class="menu-mini r-redondeado"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Redondeado</span>
+                        </div>
+                        <div class="layout-option" data-group="menuRadius" data-val="muy" onclick="selectOpt(this)">
+                            <div class="menu-mini r-muy"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Muy redondeado</span>
+                        </div>
+                        <div class="layout-option" data-group="menuRadius" data-val="pill" onclick="selectOpt(this)">
+                            <div class="menu-mini r-pill"><div class="mm act a-pill"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Píldora</span>
+                        </div>
+                    </div>
+
+                    <div class="style-group-title">Posición</div>
+                    <div class="layout-grid" style="grid-template-columns:repeat(2,1fr)">
+                        <div class="layout-option" data-group="menuPos" data-val="izquierda" onclick="selectOpt(this)">
+                            <div class="menu-mini"><div class="mm act"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Izquierda</span>
+                        </div>
+                        <div class="layout-option" data-group="menuPos" data-val="derecha" onclick="selectOpt(this)">
+                            <div class="menu-mini mm-der"><div class="mm act a-barra"></div><div class="mm"></div><div class="mm"></div></div>
+                            <span>Derecha</span>
+                        </div>
+                    </div>
+
+                    <div class="style-group-title">Animación de apertura</div>
+                    <div class="layout-grid" style="grid-template-columns:repeat(3,1fr)">
+                        <div class="layout-option" data-group="menuAnim" data-val="slide" onclick="selectOpt(this)">
+                            <div class="menu-mini mm-der"><div class="mm act"></div><div class="mm"></div></div>
+                            <span>Deslizar</span>
+                        </div>
+                        <div class="layout-option" data-group="menuAnim" data-val="fade" onclick="selectOpt(this)">
+                            <div class="menu-mini" style="opacity:0.5"><div class="mm act"></div><div class="mm"></div></div>
+                            <span>Aparecer</span>
+                        </div>
+                        <div class="layout-option" data-group="menuAnim" data-val="scale" onclick="selectOpt(this)">
+                            <div class="menu-mini" style="transform:scale(0.8)"><div class="mm act"></div><div class="mm"></div></div>
+                            <span>Escala</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:18px">
+                        <label>Ancho del menú</label>
+                        <input type="range" id="menuWidth" min="200" max="420" value="280" style="width:100%" oninput="document.getElementById('menuWidthLabel').textContent=this.value+'px'">
+                        <span id="menuWidthLabel" style="font-size:12px;color:rgba(224,230,240,0.5)">280px</span>
+                    </div>
+
+                    <div class="toggle-row">
+                        <label for="menuIcons">Mostrar iconos en el menú</label>
+                        <label class="switch"><input type="checkbox" id="menuIcons"><span class="slider"></span><span class="dot"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <label for="menuBadges">Mostrar contador de addons por categoría</label>
+                        <label class="switch"><input type="checkbox" id="menuBadges"><span class="slider"></span><span class="dot"></span></label>
+                    </div>
+                    <div class="toggle-row">
+                        <label for="menuGlass">Efecto cristal (blur intenso)</label>
+                        <label class="switch"><input type="checkbox" id="menuGlass"><span class="slider"></span><span class="dot"></span></label>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:16px">
+                    <div class="style-group-title">Estilo de las tarjetas de addons</div>
+                    <div class="layout-grid">
+                        <div class="layout-option" data-group="cardStyle" data-val="plano" onclick="selectOpt(this)">
+                            <div class="card-mini"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Plano</span>
+                        </div>
+                        <div class="layout-option" data-group="cardStyle" data-val="glass" onclick="selectOpt(this)">
+                            <div class="card-mini c-glass"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Cristal</span>
+                        </div>
+                        <div class="layout-option" data-group="cardStyle" data-val="neon" onclick="selectOpt(this)">
+                            <div class="card-mini c-neon"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Neón</span>
+                        </div>
+                        <div class="layout-option" data-group="cardStyle" data-val="outline" onclick="selectOpt(this)">
+                            <div class="card-mini c-outline"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Contorno</span>
+                        </div>
+                    </div>
+
+                    <div class="style-group-title">Efecto al pasar el cursor</div>
+                    <div class="layout-grid">
+                        <div class="layout-option" data-group="cardHover" data-val="ninguno" onclick="selectOpt(this)">
+                            <div class="card-mini"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Ninguno</span>
+                        </div>
+                        <div class="layout-option" data-group="cardHover" data-val="elevar" onclick="selectOpt(this)">
+                            <div class="card-mini" style="transform:translateY(-3px)"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Elevar</span>
+                        </div>
+                        <div class="layout-option" data-group="cardHover" data-val="zoom" onclick="selectOpt(this)">
+                            <div class="card-mini" style="transform:scale(1.04)"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Zoom</span>
+                        </div>
+                        <div class="layout-option" data-group="cardHover" data-val="glow" onclick="selectOpt(this)">
+                            <div class="card-mini c-neon"><div class="cc"></div><div class="cc"></div></div>
+                            <span>Brillo</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:18px">
+                        <label>Redondeo de las tarjetas</label>
+                        <input type="range" id="cardRadius" min="0" max="32" value="12" style="width:100%" oninput="document.getElementById('cardRadiusLabel').textContent=this.value+'px'">
+                        <span id="cardRadiusLabel" style="font-size:12px;color:rgba(224,230,240,0.5)">12px</span>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:16px">
+                    <div class="style-group-title">Barra superior</div>
+                    <div class="layout-grid" style="grid-template-columns:repeat(3,1fr)">
+                        <div class="layout-option" data-group="topbarStyle" data-val="solida" onclick="selectOpt(this)">
+                            <div class="top-mini"><div class="tb"></div></div>
+                            <span>Sólida</span>
+                        </div>
+                        <div class="layout-option" data-group="topbarStyle" data-val="glass" onclick="selectOpt(this)">
+                            <div class="top-mini t-glass"><div class="tb"></div></div>
+                            <span>Cristal</span>
+                        </div>
+                        <div class="layout-option" data-group="topbarStyle" data-val="degradado" onclick="selectOpt(this)">
+                            <div class="top-mini t-deg"><div class="tb"></div></div>
+                            <span>Degradado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" style="margin-top:16px" id="saveMenuBtn" onclick="guardarMenu()">
+                    <span class="btn-text">Guardar menú y estilo</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
             <!-- ===== SECCION REDES SOCIALES ===== -->
             <div class="section" id="secRedes">
                 <div class="section-header">
@@ -812,6 +1094,132 @@
                 </div>
                 <button class="btn" style="margin-top:16px" id="saveModalBtn" onclick="guardarModalColors()">
                     <span class="btn-text">Guardar colores del modal</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <!-- ===== SECCION FUENTES ===== -->
+            <div class="section" id="secFuentes">
+                <div class="section-header">
+                    <h2>Fuentes</h2>
+                    <p>Elige la tipografia de tu espacio o usa una personalizada (incluye estilo Minecraft).</p>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Fuente del texto general</h3>
+                    <div class="form-group">
+                        <label>Fuente</label>
+                        <select id="fontBodySelect" onchange="onFontChange('body')"></select>
+                    </div>
+                    <div id="fontBodyCustomWrap" style="display:none">
+                        <div class="form-group">
+                            <label>Nombre de la fuente (font-family)</label>
+                            <input type="text" id="fontBodyCustomName" placeholder="Ej: MiFuenteMinecraft">
+                        </div>
+                        <div class="form-group">
+                            <label>URL de la fuente (.css de Google Fonts, o enlace directo .ttf/.woff2)</label>
+                            <input type="text" id="fontBodyCustomUrl" placeholder="https://fonts.googleapis.com/css2?family=... o https://.../fuente.ttf">
+                        </div>
+                    </div>
+
+                    <h3 style="margin:20px 0 12px;font-size:14px;color:#c4a87c">Fuente de titulos / nombre</h3>
+                    <div class="form-group">
+                        <label>Fuente</label>
+                        <select id="fontTitleSelect" onchange="onFontChange('title')"></select>
+                    </div>
+                    <div id="fontTitleCustomWrap" style="display:none">
+                        <div class="form-group">
+                            <label>Nombre de la fuente (font-family)</label>
+                            <input type="text" id="fontTitleCustomName" placeholder="Ej: MiFuenteTitulo">
+                        </div>
+                        <div class="form-group">
+                            <label>URL de la fuente (.css de Google Fonts, o enlace directo .ttf/.woff2)</label>
+                            <input type="text" id="fontTitleCustomUrl" placeholder="https://fonts.googleapis.com/css2?family=... o https://.../fuente.ttf">
+                        </div>
+                    </div>
+
+                    <div class="font-preview-box">
+                        <div class="fp-title" id="fpTitle">Mi Espacio</div>
+                        <div class="fp-body" id="fpBody">Asi se vera el texto general en tu espacio.</div>
+                    </div>
+                </div>
+
+                <button class="btn" style="margin-top:16px" id="saveFuentesBtn" onclick="guardarFuentes()">
+                    <span class="btn-text">Guardar fuentes</span>
+                    <span class="spinner"></span>
+                </button>
+            </div>
+
+            <!-- ===== SECCION PANTALLA DE CARGA ===== -->
+            <div class="section" id="secCarga">
+                <div class="section-header">
+                    <h2>Pantalla de carga</h2>
+                    <p>Controla lo que se ve mientras tu espacio carga. Puedes personalizarlo o quitarlo.</p>
+                </div>
+
+                <div class="card">
+                    <div class="toggle-row">
+                        <label>Mostrar pantalla de carga</label>
+                        <label class="switch">
+                            <input type="checkbox" id="chkLoadingShow" checked onchange="onLoadingChange()">
+                            <span class="slider"></span>
+                            <span class="dot"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <label>Mostrar texto de carga</label>
+                        <label class="switch">
+                            <input type="checkbox" id="chkLoadingText" checked onchange="onLoadingChange()">
+                            <span class="slider"></span>
+                            <span class="dot"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <label>Mostrar icono</label>
+                        <label class="switch">
+                            <input type="checkbox" id="chkLoadingIcon" checked onchange="onLoadingChange()">
+                            <span class="slider"></span>
+                            <span class="dot"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" style="margin-top:16px">
+                        <label>Texto personalizado (usa {nombre} para el nombre del espacio)</label>
+                        <input type="text" id="loadingTextCustom" placeholder="Ej: {nombre} cargando..." maxlength="80" oninput="onLoadingChange()">
+                    </div>
+                    <div class="form-group">
+                        <label>Estilo del indicador</label>
+                        <select id="loadingSpinnerStyle" onchange="onLoadingChange()">
+                            <option value="ring">Anillo giratorio</option>
+                            <option value="dots">Puntos</option>
+                            <option value="pulse">Pulso</option>
+                            <option value="bar">Barra deslizante</option>
+                            <option value="none">Ninguno</option>
+                        </select>
+                    </div>
+                    <div class="color-row">
+                        <label>Color de fondo</label>
+                        <input type="color" id="loadingBgPick" value="#0a0e17">
+                        <input type="text" id="loadingBgTxt" value="#0a0e17" maxlength="7">
+                    </div>
+                    <div class="color-row">
+                        <label>Color del texto</label>
+                        <input type="color" id="loadingTextPick" value="#e0e6f0">
+                        <input type="text" id="loadingTextTxt" value="#e0e6f0" maxlength="7">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:12px;font-size:14px;color:#c4a87c">Vista previa</h3>
+                    <div id="loadingPreview" style="height:180px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:1px solid rgba(255,255,255,0.08);overflow:hidden">
+                        <div id="loadingPreviewIcon" class="lp-icon"></div>
+                        <div id="loadingPreviewSpinner"></div>
+                        <div id="loadingPreviewText" style="font-size:14px"></div>
+                    </div>
+                </div>
+
+                <button class="btn" style="margin-top:16px" id="saveCargaBtn" onclick="guardarLoading()">
+                    <span class="btn-text">Guardar pantalla de carga</span>
                     <span class="spinner"></span>
                 </button>
             </div>
@@ -1033,21 +1441,70 @@
         var API_URL = 'https://script.google.com/macros/s/AKfycbx7yl9hxkU2MYE6ijNKDZDvLyDkZHI7oBt5LOzGGFn4RDtLoFpXijl07JBoQ3W7KFNk/exec';
         var DEFAULT_CATEGORIAS = ["Addons","Mapas","Shaders","Skins","Texturas","Scripts","Popurris","DLC","Version","Plugins"];
 
+        // Toda la paleta se guarda como HEX (#RRGGBB) + opacidad (0-100).
+        // La opacidad se aplica por dentro como rgba() pero el usuario solo ve #.
         var COLOR_KEYS = [
-            {id:'fondo', label:'Fondo', def:'#0a0e17'},
-            {id:'secundario', label:'Secundario (tarjetas)', def:'#111827'},
-            {id:'acento', label:'Acento (botones, enlaces)', def:'#c4a87c'},
-            {id:'texto', label:'Texto', def:'#e0e6f0'},
-            {id:'boton', label:'Botones', def:'#c4a87c'},
-            {id:'borde', label:'Bordes', def:'rgba(255,255,255,0.08)'},
-            {id:'barraSuperior', label:'Barra superior', def:'rgba(0,0,0,0.4)'},
-            {id:'marcaAgua', label:'Marca de agua', def:'rgba(196,168,124,0.06)'},
-            {id:'menuFondo', label:'Menu lateral fondo', def:'rgba(0,0,0,0.6)'},
-            {id:'menuTexto', label:'Menu lateral texto', def:'rgba(224,230,240,0.7)'},
-            {id:'buscadorFondo', label:'Buscador fondo', def:'rgba(255,255,255,0.04)'},
-            {id:'buscadorTexto', label:'Buscador texto', def:'#e0e6f0'},
-            {id:'buscadorBorde', label:'Buscador borde', def:'rgba(255,255,255,0.08)'}
+            {id:'fondo', label:'Fondo', def:'#0a0e17', alpha:100},
+            {id:'secundario', label:'Secundario (tarjetas)', def:'#111827', alpha:100},
+            {id:'acento', label:'Acento (botones, enlaces)', def:'#c4a87c', alpha:100},
+            {id:'texto', label:'Texto', def:'#e0e6f0', alpha:100},
+            {id:'boton', label:'Botones', def:'#c4a87c', alpha:100},
+            {id:'borde', label:'Bordes', def:'#ffffff', alpha:8},
+            {id:'barraSuperior', label:'Barra superior', def:'#000000', alpha:40},
+            {id:'marcaAgua', label:'Marca de agua', def:'#c4a87c', alpha:6},
+            {id:'menuFondo', label:'Menu lateral fondo', def:'#000000', alpha:60},
+            {id:'menuTexto', label:'Menu lateral texto', def:'#e0e6f0', alpha:70},
+            {id:'buscadorFondo', label:'Buscador fondo', def:'#ffffff', alpha:4},
+            {id:'buscadorTexto', label:'Buscador texto', def:'#e0e6f0', alpha:100},
+            {id:'buscadorBorde', label:'Buscador borde', def:'#ffffff', alpha:8}
         ];
+
+        // Combinaciones pre-hechas que combinan todos los colores entre si.
+        var PRESET_PALETTES = [
+            { name:'Oro Oscuro', colors:{fondo:'#0a0e17',secundario:'#111827',acento:'#c4a87c',texto:'#e0e6f0',boton:'#c4a87c',borde:'#ffffff',barraSuperior:'#000000',marcaAgua:'#c4a87c',menuFondo:'#000000',menuTexto:'#e0e6f0',buscadorFondo:'#ffffff',buscadorTexto:'#e0e6f0',buscadorBorde:'#ffffff'}, alpha:{borde:8,barraSuperior:40,marcaAgua:6,menuFondo:60,menuTexto:70,buscadorFondo:4,buscadorBorde:8} },
+            { name:'Azul Electrico', colors:{fondo:'#070b18',secundario:'#101a33',acento:'#4d8bff',texto:'#e6ecff',boton:'#4d8bff',borde:'#4d8bff',barraSuperior:'#04060f',marcaAgua:'#4d8bff',menuFondo:'#050914',menuTexto:'#cfe0ff',buscadorFondo:'#ffffff',buscadorTexto:'#e6ecff',buscadorBorde:'#4d8bff'}, alpha:{borde:18,barraSuperior:55,marcaAgua:7,menuFondo:70,menuTexto:80,buscadorFondo:6,buscadorBorde:20} },
+            { name:'Cyberpunk Neon', colors:{fondo:'#0b0014',secundario:'#1a0b2e',acento:'#ff2bd6',texto:'#f4e6ff',boton:'#ff2bd6',borde:'#00e5ff',barraSuperior:'#08000f',marcaAgua:'#ff2bd6',menuFondo:'#12001f',menuTexto:'#ffb3f0',buscadorFondo:'#00e5ff',buscadorTexto:'#f4e6ff',buscadorBorde:'#ff2bd6'}, alpha:{borde:22,barraSuperior:60,marcaAgua:8,menuFondo:75,menuTexto:85,buscadorFondo:6,buscadorBorde:25} },
+            { name:'Bosque Esmeralda', colors:{fondo:'#08120d',secundario:'#0f2018',acento:'#3ddc84',texto:'#e2f5ea',boton:'#3ddc84',borde:'#3ddc84',barraSuperior:'#050d09',marcaAgua:'#3ddc84',menuFondo:'#0a1710',menuTexto:'#c9f2dc',buscadorFondo:'#ffffff',buscadorTexto:'#e2f5ea',buscadorBorde:'#3ddc84'}, alpha:{borde:16,barraSuperior:55,marcaAgua:7,menuFondo:72,menuTexto:82,buscadorFondo:5,buscadorBorde:18} },
+            { name:'Atardecer Coral', colors:{fondo:'#170a12',secundario:'#2a1220',acento:'#ff6b6b',texto:'#ffe9e9',boton:'#ff6b6b',borde:'#ffb4a2',barraSuperior:'#100710',marcaAgua:'#ff6b6b',menuFondo:'#1d0c18',menuTexto:'#ffd0c7',buscadorFondo:'#ffffff',buscadorTexto:'#ffe9e9',buscadorBorde:'#ffb4a2'}, alpha:{borde:18,barraSuperior:55,marcaAgua:7,menuFondo:72,menuTexto:82,buscadorFondo:5,buscadorBorde:20} },
+            { name:'Minecraft', colors:{fondo:'#1d1d1d',secundario:'#313131',acento:'#55ff55',texto:'#ffffff',boton:'#55ff55',borde:'#8b8b8b',barraSuperior:'#000000',marcaAgua:'#55ff55',menuFondo:'#000000',menuTexto:'#a0a0a0',buscadorFondo:'#000000',buscadorTexto:'#ffffff',buscadorBorde:'#8b8b8b'}, alpha:{borde:45,barraSuperior:70,marcaAgua:8,menuFondo:85,menuTexto:95,buscadorFondo:40,buscadorBorde:55} },
+            { name:'Blanco Limpio', colors:{fondo:'#f5f7fb',secundario:'#ffffff',acento:'#6d28d9',texto:'#1f2430',boton:'#6d28d9',borde:'#000000',barraSuperior:'#ffffff',marcaAgua:'#6d28d9',menuFondo:'#ffffff',menuTexto:'#1f2430',buscadorFondo:'#000000',buscadorTexto:'#1f2430',buscadorBorde:'#000000'}, alpha:{borde:12,barraSuperior:90,marcaAgua:8,menuFondo:98,menuTexto:100,buscadorFondo:5,buscadorBorde:12} }
+        ];
+
+        // ── Helpers de color (hex <-> rgba) ──
+        function hexToRgb(hex) {
+            hex = String(hex || '').replace('#', '').trim();
+            if (hex.length === 3) hex = hex.split('').map(function(c) { return c + c; }).join('');
+            if (hex.length > 6) hex = hex.slice(0, 6);
+            if (hex.length !== 6 || !/^[0-9a-f]{6}$/i.test(hex)) return null;
+            return { r: parseInt(hex.slice(0,2),16), g: parseInt(hex.slice(2,4),16), b: parseInt(hex.slice(4,6),16) };
+        }
+        function pad2(n) { var s = Math.max(0, Math.min(255, parseInt(n,10) || 0)).toString(16); return s.length < 2 ? '0' + s : s; }
+        // Convierte cualquier valor almacenado (hex o rgba antiguo) a {hex, alpha}
+        function parseStoredColor(val) {
+            val = String(val === undefined || val === null ? '' : val).trim();
+            var m = val.match(/rgba?\(([^)]+)\)/i);
+            if (m) {
+                var p = m[1].split(',');
+                var r = parseInt(p[0],10) || 0, g = parseInt(p[1],10) || 0, b = parseInt(p[2],10) || 0;
+                var a = p[3] !== undefined ? parseFloat(p[3]) : 1;
+                if (isNaN(a)) a = 1;
+                return { hex: '#' + pad2(r) + pad2(g) + pad2(b), alpha: Math.round(a * 100) };
+            }
+            var hm = val.match(/#[0-9a-fA-F]{3,8}/);
+            if (hm) return { hex: '#' + hm[0].slice(1,7), alpha: 100 };
+            return { hex: '', alpha: 100 };
+        }
+        // Construye el color final: si alpha>=100 devuelve hex, si no rgba()
+        function toCssColor(hex, alpha) {
+            var rgb = hexToRgb(hex);
+            if (!rgb) return '#000000';
+            var a = (alpha === undefined || alpha === null) ? 100 : parseInt(alpha, 10);
+            if (isNaN(a)) a = 100;
+            if (a >= 100) return '#' + pad2(rgb.r) + pad2(rgb.g) + pad2(rgb.b);
+            var av = (a / 100).toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+            return 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + av + ')';
+        }
+        function validHex(v) { return /^#[0-9a-fA-F]{6}$/.test(String(v || '').trim()); }
 
         var sessionUser = '';
         var sessionPass = '';
@@ -1057,7 +1514,6 @@
         (function() {
             var p = new URLSearchParams(window.location.search);
             if (p.get('user')) sessionUser = p.get('user');
-            if (p.get('pass')) sessionPass = p.get('pass');
         })();
 
         function isLoggedIn() { return !!(sessionUser && sessionPass); }
@@ -1245,29 +1701,24 @@
             var layoutEl = document.querySelector('.layout-option[data-layout="' + gridLayout + '"]');
             if (layoutEl) { document.querySelectorAll('.layout-option').forEach(function(o) { o.classList.remove('active'); }); layoutEl.classList.add('active'); }
 
-            // Palette
-            var palette = config.palette || {};
-            renderPaleta(palette);
-            var bg = config.background || {};
-            bgImgItems = [];
-            if (bg.imagen) {
-                if (Array.isArray(bg.imagen)) {
-                    bgImgItems = bg.imagen;
-                } else if (typeof bg.imagen === 'string' && bg.imagen) {
-                    bgImgItems = [{ src: bg.imagen, isBase64: false }];
-                }
+            // Paleta y fondos (tema oscuro + tema claro)
+            paletaState.dark.colors = config.palette || {};
+            paletaState.dark.alpha = config.paletteAlpha || {};
+            paletaState.dark.bg = normalizeBg(config.background || {});
+            if (config.paletteLight && typeof config.paletteLight === 'object' && Object.keys(config.paletteLight).length) {
+                paletaState.light.colors = config.paletteLight;
+                paletaState.light.alpha = config.paletteLightAlpha || {};
+            } else {
+                var defLight = defaultLightFromDark(config.palette || {});
+                paletaState.light.colors = defLight.colors;
+                paletaState.light.alpha = defLight.alpha;
             }
-            renderBgGallery();
-            var bgGradEl = document.getElementById('bgGradient');
-            if (bgGradEl) bgGradEl.value = bg.gradiente || '';
-            var bgOpEl = document.getElementById('bgOpacity');
-            if (bgOpEl) bgOpEl.value = bg.opacidad || 100;
-            var bgOpLab = document.getElementById('bgOpacityLabel');
-            if (bgOpLab) bgOpLab.textContent = (bg.opacidad || 100) + '%';
-            var bgOpColTxt = document.getElementById('bgOpacityColorText');
-            if (bgOpColTxt) bgOpColTxt.value = bg.colorOpacidad || '#000000';
-            var bgOpCol = document.getElementById('bgOpacityColor');
-            if (bgOpCol) bgOpCol.value = (bg.colorOpacidad || '#000000').indexOf('#') === 0 ? (bg.colorOpacidad || '#000000') : '#000000';
+            paletaState.light.bg = normalizeBg(config.backgroundLight || {});
+            var tleEl = document.getElementById('themeLightEnabled');
+            if (tleEl) tleEl.checked = config.themeLightEnabled === true;
+            paletaMode = 'dark';
+            loadPaletaState('dark');
+            renderPaletaThemeUI();
             // Complementos (used for dropdown fallback)
             var complementos = config.complementos || [];
 
@@ -1275,10 +1726,19 @@
             renderRedes(config.socialLinks || {});
 
             // Modal colors
-            renderModalColors(config.modalColors || {});
+            renderModalColors(config.modalColors || {}, config.modalColorsAlpha || {});
+
+            // Fonts
+            renderFuentes();
+
+            // Loading screen
+            renderLoading();
 
             // PWA config
             renderPWAConfig();
+
+            // Menu y estilo
+            renderMenu();
 
             // Load categories
             var activas = [];
@@ -1352,6 +1812,7 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Categorias guardadas.', 'success');
+                        spaceData.categorias = JSON.stringify(activas);
                         if (window._mySpace) window._mySpace.categorias = JSON.stringify(activas);
                         poblarCategoriasDropdown(activas);
                     } else { showToast('Error al guardar.', 'error'); }
@@ -1459,6 +1920,7 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Configuracion de marca guardada.', 'success');
+                        spaceData.config = JSON.stringify(config);
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
@@ -1472,38 +1934,213 @@
         // ============================================================
         // PALETA DE COLORES
         // ============================================================
-        function renderPaleta(palette) {
+        function renderPaleta(palette, paletteAlpha) {
+            palette = palette || {};
+            paletteAlpha = paletteAlpha || {};
             var container = document.getElementById('paletaContainer');
             container.innerHTML = '';
             COLOR_KEYS.forEach(function(ck) {
-                var val = palette && palette[ck.id] !== undefined ? palette[ck.id] : ck.def;
+                var parsed = parseStoredColor(palette[ck.id] !== undefined ? palette[ck.id] : ck.def);
+                var hex = parsed.hex || ck.def;
+                var alpha = paletteAlpha[ck.id] !== undefined
+                    ? parseInt(paletteAlpha[ck.id], 10)
+                    : (palette[ck.id] !== undefined ? parsed.alpha : ck.alpha);
+                if (isNaN(alpha)) alpha = ck.alpha;
+
                 var row = document.createElement('div');
                 row.className = 'color-row';
+
                 var label = document.createElement('label');
                 label.textContent = ck.label;
+
                 var picker = document.createElement('input');
                 picker.type = 'color';
-                picker.value = val.indexOf('#') === 0 ? val : '#000000';
+                picker.value = hex;
                 picker.id = 'pal_' + ck.id + '_pick';
                 picker.style.width = '40px';
                 picker.style.height = '34px';
                 picker.style.borderRadius = '6px';
                 picker.style.cursor = 'pointer';
                 picker.style.border = '1px solid rgba(255,255,255,0.1)';
+
                 var text = document.createElement('input');
                 text.type = 'text';
                 text.id = 'pal_' + ck.id + '_txt';
-                text.value = val;
+                text.value = hex;
                 text.placeholder = ck.def;
+                text.maxLength = 7;
+
                 picker.addEventListener('input', function() { text.value = this.value; });
                 text.addEventListener('input', function() {
-                    if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
+                    var v = this.value.trim();
+                    if (validHex(v)) picker.value = v;
                 });
+
                 row.appendChild(label);
                 row.appendChild(picker);
                 row.appendChild(text);
+
+                if (ck.alpha < 100) {
+                    var alphaWrap = document.createElement('div');
+                    alphaWrap.className = 'alpha-wrap';
+                    var slider = document.createElement('input');
+                    slider.type = 'range';
+                    slider.min = '0'; slider.max = '100';
+                    slider.value = alpha;
+                    slider.id = 'pal_' + ck.id + '_alpha';
+                    var alphaLbl = document.createElement('span');
+                    alphaLbl.className = 'alpha-lbl';
+                    alphaLbl.id = 'pal_' + ck.id + '_alphalbl';
+                    alphaLbl.textContent = alpha + '%';
+                    slider.addEventListener('input', function() { alphaLbl.textContent = this.value + '%'; });
+                    alphaWrap.appendChild(slider);
+                    alphaWrap.appendChild(alphaLbl);
+                    row.appendChild(alphaWrap);
+                }
+
                 container.appendChild(row);
             });
+            renderPresets();
+        }
+
+        function renderPresets() {
+            var wrap = document.getElementById('presetPalettes');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            PRESET_PALETTES.forEach(function(preset) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'preset-btn';
+                var swatches = document.createElement('span');
+                swatches.className = 'preset-swatches';
+                ['acento','secundario','fondo'].forEach(function(k) {
+                    var d = document.createElement('span');
+                    d.style.background = preset.colors[k];
+                    swatches.appendChild(d);
+                });
+                var nm = document.createElement('span');
+                nm.textContent = preset.name;
+                btn.appendChild(swatches);
+                btn.appendChild(nm);
+                btn.addEventListener('click', function() { aplicarPreset(preset); });
+                wrap.appendChild(btn);
+            });
+        }
+
+        function aplicarPreset(preset) {
+            COLOR_KEYS.forEach(function(ck) {
+                var hex = preset.colors[ck.id] || ck.def;
+                var alpha = (preset.alpha && preset.alpha[ck.id] !== undefined) ? preset.alpha[ck.id] : ck.alpha;
+                var pick = document.getElementById('pal_' + ck.id + '_pick');
+                var txt = document.getElementById('pal_' + ck.id + '_txt');
+                if (pick) pick.value = hex;
+                if (txt) txt.value = hex;
+                var slider = document.getElementById('pal_' + ck.id + '_alpha');
+                var lbl = document.getElementById('pal_' + ck.id + '_alphalbl');
+                if (slider) slider.value = alpha;
+                if (lbl) lbl.textContent = alpha + '%';
+            });
+            showToast('Paleta "' + preset.name + '" aplicada. Guarda para confirmar.', 'success');
+        }
+
+        // ── Editor de temas (oscuro / claro) ──
+        var paletaMode = 'dark';
+        var paletaState = {
+            dark:  { colors:{}, alpha:{}, bg:{ imagen:'', gradiente:'', opacidad:100, colorOpacidad:'#000000' } },
+            light: { colors:{}, alpha:{}, bg:{ imagen:'', gradiente:'', opacidad:100, colorOpacidad:'#ffffff' } }
+        };
+
+        // Normaliza un objeto background a la forma estandar.
+        function normalizeBg(bg) {
+            bg = bg || {};
+            var imagen = '';
+            if (bg.imagen) {
+                if (Array.isArray(bg.imagen)) imagen = bg.imagen;
+                else if (typeof bg.imagen === 'string' && bg.imagen) imagen = [{ src: bg.imagen, isBase64: bg.imagen.indexOf('base64') !== -1 }];
+            }
+            var op = (typeof bg.opacidad === 'number') ? bg.opacidad : (parseInt(bg.opacidad, 10) || 100);
+            return { imagen: imagen, gradiente: bg.gradiente || '', opacidad: op, colorOpacidad: bg.colorOpacidad || '#000000' };
+        }
+
+        // Paleta clara por defecto a partir del tema oscuro (mantiene el acento).
+        function defaultLightFromDark(darkColors) {
+            darkColors = darkColors || {};
+            var acento = parseStoredColor(darkColors.acento || '#c4a87c').hex || '#c4a87c';
+            return {
+                colors: {
+                    fondo:'#f5f7fb', secundario:'#ffffff', acento:acento, texto:'#1f2430', boton:acento,
+                    borde:'#000000', barraSuperior:'#ffffff', marcaAgua:acento, menuFondo:'#ffffff',
+                    menuTexto:'#1f2430', buscadorFondo:'#000000', buscadorTexto:'#1f2430', buscadorBorde:'#000000'
+                },
+                alpha: { borde:12, barraSuperior:90, marcaAgua:8, menuFondo:98, menuTexto:100, buscadorFondo:5, buscadorBorde:12 }
+            };
+        }
+
+        // Lee los inputs actuales (paleta + fondo) y los guarda en paletaState[paletaMode].
+        function capturePaletaState() {
+            var st = paletaState[paletaMode];
+            st.colors = {};
+            st.alpha = {};
+            COLOR_KEYS.forEach(function(ck) {
+                var el = document.getElementById('pal_' + ck.id + '_txt');
+                var v = el ? el.value.trim() : '';
+                if (!validHex(v)) { var p = parseStoredColor(v); v = p.hex || ck.def; }
+                st.colors[ck.id] = v;
+                var slider = document.getElementById('pal_' + ck.id + '_alpha');
+                st.alpha[ck.id] = slider ? (parseInt(slider.value, 10) || 0) : ck.alpha;
+            });
+            var gradEl = document.getElementById('bgGradient');
+            var opEl = document.getElementById('bgOpacity');
+            var colEl = document.getElementById('bgOpacityColorText');
+            st.bg = {
+                imagen: bgImgItems.length ? bgImgItems : '',
+                gradiente: gradEl ? gradEl.value.trim() : '',
+                opacidad: opEl ? (parseInt(opEl.value, 10) || 100) : 100,
+                colorOpacidad: colEl ? (colEl.value.trim() || '#000000') : '#000000'
+            };
+        }
+
+        // Pinta en el DOM el estado de un modo.
+        function loadPaletaState(mode) {
+            var st = paletaState[mode];
+            renderPaleta(st.colors, st.alpha);
+            bgImgItems = Array.isArray(st.bg.imagen) ? st.bg.imagen.slice() : (st.bg.imagen ? [{ src: st.bg.imagen, isBase64: false }] : []);
+            renderBgGallery();
+            var op = st.bg.opacidad || 100;
+            var bgGrad = document.getElementById('bgGradient'); if (bgGrad) bgGrad.value = st.bg.gradiente || '';
+            var bgOp = document.getElementById('bgOpacity'); if (bgOp) bgOp.value = op;
+            var bgOpLab = document.getElementById('bgOpacityLabel'); if (bgOpLab) bgOpLab.textContent = op + '%';
+            var colTxt = st.bg.colorOpacidad || '#000000';
+            var bgColTxt = document.getElementById('bgOpacityColorText'); if (bgColTxt) bgColTxt.value = colTxt;
+            var bgCol = document.getElementById('bgOpacityColor'); if (bgCol) bgCol.value = colTxt.indexOf('#') === 0 ? colTxt : '#000000';
+        }
+
+        window.setPaletaMode = function(mode) {
+            if (mode !== 'dark' && mode !== 'light') return;
+            if (mode === paletaMode) return;
+            capturePaletaState();
+            paletaMode = mode;
+            loadPaletaState(mode);
+            renderPaletaThemeUI();
+        };
+
+        window.onThemeLightToggle = function() { /* se persiste al pulsar Guardar */ };
+
+        function renderPaletaThemeUI() {
+            var isLight = paletaMode === 'light';
+            document.querySelectorAll('#themeModeSwitch .theme-mode-btn').forEach(function(b) {
+                b.classList.toggle('active', b.getAttribute('data-mode') === paletaMode);
+            });
+            var title = document.getElementById('paletaCardTitle');
+            if (title) title.textContent = isLight ? 'Colores del tema claro' : 'Colores del tema oscuro';
+            var tag = document.getElementById('bgModeTag');
+            if (tag) tag.textContent = isLight ? '(tema claro)' : '(tema oscuro)';
+            var hint = document.getElementById('paletaModeHint');
+            if (hint) {
+                hint.innerHTML = isLight
+                    ? 'Estas editando el <b>tema claro</b> (con su propia imagen de fondo). Se usara cuando el visitante active el tema claro.'
+                    : 'Estas editando el <b>tema oscuro</b>. Este es el tema por defecto de tu espacio.';
+            }
         }
 
         // ── Background image gallery (max 1) ──
@@ -1530,7 +2167,7 @@
             comprimirImagen(file, function(dataUrl) {
                 bgImgItems = [{ src: dataUrl, isBase64: true }];
                 renderBgGallery();
-            });
+            }, { maxW: 3840, maxH: 3840, quality: 0.9, maxChars: 8000000 });
             input.value = '';
         };
 
@@ -1548,40 +2185,76 @@
             renderBgGallery();
         };
 
+        // Sube una imagen base64 a Drive y devuelve la URL (o el dataUrl original si falla).
+        function subirImagenDrive(dataUrl, nombre, tamano, cb) {
+            if (!dataUrl || dataUrl.indexOf('base64') === -1) { cb(dataUrl); return; }
+            gasPost({
+                action:      'saveImage',
+                user:        sessionUser,
+                pass:        sessionPass,
+                image:       dataUrl,
+                nombreAddon: nombre,
+                indice:      Math.floor(Math.random() * 100000),
+                tamano:      tamano
+            }, 180000).then(function(resp) {
+                cb((resp && resp.url) ? resp.url : dataUrl);
+            }).catch(function() { cb(dataUrl); });
+        }
+
+        // Sube a Drive la imagen de fondo (si es base64) y devuelve el bg con la URL.
+        // Evita guardar base64 en la config (limite de celda) y conserva alta calidad.
+        function subirFondoDrive(bg, cb) {
+            var it = (bg && Array.isArray(bg.imagen) && bg.imagen.length) ? bg.imagen[0] : null;
+            if (!it || !it.src || !it.isBase64) { cb(bg); return; }
+            subirImagenDrive(it.src, 'fondo', 3840, function(url) {
+                if (url && url.indexOf('base64') === -1) bg.imagen = [{ src: url, isBase64: false }];
+                cb(bg);
+            });
+        }
+
         window.guardarPaleta = function() {
             if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
             var btn = document.getElementById('savePaletaBtn');
             btn.classList.add('loading');
             btn.disabled = true;
-            var palette = {};
-            COLOR_KEYS.forEach(function(ck) {
-                var el = document.getElementById('pal_' + ck.id + '_txt');
-                palette[ck.id] = el ? el.value.trim() || ck.def : ck.def;
-            });
-            var bg = {
-                imagen: bgImgItems.length ? bgImgItems : '',
-                gradiente: document.getElementById('bgGradient').value.trim() || '',
-                opacidad: parseInt(document.getElementById('bgOpacity').value) || 100,
-                colorOpacidad: document.getElementById('bgOpacityColorText').value.trim() || '#000000'
-            };
+            // Capturar el modo que esta visible en pantalla
+            capturePaletaState();
+            var themeLightEnabled = !!(document.getElementById('themeLightEnabled') || {}).checked;
             var config = {};
             try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
-            config.palette = palette;
-            config.background = bg;
-            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                try {
-                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
-                    if (data.status === 'OK') {
-                        showToast('Paleta guardada.', 'success');
-                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
-                    } else { showToast('Error al guardar.', 'error'); }
-                } catch(e) { showToast('Error de respuesta.', 'error'); }
-            }).catch(function() {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                showToast('Error de conexion.', 'error');
+            // Subir fondos base64 a Drive (alta calidad, sin llenar la config)
+            var huboBase64 = (paletaState.dark.bg && Array.isArray(paletaState.dark.bg.imagen) && paletaState.dark.bg.imagen.some(function(i){ return i && i.isBase64; }))
+                || (paletaState.light.bg && Array.isArray(paletaState.light.bg.imagen) && paletaState.light.bg.imagen.some(function(i){ return i && i.isBase64; }));
+            if (huboBase64) showToast('Subiendo fondo…', '');
+            subirFondoDrive(paletaState.dark.bg, function(darkBg) {
+                subirFondoDrive(paletaState.light.bg, function(lightBg) {
+                    // Tema oscuro (por defecto)
+                    config.palette = paletaState.dark.colors;
+                    config.paletteAlpha = paletaState.dark.alpha;
+                    config.background = darkBg;
+                    // Tema claro
+                    config.paletteLight = paletaState.light.colors;
+                    config.paletteLightAlpha = paletaState.light.alpha;
+                    config.backgroundLight = lightBg;
+                    config.themeLightEnabled = themeLightEnabled;
+                    gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+                        try {
+                            var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                            if (data.status === 'OK') {
+                                showToast('Paleta y temas guardados.', 'success');
+                                spaceData.config = JSON.stringify(config);
+                                if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                                loadPaletaState(paletaMode);
+                            } else { showToast('Error al guardar.', 'error'); }
+                        } catch(e) { showToast('Error de respuesta.', 'error'); }
+                    }).catch(function() {
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
+                        showToast('Error de conexion.', 'error');
+                    });
+                });
             });
         };
 
@@ -1610,6 +2283,94 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Diseno guardado.', 'success');
+                        spaceData.config = JSON.stringify(config);
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // MENU Y ESTILO
+        // ============================================================
+        window.selectOpt = function(el) {
+            var g = el.getAttribute('data-group');
+            document.querySelectorAll('.layout-option[data-group="' + g + '"]').forEach(function(o) { o.classList.remove('active'); });
+            el.classList.add('active');
+        };
+
+        function menuOpt(group, def) {
+            var e = document.querySelector('.layout-option[data-group="' + group + '"].active');
+            return e ? e.getAttribute('data-val') : def;
+        }
+
+        function renderMenu() {
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            var m = config.menu || {};
+            var c = config.cards || {};
+            var t = config.topbar || {};
+            function setOpt(group, val, def) {
+                val = val || def;
+                document.querySelectorAll('.layout-option[data-group="' + group + '"]').forEach(function(o) { o.classList.remove('active'); });
+                var el = document.querySelector('.layout-option[data-group="' + group + '"][data-val="' + val + '"]');
+                if (el) el.classList.add('active');
+            }
+            setOpt('menuStyle', m.style, 'clasico');
+            setOpt('menuActive', m.active, 'barra');
+            setOpt('menuPos', m.position, 'izquierda');
+            setOpt('menuAnim', m.anim, 'slide');
+            setOpt('menuRadius', m.radius, 'cuadrado');
+            setOpt('cardStyle', c.style, 'plano');
+            setOpt('cardHover', c.hover, 'ninguno');
+            setOpt('topbarStyle', t.style, 'solida');
+            var mw = parseInt(m.width, 10); if (!(mw >= 200 && mw <= 420)) mw = 280;
+            document.getElementById('menuWidth').value = mw;
+            document.getElementById('menuWidthLabel').textContent = mw + 'px';
+            var cr = parseInt(c.radius, 10); if (!(cr >= 0 && cr <= 32)) cr = 12;
+            document.getElementById('cardRadius').value = cr;
+            document.getElementById('cardRadiusLabel').textContent = cr + 'px';
+            document.getElementById('menuIcons').checked = !!m.icons;
+            document.getElementById('menuBadges').checked = !!m.badges;
+            document.getElementById('menuGlass').checked = !!m.glass;
+        }
+
+        window.guardarMenu = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveMenuBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.menu = {
+                style: menuOpt('menuStyle', 'clasico'),
+                active: menuOpt('menuActive', 'barra'),
+                position: menuOpt('menuPos', 'izquierda'),
+                anim: menuOpt('menuAnim', 'slide'),
+                radius: menuOpt('menuRadius', 'cuadrado'),
+                width: parseInt(document.getElementById('menuWidth').value, 10) || 280,
+                icons: document.getElementById('menuIcons').checked,
+                badges: document.getElementById('menuBadges').checked,
+                glass: document.getElementById('menuGlass').checked
+            };
+            config.cards = {
+                style: menuOpt('cardStyle', 'plano'),
+                hover: menuOpt('cardHover', 'ninguno'),
+                radius: parseInt(document.getElementById('cardRadius').value, 10) || 0
+            };
+            config.topbar = { style: menuOpt('topbarStyle', 'solida') };
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Menú y estilo guardados.', 'success');
+                        spaceData.config = JSON.stringify(config);
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
@@ -1654,6 +2415,7 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Redes sociales guardadas.', 'success');
+                        spaceData.config = JSON.stringify(config);
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
@@ -1668,38 +2430,67 @@
         // COLORES DEL MODAL
         // ============================================================
         var MODAL_COLOR_KEYS = [
-            {id:'modalBg', label:'Fondo del modal', def:'#111827'},
-            {id:'modalTexto', label:'Texto del modal', def:'#e0e6f0'},
-            {id:'modalBorde', label:'Borde del modal', def:'rgba(255,255,255,0.1)'},
-            {id:'modalAcento', label:'Acento del modal (botones)', def:''},
-            {id:'modalMeta', label:'Meta info (version, fecha)', def:'rgba(224,230,240,0.35)'}
+            {id:'modalBg', label:'Fondo del modal', def:'#111827', alpha:100},
+            {id:'modalTexto', label:'Texto del modal', def:'#e0e6f0', alpha:100},
+            {id:'modalBorde', label:'Borde del modal', def:'#ffffff', alpha:10},
+            {id:'modalAcento', label:'Acento del modal (botones)', def:'', alpha:100},
+            {id:'modalMeta', label:'Meta info (version, fecha)', def:'#e0e6f0', alpha:35}
         ];
 
-        function renderModalColors(modalColors) {
+        function renderModalColors(modalColors, modalAlpha) {
+            modalColors = modalColors || {};
+            modalAlpha = modalAlpha || {};
             var container = document.getElementById('modalColorsContainer');
             container.innerHTML = '';
             MODAL_COLOR_KEYS.forEach(function(ck) {
-                var val = modalColors && modalColors[ck.id] !== undefined ? modalColors[ck.id] : ck.def;
+                var isAcento = (ck.id === 'modalAcento');
+                var parsed = parseStoredColor(modalColors[ck.id] !== undefined ? modalColors[ck.id] : ck.def);
+                var hex = parsed.hex || (isAcento ? '#c4a87c' : ck.def);
+                var alpha = modalAlpha[ck.id] !== undefined
+                    ? parseInt(modalAlpha[ck.id], 10)
+                    : (modalColors[ck.id] !== undefined ? parsed.alpha : ck.alpha);
+                if (isNaN(alpha)) alpha = ck.alpha;
+
                 var row = document.createElement('div');
                 row.className = 'color-row';
                 var label = document.createElement('label');
                 label.textContent = ck.label;
                 var picker = document.createElement('input');
                 picker.type = 'color';
-                picker.value = val && val.indexOf('#') === 0 ? val : '#000000';
+                picker.value = hex;
                 picker.id = 'mcl_' + ck.id + '_pick';
                 var text = document.createElement('input');
                 text.type = 'text';
                 text.id = 'mcl_' + ck.id + '_txt';
-                text.value = val;
-                text.placeholder = ck.def || 'transparent';
+                text.value = isAcento && !modalColors[ck.id] ? '' : hex;
+                text.placeholder = isAcento ? 'auto (usa acento)' : ck.def;
+                text.maxLength = 7;
                 picker.addEventListener('input', function() { text.value = this.value; });
                 text.addEventListener('input', function() {
-                    if (/^#[0-9a-f]{6}$/i.test(this.value)) picker.value = this.value;
+                    if (validHex(this.value.trim())) picker.value = this.value.trim();
                 });
                 row.appendChild(label);
                 row.appendChild(picker);
                 row.appendChild(text);
+
+                if (ck.alpha < 100) {
+                    var alphaWrap = document.createElement('div');
+                    alphaWrap.className = 'alpha-wrap';
+                    var slider = document.createElement('input');
+                    slider.type = 'range';
+                    slider.min = '0'; slider.max = '100';
+                    slider.value = alpha;
+                    slider.id = 'mcl_' + ck.id + '_alpha';
+                    var alphaLbl = document.createElement('span');
+                    alphaLbl.className = 'alpha-lbl';
+                    alphaLbl.id = 'mcl_' + ck.id + '_alphalbl';
+                    alphaLbl.textContent = alpha + '%';
+                    slider.addEventListener('input', function() { alphaLbl.textContent = this.value + '%'; });
+                    alphaWrap.appendChild(slider);
+                    alphaWrap.appendChild(alphaLbl);
+                    row.appendChild(alphaWrap);
+                }
+
                 container.appendChild(row);
             });
         }
@@ -1710,13 +2501,22 @@
             btn.classList.add('loading');
             btn.disabled = true;
             var modalColors = {};
+            var modalColorsAlpha = {};
             MODAL_COLOR_KEYS.forEach(function(ck) {
                 var el = document.getElementById('mcl_' + ck.id + '_txt');
-                modalColors[ck.id] = el ? el.value.trim() : ck.def;
+                var v = el ? el.value.trim() : '';
+                if (v && !validHex(v)) {
+                    var parsed = parseStoredColor(v);
+                    v = parsed.hex || '';
+                }
+                modalColors[ck.id] = v;  // modalAcento vacio = auto
+                var slider = document.getElementById('mcl_' + ck.id + '_alpha');
+                modalColorsAlpha[ck.id] = slider ? (parseInt(slider.value, 10) || 0) : ck.alpha;
             });
             var config = {};
             try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
             config.modalColors = modalColors;
+            config.modalColorsAlpha = modalColorsAlpha;
             gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
                 btn.classList.remove('loading');
                 btn.disabled = false;
@@ -1724,6 +2524,7 @@
                     var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
                     if (data.status === 'OK') {
                         showToast('Colores del modal guardados.', 'success');
+                        spaceData.config = JSON.stringify(config);
                         if (window._mySpace) window._mySpace.config = JSON.stringify(config);
                     } else { showToast('Error al guardar.', 'error'); }
                 } catch(e) { showToast('Error de respuesta.', 'error'); }
@@ -1733,6 +2534,286 @@
                 showToast('Error de conexion.', 'error');
             });
         };
+
+        // ============================================================
+        // FUENTES
+        // ============================================================
+        // Presets de fuentes. "gf" = Google Fonts family. "css" = hoja CSS externa.
+        var FONT_PRESETS = [
+            { id:'default', name:'Predeterminada (sistema)', family:"'Inter', -apple-system, BlinkMacSystemFont, sans-serif" },
+            { id:'inter', name:'Inter', gf:'Inter' },
+            { id:'poppins', name:'Poppins', gf:'Poppins' },
+            { id:'montserrat', name:'Montserrat', gf:'Montserrat' },
+            { id:'roboto', name:'Roboto', gf:'Roboto' },
+            { id:'oswald', name:'Oswald', gf:'Oswald' },
+            { id:'raleway', name:'Raleway', gf:'Raleway' },
+            { id:'nunito', name:'Nunito', gf:'Nunito' },
+            { id:'bebas', name:'Bebas Neue', gf:'Bebas Neue' },
+            { id:'cinzel', name:'Cinzel (elegante)', gf:'Cinzel' },
+            { id:'orbitron', name:'Orbitron (futurista)', gf:'Orbitron' },
+            { id:'audiowide', name:'Audiowide', gf:'Audiowide' },
+            { id:'permanent', name:'Permanent Marker', gf:'Permanent Marker' },
+            { id:'bangers', name:'Bangers', gf:'Bangers' },
+            { id:'lobster', name:'Lobster', gf:'Lobster' },
+            { id:'pacifico', name:'Pacifico', gf:'Pacifico' },
+            { id:'press', name:'Press Start 2P (pixel)', gf:'Press Start 2P' },
+            { id:'silkscreen', name:'Silkscreen (pixel)', gf:'Silkscreen' },
+            { id:'vt323', name:'VT323 (terminal pixel)', gf:'VT323' },
+            { id:'minecraft', name:'Minecraft (pixel)', css:'https://fonts.cdnfonts.com/css/minecraft-4', family:"'Minecraft', monospace" },
+            { id:'custom', name:'Personalizada (URL)', custom:true }
+        ];
+
+        function fontPresetById(id) {
+            for (var i = 0; i < FONT_PRESETS.length; i++) { if (FONT_PRESETS[i].id === id) return FONT_PRESETS[i]; }
+            return FONT_PRESETS[0];
+        }
+
+        function fillFontSelect(selectEl, currentId) {
+            selectEl.innerHTML = '';
+            FONT_PRESETS.forEach(function(p) {
+                var opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = p.name;
+                if (p.id === currentId) opt.selected = true;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        // Inyecta la fuente en el documento actual (para la vista previa del panel).
+        function injectFontAsset(cfg) {
+            if (!cfg) return;
+            if (cfg.gf) {
+                var gfId = 'gf_' + cfg.gf.replace(/\s+/g, '_');
+                if (!document.getElementById(gfId)) {
+                    var l = document.createElement('link');
+                    l.id = gfId; l.rel = 'stylesheet';
+                    l.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(cfg.gf).replace(/%20/g, '+') + ':wght@400;700;800&display=swap';
+                    document.head.appendChild(l);
+                }
+            } else if (cfg.css) {
+                var cId = 'css_' + cfg.id;
+                if (!document.getElementById(cId)) {
+                    var l2 = document.createElement('link');
+                    l2.id = cId; l2.rel = 'stylesheet'; l2.href = cfg.css;
+                    document.head.appendChild(l2);
+                }
+            } else if (cfg.custom && cfg.url) {
+                var fId = 'ff_' + (cfg.name || 'custom').replace(/[^a-z0-9]/gi, '');
+                if (!document.getElementById(fId)) {
+                    var st = document.createElement('style');
+                    st.id = fId;
+                    if (/\.(ttf|otf|woff2?|eot)(\?|$)/i.test(cfg.url)) {
+                        st.textContent = "@font-face{font-family:'" + cfg.name + "';src:url('" + cfg.url + "');font-display:swap;}";
+                    } else {
+                        var l3 = document.createElement('link');
+                        l3.id = fId; l3.rel = 'stylesheet'; l3.href = cfg.url;
+                        document.head.appendChild(l3);
+                        return;
+                    }
+                    document.head.appendChild(st);
+                }
+            }
+        }
+
+        function fontFamilyFor(id, customName) {
+            if (id === 'custom') return "'" + (customName || 'Custom') + "', sans-serif";
+            var p = fontPresetById(id);
+            if (p.family) return p.family;
+            if (p.gf) return "'" + p.gf + "', sans-serif";
+            return 'inherit';
+        }
+
+        function renderFuentes() {
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            var fonts = config.fonts || {};
+            var bodySel = document.getElementById('fontBodySelect');
+            var titleSel = document.getElementById('fontTitleSelect');
+            fillFontSelect(bodySel, fonts.body || 'default');
+            fillFontSelect(titleSel, fonts.title || 'default');
+            document.getElementById('fontBodyCustomName').value = fonts.bodyCustomName || '';
+            document.getElementById('fontBodyCustomUrl').value = fonts.bodyCustomUrl || '';
+            document.getElementById('fontTitleCustomName').value = fonts.titleCustomName || '';
+            document.getElementById('fontTitleCustomUrl').value = fonts.titleCustomUrl || '';
+            onFontChange('body');
+            onFontChange('title');
+        }
+
+        window.onFontChange = function(which) {
+            var sel = document.getElementById(which === 'body' ? 'fontBodySelect' : 'fontTitleSelect');
+            var wrap = document.getElementById(which === 'body' ? 'fontBodyCustomWrap' : 'fontTitleCustomWrap');
+            wrap.style.display = (sel.value === 'custom') ? '' : 'none';
+            if (sel.value !== 'custom') {
+                var p = fontPresetById(sel.value);
+                injectFontAsset(p);
+            } else {
+                var name = document.getElementById(which === 'body' ? 'fontBodyCustomName' : 'fontTitleCustomName').value;
+                var url = document.getElementById(which === 'body' ? 'fontBodyCustomUrl' : 'fontTitleCustomUrl').value;
+                if (url) injectFontAsset({ custom:true, name:name || 'Custom', url:url, id:which });
+            }
+            updateFontPreview();
+        };
+
+        function updateFontPreview() {
+            var bodySel = document.getElementById('fontBodySelect').value;
+            var titleSel = document.getElementById('fontTitleSelect').value;
+            var bodyName = document.getElementById('fontBodyCustomName').value;
+            var titleName = document.getElementById('fontTitleCustomName').value;
+            document.getElementById('fpBody').style.fontFamily = fontFamilyFor(bodySel, bodyName);
+            document.getElementById('fpTitle').style.fontFamily = fontFamilyFor(titleSel, titleName);
+        }
+
+        document.getElementById('fontBodyCustomName').addEventListener('input', function() { onFontChange('body'); });
+        document.getElementById('fontBodyCustomUrl').addEventListener('input', function() { onFontChange('body'); });
+        document.getElementById('fontTitleCustomName').addEventListener('input', function() { onFontChange('title'); });
+        document.getElementById('fontTitleCustomUrl').addEventListener('input', function() { onFontChange('title'); });
+
+        window.guardarFuentes = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveFuentesBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var fonts = {
+                body: document.getElementById('fontBodySelect').value,
+                title: document.getElementById('fontTitleSelect').value,
+                bodyCustomName: document.getElementById('fontBodyCustomName').value.trim(),
+                bodyCustomUrl: document.getElementById('fontBodyCustomUrl').value.trim(),
+                titleCustomName: document.getElementById('fontTitleCustomName').value.trim(),
+                titleCustomUrl: document.getElementById('fontTitleCustomUrl').value.trim()
+            };
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.fonts = fonts;
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Fuentes guardadas.', 'success');
+                        spaceData.config = JSON.stringify(config);
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // ============================================================
+        // PANTALLA DE CARGA
+        // ============================================================
+        function renderLoading() {
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            var ld = config.loading || {};
+            document.getElementById('chkLoadingShow').checked = ld.show !== false;
+            document.getElementById('chkLoadingText').checked = ld.showText !== false;
+            document.getElementById('chkLoadingIcon').checked = ld.showIcon !== false;
+            document.getElementById('loadingTextCustom').value = ld.text || '';
+            document.getElementById('loadingSpinnerStyle').value = ld.spinner || 'ring';
+            var bg = ld.bg || '#0a0e17';
+            var tc = ld.textColor || '#e0e6f0';
+            document.getElementById('loadingBgPick').value = validHex(bg) ? bg : '#0a0e17';
+            document.getElementById('loadingBgTxt').value = bg;
+            document.getElementById('loadingTextPick').value = validHex(tc) ? tc : '#e0e6f0';
+            document.getElementById('loadingTextTxt').value = tc;
+            onLoadingChange();
+        }
+
+        window.onLoadingChange = function() {
+            updateLoadingPreview();
+        };
+
+        function updateLoadingPreview() {
+            var show = document.getElementById('chkLoadingShow').checked;
+            var showText = document.getElementById('chkLoadingText').checked;
+            var showIcon = document.getElementById('chkLoadingIcon').checked;
+            var style = document.getElementById('loadingSpinnerStyle').value;
+            var bg = document.getElementById('loadingBgTxt').value.trim() || '#0a0e17';
+            var tc = document.getElementById('loadingTextTxt').value.trim() || '#e0e6f0';
+            var text = document.getElementById('loadingTextCustom').value.trim();
+
+            var box = document.getElementById('loadingPreview');
+            box.style.background = validHex(bg) ? bg : '#0a0e17';
+
+            var iconEl = document.getElementById('loadingPreviewIcon');
+            if (show && showIcon) {
+                iconEl.style.display = '';
+                var iconSrc = (spaceData && (spaceData.iconoURL || (spaceData.config && (function(){ try { return (JSON.parse(spaceData.config).pwa||{}).icon; } catch(e){ return ''; } })()))) || '';
+                if (iconSrc) iconEl.style.backgroundImage = 'url(' + iconSrc + ')';
+                else iconEl.style.backgroundImage = 'none';
+            } else {
+                iconEl.style.display = 'none';
+            }
+
+            var sp = document.getElementById('loadingPreviewSpinner');
+            sp.className = '';
+            sp.innerHTML = '';
+            if (!show || style === 'none') {
+                sp.style.display = 'none';
+            } else {
+                sp.style.display = '';
+                if (style === 'ring') sp.className = 'lp-ring';
+                else if (style === 'dots') { sp.className = 'lp-dots'; sp.innerHTML = '<span></span><span></span><span></span>'; }
+                else if (style === 'pulse') sp.className = 'lp-pulse';
+                else if (style === 'bar') sp.className = 'lp-bar';
+            }
+
+            var lt = document.getElementById('loadingPreviewText');
+            if (show && showText) {
+                lt.style.display = '';
+                lt.textContent = (text || '{nombre} cargando...').replace('{nombre}', spaceData.nombrePlataforma || spaceData.usuario || 'Espacio');
+                lt.style.color = validHex(tc) ? tc : '#e0e6f0';
+            } else {
+                lt.style.display = 'none';
+            }
+        }
+
+        window.guardarLoading = function() {
+            if (!isLoggedIn() || !spaceData) { showToast('Debes iniciar sesion.', 'error'); return; }
+            var btn = document.getElementById('saveCargaBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            var bgTxt = document.getElementById('loadingBgTxt').value.trim();
+            var tcTxt = document.getElementById('loadingTextTxt').value.trim();
+            var loading = {
+                show: document.getElementById('chkLoadingShow').checked,
+                showText: document.getElementById('chkLoadingText').checked,
+                showIcon: document.getElementById('chkLoadingIcon').checked,
+                text: document.getElementById('loadingTextCustom').value.trim(),
+                spinner: document.getElementById('loadingSpinnerStyle').value,
+                bg: validHex(bgTxt) ? bgTxt : '#0a0e17',
+                textColor: validHex(tcTxt) ? tcTxt : '#e0e6f0'
+            };
+            var config = {};
+            try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
+            config.loading = loading;
+            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                try {
+                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                    if (data.status === 'OK') {
+                        showToast('Pantalla de carga guardada.', 'success');
+                        spaceData.config = JSON.stringify(config);
+                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                    } else { showToast('Error al guardar.', 'error'); }
+                } catch(e) { showToast('Error de respuesta.', 'error'); }
+            }).catch(function() {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+                showToast('Error de conexion.', 'error');
+            });
+        };
+
+        // Listeners para la pantalla de carga (color pickers + text)
+        syncColorInput('loadingBgPick', 'loadingBgTxt');
+        syncColorInput('loadingTextPick', 'loadingTextTxt');
+        document.getElementById('loadingBgTxt').addEventListener('input', updateLoadingPreview);
+        document.getElementById('loadingTextTxt').addEventListener('input', updateLoadingPreview);
 
         // ============================================================
         // CONFIGURAR APK / PWA
@@ -1760,7 +2841,7 @@
             document.getElementById('pwaAppName').value = pwa.appName || '';
 
             // Icon
-            pwaIconData = pwa.icon ? { src: pwa.icon, isBase64: false } : { src: '', isBase64: false };
+            pwaIconData = pwa.icon ? { src: pwa.icon, isBase64: pwa.icon.indexOf('base64') !== -1 } : { src: '', isBase64: false };
             updatePwaIconPreview();
 
             // Colors
@@ -1870,23 +2951,38 @@
 
             var config = {};
             try { config = JSON.parse(spaceData.config || '{}'); } catch(e) {}
-            config.pwa = pwa;
 
-            gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                try {
-                    var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
-                    if (data.status === 'OK') {
-                        showToast('Configuracion APK guardada.', 'success');
-                        if (window._mySpace) window._mySpace.config = JSON.stringify(config);
-                    } else { showToast('Error al guardar.', 'error'); }
-                } catch(e) { showToast('Error de respuesta.', 'error'); }
-            }).catch(function() {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-                showToast('Error de conexion.', 'error');
-            });
+            var finalizarApk = function() {
+                pwa.icon = pwaIconData.src || '';
+                config.pwa = pwa;
+                gasPost({ action:'savePanelConfig', user:sessionUser, pass:sessionPass, config:JSON.stringify(config) }).then(function(resp) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    try {
+                        var data = typeof resp === 'string' ? JSON.parse(resp) : resp;
+                        if (data.status === 'OK') {
+                            showToast('Configuracion APK guardada.', 'success');
+                            spaceData.config = JSON.stringify(config);
+                            if (window._mySpace) window._mySpace.config = JSON.stringify(config);
+                        } else { showToast('Error al guardar.', 'error'); }
+                    } catch(e) { showToast('Error de respuesta.', 'error'); }
+                }).catch(function() {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    showToast('Error de conexion.', 'error');
+                });
+            };
+
+            // Subir el icono base64 a Drive (evita llenar la config y conserva calidad)
+            if (pwaIconData && pwaIconData.isBase64 && pwaIconData.src) {
+                showToast('Subiendo icono…', '');
+                subirImagenDrive(pwaIconData.src, 'icono_' + (sessionUser || 'user'), 512, function(url) {
+                    if (url && url.indexOf('base64') === -1) pwaIconData = { src: url, isBase64: false };
+                    finalizarApk();
+                });
+            } else {
+                finalizarApk();
+            }
         };
 
         // ============================================================
@@ -1909,24 +3005,27 @@
             container.innerHTML = html;
         }
 
-        function comprimirImagen(file, cb) {
+        function comprimirImagen(file, cb, opts) {
+            opts = opts || {};
+            var maxW = opts.maxW || 1600, maxH = opts.maxH || 1600;
+            var startQ = opts.quality || 0.85;
+            var maxChars = opts.maxChars || 2500000;
             var reader = new FileReader();
             reader.onload = function(e) {
                 var img = new Image();
                 img.onload = function() {
-                    var maxW = 1200, maxH = 1200;
                     var w = img.width, h = img.height;
                     if (w > maxW) { h = (maxW / w) * h; w = maxW; }
                     if (h > maxH) { w = (maxH / h) * w; h = maxH; }
                     var canvas = document.createElement('canvas');
-                    canvas.width = w; canvas.height = h;
+                    canvas.width = Math.round(w); canvas.height = Math.round(h);
                     var ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    var quality = 0.7;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    var quality = startQ;
                     var dataUrl = canvas.toDataURL('image/jpeg', quality);
-                    while (dataUrl.length > 2000 && quality > 0.1) {
+                    while (dataUrl.length > maxChars && quality > 0.55) {
                         quality -= 0.1;
-                        dataUrl = canvas.toDataURL('image/jpeg', Math.max(quality, 0.1));
+                        dataUrl = canvas.toDataURL('image/jpeg', quality);
                     }
                     cb(dataUrl);
                 };
