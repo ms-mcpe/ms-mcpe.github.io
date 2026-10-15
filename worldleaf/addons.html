@@ -220,6 +220,18 @@ body::before{
 
 .home-ad-inline{grid-column:1/-1;display:flex;justify-content:center;padding:10px 0}
 
+.search-wrap{position:relative;max-width:420px;width:90%;margin-top:24px}
+.search-input{
+  width:100%;padding:12px 44px 12px 42px;border-radius:100px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  color:var(--white);font-size:14px;outline:none;transition:all .2s;
+}
+.search-input::placeholder{color:var(--gray2)}
+.search-input:focus{background:rgba(255,255,255,.06);border-color:var(--border2);box-shadow:0 0 0 3px rgba(168,85,247,.1)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gray2);pointer-events:none}
+.search-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:var(--gray);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1}
+.search-clear:hover{color:var(--white);background:rgba(255,255,255,.12)}
+
 @media(max-width:600px){
   .navbar{padding:0 16px;height:54px}
   .nav-brand{font-size:17px}
@@ -242,16 +254,6 @@ body::before{
 .ad-skip{font-size:12px;color:var(--gray3);margin-top:8px}
 </style>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LVCX19L6W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3LVCX19L6W');
-</script>
-  
 <body>
 
 <div class="loading-screen" id="loader">
@@ -310,25 +312,45 @@ function catList(){
   return out;
 }
 
-function showHome(){
-  var el=document.getElementById('mainContent');
+function renderResults(catF,q){
+  var el=document.getElementById('homeResults');
+  if(!el)return;
   cardIds=[];
   var h='';
-  var p=getParam();
-  var cats=catList(),catF=String(p.cat||'').trim();
-  // An unknown ?cat= falls back to "Todos" instead of stranding the user.
-  if(catF){
-    var known=false;
-    for(var z=0;z<cats.length;z++)if(cats[z].n===catF)known=true;
-    if(!known)catF='';
-  }
+  var cats=catList();
   var src=addons;
   if(catF){
     src=[];
-    for(var q=0;q<addons.length;q++){if(String(addons[q].categoria||'').trim()===catF)src.push(addons[q])}
+    for(var n=0;n<addons.length;n++){if(String(addons[n].categoria||'').trim()===catF)src.push(addons[n])}
   }
   var list=src.slice(0,50);
-  for(var i=list.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=list[i];list[i]=list[j];list[j]=t}
+  q=String(q||'').trim().toLowerCase();
+  if(q){
+    function score(a){
+      var s=0;
+      var nm=String(a.nombre||'').toLowerCase();
+      var cat=String(a.categoria||'').toLowerCase();
+      var desc=String(a.descripcion||'').toLowerCase();
+      if(nm===q)s+=100;
+      var first=nm.split(/\s+/)[0]||'';
+      if(first===q)s+=60;
+      if(nm.indexOf(q)===0)s+=40;
+      var qw=q.split(/\s+/).filter(function(x){return x});
+      var allIn=true;
+      for(var x=0;x<qw.length;x++)if(nm.indexOf(qw[x])===-1){allIn=false;break}
+      if(allIn&&qw.length>0)s+=30;
+      for(var x=0;x<qw.length;x++)if(nm.indexOf(qw[x])>-1)s+=15;
+      if(nm.indexOf(q)>-1)s+=10;
+      if(cat.indexOf(q)>-1)s+=5;
+      if(desc.indexOf(q)>-1)s+=2;
+      return s;
+    }
+    var sc=list.map(function(v){return {v:v,sc:score(v)};});
+    sc.sort(function(a,b){return b.sc-a.sc});
+    list=sc.map(function(x){return x.v;});
+  }else{
+    for(var i=list.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=list[i];list[i]=list[j];list[j]=t}
+  }
   for(var i=0;i<list.length;i++){
     var a=list[i];
     cardIds[i]=a.id;
@@ -342,21 +364,15 @@ function showHome(){
     h+='<span>&#8595; '+fmt(a.downloads||0)+'</span>';
     if(a.categoria)h+='<span>'+a.categoria+'</span>';
     h+='</div></div></div>';
-    if(i===7)h+='<div class="home-ad-inline" id="homeAdInline"></div>';
+    if((i+1)%8===0&&i+1<list.length)h+='<div class="home-ad-inline"></div>';
   }
-  var cats2=cats,f='';
-  for(var i=0;i<cats2.length;i++){
-    f+='<a class="fchip'+(cats2[i].n===catF?' on':'')+'" href="?cat='+encodeURIComponent(cats2[i].n)+'">'+cats2[i].n+'<b>'+fmt(cats2[i].c)+'</b></a>';
+  var f='';
+  for(var i=0;i<cats.length;i++){
+    f+='<a class="fchip'+(cats[i].n===catF?' on':'')+'" href="?cat='+encodeURIComponent(cats[i].n)+'">'+cats[i].n+'<b>'+fmt(cats[i].c)+'</b></a>';
   }
   var fb='<div class="filters"><a class="fchip'+(catF?'':' on')+'" href="?">Todos<b>'+fmt(addons.length)+'</b></a>'+f+'</div>';
-  el.innerHTML='<div class="home-hero">'+
-    '<img src="icon.png" alt="" class="hero-icon" onerror="this.style.display=\'none\'">'+
-    '<div class="hero-title">World<span class="l">Leaf</span></div>'+
-    '<div class="hero-sub">Complementos, texturas, mapas y m\u00e1s para Minecraft PE. 100% gratis.</div>'+
-    '</div>'+fb+
-    (h?'<div class="home-grid">'+h+'</div>':
-    '<div class="empty-state"><div class="empty-icon">&#128269;</div><div class="empty-text">No hay complementos en esta categor\u00eda</div></div>');
-  document.title=(catF?catF+' - ':'')+'WorldLeaf';
+  el.innerHTML=fb+(h?'<div class="home-grid">'+h+'</div>':
+    '<div class="empty-state"><div class="empty-icon">&#128269;</div><div class="empty-text">'+(q?'No se encontraron resultados':'No hay complementos en esta categor\u00eda')+'</div></div>');
 
   var cards=el.querySelectorAll('.addon-card');
   for(var c=0;c<cards.length;c++){
@@ -368,14 +384,68 @@ function showHome(){
     })(cards[c],c);
   }
   try{
-    var adBanner=document.getElementById('homeAdInline');
-    if(adBanner){
+    var adBanners=el.querySelectorAll('.home-ad-inline');
+    for(var b=0;b<adBanners.length;b++){
       window.atOptions={'key':'1d21438c427f31f0fa827d2a4d95279b','format':'iframe','height':300,'width':160,'params':{}};
       var adScript=document.createElement('script');
       adScript.src='https://www.highperformanceformat.com/1d21438c427f31f0fa827d2a4d95279b/invoke.js';
-      adBanner.appendChild(adScript);
+      adBanners[b].appendChild(adScript);
     }
   }catch(e){}
+}
+
+function showHome(){
+  var el=document.getElementById('mainContent');
+  var p=getParam();
+  var cats=catList(),catF=String(p.cat||'').trim();
+  if(catF){
+    var known=false;
+    for(var z=0;z<cats.length;z++)if(cats[z].n===catF)known=true;
+    if(!known)catF='';
+  }
+  var q=String(p.q||'').trim();
+  document.title=(catF?catF+' - ':'')+'WorldLeaf';
+  el.innerHTML='<div class="home-hero">'+
+    '<img src="icon.png" alt="" class="hero-icon" onerror="this.style.display=\'none\'">'+
+    '<div class="hero-title">World<span class="l">Leaf</span></div>'+
+    '<div class="hero-sub">Complementos, texturas, mapas y m\u00e1s para Minecraft PE. 100% gratis.</div>'+
+    '<div class="search-wrap">'+
+      '<input type="text" id="searchInput" class="search-input" placeholder="Buscar addons...">'+
+      '<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'+
+      '<button id="searchClear" class="search-clear" title="Limpiar" style="display:none">&#215;</button>'+
+    '</div>'+
+    '</div><div id="homeResults"></div>';
+  renderResults(catF,q);
+
+  var inp=document.getElementById('searchInput');
+  var clr=document.getElementById('searchClear');
+  if(inp){
+    inp.value=q;
+    if(clr)clr.style.display=q?'flex':'none';
+    var t=null;
+    inp.addEventListener('input',function(){
+      var v=this.value.trim();
+      if(clr)clr.style.display=v?'flex':'none';
+      clearTimeout(t);
+      t=setTimeout(function(){
+        var url=w.location.pathname+'?';
+        if(catF)url+='cat='+encodeURIComponent(catF)+'&';
+        if(v)url+='q='+encodeURIComponent(v);
+        if(url.charAt(url.length-1)=='&'||url.charAt(url.length-1)=='?')url=url.slice(0,-1);
+        try{w.history.replaceState(null,'',url)}catch(e){}
+        renderResults(catF,v);
+      },200);
+    });
+  }
+  if(clr){
+    clr.addEventListener('click',function(){
+      if(inp){inp.value='';inp.focus()}
+      clr.style.display='none';
+      var url=catF?('?cat='+encodeURIComponent(catF)):w.location.pathname;
+      try{w.history.replaceState(null,'',url)}catch(e){}
+      renderResults(catF,'');
+    });
+  }
 }
 
 function showDetail(a){
