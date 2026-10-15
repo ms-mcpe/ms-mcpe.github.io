@@ -19,16 +19,6 @@
   <!-- Favicon SVG (hoja) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍃</text></svg>">
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LVCX19L6W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3LVCX19L6W');
-</script>
-  
 <body>
 
   <!-- ============================================================
@@ -558,6 +548,28 @@
 
       <div class="modal-body" id="modalBody">
         <!-- Se inyecta dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL - ANUNCIO ANTES DE COPIAR (5 segundos)
+       ============================================================ -->
+  <div class="modal" id="copyAdModal" aria-hidden="true">
+    <div class="modal-backdrop" id="copyAdBackdrop"></div>
+    <div class="modal-content copy-ad-content" role="dialog" aria-modal="true" aria-label="Publicidad">
+      <button class="modal-close" id="copyAdClose" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <p class="copy-ad-text">La seed se desbloquea en <strong id="copyAdCountdown">5</strong> segundos…</p>
+
+      <div class="ad-slot" id="copyAdSlot"></div>
+
+      <div class="copy-ad-footer">
+        <button class="btn btn-primary" id="copyAdConfirm" disabled>Copiar seed</button>
       </div>
     </div>
   </div>

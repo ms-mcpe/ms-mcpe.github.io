@@ -2205,3 +2205,94 @@ ul, ol {
 .footer-disclaimer {
   overflow-wrap: break-word;
 }
+
+/* ============================================================
+   ANUNCIOS
+   ============================================================ */
+.ad-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ad-slot-grid {
+  position: relative;
+  min-height: 250px;
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+  background: var(--bg-card);
+  border: 1px dashed var(--border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.ad-slot-grid::before {
+  content: 'Publicidad';
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.ad-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.ad-frame iframe {
+  border: 0;
+  max-width: 100%;
+  display: block;
+}
+
+/* ============================================================
+   MODAL - ANUNCIO ANTES DE COPIAR
+   ============================================================ */
+.copy-ad-content {
+  max-width: 380px;
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+
+.copy-ad-text {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.copy-ad-text strong {
+  color: var(--lime-primary);
+  font-size: 1.15rem;
+  display: inline-block;
+  min-width: 24px;
+}
+
+.copy-ad-content .ad-slot {
+  min-height: 250px;
+  margin-bottom: var(--space-lg);
+}
+
+.copy-ad-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.copy-ad-footer .btn {
+  width: 100%;
+}
+
+.copy-ad-footer .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

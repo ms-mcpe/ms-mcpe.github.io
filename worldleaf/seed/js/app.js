@@ -34,6 +34,56 @@ const App = (() => {
     currentSeed: null
   };
 
+  // ============================================================
+  // ANUNCIOS
+  // ============================================================
+
+  const AD_CONFIG = {
+    key: 'a0082d89d50ee2582d54e84972c04961',
+    url: 'https://www.highrevenueformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js',
+    width: 300,
+    height: 250
+  };
+
+  // Mostrar 1 anuncio tras cada 6 semillas en la cuadrícula
+  const ADS_EVERY = 6;
+
+  // Segundos de anuncio antes de poder copiar
+  const COPY_AD_SECONDS = 5;
+
+  /**
+   * Crea un anuncio aislado en su propio iframe (evita conflictos
+   * entre varias instancias del mismo script en la página).
+   * @returns {HTMLElement}
+   */
+  function createAdElement() {
+    const wrap = document.createElement('div');
+    wrap.className = 'ad-frame';
+
+    const iframe = document.createElement('iframe');
+    iframe.width = AD_CONFIG.width;
+    iframe.height = AD_CONFIG.height;
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('title', 'Publicidad');
+    iframe.style.border = '0';
+    iframe.style.maxWidth = '100%';
+
+    const doc =
+      '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+      '<style>body{margin:0;background:transparent;overflow:hidden;' +
+      'display:flex;align-items:center;justify-content:center}</style></head><body>' +
+      '<scr' + 'ipt type="text/javascript">atOptions = {' +
+      '"key":"' + AD_CONFIG.key + '","format":"iframe","height":' + AD_CONFIG.height +
+      ',"width":' + AD_CONFIG.width + ',"params":{}};</scr' + 'ipt>' +
+      '<scr' + 'ipt type="text/javascript" src="' + AD_CONFIG.url + '"></scr' + 'ipt>' +
+      '</body></html>';
+
+    iframe.srcdoc = doc;
+    wrap.appendChild(iframe);
+    return wrap;
+  }
+
   // Listas de opciones para filtros
   const BIOMES = [
     'Plains', 'Desert', 'Forest', 'Taiga', 'Jungle', 'Savanna',
@@ -81,6 +131,7 @@ const App = (() => {
     setupForm();
     setupImageUpload();
     setupModal();
+    setupCopyAd();
     setupViewToggle();
     setupScrollEffects();
     setupLangToggles();
@@ -505,7 +556,20 @@ const App = (() => {
 
     if (emptyState) emptyState.style.display = 'none';
 
-    grid.innerHTML = state.seeds.map((seed, index) => renderSeedCard(seed, index)).join('');
+    // Renderizar cards insertando 1 anuncio después de cada 6 semillas
+    let gridHtml = '';
+    state.seeds.forEach((seed, index) => {
+      gridHtml += renderSeedCard(seed, index);
+      if ((index + 1) % ADS_EVERY === 0) {
+        gridHtml += '<div class="ad-slot ad-slot-grid" data-ad-slot aria-label="Publicidad"></div>';
+      }
+    });
+    grid.innerHTML = gridHtml;
+
+    // Inyectar los anuncios en los huecos
+    grid.querySelectorAll('[data-ad-slot]').forEach(slot => {
+      slot.appendChild(createAdElement());
+    });
 
     // Agregar event listeners a las cards
     grid.querySelectorAll('.seed-card').forEach(card => {
@@ -859,7 +923,13 @@ const App = (() => {
 
     // Cerrar con Escape
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
+      if (e.key !== 'Escape') return;
+
+      // Si el anuncio de copia está abierto, lo gestiona setupCopyAd
+      const adModal = document.getElementById('copyAdModal');
+      if (adModal && adModal.classList.contains('open')) return;
+
+      if (modal && modal.classList.contains('open')) {
         closeModal();
       }
     });
@@ -1037,14 +1107,125 @@ const App = (() => {
   }
 
   /**
-   * Copia el número de semilla al portapapeles.
+   * Inicia la copia de una seed: primero muestra el anuncio de 5 segundos.
    * @param {string} seedNumber
    */
   function copySeed(seedNumber) {
+    openCopyAd(seedNumber);
+  }
+
+  // ============================================================
+  // ANUNCIO ANTES DE COPIAR
+  // ============================================================
+
+  let copyAdTimer = null;
+  let copyAdSeed = '';
+
+  /**
+   * Abre el modal con el anuncio y la cuenta atrás de 5 segundos.
+   */
+  function openCopyAd(seedNumber) {
+    const modal = document.getElementById('copyAdModal');
+    const slot = document.getElementById('copyAdSlot');
+    const countdownEl = document.getElementById('copyAdCountdown');
+    const confirmBtn = document.getElementById('copyAdConfirm');
+
+    copyAdSeed = String(seedNumber || '');
+
+    // Si falta el modal, copiar directamente (fallback)
+    if (!modal || !slot || !countdownEl || !confirmBtn) {
+      doCopySeed(copyAdSeed);
+      return;
+    }
+
+    slot.innerHTML = '';
+    slot.appendChild(createAdElement());
+
+    confirmBtn.disabled = true;
+    let remaining = COPY_AD_SECONDS;
+    countdownEl.textContent = remaining;
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    if (copyAdTimer) clearInterval(copyAdTimer);
+    copyAdTimer = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(copyAdTimer);
+        copyAdTimer = null;
+        countdownEl.textContent = '✓';
+        confirmBtn.disabled = false;
+        confirmBtn.focus();
+      } else {
+        countdownEl.textContent = remaining;
+      }
+    }, 1000);
+  }
+
+  /**
+   * Cierra el modal del anuncio sin copiar.
+   */
+  function closeCopyAd() {
+    const modal = document.getElementById('copyAdModal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (copyAdTimer) {
+      clearInterval(copyAdTimer);
+      copyAdTimer = null;
+    }
+
+    const slot = document.getElementById('copyAdSlot');
+    if (slot) slot.innerHTML = '';
+
+    // Mantener bloqueado el scroll si el modal de la seed sigue abierto
+    const seedModal = document.getElementById('seedModal');
+    document.body.style.overflow =
+      (seedModal && seedModal.classList.contains('open')) ? 'hidden' : '';
+  }
+
+  /**
+   * Copia la seed pendiente y cierra el anuncio.
+   */
+  function confirmCopyAd() {
+    const seedNumber = copyAdSeed;
+    closeCopyAd();
+    doCopySeed(seedNumber);
+  }
+
+  /**
+   * Copia el número de semilla al portapapeles.
+   * @param {string} seedNumber
+   */
+  function doCopySeed(seedNumber) {
     navigator.clipboard.writeText(seedNumber).then(() => {
       showToast('success', '¡Copiado!', `Seed "${seedNumber}" copiado al portapapeles.`);
     }).catch(() => {
       showToast('error', 'Error', 'No se pudo copiar. Copia manualmente: ' + seedNumber);
+    });
+  }
+
+  /**
+   * Configura el modal del anuncio de copia.
+   */
+  function setupCopyAd() {
+    const modal = document.getElementById('copyAdModal');
+    const backdrop = document.getElementById('copyAdBackdrop');
+    const closeBtn = document.getElementById('copyAdClose');
+    const confirmBtn = document.getElementById('copyAdConfirm');
+
+    if (closeBtn) closeBtn.addEventListener('click', closeCopyAd);
+    if (backdrop) backdrop.addEventListener('click', closeCopyAd);
+    if (confirmBtn) confirmBtn.addEventListener('click', confirmCopyAd);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
+        closeCopyAd();
+      }
     });
   }
 
