@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Extractor Marketplace · Marcket</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#0e1210;--bg2:#121812;--card:#182019;--line:#2a362c;
+      --txt:#e9f1ea;--muted:#98ab9b;--green:#5dbb63;--green2:#43994a;
+      --red:#ff8080;--ok:#7ee787;--radius:12px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:radial-gradient(1100px 480px at 85% -10%,#1d2c1f 0%,var(--bg) 55%);
+      color:var(--txt);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      min-height:100vh;padding:22px 16px 48px;
+    }
+    .wrap{max-width:960px;margin:0 auto}
+
+    header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+    .logo{width:46px;height:46px;border-radius:11px;flex:none;display:grid;place-items:center;
+      background:linear-gradient(160deg,var(--green),var(--green2));box-shadow:0 6px 18px rgba(67,153,74,.35)}
+    h1{font-size:1.25rem}
+    header p{color:var(--muted);font-size:.86rem;margin-top:3px}
+    header p b{color:var(--txt)}
+
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px;margin-bottom:16px;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+
+    .lbl{display:block;font-size:.76rem;color:var(--muted);margin-bottom:6px;letter-spacing:.4px}
+
+    input,textarea,select{
+      width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:9px;color:var(--txt);
+      padding:10px 12px;font-size:.92rem;font-family:inherit;outline:none;transition:border .15s,box-shadow .15s;
+    }
+    input:focus,textarea:focus,select:focus{border-color:var(--green2);box-shadow:0 0 0 3px rgba(93,187,99,.16)}
+    input[readonly]{color:var(--muted);background:#10150f;cursor:default}
+    textarea{resize:vertical;min-height:72px}
+    textarea.mono{font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:.8rem;line-height:1.5}
+    select{
+      appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:34px;
+      background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2398ab9b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 12px center;
+    }
+    select option{background:var(--card);color:var(--txt)}
+
+    .btn{border:1px solid var(--line);background:var(--bg2);color:var(--txt);border-radius:9px;
+      padding:11px 18px;font-size:.9rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.15s}
+    .btn:hover:not(:disabled){border-color:var(--green2)}
+    .btn.primary{background:var(--green);border-color:var(--green);color:#08130a}
+    .btn.primary:hover:not(:disabled){filter:brightness(1.07)}
+    .btn.ghost{color:var(--muted)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+
+    .row-url{display:flex;gap:10px}
+    .estado{margin-top:12px;font-size:.88rem;border-radius:9px;padding:11px 13px;border:1px solid;line-height:1.45}
+    .estado.ok{color:var(--ok);border-color:#316039;background:rgba(67,153,74,.12)}
+    .estado.error{color:var(--red);border-color:#6e3535;background:rgba(255,128,128,.08)}
+    .estado.info{color:var(--muted);border-color:var(--line);background:var(--bg2)}
+
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .c12{grid-column:span 12}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}
+
+    .acciones{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+    .hint{font-size:.75rem;color:var(--muted);margin-top:10px;line-height:1.5}
+    .hint b{color:var(--txt)}
+
+    .img-meta{display:flex;justify-content:space-between;gap:10px;margin-top:9px;font-size:.75rem;color:var(--muted)}
+    #previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+    .shot{width:108px;height:74px;border-radius:8px;overflow:hidden;border:1px solid var(--line);
+      background:#0c110d;flex:none;display:grid;place-items:center}
+    .shot img{width:100%;height:100%;object-fit:cover;display:block}
+    .shot.fail{color:var(--muted);font-size:.62rem;text-align:center;padding:4px;line-height:1.3}
+
+    .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(0,0,0,.25);border-top-color:#08130a;
+      border-radius:50%;animation:sp .7s linear infinite;margin-right:7px;vertical-align:-2px}
+    @keyframes sp{to{transform:rotate(360deg)}}
+
+    @media(max-width:680px){
+      .c4,.c3,.c6{grid-column:span 12}
+      .row-url{flex-direction:column}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#08130a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Extractor del Marketplace</h1>
+      <p>Pega la URL del add-on, revisa los datos y guárdalos en la hoja <b>Marcket</b>.</p>
+    </div>
+  </header>
+
+  <section class="card">
+    <label class="lbl" for="urlFuente">URL del add-on</label>
+    <div class="row-url">
+      <input id="urlFuente" type="url" spellcheck="false" autocomplete="off"
+             placeholder="https://www.minecraft.net/es-es/marketplace/pdp/.../2721f5e6-52ac-45e4-8d01-d55f61aa887d">
+      <button id="btnExtraer" class="btn primary" type="button">Extraer información</button>
+    </div>
+    <div id="estado" class="estado" hidden></div>
+  </section>
+
+  <section id="panel" class="card" hidden>
+    <div class="grid">
+
+      <div class="c12">
+        <label class="lbl" for="Nombre">Nombre</label>
+        <input id="Nombre" type="text" placeholder="Chroma Visuals 1.1">
+      </div>
+
+      <div class="c4">
+        <label class="lbl" for="Fecha">Fecha (hoy, fija)</label>
+        <input id="Fecha" type="date" readonly>
+      </div>
+      <div class="c4">
+        <label class="lbl" for="Version">Version (solo números)</label>
+        <input id="Version" type="text" placeholder="1.1">
+      </div>
+      <div class="c4">
+        <label class="lbl" for="ID">ID (sale de la URL)</label>
+        <input id="ID" type="text" readonly>
+      </div>
+
+      <div class="c6">
+        <label class="lbl" for="Categorias">categorias</label>
+        <select id="Categorias">
+          <option value="" selected>Seleccionar…</option>
+          <option value="Texturas">Texturas</option>
+          <option value="Mapas">Mapas</option>
+          <option value="Skins">Skins</option>
+          <option value="Addons">Addons</option>
+        </select>
+      </div>
+      <div class="c3">
+        <label class="lbl" for="Likes">Likes (fijo)</label>
+        <input id="Likes" type="number" min="0" step="1" readonly>
+      </div>
+      <div class="c3">
+        <label class="lbl" for="Descargas">Descargas (fijo)</label>
+        <input id="Descargas" type="number" min="0" step="1" readonly>
+      </div>
+
+      <div class="c6">
+        <label class="lbl" for="Subido">Subido por</label>
+        <input id="Subido" type="text" placeholder="WorldLeaf">
+      </div>
+      <div class="c6">
+        <label class="lbl" for="Vacio">vacio</label>
+        <input id="Vacio" type="text">
+      </div>
+
+      <div class="c12">
+        <label class="lbl" for="UrlDesc">urldescargas (la colocas tú)</label>
+        <input id="UrlDesc" type="url" spellcheck="false" placeholder="Pega aquí la URL de descarga del add-on…">
+      </div>
+
+      <div class="c12">
+        <label class="lbl" for="UrlImg">urlimg (portada primero, capturas después, separadas con |)</label>
+        <textarea id="UrlImg" class="mono" rows="3" spellcheck="false"></textarea>
+        <div class="img-meta">
+          <span>Vista previa de las imágenes</span>
+          <span id="imgCount"></span>
+        </div>
+        <div id="previews"></div>
+      </div>
+
+      <div class="c12">
+        <label class="lbl" for="Descripcion">Descripcion</label>
+        <textarea id="Descripcion" rows="6"></textarea>
+      </div>
+
+      <div class="c12">
+        <label class="lbl" for="UrlOrigen">URL origen (columna M · anti-duplicados)</label>
+        <input id="UrlOrigen" type="text" readonly>
+      </div>
+
+    </div>
+
+    <div class="acciones">
+      <button id="btnGuardar" class="btn primary" type="button">Guardar en la hoja</button>
+      <button id="btnNueva" class="btn ghost" type="button">Nueva extracción</button>
+    </div>
+
+    <div id="estado2" class="estado" hidden></div>
+    <p class="hint">
+      La ID siempre sale de la URL. «Subido por» nace como <b>WorldLeaf</b>;
+      «urldescargas», «vacio» y la categoría se completan/editan aquí antes de guardar.
+    </p>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var $ = function (sel) { return document.querySelector(sel); };
+  var guardando = false;
+  var guardado = false;
+  var previewTimer = null;
+
+  // URL de la aplicación web de Apps Script (Web.gs -> doPost)
+  var API_URL = 'https://script.google.com/macros/s/AKfycbxmxEWjeAZuEtPxzQyXKgHbOTleW3_ZPApzVZZiR3UdNuJXBJnI9-_ygYcAWKY7Z2Li/exec';
+
+  // Página EXTERNA a Apps Script: se habla con la API por fetch() usando
+  // Content-Type text/plain para que el navegador NO haga preflight CORS.
+  async function api(payload) {
+    var resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return resp.json();
+  }
+
+  if (!API_URL) {
+    var e0 = $('#estado');
+    e0.hidden = false;
+    e0.className = 'estado error';
+    e0.textContent = 'Falta configurar API_URL con la URL de tu aplicación web de Apps Script.';
+    $('#btnExtraer').disabled = true;
+    return;
+  }
+
+  function verEstado(el, msg, tipo) {
+    el.hidden = false;
+    el.className = 'estado ' + tipo;
+    el.textContent = msg;
+  }
+
+  function cargando(btn, texto, activo) {
+    if (activo) {
+      btn.dataset.txt = btn.textContent;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spin"></span>' + texto;
+    } else {
+      btn.disabled = false;
+      btn.textContent = btn.dataset.txt || btn.textContent;
+    }
+  }
+
+  function pintarPreviews() {
+    var cont = $('#previews');
+    var urls = ($('#UrlImg').value || '').split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+    cont.innerHTML = '';
+    $('#imgCount').textContent = urls.length ? urls.length + ' imagen(es)' : '';
+    urls.forEach(function (u) {
+      var src = /^https?:\/\//i.test(u) ? u : 'https://www.minecraft.net' + (u.charAt(0) === '/' ? '' : '/') + u;
+      var caja = document.createElement('div');
+      caja.className = 'shot';
+      caja.title = u;
+      var img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = '';
+      img.onerror = function () {
+        caja.classList.add('fail');
+        caja.textContent = 'sin vista previa';
+      };
+      img.src = src;
+      caja.appendChild(img);
+      cont.appendChild(caja);
+    });
+  }
+
+  function hoyISO() {
+    var d = new Date();
+    var mo = ('0' + (d.getMonth() + 1)).slice(-2);
+    var da = ('0' + d.getDate()).slice(-2);
+    return d.getFullYear() + '-' + mo + '-' + da;
+  }
+
+  function rellenar(d) {
+    $('#Fecha').value = hoyISO();      // siempre la fecha de hoy (no editable)
+    $('#Nombre').value = d.Nombre || '';
+    $('#Version').value = d.Version || '';
+    $('#ID').value = d.ID || '';
+    $('#Categorias').value = d.categorias || '';
+    $('#Likes').value = 0;             // fijo
+    $('#Descargas').value = 0;         // fijo
+    $('#Subido').value = d['Subido por'] || 'WorldLeaf';
+    $('#Vacio').value = d.vacio || '';
+    $('#UrlDesc').value = d.urldescargas || '';
+    $('#UrlImg').value = d.urlimg || '';
+    $('#Descripcion').value = d.Descripcion || '';
+    $('#UrlOrigen').value = d.URL || '';
+    pintarPreviews();
+  }
+
+  function recojer() {
+    return {
+      Fecha: $('#Fecha').value.trim(),
+      Nombre: $('#Nombre').value.trim(),
+      urldescargas: $('#UrlDesc').value.trim(),
+      urlimg: $('#UrlImg').value.trim(),
+      categorias: $('#Categorias').value,
+      Likes: $('#Likes').value,
+      Descargas: $('#Descargas').value,
+      vacio: $('#Vacio').value.trim(),
+      'Subido por': $('#Subido').value.trim(),
+      Version: $('#Version').value.trim(),
+      Descripcion: $('#Descripcion').value.trim(),
+      ID: $('#ID').value.trim(),
+      URL: $('#UrlOrigen').value.trim()
+    };
+  }
+
+  async function extraer() {
+    var url = $('#urlFuente').value.trim();
+    var btn = $('#btnExtraer');
+    if (!url) {
+      verEstado($('#estado'), 'Pega primero la URL del add-on.', 'error');
+      return;
+    }
+    cargando(btn, 'Extrayendo…', true);
+    verEstado($('#estado'), 'Consultando el marketplace…', 'info');
+    try {
+      var r = await api({ accion: 'extraer', url: url });
+      if (!r || !r.ok) {
+        verEstado($('#estado'), (r && r.error) || 'El servidor no devolvió datos.', 'error');
+        return;
+      }
+      rellenar(r.datos);
+      guardado = false;
+      $('#btnGuardar').disabled = false;
+      $('#btnGuardar').textContent = 'Guardar en la hoja';
+      $('#estado2').hidden = true;
+      $('#panel').hidden = false;
+      verEstado($('#estado'), 'Datos listos: revisa, elige la categoría y pulsa «Guardar en la hoja».', 'ok');
+      $('#panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      verEstado($('#estado'), 'Error: ' + (err && err.message ? err.message : err), 'error');
+    } finally {
+      cargando(btn, '', false);
+    }
+  }
+
+  async function guardar() {
+    if (guardando || guardado) return;
+    if (!$('#Nombre').value.trim()) {
+      verEstado($('#estado2'), 'El nombre no puede quedar vacío.', 'error');
+      $('#Nombre').focus();
+      return;
+    }
+    if (!$('#Categorias').value) {
+      verEstado($('#estado2'), 'Elige una categoría: Texturas, Mapas, Skins o Addons.', 'error');
+      $('#Categorias').focus();
+      return;
+    }
+    var btn = $('#btnGuardar');
+    guardando = true;
+    cargando(btn, 'Guardando…', true);
+    try {
+      var r = await api({ accion: 'guardar', datos: recojer() });
+      if (!r || !r.ok) {
+        verEstado($('#estado2'), (r && r.error) || 'No se pudo guardar.', 'error');
+        return;
+      }
+      guardado = true;
+      btn.disabled = true;
+      btn.textContent = 'Guardado en la hoja';
+      verEstado($('#estado2'), r.mensaje || 'Guardado.', 'ok');
+    } catch (err) {
+      verEstado($('#estado2'), 'Error: ' + (err && err.message ? err.message : err), 'error');
+    } finally {
+      guardando = false;
+      if (!guardado) cargando(btn, '', false);
+    }
+  }
+
+  function nueva() {
+    rellenar({});
+    $('#urlFuente').value = '';
+    $('#panel').hidden = true;
+    $('#estado').hidden = true;
+    $('#estado2').hidden = true;
+    guardado = false;
+    $('#btnGuardar').disabled = false;
+    $('#btnGuardar').textContent = 'Guardar en la hoja';
+    $('#urlFuente').focus();
+  }
+
+  $('#btnExtraer').addEventListener('click', extraer);
+  $('#btnGuardar').addEventListener('click', guardar);
+  $('#btnNueva').addEventListener('click', nueva);
+  $('#urlFuente').addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') { ev.preventDefault(); extraer(); }
+  });
+  $('#UrlImg').addEventListener('input', function () {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(pintarPreviews, 350);
+  });
+  $('#urlFuente').focus();
+})();
+</script>
+</body>
+</html>
