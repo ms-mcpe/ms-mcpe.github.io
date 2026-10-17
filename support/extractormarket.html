@@ -123,7 +123,7 @@
 
       <div class="c4">
         <label class="lbl" for="Fecha">Fecha (hoy, fija)</label>
-        <input id="Fecha" type="date" readonly>
+        <input id="Fecha" type="text" readonly>
       </div>
       <div class="c4">
         <label class="lbl" for="Version">Version (solo números)</label>
@@ -274,15 +274,12 @@
     });
   }
 
-  function hoyISO() {
-    var d = new Date();
-    var mo = ('0' + (d.getMonth() + 1)).slice(-2);
-    var da = ('0' + d.getDate()).slice(-2);
-    return d.getFullYear() + '-' + mo + '-' + da;
+  function ahoraISO() {
+    return new Date().toISOString();   // p. ej. 2026-08-16T12:31:07.030Z
   }
 
   function rellenar(d) {
-    $('#Fecha').value = hoyISO();      // siempre la fecha de hoy (no editable)
+    $('#Fecha').value = ahoraISO();    // fecha/hora actual (no editable)
     $('#Nombre').value = d.Nombre || '';
     $('#Version').value = d.Version || '';
     $('#ID').value = d.ID || '';
