@@ -329,7 +329,7 @@
             <button class="platform-button" type="button" data-platform="native"><span class="platform-icon" aria-hidden="true">↗</span> Compartir del dispositivo</button>
           </div>
           <p id="share-status" class="status" role="status" aria-live="polite"></p>
-          <p class="privacy-note">Las redes abren su ventana de publicación; tendrás que confirmar el post allí. WhatsApp, Telegram y X reciben el texto; Facebook comparte el enlace. El botón del dispositivo adjunta imágenes solo si el navegador y la plataforma lo permiten.</p>
+          <p class="privacy-note">Las redes abren su ventana de publicación; tendrás que confirmar el post allí. WhatsApp abre el menú del dispositivo para compartir el texto y las imágenes seleccionadas si el navegador y WhatsApp lo permiten. Telegram y X reciben el texto; Facebook comparte el enlace. «Compartir del dispositivo» también permite elegir otra app compatible.</p>
         </section>
       </div>
     </div>
@@ -528,14 +528,17 @@
 
     async function shareNative() {
       if (!navigator.share) {
-        showShareStatus("Tu navegador no admite el menú de compartir. Usa «Copiar texto» o elige una red.", true);
+        showShareStatus("Tu navegador no admite compartir desde el dispositivo. Para enviar imágenes por WhatsApp, usa un navegador compatible.", true);
         return;
       }
 
       try {
         const urls = getSelectedImageUrls();
         const files = [];
-        if (urls.length && navigator.canShare) {
+        if (urls.length) {
+          if (!navigator.canShare) {
+            throw new Error("Tu navegador no permite comprobar si puede compartir imágenes.");
+          }
           for (let index = 0; index < urls.length; index += 1) {
             const response = await fetch(urls[index]);
             if (!response.ok) throw new Error(`No se pudo descargar la imagen ${index + 1}.`);
@@ -546,8 +549,12 @@
         }
 
         const payload = { title: getCurrentAddon().nombre, text: getPostText() };
-        if (files.length && navigator.canShare({ files })) payload.files = files;
-        else if (files.length) throw new Error("Este navegador no permite adjuntar las imágenes seleccionadas.");
+        if (files.length) {
+          if (!navigator.canShare({ files })) {
+            throw new Error("Este navegador no permite adjuntar las imágenes seleccionadas.");
+          }
+          payload.files = files;
+        }
 
         await navigator.share(payload);
         showShareStatus(files.length ? "Se abrió el menú del dispositivo con el texto y las imágenes." : "Se abrió el menú del dispositivo para compartir.", false, true);
@@ -578,7 +585,7 @@
         return;
       }
 
-      if (platform === "native") {
+      if (platform === "native" || platform === "whatsapp") {
         shareNative();
         return;
       }
