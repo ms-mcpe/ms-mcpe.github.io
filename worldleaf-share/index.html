@@ -340,6 +340,7 @@
   <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/1EGR4pZ1h8FcHsQ4IFuP3IGCh5HZ4Tt3Q_Fioixmjn2A/export?format=csv&gid=0";
     const ADDON_BASE_URL = "https://ms-mcpe.github.io/worldleaf/addons?id=";
+    const IMAGE_PROXY_URL = "https://script.google.com/macros/s/AKfycbxGcBZjPW38bNz_kKgXDtuNSs79vbc74CBA7BmnquogCEUSfDOCkajOWnrEPruJOfgijg/exec";
     const requiredColumns = ["nombre", "urlimg", "categorias", "version", "descripcion", "id"];
     const state = { addons: [], selectedIndex: 0, imageMode: "all", selectedImage: 0 };
 
@@ -504,6 +505,50 @@
       return state.imageMode === "all" ? urls : urls.slice(state.selectedImage, state.selectedImage + 1);
     }
 
+    function fetchImageThroughAppsScript(url) {
+      return new Promise((resolve, reject) => {
+        const callbackName = `wlImageCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const script = document.createElement("script");
+        const endpoint = new URL(IMAGE_PROXY_URL);
+        endpoint.searchParams.set("url", url);
+        endpoint.searchParams.set("callback", callbackName);
+
+        const cleanup = () => {
+          clearTimeout(timeout);
+          delete window[callbackName];
+          script.remove();
+        };
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error("Apps Script tardó demasiado en procesar la imagen."));
+        }, 30000);
+
+        window[callbackName] = (result) => {
+          cleanup();
+          if (result.error) {
+            reject(new Error(result.error));
+            return;
+          }
+          resolve(result);
+        };
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("No se pudo conectar con el servicio de imágenes de Apps Script."));
+        };
+        script.src = endpoint.href;
+        document.head.append(script);
+      });
+    }
+
+    function base64ToBlob(base64, mimeType) {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      return new Blob([bytes], { type: mimeType });
+    }
+
     function getPostText() {
       const addon = getCurrentAddon();
       const description = addon.descripcion.trim();
@@ -541,18 +586,15 @@
           }
           for (let index = 0; index < urls.length; index += 1) {
             const imageHost = new URL(urls[index]).hostname;
-            let response;
+            let image;
             try {
-              response = await fetch(urls[index]);
-            } catch {
-              throw new Error(`No se pudo descargar la imagen ${index + 1} desde ${imageHost}. El navegador o el servidor rechazó la solicitud (CORS o conexión).`);
+              image = await fetchImageThroughAppsScript(urls[index]);
+            } catch (error) {
+              throw new Error(`No se pudo preparar la imagen ${index + 1} desde ${imageHost}: ${error.message}`);
             }
-            if (!response.ok) {
-              throw new Error(`No se pudo descargar la imagen ${index + 1} desde ${imageHost} (HTTP ${response.status}).`);
-            }
-            const blob = await response.blob();
-            const extension = blob.type.split("/")[1] || "jpg";
-            files.push(new File([blob], `addon-${index + 1}.${extension}`, { type: blob.type || "image/jpeg" }));
+            const blob = base64ToBlob(image.data, image.mimeType);
+            const extension = image.mimeType === "image/jpeg" ? "jpg" : image.mimeType.split("/")[1];
+            files.push(new File([blob], `addon-${index + 1}.${extension}`, { type: image.mimeType }));
           }
         }
 
