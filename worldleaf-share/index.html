@@ -540,8 +540,16 @@
             throw new Error("Tu navegador no permite comprobar si puede compartir imágenes.");
           }
           for (let index = 0; index < urls.length; index += 1) {
-            const response = await fetch(urls[index]);
-            if (!response.ok) throw new Error(`No se pudo descargar la imagen ${index + 1}.`);
+            const imageHost = new URL(urls[index]).hostname;
+            let response;
+            try {
+              response = await fetch(urls[index]);
+            } catch {
+              throw new Error(`No se pudo descargar la imagen ${index + 1} desde ${imageHost}. El navegador o el servidor rechazó la solicitud (CORS o conexión).`);
+            }
+            if (!response.ok) {
+              throw new Error(`No se pudo descargar la imagen ${index + 1} desde ${imageHost} (HTTP ${response.status}).`);
+            }
             const blob = await response.blob();
             const extension = blob.type.split("/")[1] || "jpg";
             files.push(new File([blob], `addon-${index + 1}.${extension}`, { type: blob.type || "image/jpeg" }));
@@ -560,10 +568,8 @@
         showShareStatus(files.length ? "Se abrió el menú del dispositivo con el texto y las imágenes." : "Se abrió el menú del dispositivo para compartir.", false, true);
       } catch (error) {
         if (error.name === "AbortError") return;
-        const message = error instanceof TypeError
-          ? "No se pudieron descargar las imágenes para adjuntarlas. El servidor de imágenes puede estar bloqueando el acceso desde esta página (CORS), o la conexión falló."
-          : error.message || "No se pudo abrir el menú de compartir.";
-        showShareStatus(`${message} Para adjuntar imágenes, el servidor debe permitir solicitudes desde esta página.`, true);
+        const message = error.message || "No se pudo abrir el menú de compartir.";
+        showShareStatus(`${message} Intenta de nuevo o abre la imagen desde la vista previa y compártela manualmente.`, true);
       }
     }
 
