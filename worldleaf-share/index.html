@@ -560,7 +560,10 @@
         showShareStatus(files.length ? "Se abrió el menú del dispositivo con el texto y las imágenes." : "Se abrió el menú del dispositivo para compartir.", false, true);
       } catch (error) {
         if (error.name === "AbortError") return;
-        showShareStatus(`${error.message || "No se pudo abrir el menú de compartir."} Prueba «Copiar texto» o comparte la imagen desde tu dispositivo.`, true);
+        const message = error instanceof TypeError
+          ? "No se pudieron descargar las imágenes para adjuntarlas. El servidor de imágenes puede estar bloqueando el acceso desde esta página (CORS), o la conexión falló."
+          : error.message || "No se pudo abrir el menú de compartir.";
+        showShareStatus(`${message} Para adjuntar imágenes, el servidor debe permitir solicitudes desde esta página.`, true);
       }
     }
 
