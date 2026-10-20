@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b16">
+  <title>WorldLeaf · Compartir addon</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f2f1ff;
+      --muted: #aaa9c4;
+      --paper: #080b16;
+      --card: rgba(19, 22, 42, .82);
+      --line: rgba(161, 159, 211, .2);
+      --green: #9d8cff;
+      --green-dark: #d1c9ff;
+      --mint: rgba(139, 119, 255, .14);
+      --surface: #12162a;
+      --surface-hover: #1b203a;
+      --purple-glow: rgba(123, 92, 255, .22);
+      --blue-glow: rgba(49, 113, 255, .16);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      position: relative;
+      isolation: isolate;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 12% 14%, var(--purple-glow), transparent 34rem),
+        radial-gradient(ellipse at 91% 40%, var(--blue-glow), transparent 32rem),
+        linear-gradient(145deg, #080b16 0%, #0d1021 52%, #090d19 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    body::before,
+    body::after {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+    }
+
+    body::before {
+      opacity: .48;
+      background-image:
+        radial-gradient(1px 1px at 18px 26px, rgba(226, 222, 255, .9) 99%, transparent),
+        radial-gradient(1px 1px at 78px 112px, rgba(164, 183, 255, .82) 99%, transparent),
+        radial-gradient(1.5px 1.5px at 156px 45px, rgba(233, 224, 255, .9) 99%, transparent),
+        radial-gradient(1px 1px at 226px 185px, rgba(181, 174, 255, .8) 99%, transparent),
+        radial-gradient(1px 1px at 295px 91px, rgba(191, 212, 255, .85) 99%, transparent);
+      background-size: 320px 240px;
+      animation: star-drift 90s linear infinite, star-twinkle 5s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      opacity: .42;
+      background-image:
+        radial-gradient(1px 1px at 46px 76px, rgba(255, 255, 255, .78) 99%, transparent),
+        radial-gradient(1px 1px at 132px 190px, rgba(164, 190, 255, .78) 99%, transparent),
+        radial-gradient(1.5px 1.5px at 213px 28px, rgba(212, 198, 255, .85) 99%, transparent),
+        radial-gradient(1px 1px at 286px 142px, rgba(255, 255, 255, .75) 99%, transparent);
+      background-size: 360px 280px;
+      animation: star-drift 125s linear infinite reverse, star-twinkle 7s ease-in-out infinite alternate-reverse;
+    }
+
+    body > * { position: relative; z-index: 1; }
+
+    @keyframes star-drift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-42px, 28px, 0); }
+    }
+
+    @keyframes star-twinkle {
+      from { opacity: .2; }
+      to { opacity: .68; }
+    }
+
+    button, select { font: inherit; }
+
+    .shell { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+
+    header { padding: 28px 0 52px; }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 11px;
+      background: linear-gradient(145deg, #a18aff, #6554d9);
+      box-shadow: 0 0 24px rgba(130, 103, 255, .28);
+      color: white;
+      font-size: 18px;
+    }
+
+    .intro { max-width: 690px; margin: 42px auto 0; text-align: center; }
+    .eyebrow { color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 12px 0; font-size: clamp(34px, 6vw, 56px); letter-spacing: -.06em; line-height: 1.02; }
+    .intro p { margin: 0 auto; max-width: 550px; color: var(--muted); font-size: 16px; line-height: 1.65; }
+
+    main { padding-bottom: 64px; }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      align-items: start;
+      gap: 22px;
+    }
+
+    .card {
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 20px 55px rgba(0, 0, 0, .24), inset 0 1px rgba(255, 255, 255, .035);
+      backdrop-filter: blur(18px);
+    }
+
+    .section-heading { display: flex; align-items: center; gap: 11px; margin: 0 0 20px; }
+    .step {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--mint);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    h2 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
+
+    label.field-label { display: block; margin: 0 0 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .selection-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+    .random-button {
+      min-height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .random-button:hover { border-color: rgba(170, 151, 255, .65); background: var(--surface-hover); }
+    select {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--ink);
+      outline-color: var(--green);
+    }
+
+    button:focus-visible, select:focus-visible, a:focus-visible, input:focus-visible {
+      outline: 2px solid #ab98ff;
+      outline-offset: 3px;
+    }
+
+    .status { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .status.error { color: #ff9caa; }
+    .status.success { color: #9ef0ce; }
+
+    .addon-details { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .addon-name { margin: 0 0 12px; font-size: 23px; letter-spacing: -.04em; }
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .pill { padding: 6px 10px; border-radius: 99px; background: var(--mint); color: var(--green-dark); font-size: 11px; font-weight: 750; }
+    .description-label { margin: 20px 0 7px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .description { margin: 0; color: #d1d0e3; font-size: 14px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .download-link { display: inline-block; margin-top: 18px; color: var(--green); font-size: 13px; font-weight: 750; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+    .image-note { margin: -8px 0 15px 41px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .image-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .image-option {
+      position: relative;
+      display: block;
+      overflow: hidden;
+      aspect-ratio: 1;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      background: #181b31;
+      cursor: pointer;
+    }
+    .image-option:has(input:checked) { border-color: var(--green); box-shadow: 0 0 0 2px rgba(157, 140, 255, .2), 0 0 20px rgba(128, 103, 255, .22); }
+    .image-option img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .image-option input { position: absolute; top: 8px; left: 8px; width: 18px; height: 18px; accent-color: #9d8cff; }
+    .image-number { position: absolute; right: 7px; bottom: 7px; display: grid; width: 23px; height: 23px; place-items: center; border-radius: 8px; background: rgba(12, 13, 27, .82); color: white; font-size: 11px; font-weight: 800; }
+    .empty-images { grid-column: 1 / -1; padding: 25px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); font-size: 13px; text-align: center; }
+
+    .mode-row { display: flex; gap: 8px; margin: 0 0 14px 41px; }
+    .mode-button {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .mode-button[aria-pressed="true"] { border-color: rgba(170, 151, 255, .55); background: var(--mint); color: #d1c9ff; }
+
+    .share-card { margin-top: 22px; }
+    .share-intro { margin: -7px 0 17px 41px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .platforms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .platform-button {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 750;
+      transition: border-color .15s, transform .15s, background .15s;
+    }
+    .platform-button:hover { transform: translateY(-1px); border-color: rgba(170, 151, 255, .62); background: var(--surface-hover); }
+    .platform-button.primary { border-color: #7963ee; background: linear-gradient(135deg, #8068f5, #594bd1); color: white; box-shadow: 0 8px 24px rgba(94, 72, 221, .24); }
+    .platform-button.primary:hover { background: linear-gradient(135deg, #927fff, #685be3); }
+    .platform-icon { font-size: 16px; }
+    .privacy-note { margin: 14px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .loading { padding: 22px 0; color: var(--muted); font-size: 13px; }
+    [hidden] { display: none !important; }
+
+    footer { padding: 0 0 30px; color: var(--muted); font-size: 11px; text-align: center; }
+
+    @media (max-width: 760px) {
+      header { padding: 20px 0 35px; }
+      .intro { margin-top: 34px; }
+      .workspace { grid-template-columns: 1fr; }
+      .shell { width: min(100% - 28px, 580px); }
+      .card { padding: 21px; }
+    }
+
+    @media (max-width: 380px) {
+      .image-grid { gap: 6px; }
+      .card { padding: 17px; }
+      .mode-row, .image-note, .share-intro { margin-left: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span> WorldLeaf · Share Studio</div>
+    <div class="intro">
+      <div class="eyebrow">Tu próximo post, listo en segundos</div>
+      <h1>Elige. Copia.<br>Compártelo.</h1>
+      <p>Selecciona un addon, prepara sus imágenes y comparte una publicación con su información y enlace oficial.</p>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div id="loading" class="card loading" role="status">Cargando addons de la hoja de WorldLeaf…</div>
+    <div id="app" class="workspace" hidden>
+      <section class="card" aria-labelledby="addon-heading">
+        <div class="section-heading">
+          <span class="step" aria-hidden="true">01</span>
+          <h2 id="addon-heading">Elige el addon</h2>
+        </div>
+        <label class="field-label" for="addon-select">Addon de la biblioteca</label>
+        <div class="selection-controls">
+          <select id="addon-select" aria-label="Seleccionar addon"></select>
+          <button class="random-button" id="random-addon" type="button">↻ Otro al azar</button>
+        </div>
+        <div id="addon-details" class="addon-details"></div>
+        <p id="load-status" class="status" role="status"></p>
+      </section>
+
+      <div>
+        <section class="card" aria-labelledby="images-heading">
+          <div class="section-heading">
+            <span class="step" aria-hidden="true">02</span>
+            <h2 id="images-heading">Elige las imágenes</h2>
+          </div>
+          <p class="image-note">Usamos las primeras 3 imágenes disponibles. Puedes publicar las tres o elegir una.</p>
+          <div class="mode-row" role="group" aria-label="Cantidad de imágenes">
+            <button class="mode-button" id="all-images" type="button" aria-pressed="true">Las 3 imágenes</button>
+            <button class="mode-button" id="one-image" type="button" aria-pressed="false">Elegir una</button>
+          </div>
+          <div id="image-grid" class="image-grid" aria-label="Imágenes del addon"></div>
+        </section>
+
+        <section class="card share-card" aria-labelledby="share-heading">
+          <div class="section-heading">
+            <span class="step" aria-hidden="true">03</span>
+            <h2 id="share-heading">Comparte tu publicación</h2>
+          </div>
+          <p class="share-intro">El texto incluye nombre, versión, categoría, descripción original y enlace del addon.</p>
+          <div class="platforms">
+            <button class="platform-button primary" type="button" data-platform="whatsapp"><span class="platform-icon" aria-hidden="true">◉</span> WhatsApp</button>
+            <button class="platform-button" type="button" data-platform="facebook"><span class="platform-icon" aria-hidden="true">f</span> Facebook</button>
+            <button class="platform-button" type="button" data-platform="telegram"><span class="platform-icon" aria-hidden="true">➤</span> Telegram</button>
+            <button class="platform-button" type="button" data-platform="x"><span class="platform-icon" aria-hidden="true">𝕏</span> X</button>
+            <button class="platform-button" type="button" data-platform="copy"><span class="platform-icon" aria-hidden="true">▣</span> Copiar texto</button>
+            <button class="platform-button" type="button" data-platform="native"><span class="platform-icon" aria-hidden="true">↗</span> Compartir del dispositivo</button>
+          </div>
+          <p id="share-status" class="status" role="status" aria-live="polite"></p>
+          <p class="privacy-note">Las redes abren su ventana de publicación; tendrás que confirmar el post allí. WhatsApp, Telegram y X reciben el texto; Facebook comparte el enlace. El botón del dispositivo adjunta imágenes solo si el navegador y la plataforma lo permiten.</p>
+        </section>
+      </div>
+    </div>
+    <div id="fatal-error" class="card status error" role="alert" hidden></div>
+  </main>
+  <footer class="shell">Los datos del addon se cargan desde la hoja pública de WorldLeaf.</footer>
+
+  <script>
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/1EGR4pZ1h8FcHsQ4IFuP3IGCh5HZ4Tt3Q_Fioixmjn2A/export?format=csv&gid=0";
+    const ADDON_BASE_URL = "https://ms-mcpe.github.io/worldleaf/addons?id=";
+    const requiredColumns = ["nombre", "urlimg", "categorias", "version", "descripcion", "id"];
+    const state = { addons: [], selectedIndex: 0, imageMode: "all", selectedImage: 0 };
+
+    const elements = {
+      loading: document.querySelector("#loading"),
+      app: document.querySelector("#app"),
+      fatalError: document.querySelector("#fatal-error"),
+      select: document.querySelector("#addon-select"),
+      details: document.querySelector("#addon-details"),
+      imageGrid: document.querySelector("#image-grid"),
+      loadStatus: document.querySelector("#load-status"),
+      shareStatus: document.querySelector("#share-status"),
+      allImages: document.querySelector("#all-images"),
+      oneImage: document.querySelector("#one-image"),
+      randomAddon: document.querySelector("#random-addon")
+    };
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let value = "";
+      let inQuotes = false;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+        if (inQuotes) {
+          if (character === '"' && text[index + 1] === '"') {
+            value += '"';
+            index += 1;
+          } else if (character === '"') {
+            inQuotes = false;
+          } else {
+            value += character;
+          }
+        } else if (character === '"') {
+          inQuotes = true;
+        } else if (character === ",") {
+          row.push(value);
+          value = "";
+        } else if (character === "\n") {
+          row.push(value.replace(/\r$/, ""));
+          rows.push(row);
+          row = [];
+          value = "";
+        } else {
+          value += character;
+        }
+      }
+
+      if (value || row.length) {
+        row.push(value.replace(/\r$/, ""));
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function normalizeUrl(value) {
+      try {
+        const url = new URL(value.trim());
+        return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+      } catch {
+        return "";
+      }
+    }
+
+    function getImageUrls(addon) {
+      return (addon.urlimg || "")
+        .split("|")
+        .map((value) => normalizeUrl(value))
+        .filter(Boolean)
+        .slice(0, 3);
+    }
+
+    function getDownloadUrl(addon) {
+      return `${ADDON_BASE_URL}${encodeURIComponent(addon.id.trim())}`;
+    }
+
+    function getCurrentAddon() {
+      return state.addons[state.selectedIndex];
+    }
+
+    function renderAddonDetails() {
+      const addon = getCurrentAddon();
+      const name = document.createElement("h3");
+      name.className = "addon-name";
+      name.textContent = addon.nombre || "Addon sin nombre";
+
+      const pills = document.createElement("div");
+      pills.className = "pills";
+      for (const label of [addon.version, addon.categorias]) {
+        if (!label.trim()) continue;
+        const pill = document.createElement("span");
+        pill.className = "pill";
+        pill.textContent = label;
+        pills.append(pill);
+      }
+
+      const descriptionLabel = document.createElement("p");
+      descriptionLabel.className = "description-label";
+      descriptionLabel.textContent = "Descripción original";
+
+      const description = document.createElement("p");
+      description.className = "description";
+      description.textContent = addon.descripcion || "Este addon no tiene descripción.";
+
+      const link = document.createElement("a");
+      link.className = "download-link";
+      link.href = getDownloadUrl(addon);
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Abrir página del addon ↗";
+
+      elements.details.replaceChildren(name, pills, descriptionLabel, description, link);
+      elements.loadStatus.textContent = `ID: ${addon.id}`;
+      elements.loadStatus.className = "status";
+    }
+
+    function renderImages() {
+      const urls = getImageUrls(getCurrentAddon());
+      elements.imageGrid.replaceChildren();
+
+      if (!urls.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-images";
+        empty.textContent = "Este addon no tiene imágenes disponibles.";
+        elements.imageGrid.append(empty);
+        return;
+      }
+
+      urls.forEach((url, index) => {
+        const label = document.createElement("label");
+        label.className = "image-option";
+        const input = document.createElement("input");
+        input.type = state.imageMode === "all" ? "checkbox" : "radio";
+        input.name = "addon-image";
+        input.checked = state.imageMode === "all" || index === state.selectedImage;
+        input.disabled = state.imageMode === "all";
+        input.setAttribute("aria-label", `Imagen ${index + 1}`);
+        input.addEventListener("change", () => {
+          if (state.imageMode === "one") {
+            state.selectedImage = index;
+            renderImages();
+          }
+        });
+
+        const image = document.createElement("img");
+        image.src = url;
+        image.alt = `Imagen ${index + 1} de ${getCurrentAddon().nombre || "addon"}`;
+        image.loading = "lazy";
+        image.referrerPolicy = "no-referrer";
+
+        const number = document.createElement("span");
+        number.className = "image-number";
+        number.textContent = String(index + 1);
+        label.append(input, image, number);
+        elements.imageGrid.append(label);
+      });
+    }
+
+    function getSelectedImageUrls() {
+      const urls = getImageUrls(getCurrentAddon());
+      return state.imageMode === "all" ? urls : urls.slice(state.selectedImage, state.selectedImage + 1);
+    }
+
+    function getPostText() {
+      const addon = getCurrentAddon();
+      const description = addon.descripcion.trim();
+      const lines = [
+        `*${addon.nombre || "Addon"}*`,
+        `📦 Versión: ${addon.version || "No especificada"}`,
+        `🏷️ Categoría: ${addon.categorias || "No especificada"}`
+      ];
+      if (description) lines.push("", description);
+      lines.push("", `🔗 ${getDownloadUrl(addon)}`);
+      return lines.join("\n");
+    }
+
+    function showShareStatus(message, isError = false, isSuccess = false) {
+      elements.shareStatus.textContent = message;
+      elements.shareStatus.className = `status${isError ? " error" : isSuccess ? " success" : ""}`;
+    }
+
+    async function copyPostText() {
+      await navigator.clipboard.writeText(getPostText());
+    }
+
+    async function shareNative() {
+      if (!navigator.share) {
+        showShareStatus("Tu navegador no admite el menú de compartir. Usa «Copiar texto» o elige una red.", true);
+        return;
+      }
+
+      try {
+        const urls = getSelectedImageUrls();
+        const files = [];
+        if (urls.length && navigator.canShare) {
+          for (let index = 0; index < urls.length; index += 1) {
+            const response = await fetch(urls[index]);
+            if (!response.ok) throw new Error(`No se pudo descargar la imagen ${index + 1}.`);
+            const blob = await response.blob();
+            const extension = blob.type.split("/")[1] || "jpg";
+            files.push(new File([blob], `addon-${index + 1}.${extension}`, { type: blob.type || "image/jpeg" }));
+          }
+        }
+
+        const payload = { title: getCurrentAddon().nombre, text: getPostText() };
+        if (files.length && navigator.canShare({ files })) payload.files = files;
+        else if (files.length) throw new Error("Este navegador no permite adjuntar las imágenes seleccionadas.");
+
+        await navigator.share(payload);
+        showShareStatus(files.length ? "Se abrió el menú del dispositivo con el texto y las imágenes." : "Se abrió el menú del dispositivo para compartir.", false, true);
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        showShareStatus(`${error.message || "No se pudo abrir el menú de compartir."} Prueba «Copiar texto» o comparte la imagen desde tu dispositivo.`, true);
+      }
+    }
+
+    function shareTo(platform) {
+      const text = getPostText();
+      const url = getDownloadUrl(getCurrentAddon());
+      const encodedText = encodeURIComponent(text);
+      const encodedUrl = encodeURIComponent(url);
+      let shareUrl = "";
+
+      if (platform === "whatsapp") shareUrl = `https://wa.me/?text=${encodedText}`;
+      if (platform === "telegram") shareUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+      if (platform === "x") {
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
+      }
+      if (platform === "facebook") shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+
+      if (platform === "copy") {
+        copyPostText()
+          .then(() => showShareStatus("Texto copiado. Ya puedes pegarlo donde quieras.", false, true))
+          .catch(() => showShareStatus("No se pudo copiar automáticamente. Selecciona y copia el texto desde la vista previa.", true));
+        return;
+      }
+
+      if (platform === "native") {
+        shareNative();
+        return;
+      }
+
+      if (!shareUrl) return;
+      const shareWindow = window.open(shareUrl, "_blank", "noopener,noreferrer");
+      if (platform === "facebook") {
+        if (!shareWindow) {
+          showShareStatus("El navegador bloqueó la ventana de Facebook. Permite las ventanas emergentes e inténtalo otra vez.", true);
+          return;
+        }
+        copyPostText()
+          .then(() => showShareStatus("Se abrió Facebook para compartir el enlace y se copió el texto. Pégalo en la publicación.", false, true))
+          .catch(() => showShareStatus("Se abrió Facebook para compartir el enlace. Facebook no permite rellenar el texto automáticamente; copia el texto desde la vista previa.", true));
+      } else {
+        showShareStatus(shareWindow
+          ? "Se abrió la plataforma con el texto preparado. Revisa y confirma la publicación allí."
+          : "El navegador bloqueó la ventana. Permite las ventanas emergentes e inténtalo otra vez.", !shareWindow);
+      }
+    }
+
+    async function loadAddons() {
+      const response = await fetch(SHEET_URL);
+      if (!response.ok) throw new Error(`La hoja respondió con el estado ${response.status}.`);
+      const rows = parseCsv(await response.text());
+      if (rows.length < 2) throw new Error("La hoja no contiene addons para mostrar.");
+
+      const headers = rows[0].map((header) => header.replace(/^\uFEFF/, "").trim().toLowerCase());
+      const missingColumns = requiredColumns.filter((column) => !headers.includes(column));
+      if (missingColumns.length) throw new Error(`Faltan columnas requeridas en la hoja: ${missingColumns.join(", ")}.`);
+
+      state.addons = rows.slice(1)
+        .filter((row) => row.some((cell) => cell.trim()))
+        .map((row) => Object.fromEntries(headers.map((header, index) => [header, row[index] || ""])))
+        .filter((addon) => addon.id.trim());
+      if (!state.addons.length) throw new Error("No se encontraron addons con un ID válido.");
+
+      for (const [index, addon] of state.addons.entries()) {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = addon.nombre || `Addon ${index + 1}`;
+        elements.select.append(option);
+      }
+
+      state.selectedIndex = Math.floor(Math.random() * state.addons.length);
+      elements.select.value = String(state.selectedIndex);
+      elements.loading.hidden = true;
+      elements.app.hidden = false;
+      renderAddonDetails();
+      renderImages();
+    }
+
+    function selectAddon(index) {
+      state.selectedIndex = index;
+      elements.select.value = String(index);
+      state.selectedImage = 0;
+      renderAddonDetails();
+      renderImages();
+      showShareStatus("");
+    }
+
+    elements.select.addEventListener("change", () => {
+      selectAddon(Number(elements.select.value));
+    });
+
+    elements.randomAddon.addEventListener("click", () => {
+      if (state.addons.length < 2) {
+        showShareStatus("Solo hay un addon disponible para elegir.", false, true);
+        return;
+      }
+
+      const randomOffset = Math.floor(Math.random() * (state.addons.length - 1)) + 1;
+      selectAddon((state.selectedIndex + randomOffset) % state.addons.length);
+    });
+
+    elements.allImages.addEventListener("click", () => {
+      state.imageMode = "all";
+      elements.allImages.setAttribute("aria-pressed", "true");
+      elements.oneImage.setAttribute("aria-pressed", "false");
+      renderImages();
+    });
+
+    elements.oneImage.addEventListener("click", () => {
+      state.imageMode = "one";
+      elements.allImages.setAttribute("aria-pressed", "false");
+      elements.oneImage.setAttribute("aria-pressed", "true");
+      renderImages();
+    });
+
+    document.querySelectorAll("[data-platform]").forEach((button) => {
+      button.addEventListener("click", () => shareTo(button.dataset.platform));
+    });
+
+    loadAddons().catch((error) => {
+      elements.loading.hidden = true;
+      elements.fatalError.hidden = false;
+      elements.fatalError.textContent = `No se pudieron cargar los addons. ${error.message} Comprueba tu conexión y que la hoja siga siendo pública.`;
+    });
+  </script>
+</body>
+</html>
