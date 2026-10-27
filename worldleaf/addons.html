@@ -218,7 +218,32 @@ body::before{
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:13px;color:var(--gray2)}
 
-.home-ad-inline{grid-column:1/-1;display:flex;justify-content:center;padding:10px 0}
+.home-ad-inline{grid-column:1/-1;display:flex;justify-content:center;padding:10px 0;min-height:640px}
+@media (max-width:340px){
+  .home-ad-inline{padding:6px 0}
+  .home-ad-inline > div{transform:scale(0.92);transform-origin:center center}
+}
+
+/* ===== ANUNCIO ALTO (600px) ===== */
+.ad-slot-tall{max-width:1200px;margin:32px auto 48px;padding:0 16px;display:flex;justify-content:center;align-items:flex-start}
+.ad-slot-tall iframe{width:160px;max-width:100%;height:600px;display:block;margin:0 auto;border:0;background:#0a0e0f}
+@media (max-width:330px){
+  .ad-slot-tall iframe{width:140px;transform:scale(0.875);transform-origin:center center}
+}
+
+/* ===== ANUNCIO ASYNC (container) ===== */
+.ad-async{max-width:1200px;margin:32px auto 48px;padding:0 16px;display:flex;justify-content:center;align-items:center}
+.ad-async #container-825b90786acdd379464b191b41aec463{width:160px;max-width:100%;height:300px;display:flex;justify-content:center;align-items:center;background:#0a0e0f}
+@media (max-width:330px){
+  .ad-async #container-825b90786acdd379464b191b41aec463{width:140px;transform:scale(0.875);transform-origin:center center}
+}
+
+/* ===== ANUNCIO MEDIO (300x250) ===== */
+.ad-slot-medio{max-width:1200px;margin:32px auto 48px;padding:0 16px;display:flex;justify-content:center;align-items:center}
+.ad-slot-medio iframe{width:300px;max-width:100%;height:250px;display:block;margin:0 auto;border:0;background:#0a0e0f}
+@media (max-width:330px){
+  .ad-slot-medio iframe{width:280px;height:233px;transform:scale(0.93);transform-origin:center center}
+}
 
 .search-wrap{position:relative;max-width:420px;width:90%;margin-top:24px}
 .search-input{
@@ -245,6 +270,10 @@ body::before{
 }
 
 .ad-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:adFadeIn .3s}
+#adBanner #container-825b90786acdd379464b191b41aec463{width:160px;height:300px;background:#0a0e0f}
+@media (max-width:330px){
+  #adBanner #container-825b90786acdd379464b191b41aec463{width:140px;transform:scale(0.875);transform-origin:center center}
+}
 @keyframes adFadeIn{from{opacity:0}to{opacity:1}}
 .ad-smartlink{position:absolute;inset:0;z-index:1;cursor:pointer;display:block}
 .ad-container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:none}
@@ -270,6 +299,20 @@ body::before{
     <a href="downloads-app.html" class="nav-link" id="navDownloads">Descargas</a>
   </div>
 </nav>
+
+<!-- ===== ANUNCIO MEDIO ===== -->
+<div class="ad-slot-medio" aria-label="Publicidad">
+  <script>
+    atOptions = {
+      'key' : 'a0082d89d50ee2582d54e84972c04961',
+      'format' : 'iframe',
+      'height' : 250,
+      'width' : 300,
+      'params' : {}
+    };
+  </script>
+  <script src="https://bauval.org/22/a0082d89d50ee2582d54e84972c04961"></script>
+</div>
 
 <div class="main" id="mainContent"></div>
 
@@ -383,13 +426,26 @@ function renderResults(catF,q){
       });
     })(cards[c],c);
   }
+  var adIdx=0;
+  function loadAd(banner){
+    adIdx++;
+    var wId='adw'+adIdx;
+    banner.innerHTML='<div id="'+wId+'" style="width:160px;height:300px;display:flex;align-items:center;justify-content:center"></div>';
+    var s1=document.createElement('script');
+    s1.text='atOptions = {"key":"30ac5a01fd89738251c79fc3fd26c33c","format":"iframe","height":600,"width":160,"params":{}};';
+    var s2=document.createElement('script');
+    s2.src='https://bauval.org/22/30ac5a01fd89738251c79fc3fd26c33c';
+    s2.onload=function(){};
+    banner.appendChild(s1);
+    banner.appendChild(s2);
+    banner.setAttribute('aria-label','Publicidad');
+  }
   try{
     var adBanners=el.querySelectorAll('.home-ad-inline');
     for(var b=0;b<adBanners.length;b++){
-      window.atOptions={'key':'1d21438c427f31f0fa827d2a4d95279b','format':'iframe','height':300,'width':160,'params':{}};
-      var adScript=document.createElement('script');
-      adScript.src='https://www.highperformanceformat.com/1d21438c427f31f0fa827d2a4d95279b/invoke.js';
-      adBanners[b].appendChild(adScript);
+      (function(banner,delay){
+        setTimeout(function(){loadAd(banner)},delay);
+      })(adBanners[b],b*400);
     }
   }catch(e){}
 }
@@ -487,7 +543,8 @@ function showDetail(a){
     '<button class="btn btn-like" id="bLike"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span id="lTxt">Me gusta</span></button>'+
     '<a class="btn btn-download" id="bDl" href="'+(a.link||'#').replace(/"/g,'&quot;')+'" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/></svg>Descargar</a>'+
     '</div>'+
-    '<div class="detail-url"><span class="url-text" id="sUrl">'+pUrl+'</span><button class="url-copy" id="bCopy">Copiar</button></div>'+
+    '</div>' +
+    '<div class="detail-url"><span class="url-text" id="sUrl">'+pUrl+'</span><button class="url-copy" id="bCopy">Copiar</button></div>' +
     '<div style="height:20px"></div>'+
     '<div class="detail-more"><a id="bHome">&#8592; Ver m\u00e1s complementos</a></div>'+
     '</div>';
@@ -504,7 +561,7 @@ function showAdOverlay(dlUrl){
     '<div class="ad-label">Anuncio</div>'+
     '<div class="ad-timer" id="adTimer">5</div>'+
     '<div class="ad-skip">Espera para descargar...</div>'+
-    '<div id="adBanner"></div>'+
+    '<div id="adBanner"><div id="container-825b90786acdd379464b191b41aec463"></div></div>'+
     '</div>';
   document.body.appendChild(overlay);
   var remaining=5;
@@ -519,11 +576,17 @@ function showAdOverlay(dlUrl){
     }
   },1000);
   try{
-    window.atOptions={'key':'a0082d89d50ee2582d54e84972c04961','format':'iframe','height':250,'width':300,'params':{}};
-    var adScript=document.createElement('script');
-    adScript.src='https://www.highperformanceformat.com/a0082d89d50ee2582d54e84972c04961/invoke.js';
     var banner=document.getElementById('adBanner');
-    if(banner)banner.appendChild(adScript);
+    if(banner){
+      var s1=document.createElement('script');
+      var s2=document.createElement('script');
+      s2.src='https://bauval.org/21/825b90786acdd379464b191b41aec463';
+      s2.async=true;
+      s2.setAttribute('data-cfasync','false');
+      banner.appendChild(s1);
+      banner.appendChild(s2);
+      banner.setAttribute('aria-label','Publicidad');
+    }
   }catch(e){}
 }
 
