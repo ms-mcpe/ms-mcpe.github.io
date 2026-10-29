@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Meta viewport para correcta adaptación en móviles (Android/iOS) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplicación Web</title>
+    <style>
+        /* Elimina márgenes y barras de desplazamiento por defecto */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Hace que el iframe ocupe el 100% exacto de la pantalla */
+        .responsive-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <iframe 
+        src="https://script.google.com/macros/s/AKfycbyCmbf9T1C7fO-zK_zz6zt_MDhQej295qaTn8a6px15xh1I3t954Usxo1C7n7QTtwJF_w/exec" 
+        class="responsive-iframe"
+        allowfullscreen>
+    </iframe>
+
+</body>
+</html>
