@@ -633,6 +633,55 @@
   #imageModal img { max-width: 94vw; max-height: 90vh; border-radius: 14px; box-shadow: var(--shadow); }
 
   /* ─── Toast ─────────────────────────────────────────────────────── */
+  .blocked-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at top, rgba(15, 118, 110, .22), rgba(7, 13, 24, .95) 50%);
+    padding: 24px;
+  }
+  .blocked-panel {
+    width: min(560px, 92vw);
+    background: rgba(11, 20, 36, .96);
+    border: 1px solid rgba(248, 113, 113, .4);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .blocked-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(248, 113, 113, .12);
+    color: var(--danger);
+    font-size: 34px;
+  }
+  .blocked-panel h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 5vw, 42px);
+    letter-spacing: -.04em;
+  }
+  .blocked-message {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .blocked-meta {
+    display: block;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
   .toast {
     position: fixed;
     left: 50%;
@@ -680,6 +729,15 @@
 <div id="bootScreen" class="boot-screen">
   <span class="logo">🌿</span>
   <span>Cargando WorldLeaf…</span>
+</div>
+
+<div id="blockedScreen" class="blocked-screen hidden" aria-live="assertive">
+  <div class="blocked-panel">
+    <div class="blocked-icon">⛔</div>
+    <h1>Cuenta baneada</h1>
+    <p id="blockedMessage" class="blocked-message">Tu cuenta ha sido suspendida.</p>
+    <small id="blockedMeta" class="blocked-meta">Cuenta baneada</small>
+  </div>
 </div>
 
 <!-- ══════════════ PANTALLA DE AUTENTICACIÓN ══════════════ -->
@@ -1073,6 +1131,12 @@
     try { res = JSON.parse(raw); }
     catch (e) { reject({ code: 'SERVER', message: 'Respuesta inválida del servidor' }); return; }
     if (res && res.ok) { resolve(res.data); return; }
+    if (res && res.error === 'BLOCKED') {
+      clearSession();
+      showBlockedScreen(res.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
+      reject(res || { code: 'BLOCKED', message: 'Tu cuenta ha sido suspendida.' });
+      return;
+    }
     if (res && res.error === 'AUTH' && state.me) forceLogout();
     reject(res || { code: 'SERVER', message: 'Error desconocido' });
   }
@@ -1166,7 +1230,12 @@
       showApp();
       await navigate('feed');
     } catch (err) {
-      toast(err.message || 'No se pudo iniciar sesión', 'err');
+      if (err && err.error === 'BLOCKED') {
+        clearSession();
+        showBlockedScreen(err.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
+      } else {
+        toast(err.message || 'No se pudo iniciar sesión', 'err');
+      }
     } finally {
       setBusy(btn, false);
     }
@@ -1281,8 +1350,28 @@
     if (boot) boot.classList.add('hidden');
   }
 
+  function hideBlockedScreen() {
+    var blocked = $('#blockedScreen');
+    if (blocked) blocked.classList.add('hidden');
+  }
+
+  function showBlockedScreen(message, meta) {
+    var blocked = $('#blockedScreen');
+    if (!blocked) return;
+    var msgEl = $('#blockedMessage');
+    var metaEl = $('#blockedMeta');
+    if (msgEl) msgEl.textContent = message || 'Tu cuenta ha sido suspendida.';
+    if (metaEl) metaEl.textContent = meta || 'Cuenta baneada';
+    hideBoot();
+    $('#authScreen').classList.add('hidden');
+    $('#appScreen').classList.add('hidden');
+    blocked.classList.remove('hidden');
+    closeDrawer();
+  }
+
   function showAuth() {
     hideBoot();
+    hideBlockedScreen();
     closeDrawer();
     $('#authScreen').classList.remove('hidden');
     $('#appScreen').classList.add('hidden');
@@ -1290,6 +1379,7 @@
 
   function showApp() {
     hideBoot();
+    hideBlockedScreen();
     $('#authScreen').classList.add('hidden');
     $('#appScreen').classList.remove('hidden');
     updateShell();
@@ -2316,6 +2406,9 @@
         clearSession();
         showAuth();
         toast('Tu sesión expiró. Inicia sesión de nuevo.', 'warn');
+      } else if (err && (err.code === 'BLOCKED' || err.error === 'BLOCKED')) {
+        clearSession();
+        showBlockedScreen(err.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
       } else if (state.me) {
         toast('Sin conexión: mostrando datos guardados', 'warn');
       } else {
@@ -2334,4 +2427,3 @@
 </script>
 </body>
 </html>
-
