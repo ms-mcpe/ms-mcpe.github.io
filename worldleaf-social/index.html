@@ -904,6 +904,8 @@
     notifUnread: (notifCacheInicial && notifCacheInicial.at &&
       Date.now() - notifCacheInicial.at <= CACHE_NOTIF_TTL && notifCacheInicial.sinLeer) || 0,
     view: 'feed',
+    profileUserId: '',
+    routeLock: false,
     feed: { offset: 0, hasMore: true, loading: false },
     explore: { offset: 0, hasMore: true, loading: false },
     pendingImage: null,
@@ -1043,6 +1045,65 @@
   function roleBadgeHTML(rol) {
     var r = roleKey(rol);
     return '<span class="role role-' + r + '">' + roleLabel(r) + '</span>';
+  }
+
+  function parseHashRoute(hash) {
+    var raw = String(hash || '').replace(/^#/, '');
+    if (!raw) return { view: 'feed', userId: '' };
+    var path = raw.split('?')[0];
+    var qs = raw.indexOf('?') >= 0 ? raw.slice(raw.indexOf('?') + 1) : '';
+    var params = {};
+    if (qs) {
+      qs.split('&').forEach(function (part) {
+        if (!part) return;
+        var pair = part.split('=');
+        var key = decodeURIComponent(pair[0] || '');
+        var value = pair.length > 1 ? decodeURIComponent(pair.slice(1).join('=')) : '';
+        if (key) params[key] = value;
+      });
+    }
+    var userId = params.userId || '';
+    if (path === 'feed' || path === '') return { view: 'feed', userId: '' };
+    if (path === 'explore') return { view: 'explore', userId: '' };
+    if (path === 'search') return { view: 'search', userId: '' };
+    if (path === 'notifications') return { view: 'notifications', userId: '' };
+    if (path === 'profile' || path.indexOf('profile/') === 0) {
+      if (userId) return { view: 'profile', userId: userId };
+      var id = path.indexOf('profile/') === 0 ? path.slice('profile/'.length) : '';
+      return { view: 'profile', userId: decodeURIComponent(id || '') };
+    }
+    return { view: 'feed', userId: '' };
+  }
+
+  function routeToHash(view, opts) {
+    opts = opts || {};
+    if (view === 'profile') {
+      var userId = opts.userId ? String(opts.userId) : (state.me ? state.me.userId : '');
+      return userId ? 'profile?userId=' + encodeURIComponent(userId) : 'profile';
+    }
+    if (view === 'explore') return 'explore';
+    if (view === 'search') return 'search';
+    if (view === 'notifications') return 'notifications';
+    return 'feed';
+  }
+
+  function syncHash(view, opts) {
+    var nextHash = '#' + routeToHash(view, opts || {});
+    if (window.location.hash !== nextHash) {
+      state.routeLock = true;
+      window.location.hash = nextHash;
+      setTimeout(function () { state.routeLock = false; }, 0);
+    }
+  }
+
+  function handleHashRoute() {
+    if (state.routeLock || !state.me) return;
+    var route = parseHashRoute(window.location.hash);
+    var targetView = route.view || 'feed';
+    var targetUserId = route.userId || (targetView === 'profile' ? state.me.userId : '');
+    if (targetView === 'profile' && !targetUserId) targetUserId = state.me.userId;
+    if (state.view === targetView && String(state.profileUserId || '') === String(targetUserId || '')) return;
+    navigate(targetView, { userId: targetUserId, skipHash: true });
   }
 
   function updateNotifBadges() {
@@ -1384,6 +1445,11 @@
     $('#appScreen').classList.remove('hidden');
     updateShell();
     loadSuggestions();
+    if (!window.location.hash || window.location.hash === '#') {
+      syncHash(state.view || 'feed', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
+    } else {
+      handleHashRoute();
+    }
   }
 
   function forceLogout() {
@@ -1656,17 +1722,20 @@
 
   async function navigate(view, opts) {
     opts = opts || {};
+    var userId = opts.userId ? String(opts.userId) : '';
     state.view = view;
+    if (view === 'profile') state.profileUserId = userId;
+    else state.profileUserId = '';
     var navKey = view;
-    if (view === 'profile' && opts.userId && state.me &&
-        String(opts.userId) !== String(state.me.userId)) navKey = '';
+    if (view === 'profile' && state.me && userId && String(userId) !== String(state.me.userId)) navKey = '';
     setActiveNav(navKey);
     window.scrollTo(0, 0);
+    if (!opts.skipHash) syncHash(view, { userId: userId || undefined });
     if (view === 'feed') return renderFeed();
     if (view === 'explore') return renderExplore();
     if (view === 'search') return renderSearch();
     if (view === 'notifications') return renderNotifications();
-    if (view === 'profile') return renderProfile(opts.userId);
+    if (view === 'profile') return renderProfile(userId || (state.me ? state.me.userId : ''));
   }
 
   // ─────────────────────────────────────────────────────────────────────
@@ -2002,6 +2071,7 @@
             '<div class="profile-actions">' + actions + '</div>' +
             '<h2 class="name-row">' + esc(perfil.nombreMostrado) + roleBadgeHTML(perfil.rol) + '</h2>' +
             '<div class="handle">@' + esc(perfil.nombre) + (perfil.verificado ? ' <span class="badge">✓</span>' : '') + '</div>' +
+            '<div class="muted profile-user-id">ID: ' + esc(perfil.userId) + '</div>' +
             '<p class="bio">' + (perfil.bio ? esc(perfil.bio) : '<span class="muted">Sin biografía.</span>') + '</p>' +
             '<div class="stats">' +
               '<span><strong>' + perfil.stats.publicaciones + '</strong> publicaciones</span>' +
@@ -2377,6 +2447,11 @@
   async function init() {
     bindAuth();
     bindApp();
+    window.addEventListener('hashchange', function () {
+      if (!state.me || $('#blockedScreen').classList.contains('hidden') === false) return;
+      if (state.routeLock) return;
+      handleHashRoute();
+    });
     showBoot();
 
     if (!state.token) {
@@ -2388,7 +2463,7 @@
 
     if (state.me) {
       showApp();
-      navigate('feed');
+      handleHashRoute();
     }
 
     try {
@@ -2399,8 +2474,8 @@
       updateShell();
       if ($('#appScreen').classList.contains('hidden')) {
         showApp();
-        await navigate('feed');
       }
+      handleHashRoute();
     } catch (err) {
       if (err && (err.code === 'AUTH' || err.error === 'AUTH')) {
         clearSession();
