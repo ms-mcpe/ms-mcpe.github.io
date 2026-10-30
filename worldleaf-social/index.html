@@ -824,7 +824,7 @@
     </nav>
     <div class="top-actions">
       <button class="bell-btn" id="notifBtn" type="button" title="Notificaciones" aria-label="Notificaciones">🔔<span id="notifBadge" class="badge-count hidden">0</span></button>
-      <button class="avatar-btn" id="myProfileBtn" type="button" title="Menú de cuenta" aria-label="Menú de cuenta"><img id="topAvatar" class="avatar md" alt=""></button>
+      <button class="avatar-btn" id="myProfileBtn" type="button" title="Mi perfil" aria-label="Abrir mi perfil"><img id="topAvatar" class="avatar md" alt=""></button>
     </div>
   </header>
 
@@ -1667,7 +1667,9 @@
     }, 180000);
 
     $('#notifBtn').addEventListener('click', function () { navigate('notifications'); });
-    $('#myProfileBtn').addEventListener('click', openDrawer);
+    $('#myProfileBtn').addEventListener('click', function () {
+      if (state.me) navigate('profile', { userId: state.me.userId });
+    });
     $('#sideProfileBtn').addEventListener('click', function () {
       closeDrawer();
       if (state.me) navigate('profile', { userId: state.me.userId });
