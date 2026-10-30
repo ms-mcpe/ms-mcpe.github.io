@@ -233,6 +233,184 @@
   .nav button.active { background: rgba(52, 211, 153, .14); color: var(--brand); }
   .top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .avatar-btn { background: none; border: none; padding: 0; border-radius: 50%; }
+  .menu-btn, .bell-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1;
+    transition: background .15s, border-color .15s;
+  }
+  .menu-btn:hover, .bell-btn:hover { background: var(--panel-2); border-color: rgba(52, 211, 153, .35); }
+  .badge-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--danger);
+    color: #fff;
+    border: 2px solid var(--bg);
+    font-size: 11px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .role {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .role-user { color: var(--muted); background: rgba(147, 164, 189, .08); }
+  .role-admin { color: #93c5fd; background: rgba(59, 130, 246, .12); border-color: rgba(59, 130, 246, .35); }
+  .role-owner { color: #fbbf24; background: rgba(251, 191, 36, .12); border-color: rgba(251, 191, 36, .4); }
+  .name-row { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
+  .name-row strong { min-width: 0; }
+  .name-row .role { flex-shrink: 0; }
+  .role-admin-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .role-admin-box select {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel-2);
+  }
+
+  .side-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(0, 0, 0, .58);
+    backdrop-filter: blur(2px);
+  }
+  .side-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    width: 310px;
+    max-width: 88vw;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+    overflow-y: auto;
+    background: var(--bg-soft);
+    border-right: 1px solid var(--line);
+    box-shadow: 18px 0 45px rgba(0, 0, 0, .45);
+    transform: translateX(-105%);
+    transition: transform .22s ease;
+  }
+  .side-drawer.open { transform: translateX(0); }
+  .side-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .side-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    text-align: left;
+    flex: 1;
+  }
+  .side-user .who { min-width: 0; }
+  .side-user strong { font-size: 16px; }
+  .side-role { margin-top: -4px; }
+  .side-nav { display: flex; flex-direction: column; gap: 4px; }
+  .side-nav button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 12px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: left;
+  }
+  .side-nav button:hover { background: var(--panel); color: var(--text); }
+  .side-nav button.active { background: rgba(52, 211, 153, .14); color: var(--brand); }
+  .side-nav button.danger { color: var(--danger); }
+  .side-nav button.danger:hover { background: rgba(248, 113, 113, .1); }
+  .side-title {
+    margin: 10px 0 2px;
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .side-pill {
+    margin-left: auto;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--danger);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .notif-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .notif-head h2 { margin: 0; font-size: 20px; }
+  .notif-list { display: flex; flex-direction: column; gap: 8px; }
+  .notif-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel);
+    color: inherit;
+    text-align: left;
+  }
+  .notif-item:hover { border-color: rgba(52, 211, 153, .35); background: var(--panel-2); }
+  .notif-item.unread { border-color: rgba(52, 211, 153, .45); background: rgba(52, 211, 153, .06); }
+  .notif-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+  .notif-text { font-size: 14px; line-height: 1.4; }
+  .notif-text strong { font-weight: 700; }
+  .notif-time { font-size: 12px; color: var(--muted); }
+  .notif-dot { width: 8px; height: 8px; margin-top: 7px; border-radius: 50%; background: var(--brand); flex: 0 0 auto; }
+  .snippet { color: var(--muted); font-style: italic; }
 
   .layout {
     display: grid;
@@ -490,8 +668,7 @@
   @media (max-width: 820px) {
     .layout { grid-template-columns: 1fr; padding-top: 16px; }
     .left { display: none; }
-    .nav { margin-left: 0; overflow-x: auto; }
-    .nav button { padding: 8px 12px; }
+    .nav { display: none; }
     .topbar { gap: 10px; }
     .brand span.logo { font-size: 22px; }
     .brand .brand-text { display: none; }
@@ -554,7 +731,33 @@
 
 <!-- ══════════════ APLICACIÓN ══════════════ -->
 <div id="appScreen" class="hidden">
+  <div id="sideOverlay" class="side-overlay hidden"></div>
+  <aside id="sideDrawer" class="side-drawer" aria-hidden="true">
+    <div class="side-head">
+      <button class="side-user" id="sideProfileBtn" type="button" title="Mi perfil">
+        <img id="sideAvatar" class="avatar md" alt="">
+        <span class="who">
+          <span class="name-row"><strong id="sideName"></strong><span id="sideRole"></span></span>
+          <span class="handle" id="sideHandle"></span>
+        </span>
+      </button>
+      <button class="icon-btn" id="sideCloseBtn" type="button" title="Cerrar menú">✕</button>
+    </div>
+    <nav class="side-nav">
+      <p class="side-title">Navegación</p>
+      <button type="button" data-side-view="feed">🏠 Inicio</button>
+      <button type="button" data-side-view="explore">🧭 Explorar</button>
+      <button type="button" data-side-view="search">🔎 Buscar</button>
+      <button type="button" data-side-view="notifications">🔔 Notificaciones <span id="sideNotifCount" class="side-pill hidden">0</span></button>
+      <button type="button" data-side-view="profile">👤 Mi perfil</button>
+      <p class="side-title">Cuenta</p>
+      <button type="button" id="sideEditBtn">✏️ Editar perfil</button>
+      <button type="button" id="sideLogoutBtn" class="danger">🚪 Cerrar sesión</button>
+    </nav>
+  </aside>
+
   <header class="topbar">
+    <button class="menu-btn" id="menuBtn" type="button" title="Abrir menú" aria-label="Abrir menú">☰</button>
     <button class="brand" id="homeBtn" type="button"><span class="logo">🌿</span><span class="brand-text">WorldLeaf</span></button>
     <nav class="nav">
       <button type="button" data-view="feed">Inicio</button>
@@ -562,8 +765,8 @@
       <button type="button" data-view="search">Buscar</button>
     </nav>
     <div class="top-actions">
-      <button class="avatar-btn" id="myProfileBtn" type="button" title="Mi perfil"><img id="topAvatar" class="avatar md" alt=""></button>
-      <button class="btn ghost small" id="logoutBtn" type="button">Salir</button>
+      <button class="bell-btn" id="notifBtn" type="button" title="Notificaciones" aria-label="Notificaciones">🔔<span id="notifBadge" class="badge-count hidden">0</span></button>
+      <button class="avatar-btn" id="myProfileBtn" type="button" title="Menú de cuenta" aria-label="Menú de cuenta"><img id="topAvatar" class="avatar md" alt=""></button>
     </div>
   </header>
 
@@ -632,11 +835,16 @@
 
   var CACHE_PROFILE_KEY = 'wl_profile';
   var CACHE_FEED_KEY = 'wl_feed_cache';
+  var CACHE_NOTIF_KEY = 'wl_notif_cache';
   var CACHE_FEED_TTL = 10 * 60 * 1000;
+  var CACHE_NOTIF_TTL = 10 * 60 * 1000;
+  var notifCacheInicial = readCache(CACHE_NOTIF_KEY, null);
 
   var state = {
     token: localStorage.getItem('wl_token') || '',
     me: readCache(CACHE_PROFILE_KEY, null),
+    notifUnread: (notifCacheInicial && notifCacheInicial.at &&
+      Date.now() - notifCacheInicial.at <= CACHE_NOTIF_TTL && notifCacheInicial.sinLeer) || 0,
     view: 'feed',
     feed: { offset: 0, hasMore: true, loading: false },
     explore: { offset: 0, hasMore: true, loading: false },
@@ -684,12 +892,41 @@
     writeCache(CACHE_FEED_KEY, c);
   }
 
+  function loadNotifCache() {
+    var c = readCache(CACHE_NOTIF_KEY, null);
+    if (!c || !c.at || Date.now() - c.at > CACHE_NOTIF_TTL) return null;
+    return c;
+  }
+
+  function saveNotifCache(items, unread) {
+    writeCache(CACHE_NOTIF_KEY, {
+      at: Date.now(),
+      items: (items || []).slice(0, 30),
+      sinLeer: unread || 0
+    });
+  }
+
+  function markNotifCacheRead() {
+    var c = readCache(CACHE_NOTIF_KEY, null);
+    if (!c) return;
+    c.items = (c.items || []).map(function (n) {
+      var copy = Object.assign({}, n);
+      copy.leida = true;
+      return copy;
+    });
+    c.sinLeer = 0;
+    c.at = Date.now();
+    writeCache(CACHE_NOTIF_KEY, c);
+  }
+
   function clearSession() {
     state.token = '';
     state.me = null;
+    state.notifUnread = 0;
     try { localStorage.removeItem('wl_token'); } catch (e) { /* nada */ }
     removeCache(CACHE_PROFILE_KEY);
     removeCache(CACHE_FEED_KEY);
+    removeCache(CACHE_NOTIF_KEY);
   }
 
   var PLACEHOLDER_AVATAR = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
@@ -731,6 +968,34 @@
     var src = photo ? esc(photo) : PLACEHOLDER_AVATAR;
     return '<img class="avatar ' + cls + '" src="' + src + '" alt="" loading="lazy" ' +
       'onerror="this.onerror=null;this.src=\'' + PLACEHOLDER_AVATAR + '\'">';
+  }
+
+  function roleKey(rol) {
+    var r = String(rol || 'user').toLowerCase();
+    if (r === 'owner' || r === 'propietario' || r === 'dueño' || r === 'dueno') return 'owner';
+    if (r === 'admin' || r === 'administrador') return 'admin';
+    return 'user';
+  }
+
+  function roleLabel(rol) {
+    var r = roleKey(rol);
+    return r === 'owner' ? 'Owner' : (r === 'admin' ? 'Admin' : 'Usuario');
+  }
+
+  function roleBadgeHTML(rol) {
+    var r = roleKey(rol);
+    return '<span class="role role-' + r + '">' + roleLabel(r) + '</span>';
+  }
+
+  function updateNotifBadges() {
+    var n = parseInt(state.notifUnread, 10) || 0;
+    var text = n > 9 ? '9+' : String(n);
+    ['#notifBadge', '#sideNotifCount'].forEach(function (sel) {
+      var el = $(sel);
+      if (!el) return;
+      el.textContent = text;
+      el.classList.toggle('hidden', n <= 0);
+    });
   }
 
   var toastTimer = null;
@@ -893,8 +1158,10 @@
       state.token = d.token;
       localStorage.setItem('wl_token', d.token);
       state.me = d.perfil;
+      state.notifUnread = d.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       removeCache(CACHE_FEED_KEY);
+      removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
       showApp();
       await navigate('feed');
@@ -919,8 +1186,10 @@
       state.token = d.token;
       localStorage.setItem('wl_token', d.token);
       state.me = d.perfil;
+      state.notifUnread = d.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       removeCache(CACHE_FEED_KEY);
+      removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
       showApp();
       toast('¡Bienvenido a WorldLeaf!', 'ok');
@@ -1014,6 +1283,7 @@
 
   function showAuth() {
     hideBoot();
+    closeDrawer();
     $('#authScreen').classList.remove('hidden');
     $('#appScreen').classList.add('hidden');
   }
@@ -1042,10 +1312,20 @@
     img.src = state.me.fotoPerfil || PLACEHOLDER_AVATAR;
     img.onerror = function () { img.onerror = null; img.src = PLACEHOLDER_AVATAR; };
 
+    var sideImg = $('#sideAvatar');
+    if (sideImg) {
+      sideImg.src = state.me.fotoPerfil || PLACEHOLDER_AVATAR;
+      sideImg.onerror = function () { sideImg.onerror = null; sideImg.src = PLACEHOLDER_AVATAR; };
+    }
+    if ($('#sideName')) $('#sideName').textContent = state.me.nombreMostrado;
+    if ($('#sideHandle')) $('#sideHandle').textContent = '@' + state.me.nombre;
+    if ($('#sideRole')) $('#sideRole').innerHTML = roleBadgeHTML(state.me.rol);
+
     $('#miniProfile').innerHTML =
       '<div class="mini-top">' +
         avatarHTML(state.me.nombreMostrado, state.me.fotoPerfil, 'md') +
-        '<span class="who"><strong>' + esc(state.me.nombreMostrado) + '</strong>' +
+        '<span class="who"><span class="name-row"><strong>' + esc(state.me.nombreMostrado) + '</strong>' +
+        roleBadgeHTML(state.me.rol) + '</span>' +
         '<span class="handle">@' + esc(state.me.nombre) + '</span></span>' +
       '</div>' +
       '<div class="mini-stats">' +
@@ -1057,13 +1337,16 @@
 
     var miniBtn = $('#miniProfileBtn');
     if (miniBtn) miniBtn.addEventListener('click', function () { navigate('profile', { userId: state.me.userId }); });
+
+    updateNotifBadges();
   }
 
   function userRowHTML(u) {
     return '<div class="user-row">' +
       '<button class="user-link" data-user="' + esc(u.userId) + '" type="button">' +
         avatarHTML(u.nombreMostrado, u.fotoPerfil, 'sm') +
-        '<span class="who"><strong>' + esc(u.nombreMostrado) + '</strong>' +
+        '<span class="who"><span class="name-row"><strong>' + esc(u.nombreMostrado) + '</strong>' +
+        roleBadgeHTML(u.rol) + '</span>' +
         '<span class="handle">@' + esc(u.nombre) + '</span></span>' +
       '</button>' +
       '<button class="btn small ' + (u.siguiendo ? 'ghost' : 'primary') + '" data-follow="' + esc(u.userId) + '" type="button">' +
@@ -1083,20 +1366,177 @@
     }
   }
 
+  function notifHTML(n) {
+    var action;
+    if (n.tipo === 'comentario') {
+      action = 'comentó tu publicación';
+      if (n.comentarioTexto) action += ': <span class="snippet">«' + esc(n.comentarioTexto) + '»</span>';
+      else if (n.postTexto) action += ': <span class="snippet">«' + esc(n.postTexto) + '»</span>';
+    } else if (n.tipo === 'seguidor') {
+      action = 'empezó a seguirte';
+    } else {
+      action = 'interactuó contigo';
+    }
+    return '<button class="notif-item ' + (n.leida ? '' : 'unread') + '" data-notif-user="' + esc(n.actor.userId) + '" type="button">' +
+      avatarHTML(n.actor.nombreMostrado, n.actor.fotoPerfil, 'md') +
+      '<span class="notif-body">' +
+        '<span class="notif-text"><strong>' + esc(n.actor.nombreMostrado) + '</strong> ' +
+          roleBadgeHTML(n.actor.rol) + ' ' + action + '</span>' +
+        '<span class="notif-time">' + timeAgo(n.fecha) + '</span>' +
+      '</span>' +
+      (n.leida ? '' : '<span class="notif-dot"></span>') +
+    '</button>';
+  }
+
+  function bindMarkReadButton() {
+    var btn = $('#markReadBtn');
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', async function () {
+      setBusy(btn, true, 'Marcando...');
+      try {
+        await api('marcarNotificacionesLeidas');
+        state.notifUnread = 0;
+        updateNotifBadges();
+        $all('.notif-item.unread').forEach(function (el) {
+          el.classList.remove('unread');
+          var dot = el.querySelector('.notif-dot');
+          if (dot) dot.remove();
+        });
+        markNotifCacheRead();
+        toast('Notificaciones marcadas como leídas', 'ok');
+      } catch (err) {
+        toast(err.message || 'No se pudieron marcar como leídas', 'err');
+      } finally {
+        setBusy(btn, false);
+      }
+    });
+  }
+
+  async function renderNotifications() {
+    var cached = loadNotifCache();
+    var items = cached && Array.isArray(cached.items) ? cached.items : [];
+    $('#view').innerHTML =
+      '<div class="card">' +
+        '<div class="notif-head"><h2>Notificaciones</h2>' +
+          '<button class="btn ghost small" id="markReadBtn" type="button">Marcar leídas</button></div>' +
+        '<div class="notif-list" id="notifList">' +
+          (items.length ? items.map(notifHTML).join('') : loadingBlock()) +
+        '</div>' +
+      '</div>';
+    bindMarkReadButton();
+
+    try {
+      var d = await api('getNotificaciones');
+      state.notifUnread = d.sinLeer || 0;
+      saveNotifCache(d.notificaciones, d.sinLeer);
+      var list = $('#notifList');
+      if (list) {
+        list.innerHTML = d.notificaciones.length
+          ? d.notificaciones.map(notifHTML).join('')
+          : emptyState('No tienes notificaciones todavía.');
+      }
+      updateNotifBadges();
+
+      if (d.sinLeer > 0) {
+        try {
+          await api('marcarNotificacionesLeidas');
+          state.notifUnread = 0;
+          markNotifCacheRead();
+          updateNotifBadges();
+          $all('.notif-item.unread').forEach(function (el) {
+            el.classList.remove('unread');
+            var dot = el.querySelector('.notif-dot');
+            if (dot) dot.remove();
+          });
+        } catch (e) {
+          /* se reintenta al volver a abrir */
+        }
+      }
+    } catch (err) {
+      var box = $('#notifList');
+      if (box && !box.querySelector('.notif-item')) {
+        box.innerHTML = emptyState('No se pudieron cargar las notificaciones.');
+      }
+      toast(err.message || 'Error al cargar notificaciones', 'err');
+    }
+  }
+
+  async function refreshNotifCount() {
+    if (!state.me) return;
+    try {
+      var d = await api('contarNotificaciones');
+      state.notifUnread = d.sinLeer || 0;
+      updateNotifBadges();
+      var c = readCache(CACHE_NOTIF_KEY, null);
+      if (c) {
+        c.sinLeer = state.notifUnread;
+        c.at = Date.now();
+        writeCache(CACHE_NOTIF_KEY, c);
+      }
+    } catch (e) {
+      /* silencioso */
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────────
   //  Navegación
   // ─────────────────────────────────────────────────────────────────────
+  function openDrawer() {
+    $('#sideOverlay').classList.remove('hidden');
+    var drawer = $('#sideDrawer');
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeDrawer() {
+    var drawer = $('#sideDrawer');
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    $('#sideOverlay').classList.add('hidden');
+  }
+
   function bindApp() {
     $('#homeBtn').addEventListener('click', function () { navigate('feed'); });
-    $('#logoutBtn').addEventListener('click', async function () {
+    $('#menuBtn').addEventListener('click', openDrawer);
+    $('#sideCloseBtn').addEventListener('click', closeDrawer);
+    $('#sideOverlay').addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDrawer();
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && state.me) refreshNotifCount();
+    });
+    setInterval(function () {
+      if (!document.hidden && state.me) refreshNotifCount();
+    }, 180000);
+
+    $('#notifBtn').addEventListener('click', function () { navigate('notifications'); });
+    $('#myProfileBtn').addEventListener('click', openDrawer);
+    $('#sideProfileBtn').addEventListener('click', function () {
+      closeDrawer();
+      if (state.me) navigate('profile', { userId: state.me.userId });
+    });
+    $('#sideEditBtn').addEventListener('click', function () {
+      closeDrawer();
+      openEditModal();
+    });
+    $('#sideLogoutBtn').addEventListener('click', async function () {
+      closeDrawer();
       try { await api('logout'); } catch (e) {}
       forceLogout();
     });
-    $('#myProfileBtn').addEventListener('click', function () {
-      if (state.me) navigate('profile', { userId: state.me.userId });
-    });
+
     $all('.nav [data-view]').forEach(function (btn) {
       btn.addEventListener('click', function () { navigate(btn.dataset.view); });
+    });
+    $all('[data-side-view]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var view = btn.dataset.sideView;
+        closeDrawer();
+        if (view === 'profile') navigate('profile', { userId: state.me.userId });
+        else navigate(view);
+      });
     });
 
     var appEl = $('#appScreen');
@@ -1119,16 +1559,23 @@
     $all('.nav [data-view]').forEach(function (b) {
       b.classList.toggle('active', b.dataset.view === view);
     });
+    $all('[data-side-view]').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.sideView === view);
+    });
   }
 
   async function navigate(view, opts) {
     opts = opts || {};
     state.view = view;
-    setActiveNav(view === 'profile' ? '' : view);
+    var navKey = view;
+    if (view === 'profile' && opts.userId && state.me &&
+        String(opts.userId) !== String(state.me.userId)) navKey = '';
+    setActiveNav(navKey);
     window.scrollTo(0, 0);
     if (view === 'feed') return renderFeed();
     if (view === 'explore') return renderExplore();
     if (view === 'search') return renderSearch();
+    if (view === 'notifications') return renderNotifications();
     if (view === 'profile') return renderProfile(opts.userId);
   }
 
@@ -1188,7 +1635,8 @@
             userId: state.me.userId,
             nombre: state.me.nombre,
             nombreMostrado: state.me.nombreMostrado,
-            fotoPerfil: state.me.fotoPerfil
+            fotoPerfil: state.me.fotoPerfil,
+            rol: state.me.rol
           },
           fecha: new Date().toISOString(),
           texto: texto,
@@ -1323,14 +1771,15 @@
       ? '<div class="post-media"><img src="' + esc(p.imagen) + '" data-full="' + esc(p.imagen) +
         '" alt="Publicación" loading="lazy" onerror="this.closest(\'.post-media\').remove()"></div>'
       : '';
-    var del = p.esMio
+    var del = (p.puedeBorrar || p.esMio)
       ? '<button class="icon-btn" data-delete-post="' + esc(p.postId) + '" type="button" title="Eliminar publicación">🗑</button>'
       : '';
     return '<article class="card post" data-post="' + esc(p.postId) + '">' +
       '<header class="post-head">' +
         '<button class="user-link" data-user="' + esc(p.autor.userId) + '" type="button">' +
           avatarHTML(p.autor.nombreMostrado, p.autor.fotoPerfil, 'md') +
-          '<span class="who"><strong>' + esc(p.autor.nombreMostrado) + '</strong>' +
+          '<span class="who"><span class="name-row"><strong>' + esc(p.autor.nombreMostrado) + '</strong>' +
+          roleBadgeHTML(p.autor.rol) + '</span>' +
           '<span class="handle">@' + esc(p.autor.nombre) + ' · ' + timeAgo(p.fecha) + '</span></span>' +
         '</button>' + del +
       '</header>' +
@@ -1346,13 +1795,14 @@
   }
 
   function commentHTML(c, postId) {
-    var del = c.esMio
+    var del = (c.puedeBorrar || c.esMio)
       ? '<button data-del-comment="' + esc(c.comentarioId) + '" data-post="' + esc(postId) + '" type="button">✕</button>'
       : '';
     return '<div class="comment" data-comment-id="' + esc(c.comentarioId) + '">' +
       avatarHTML(c.autor.nombreMostrado, c.autor.fotoPerfil, 'sm') +
       '<div class="bubble">' +
         '<div class="c-head"><strong>' + esc(c.autor.nombreMostrado) + '</strong>' +
+        roleBadgeHTML(c.autor.rol) +
         '<span>' + timeAgo(c.fecha) + '</span>' + del + '</div>' +
         '<p>' + esc(c.texto) + '</p>' +
       '</div>' +
@@ -1416,13 +1866,26 @@
         : '<button class="btn ' + (perfil.siguiendo ? 'ghost' : 'primary') + '" data-follow="' + esc(perfil.userId) + '" type="button">' +
             (perfil.siguiendo ? 'Siguiendo' : 'Seguir') + '</button>';
 
+      var roleAdminBox = '';
+      if (state.me && roleKey(state.me.rol) === 'owner' &&
+          !perfil.esYo && roleKey(perfil.rol) !== 'owner') {
+        roleAdminBox = '<div class="role-admin-box">' +
+          '<span class="muted">Cambiar rol:</span>' +
+          '<select id="roleSelect">' +
+            '<option value="user"' + (roleKey(perfil.rol) === 'user' ? ' selected' : '') + '>Usuario</option>' +
+            '<option value="admin"' + (roleKey(perfil.rol) === 'admin' ? ' selected' : '') + '>Admin</option>' +
+          '</select>' +
+          '<button class="btn small primary" id="saveRoleBtn" type="button">Aplicar</button>' +
+        '</div>';
+      }
+
       $('#view').innerHTML =
         '<div class="card profile-head">' +
           '<div class="cover" style="' + coverStyle + '"></div>' +
           '<div class="profile-body">' +
             '<div class="profile-avatar">' + avatarHTML(perfil.nombreMostrado, perfil.fotoPerfil, 'xl') + '</div>' +
             '<div class="profile-actions">' + actions + '</div>' +
-            '<h2>' + esc(perfil.nombreMostrado) + '</h2>' +
+            '<h2 class="name-row">' + esc(perfil.nombreMostrado) + roleBadgeHTML(perfil.rol) + '</h2>' +
             '<div class="handle">@' + esc(perfil.nombre) + (perfil.verificado ? ' <span class="badge">✓</span>' : '') + '</div>' +
             '<p class="bio">' + (perfil.bio ? esc(perfil.bio) : '<span class="muted">Sin biografía.</span>') + '</p>' +
             '<div class="stats">' +
@@ -1430,6 +1893,7 @@
               '<span><strong data-stat-followers="' + esc(perfil.userId) + '">' + perfil.stats.seguidores + '</strong> seguidores</span>' +
               '<span><strong>' + perfil.stats.siguiendo + '</strong> siguiendo</span>' +
             '</div>' +
+            roleAdminBox +
           '</div>' +
         '</div>' +
         '<div id="profilePosts" class="feed-list">' +
@@ -1439,6 +1903,24 @@
       if (perfil.esYo) {
         var editBtn = $('#openEditBtn');
         if (editBtn) editBtn.addEventListener('click', openEditModal);
+      }
+
+      var saveRoleBtn = $('#saveRoleBtn');
+      if (saveRoleBtn) {
+        saveRoleBtn.addEventListener('click', async function () {
+          var select = $('#roleSelect');
+          if (!select) return;
+          setBusy(saveRoleBtn, true, 'Guardando...');
+          try {
+            await api('cambiarRol', { userId: perfil.userId, rol: select.value });
+            toast('Rol actualizado', 'ok');
+            await renderProfile(perfil.userId);
+          } catch (err) {
+            toast(err.message || 'No se pudo cambiar el rol', 'err');
+          } finally {
+            setBusy(saveRoleBtn, false);
+          }
+        });
       }
     } catch (err) {
       $('#view').innerHTML = emptyState('No se pudo cargar el perfil.');
@@ -1622,6 +2104,12 @@
       return;
     }
 
+    var notifItem = e.target.closest('[data-notif-user]');
+    if (notifItem) {
+      navigate('profile', { userId: notifItem.dataset.notifUser });
+      return;
+    }
+
     var userBtn = e.target.closest('[data-user]');
     if (userBtn) {
       navigate('profile', { userId: userBtn.dataset.user });
@@ -1694,7 +2182,8 @@
         userId: state.me.userId,
         nombre: state.me.nombre,
         nombreMostrado: state.me.nombreMostrado,
-        fotoPerfil: state.me.fotoPerfil
+        fotoPerfil: state.me.fotoPerfil,
+        rol: state.me.rol
       },
       texto: texto,
       fecha: new Date().toISOString(),
@@ -1750,6 +2239,7 @@
     try {
       var d = await api('getMe');
       state.me = d.perfil;
+      state.notifUnread = d.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       updateShell();
       if ($('#appScreen').classList.contains('hidden')) {
