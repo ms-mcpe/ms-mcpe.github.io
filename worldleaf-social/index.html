@@ -251,18 +251,23 @@
     border-bottom: 1px solid var(--line);
   }
   .brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     font-weight: 800;
     font-size: 20px;
     letter-spacing: -.4px;
     display: flex;
     align-items: center;
     gap: 8px;
+    max-width: calc(100% - 150px);
     background: none;
     border: none;
     color: var(--text);
+    white-space: nowrap;
   }
   .brand .logo { color: var(--brand); }
-  .nav { display: flex; gap: 4px; margin-left: 8px; }
+  .nav { display: none; }
   .nav button {
     border: none;
     background: transparent;
@@ -858,8 +863,8 @@
     .left { display: none; }
     .nav { display: none; }
     .topbar { gap: 10px; }
+    .brand { gap: 6px; font-size: 17px; }
     .brand span.logo { font-size: 22px; }
-    .brand .brand-text { display: none; }
   }
 </style>
 </head>
