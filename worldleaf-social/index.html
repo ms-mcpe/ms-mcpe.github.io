@@ -1868,14 +1868,39 @@
 
       var roleAdminBox = '';
       if (state.me && roleKey(state.me.rol) === 'owner' &&
-          !perfil.esYo && roleKey(perfil.rol) !== 'owner') {
-        roleAdminBox = '<div class="role-admin-box">' +
-          '<span class="muted">Cambiar rol:</span>' +
-          '<select id="roleSelect">' +
-            '<option value="user"' + (roleKey(perfil.rol) === 'user' ? ' selected' : '') + '>Usuario</option>' +
-            '<option value="admin"' + (roleKey(perfil.rol) === 'admin' ? ' selected' : '') + '>Admin</option>' +
+          !perfil.esYo) {
+        var allowOwner = roleKey(perfil.rol) !== 'owner';
+        if (allowOwner) {
+          roleAdminBox = '<div class="role-admin-box">' +
+            '<span class="muted">Cambiar rol:</span>' +
+            '<select id="roleSelect">' +
+              '<option value="user"' + (roleKey(perfil.rol) === 'user' ? ' selected' : '') + '>Usuario</option>' +
+              '<option value="admin"' + (roleKey(perfil.rol) === 'admin' ? ' selected' : '') + '>Admin</option>' +
+              '<option value="owner"' + (roleKey(perfil.rol) === 'owner' ? ' selected' : '') + '>Owner</option>' +
+            '</select>' +
+            '<button class="btn small primary" id="saveRoleBtn" type="button">Aplicar</button>' +
+          '</div>';
+        }
+      }
+
+      var moderationBox = '';
+      if (state.me &&
+          roleKey(state.me.rol) !== 'user' &&
+          !perfil.esYo &&
+          roleKey(perfil.rol) !== 'owner') {
+        var suspended = String(perfil.estado || '').toLowerCase() !== 'activo';
+        moderationBox = '<div class="role-admin-box">' +
+          '<span class="muted">' + (suspended ? 'Cuenta suspendida' : 'Suspender cuenta') + ':</span>' +
+          '<select id="suspensionSelect">' +
+            '<option value="24h" selected>24h</option>' +
+            '<option value="48h">48h</option>' +
+            '<option value="7d">7d</option>' +
+            '<option value="permanente">Permanente</option>' +
           '</select>' +
-          '<button class="btn small primary" id="saveRoleBtn" type="button">Aplicar</button>' +
+          '<input id="suspensionReason" maxlength="120" value="" placeholder="Motivo de la suspensión" style="max-width:180px;">' +
+          '<button class="btn small ' + (suspended ? 'ghost' : 'danger') + '" id="' + (suspended ? 'reactivateUserBtn' : 'suspendUserBtn') + '" type="button">' +
+            (suspended ? 'Reactivar' : 'Suspender') +
+          '</button>' +
         '</div>';
       }
 
@@ -1894,6 +1919,7 @@
               '<span><strong>' + perfil.stats.siguiendo + '</strong> siguiendo</span>' +
             '</div>' +
             roleAdminBox +
+            moderationBox +
           '</div>' +
         '</div>' +
         '<div id="profilePosts" class="feed-list">' +
@@ -1919,6 +1945,45 @@
             toast(err.message || 'No se pudo cambiar el rol', 'err');
           } finally {
             setBusy(saveRoleBtn, false);
+          }
+        });
+      }
+
+      var suspendUserBtn = $('#suspendUserBtn');
+      if (suspendUserBtn) {
+        suspendUserBtn.addEventListener('click', async function () {
+          var select = $('#suspensionSelect');
+          var reason = $('#suspensionReason');
+          if (!select || !reason) return;
+          setBusy(suspendUserBtn, true, 'Suspendiendo...');
+          try {
+            await api('suspenderUsuario', {
+              userId: perfil.userId,
+              razon: reason.value || 'Sin razón',
+              duracion: select.value
+            });
+            toast('Cuenta suspendida', 'ok');
+            await renderProfile(perfil.userId);
+          } catch (err) {
+            toast(err.message || 'No se pudo suspender la cuenta', 'err');
+          } finally {
+            setBusy(suspendUserBtn, false);
+          }
+        });
+      }
+
+      var reactivateUserBtn = $('#reactivateUserBtn');
+      if (reactivateUserBtn) {
+        reactivateUserBtn.addEventListener('click', async function () {
+          setBusy(reactivateUserBtn, true, 'Reactivando...');
+          try {
+            await api('reactivarUsuario', { userId: perfil.userId });
+            toast('Cuenta reactivada', 'ok');
+            await renderProfile(perfil.userId);
+          } catch (err) {
+            toast(err.message || 'No se pudo reactivar la cuenta', 'err');
+          } finally {
+            setBusy(reactivateUserBtn, false);
           }
         });
       }
@@ -2269,3 +2334,4 @@
 </script>
 </body>
 </html>
+
