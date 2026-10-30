@@ -24,6 +24,8 @@
     --danger: #f87171;
     --warn: #fbbf24;
     --radius: 18px;
+    --ui-scale: 1;
+    --content-width: 1280px;
     --shadow: 0 18px 45px rgba(20, 45, 33, .16);
   }
 
@@ -45,6 +47,24 @@
     --shadow: 0 18px 45px rgba(0, 0, 0, .45);
   }
 
+  :root[data-theme="ultra-dark"] {
+    color-scheme: dark;
+    --bg: #020304;
+    --bg-rgb: 2, 3, 4;
+    --bg-soft: #080a0c;
+    --panel: #080a0c;
+    --panel-2: #111518;
+    --line: #22292d;
+    --text: #f0f3f4;
+    --muted: #a0aaae;
+    --brand: #34d399;
+    --brand-2: #10b981;
+    --brand-rgb: 52, 211, 153;
+    --brand-dark: #065f46;
+    --scrollbar-thumb: #313a3f;
+    --shadow: 0 18px 45px rgba(0, 0, 0, .68);
+  }
+
   * { box-sizing: border-box; }
 
   html, body {
@@ -59,7 +79,7 @@
     color: var(--text);
   }
 
-  body { line-height: 1.5; }
+  body { line-height: 1.5; font-size: calc(16px * var(--ui-scale)); }
 
   button, input, textarea, select { font: inherit; color: inherit; }
   button { cursor: pointer; }
@@ -439,7 +459,7 @@
     display: grid;
     grid-template-columns: 280px minmax(0, 680px) 1fr;
     gap: 22px;
-    max-width: 1280px;
+    max-width: var(--content-width);
     margin: 0 auto;
     padding: 26px clamp(14px, 4vw, 40px) 100px;
     align-items: start;
@@ -613,6 +633,20 @@
   .settings-card > p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
   .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
   .settings-row + .settings-row { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .settings-color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .settings-color-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+  }
+  .settings-color-option > span { display: flex; flex-direction: column; gap: 2px; }
+  .settings-color-option strong { font-size: 13px; }
+  .settings-color-option small { color: var(--muted); }
   .settings-row-label { display: flex; flex-direction: column; gap: 2px; }
   .settings-row-label strong { font-size: 14px; }
   .settings-row-label span { color: var(--muted); font-size: 13px; }
@@ -637,6 +671,20 @@
   .settings-about strong { display: block; font-size: 16px; }
   .settings-about span { color: var(--muted); font-size: 13px; }
   .settings-about .version { color: var(--brand); font-weight: 700; }
+
+  :root[data-size="low"] .card { box-shadow: none; }
+  :root[data-size="high"] .card { box-shadow: var(--shadow); }
+  :root[data-size="low"] .settings-card,
+  :root[data-size="low"] .post,
+  :root[data-size="low"] .composer { padding: 14px; }
+  :root[data-size="high"] .settings-card,
+  :root[data-size="high"] .post,
+  :root[data-size="high"] .composer { padding: 24px; }
+  :root[data-size="low"] .layout { gap: 16px; }
+  :root[data-size="high"] .layout { gap: 28px; }
+  :root[data-radius="small"] { --radius: 10px; }
+  :root[data-radius="medium"] { --radius: 18px; }
+  :root[data-radius="large"] { --radius: 28px; }
 
   /* ─── Buscar ────────────────────────────────────────────────────── */
   .search-box { display: flex; gap: 10px; padding: 14px; margin-bottom: 18px; }
@@ -794,6 +842,12 @@
   .bottom-nav button:hover { background: var(--panel-2); color: var(--text); }
   .bottom-nav button.active { background: rgba(var(--brand-rgb), .13); color: var(--brand); }
   .bottom-nav .bottom-icon { font-size: 18px; line-height: 1; }
+
+  @media (max-width: 600px) {
+    .settings-row { align-items: flex-start; }
+    .settings-select { min-width: 118px; }
+    .settings-color-grid { grid-template-columns: 1fr; }
+  }
 
   @media (max-width: 1080px) {
     .layout { grid-template-columns: 240px minmax(0, 1fr); }
@@ -977,6 +1031,20 @@
   var CACHE_FEED_KEY = 'wl_feed_cache';
   var CACHE_NOTIF_KEY = 'wl_notif_cache';
   var THEME_STORAGE_KEY = 'wl_theme_preferences';
+  var THEME_PALETTES = {
+    light: { bg: '#f3f7f5', surface: '#ffffff', border: '#dce7e1' },
+    dark: { bg: '#070d18', surface: '#101b2e', border: '#1e2d47' },
+    'ultra-dark': { bg: '#020304', surface: '#080a0c', border: '#22292d' }
+  };
+  var THEME_DEFAULTS = {
+    mode: 'light',
+    accent: '#087a55',
+    background: '',
+    surface: '',
+    border: '',
+    size: 'medium',
+    radius: 'medium'
+  };
   var CACHE_FEED_TTL = 10 * 60 * 1000;
   var CACHE_NOTIF_TTL = 10 * 60 * 1000;
   var notifCacheInicial = readCache(CACHE_NOTIF_KEY, null);
@@ -1005,11 +1073,16 @@
     try {
       var saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || '{}');
       return {
-        mode: saved.mode === 'dark' ? 'dark' : 'light',
-        accent: isValidHexColor(saved.accent) ? saved.accent : '#087a55'
+        mode: Object.prototype.hasOwnProperty.call(THEME_PALETTES, saved.mode) ? saved.mode : THEME_DEFAULTS.mode,
+        accent: isValidHexColor(saved.accent) ? saved.accent : THEME_DEFAULTS.accent,
+        background: isValidHexColor(saved.background) ? saved.background : '',
+        surface: isValidHexColor(saved.surface) ? saved.surface : '',
+        border: isValidHexColor(saved.border) ? saved.border : '',
+        size: ['low', 'medium', 'high'].indexOf(saved.size) >= 0 ? saved.size : THEME_DEFAULTS.size,
+        radius: ['small', 'medium', 'large'].indexOf(saved.radius) >= 0 ? saved.radius : THEME_DEFAULTS.radius
       };
     } catch (e) {
-      return { mode: 'light', accent: '#087a55' };
+      return Object.assign({}, THEME_DEFAULTS);
     }
   }
 
@@ -1034,15 +1107,40 @@
 
   function applyThemePreferences() {
     var root = document.documentElement;
-    var accent = isValidHexColor(themePrefs.accent) ? themePrefs.accent : '#087a55';
-    var rgb = hexToRgb(accent);
-    var luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
-    root.dataset.theme = themePrefs.mode === 'dark' ? 'dark' : 'light';
+    var mode = Object.prototype.hasOwnProperty.call(THEME_PALETTES, themePrefs.mode) ? themePrefs.mode : 'light';
+    var palette = THEME_PALETTES[mode];
+    var accent = isValidHexColor(themePrefs.accent) ? themePrefs.accent : THEME_DEFAULTS.accent;
+    var background = isValidHexColor(themePrefs.background) ? themePrefs.background : palette.bg;
+    var surface = isValidHexColor(themePrefs.surface) ? themePrefs.surface : palette.surface;
+    var border = isValidHexColor(themePrefs.border) ? themePrefs.border : palette.border;
+    var backgroundRgb = hexToRgb(background);
+    var surfaceRgb = hexToRgb(surface);
+    var accentRgb = hexToRgb(accent);
+    var brightness = (
+      0.2126 * (backgroundRgb.r + surfaceRgb.r) / 2 +
+      0.7152 * (backgroundRgb.g + surfaceRgb.g) / 2 +
+      0.0722 * (backgroundRgb.b + surfaceRgb.b) / 2
+    ) / 255;
+    var lightSurface = brightness > 0.52;
+    root.dataset.theme = mode;
+    root.dataset.size = ['low', 'medium', 'high'].indexOf(themePrefs.size) >= 0 ? themePrefs.size : 'medium';
+    root.dataset.radius = ['small', 'medium', 'large'].indexOf(themePrefs.radius) >= 0 ? themePrefs.radius : 'medium';
+    root.style.setProperty('--bg', background);
+    root.style.setProperty('--bg-rgb', backgroundRgb.r + ', ' + backgroundRgb.g + ', ' + backgroundRgb.b);
+    root.style.setProperty('--bg-soft', surface);
+    root.style.setProperty('--panel', surface);
+    root.style.setProperty('--panel-2', blendHexColor(surface, accent, 0.08));
+    root.style.setProperty('--line', border);
+    root.style.setProperty('--text', lightSurface ? '#1d3027' : '#e8eefb');
+    root.style.setProperty('--muted', lightSurface ? '#65796f' : '#a0adba');
     root.style.setProperty('--brand', accent);
     root.style.setProperty('--brand-2', blendHexColor(accent, '#000000', 0.16));
     root.style.setProperty('--brand-dark', blendHexColor(accent, '#000000', 0.55));
-    root.style.setProperty('--brand-rgb', rgb.r + ', ' + rgb.g + ', ' + rgb.b);
-    root.style.setProperty('--brand-on', luminance > 0.58 ? '#06211a' : '#ffffff');
+    root.style.setProperty('--brand-rgb', accentRgb.r + ', ' + accentRgb.g + ', ' + accentRgb.b);
+    root.style.setProperty('--brand-on', (0.2126 * accentRgb.r + 0.7152 * accentRgb.g + 0.0722 * accentRgb.b) / 255 > 0.58 ? '#06211a' : '#ffffff');
+    root.style.setProperty('--ui-scale', themePrefs.size === 'low' ? '0.92' : (themePrefs.size === 'high' ? '1.08' : '1'));
+    root.style.setProperty('--content-width', themePrefs.size === 'low' ? '1120px' : (themePrefs.size === 'high' ? '1440px' : '1280px'));
+    root.style.setProperty('--scrollbar-thumb', blendHexColor(border, lightSurface ? '#000000' : '#ffffff', 0.12));
   }
 
   function persistThemePreferences() {
@@ -2325,20 +2423,35 @@
   }
 
   function updateThemePreference(key, value) {
-    if (key === 'mode') {
-      themePrefs.mode = value === 'dark' ? 'dark' : 'light';
+    if (key === 'mode' && Object.prototype.hasOwnProperty.call(THEME_PALETTES, value)) {
+      themePrefs.mode = value;
     } else if (key === 'accent' && isValidHexColor(value)) {
       themePrefs.accent = value;
+    } else if (['background', 'surface', 'border'].indexOf(key) >= 0 && isValidHexColor(value)) {
+      themePrefs[key] = value;
+    } else if (key === 'size' && ['low', 'medium', 'high'].indexOf(value) >= 0) {
+      themePrefs.size = value;
+    } else if (key === 'radius' && ['small', 'medium', 'large'].indexOf(value) >= 0) {
+      themePrefs.radius = value;
     } else {
       return;
     }
     applyThemePreferences();
-    var picker = $('#accentColor');
+    syncSettingsControls();
+  }
+
+  function syncSettingsControls() {
     var modeSelect = $('#themeMode');
-    if (picker) picker.value = themePrefs.accent;
-    if (modeSelect) modeSelect.value = themePrefs.mode;
-    var valueLabel = $('#accentColorValue');
-    if (valueLabel) valueLabel.textContent = themePrefs.accent.toUpperCase();
+    if (!modeSelect) return;
+    var palette = THEME_PALETTES[themePrefs.mode] || THEME_PALETTES.light;
+    modeSelect.value = themePrefs.mode;
+    $('#accentColor').value = themePrefs.accent;
+    $('#accentColorValue').textContent = themePrefs.accent.toUpperCase();
+    $('#backgroundColor').value = themePrefs.background || palette.bg;
+    $('#surfaceColor').value = themePrefs.surface || palette.surface;
+    $('#borderColor').value = themePrefs.border || palette.border;
+    $('#sizeSelect').value = themePrefs.size;
+    $('#radiusSelect').value = themePrefs.radius;
   }
 
   function renderSettings() {
@@ -2351,9 +2464,10 @@
           '<p>Elige cómo quieres ver la aplicación.</p>' +
           '<label class="settings-row" for="themeMode">' +
             '<span class="settings-row-label"><strong>Modo de color</strong>' +
-              '<span>Claro u oscuro</span></span>' +
+              '<span>Claro, oscuro o ultra oscuro</span></span>' +
             '<select id="themeMode" class="settings-select">' +
               '<option value="light">Claro</option><option value="dark">Oscuro</option>' +
+              '<option value="ultra-dark">Ultra oscuro</option>' +
             '</select>' +
           '</label>' +
           '<label class="settings-row" for="accentColor">' +
@@ -2361,9 +2475,45 @@
               '<span>Elige cualquier color <span id="accentColorValue"></span></span></span>' +
             '<input id="accentColor" class="settings-color" type="color" aria-label="Elegir color principal">' +
           '</label>' +
+          '<div class="settings-row-label" style="margin:22px 0 10px">' +
+            '<strong>Colores de la interfaz</strong>' +
+            '<span>Personaliza el fondo, las tarjetas y sus bordes.</span>' +
+          '</div>' +
+          '<div class="settings-color-grid">' +
+            '<label class="settings-color-option" for="backgroundColor">' +
+              '<span><strong>Fondo de página</strong><small>Zona detrás del contenido</small></span>' +
+              '<input id="backgroundColor" class="settings-color" type="color" aria-label="Color de fondo">' +
+            '</label>' +
+            '<label class="settings-color-option" for="surfaceColor">' +
+              '<span><strong>Tarjetas y paneles</strong><small>Superficie del contenido</small></span>' +
+              '<input id="surfaceColor" class="settings-color" type="color" aria-label="Color de tarjetas y paneles">' +
+            '</label>' +
+            '<label class="settings-color-option" for="borderColor">' +
+              '<span><strong>Bordes</strong><small>Separadores y contornos</small></span>' +
+              '<input id="borderColor" class="settings-color" type="color" aria-label="Color de bordes">' +
+            '</label>' +
+          '</div>' +
+          '<label class="settings-row" for="sizeSelect">' +
+            '<span class="settings-row-label"><strong>Tamaño de la interfaz</strong>' +
+              '<span>Adapta el ancho y la escala general</span></span>' +
+            '<select id="sizeSelect" class="settings-select">' +
+              '<option value="low">Bajo / compacto</option>' +
+              '<option value="medium">Medio / normal</option>' +
+              '<option value="high">Alto / amplio</option>' +
+            '</select>' +
+          '</label>' +
+          '<label class="settings-row" for="radiusSelect">' +
+            '<span class="settings-row-label"><strong>Esquinas y bordes</strong>' +
+              '<span>Elige el redondeo de tarjetas y controles</span></span>' +
+            '<select id="radiusSelect" class="settings-select">' +
+              '<option value="small">Poco redondeado</option>' +
+              '<option value="medium">Medio</option>' +
+              '<option value="large">Muy redondeado</option>' +
+            '</select>' +
+          '</label>' +
           '<div class="settings-row">' +
             '<span class="settings-row-label"><strong>Restablecer apariencia</strong>' +
-              '<span>Volver al tema claro y al color original</span></span>' +
+              '<span>Volver a los valores predeterminados</span></span>' +
             '<button id="resetThemeBtn" class="btn ghost small" type="button">Restablecer</button>' +
           '</div>' +
         '</section>' +
@@ -2381,19 +2531,18 @@
         '</section>' +
       '</div>';
 
-    $('#themeMode').value = themePrefs.mode;
-    $('#accentColor').value = themePrefs.accent;
-    $('#accentColorValue').textContent = themePrefs.accent.toUpperCase();
-    $('#themeMode').addEventListener('change', function (event) {
-      updateThemePreference('mode', event.target.value);
-      persistThemePreferences();
+    syncSettingsControls();
+    [['themeMode', 'mode'], ['accentColor', 'accent'], ['backgroundColor', 'background'],
+      ['surfaceColor', 'surface'], ['borderColor', 'border'], ['sizeSelect', 'size'],
+      ['radiusSelect', 'radius']].forEach(function (binding) {
+      var input = $('#' + binding[0]);
+      input.addEventListener(input.type === 'color' ? 'input' : 'change', function (event) {
+        updateThemePreference(binding[1], event.target.value);
+        if (input.type !== 'color' || event.type === 'change') persistThemePreferences();
+      });
     });
-    $('#accentColor').addEventListener('input', function (event) {
-      updateThemePreference('accent', event.target.value);
-    });
-    $('#accentColor').addEventListener('change', persistThemePreferences);
     $('#resetThemeBtn').addEventListener('click', function () {
-      themePrefs = { mode: 'light', accent: '#087a55' };
+      themePrefs = Object.assign({}, THEME_DEFAULTS);
       applyThemePreferences();
       persistThemePreferences();
       renderSettings();
