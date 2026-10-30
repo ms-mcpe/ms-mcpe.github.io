@@ -6,7 +6,31 @@
 <title>WorldLeaf · Red Social</title>
 <style>
   :root {
+    color-scheme: light;
+    --bg: #f3f7f5;
+    --bg-rgb: 243, 247, 245;
+    --bg-soft: #ffffff;
+    --panel: #ffffff;
+    --panel-2: #edf4f0;
+    --line: #dce7e1;
+    --text: #1d3027;
+    --muted: #65796f;
+    --brand: #087a55;
+    --brand-2: #076548;
+    --brand-rgb: 8, 122, 85;
+    --brand-on: #ffffff;
+    --brand-dark: #043725;
+    --scrollbar-thumb: #cbd7d1;
+    --danger: #f87171;
+    --warn: #fbbf24;
+    --radius: 18px;
+    --shadow: 0 18px 45px rgba(20, 45, 33, .16);
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
     --bg: #070d18;
+    --bg-rgb: 7, 13, 24;
     --bg-soft: #0b1424;
     --panel: #101b2e;
     --panel-2: #142238;
@@ -15,10 +39,9 @@
     --muted: #93a4bd;
     --brand: #34d399;
     --brand-2: #10b981;
+    --brand-rgb: 52, 211, 153;
     --brand-dark: #065f46;
-    --danger: #f87171;
-    --warn: #fbbf24;
-    --radius: 18px;
+    --scrollbar-thumb: #24354f;
     --shadow: 0 18px 45px rgba(0, 0, 0, .45);
   }
 
@@ -30,7 +53,7 @@
     min-height: 100%;
     font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
     background:
-      radial-gradient(900px 500px at 12% -10%, rgba(52, 211, 153, .16), transparent 60%),
+      radial-gradient(900px 500px at 12% -10%, rgba(var(--brand-rgb), .12), transparent 60%),
       radial-gradient(800px 500px at 100% 0%, rgba(59, 130, 246, .12), transparent 55%),
       var(--bg);
     color: var(--text);
@@ -43,7 +66,7 @@
   a { color: var(--brand); }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-thumb { background: #24354f; border-radius: 20px; }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 20px; }
   ::-webkit-scrollbar-track { background: transparent; }
 
   .hidden { display: none !important; }
@@ -62,7 +85,7 @@
     border-radius: 50%;
     object-fit: cover;
     background: var(--panel-2);
-    border: 2px solid rgba(52, 211, 153, .25);
+    border: 2px solid rgba(var(--brand-rgb), .25);
     flex: 0 0 auto;
   }
   .avatar.sm { width: 34px; height: 34px; }
@@ -81,7 +104,7 @@
   }
   .btn:active { transform: scale(.97); }
   .btn:disabled { opacity: .55; cursor: not-allowed; }
-  .btn.primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #04211a; }
+  .btn.primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: var(--brand-on); }
   .btn.primary:hover { filter: brightness(1.06); }
   .btn.ghost { background: transparent; border-color: var(--line); }
   .btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
@@ -104,7 +127,7 @@
   }
   .field input:focus, .field textarea:focus, .search-box input:focus, .composer textarea:focus {
     border-color: var(--brand);
-    box-shadow: 0 0 0 3px rgba(52, 211, 153, .14);
+    box-shadow: 0 0 0 3px rgba(var(--brand-rgb), .14);
   }
   textarea { resize: vertical; }
 
@@ -120,10 +143,10 @@
   .link:hover { text-decoration: underline; }
 
   .card {
-    background: linear-gradient(180deg, rgba(20, 34, 56, .95), rgba(16, 27, 46, .95));
+    background: linear-gradient(180deg, var(--panel), var(--bg-soft));
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+    box-shadow: var(--shadow);
   }
 
   /* ─── Autenticación ─────────────────────────────────────────────── */
@@ -153,7 +176,7 @@
     z-index: 1;
     width: 100%;
     max-width: 440px;
-    background: rgba(11, 20, 36, .88);
+    background: rgba(var(--bg-rgb), .9);
     backdrop-filter: blur(18px);
     border: 1px solid var(--line);
     border-radius: 26px;
@@ -203,7 +226,7 @@
     align-items: center;
     gap: 18px;
     padding: 12px clamp(14px, 4vw, 40px);
-    background: rgba(7, 13, 24, .82);
+    background: rgba(var(--bg-rgb), .9);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--line);
   }
@@ -230,7 +253,7 @@
     transition: background .15s, color .15s;
   }
   .nav button:hover { background: var(--panel); color: var(--text); }
-  .nav button.active { background: rgba(52, 211, 153, .14); color: var(--brand); }
+  .nav button.active { background: rgba(var(--brand-rgb), .14); color: var(--brand); }
   .top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .avatar-btn { background: none; border: none; padding: 0; border-radius: 50%; }
   .menu-btn, .bell-btn {
@@ -248,7 +271,7 @@
     line-height: 1;
     transition: background .15s, border-color .15s;
   }
-  .menu-btn:hover, .bell-btn:hover { background: var(--panel-2); border-color: rgba(52, 211, 153, .35); }
+  .menu-btn:hover, .bell-btn:hover { background: var(--panel-2); border-color: rgba(var(--brand-rgb), .35); }
   .badge-count {
     position: absolute;
     top: -4px;
@@ -360,7 +383,7 @@
     text-align: left;
   }
   .side-nav button:hover { background: var(--panel); color: var(--text); }
-  .side-nav button.active { background: rgba(52, 211, 153, .14); color: var(--brand); }
+  .side-nav button.active { background: rgba(var(--brand-rgb), .14); color: var(--brand); }
   .side-nav button.danger { color: var(--danger); }
   .side-nav button.danger:hover { background: rgba(248, 113, 113, .1); }
   .side-title {
@@ -403,8 +426,8 @@
     color: inherit;
     text-align: left;
   }
-  .notif-item:hover { border-color: rgba(52, 211, 153, .35); background: var(--panel-2); }
-  .notif-item.unread { border-color: rgba(52, 211, 153, .45); background: rgba(52, 211, 153, .06); }
+  .notif-item:hover { border-color: rgba(var(--brand-rgb), .35); background: var(--panel-2); }
+  .notif-item.unread { border-color: rgba(var(--brand-rgb), .45); background: rgba(var(--brand-rgb), .06); }
   .notif-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
   .notif-text { font-size: 14px; line-height: 1.4; }
   .notif-text strong { font-weight: 700; }
@@ -418,7 +441,7 @@
     gap: 22px;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 26px clamp(14px, 4vw, 40px) 80px;
+    padding: 26px clamp(14px, 4vw, 40px) 100px;
     align-items: start;
   }
   .left { position: sticky; top: 86px; display: flex; flex-direction: column; gap: 16px; }
@@ -439,7 +462,7 @@
   .aside-title { font-size: 13px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin: 0 0 12px; font-weight: 700; }
 
   .user-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
-  .user-row + .user-row { border-top: 1px solid rgba(30, 45, 71, .55); }
+  .user-row + .user-row { border-top: 1px solid var(--line); }
   .user-link {
     display: flex;
     align-items: center;
@@ -483,13 +506,13 @@
     gap: 6px;
     padding: 8px 14px;
     border-radius: 999px;
-    background: rgba(52, 211, 153, .1);
+    background: rgba(var(--brand-rgb), .1);
     color: var(--brand);
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
   }
-  .file-btn:hover { background: rgba(52, 211, 153, .18); }
+  .file-btn:hover { background: rgba(var(--brand-rgb), .18); }
   .composer-bottom select {
     background: var(--bg-soft);
     border: 1px solid var(--line);
@@ -582,6 +605,39 @@
   .stats { display: flex; gap: 20px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
   .stats strong { color: var(--text); }
 
+  .settings-page { display: flex; flex-direction: column; gap: 18px; }
+  .settings-heading h1 { margin: 0; font-size: 26px; }
+  .settings-heading p { margin: 4px 0 0; color: var(--muted); }
+  .settings-card { padding: 20px; }
+  .settings-card h2 { margin: 0 0 4px; font-size: 18px; }
+  .settings-card > p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+  .settings-row + .settings-row { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .settings-row-label { display: flex; flex-direction: column; gap: 2px; }
+  .settings-row-label strong { font-size: 14px; }
+  .settings-row-label span { color: var(--muted); font-size: 13px; }
+  .settings-select {
+    min-width: 140px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg-soft);
+    color: var(--text);
+  }
+  .settings-color {
+    width: 48px;
+    height: 38px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg-soft);
+    cursor: pointer;
+  }
+  .settings-about { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .settings-about strong { display: block; font-size: 16px; }
+  .settings-about span { color: var(--muted); font-size: 13px; }
+  .settings-about .version { color: var(--brand); font-weight: 700; }
+
   /* ─── Buscar ────────────────────────────────────────────────────── */
   .search-box { display: flex; gap: 10px; padding: 14px; margin-bottom: 18px; }
   .search-box input { flex: 1; }
@@ -639,12 +695,12 @@
     z-index: 200;
     display: grid;
     place-items: center;
-    background: radial-gradient(circle at top, rgba(15, 118, 110, .22), rgba(7, 13, 24, .95) 50%);
+    background: radial-gradient(circle at top, rgba(15, 118, 110, .22), rgba(var(--bg-rgb), .97) 50%);
     padding: 24px;
   }
   .blocked-panel {
     width: min(560px, 92vw);
-    background: rgba(11, 20, 36, .96);
+    background: var(--bg-soft);
     border: 1px solid rgba(248, 113, 113, .4);
     border-radius: 24px;
     box-shadow: var(--shadow);
@@ -685,7 +741,7 @@
   .toast {
     position: fixed;
     left: 50%;
-    bottom: 26px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
     transform: translate(-50%, 20px);
     z-index: 120;
     background: var(--panel-2);
@@ -706,9 +762,38 @@
   .toast.warn { border-left-color: var(--warn); }
 
   .empty { text-align: center; color: var(--muted); padding: 40px 20px; }
-  .spinner { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,.18); border-top-color: var(--brand); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto; }
+  .spinner { width: 22px; height: 22px; border: 3px solid rgba(var(--brand-rgb), .18); border-top-color: var(--brand); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .center-load { padding: 60px 0; }
+
+  .bottom-nav {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 45;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    background: rgba(var(--bg-rgb), .94);
+    border-top: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+  }
+  .bottom-nav button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: min(220px, 42vw);
+    min-height: 44px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .bottom-nav button:hover { background: var(--panel-2); color: var(--text); }
+  .bottom-nav button.active { background: rgba(var(--brand-rgb), .13); color: var(--brand); }
+  .bottom-nav .bottom-icon { font-size: 18px; line-height: 1; }
 
   @media (max-width: 1080px) {
     .layout { grid-template-columns: 240px minmax(0, 1fr); }
@@ -792,24 +877,19 @@
   <div id="sideOverlay" class="side-overlay hidden"></div>
   <aside id="sideDrawer" class="side-drawer" aria-hidden="true">
     <div class="side-head">
-      <button class="side-user" id="sideProfileBtn" type="button" title="Mi perfil">
+      <div class="side-user">
         <img id="sideAvatar" class="avatar md" alt="">
         <span class="who">
           <span class="name-row"><strong id="sideName"></strong><span id="sideRole"></span></span>
           <span class="handle" id="sideHandle"></span>
         </span>
-      </button>
+      </div>
       <button class="icon-btn" id="sideCloseBtn" type="button" title="Cerrar menú">✕</button>
     </div>
     <nav class="side-nav">
       <p class="side-title">Navegación</p>
-      <button type="button" data-side-view="feed">🏠 Inicio</button>
-      <button type="button" data-side-view="explore">🧭 Explorar</button>
       <button type="button" data-side-view="search">🔎 Buscar</button>
-      <button type="button" data-side-view="notifications">🔔 Notificaciones <span id="sideNotifCount" class="side-pill hidden">0</span></button>
-      <button type="button" data-side-view="profile">👤 Mi perfil</button>
       <p class="side-title">Cuenta</p>
-      <button type="button" id="sideEditBtn">✏️ Editar perfil</button>
       <button type="button" id="sideLogoutBtn" class="danger">🚪 Cerrar sesión</button>
     </nav>
   </aside>
@@ -818,8 +898,6 @@
     <button class="menu-btn" id="menuBtn" type="button" title="Abrir menú" aria-label="Abrir menú">☰</button>
     <button class="brand" id="homeBtn" type="button"><span class="logo">🌿</span><span class="brand-text">WorldLeaf</span></button>
     <nav class="nav">
-      <button type="button" data-view="feed">Inicio</button>
-      <button type="button" data-view="explore">Explorar</button>
       <button type="button" data-view="search">Buscar</button>
     </nav>
     <div class="top-actions">
@@ -839,6 +917,10 @@
     <section class="center" id="view"></section>
     <aside class="right"></aside>
   </main>
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <button type="button" data-app-view="feed"><span class="bottom-icon" aria-hidden="true">🏠</span>Inicio</button>
+    <button type="button" data-app-view="settings"><span class="bottom-icon" aria-hidden="true">⚙️</span>Configuración</button>
+  </nav>
 </div>
 
 <!-- ══════════════ MODAL EDITAR PERFIL ══════════════ -->
@@ -894,9 +976,11 @@
   var CACHE_PROFILE_KEY = 'wl_profile';
   var CACHE_FEED_KEY = 'wl_feed_cache';
   var CACHE_NOTIF_KEY = 'wl_notif_cache';
+  var THEME_STORAGE_KEY = 'wl_theme_preferences';
   var CACHE_FEED_TTL = 10 * 60 * 1000;
   var CACHE_NOTIF_TTL = 10 * 60 * 1000;
   var notifCacheInicial = readCache(CACHE_NOTIF_KEY, null);
+  var themePrefs = loadThemePreferences();
 
   var state = {
     token: localStorage.getItem('wl_token') || '',
@@ -907,12 +991,71 @@
     profileUserId: '',
     routeLock: false,
     feed: { offset: 0, hasMore: true, loading: false },
-    explore: { offset: 0, hasMore: true, loading: false },
     pendingImage: null,
     recoveryEmail: '',
     resetToken: '',
     edit: { avatar: null, cover: null }
   };
+
+  function isValidHexColor(value) {
+    return /^#[0-9a-f]{6}$/i.test(String(value || ''));
+  }
+
+  function loadThemePreferences() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || '{}');
+      return {
+        mode: saved.mode === 'dark' ? 'dark' : 'light',
+        accent: isValidHexColor(saved.accent) ? saved.accent : '#087a55'
+      };
+    } catch (e) {
+      return { mode: 'light', accent: '#087a55' };
+    }
+  }
+
+  function hexToRgb(hex) {
+    var value = String(hex).replace('#', '');
+    return {
+      r: parseInt(value.slice(0, 2), 16),
+      g: parseInt(value.slice(2, 4), 16),
+      b: parseInt(value.slice(4, 6), 16)
+    };
+  }
+
+  function blendHexColor(color, target, amount) {
+    var sourceRgb = hexToRgb(color);
+    var targetRgb = hexToRgb(target);
+    var channels = ['r', 'g', 'b'].map(function (channel) {
+      return Math.round(sourceRgb[channel] * (1 - amount) + targetRgb[channel] * amount)
+        .toString(16).padStart(2, '0');
+    });
+    return '#' + channels.join('');
+  }
+
+  function applyThemePreferences() {
+    var root = document.documentElement;
+    var accent = isValidHexColor(themePrefs.accent) ? themePrefs.accent : '#087a55';
+    var rgb = hexToRgb(accent);
+    var luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
+    root.dataset.theme = themePrefs.mode === 'dark' ? 'dark' : 'light';
+    root.style.setProperty('--brand', accent);
+    root.style.setProperty('--brand-2', blendHexColor(accent, '#000000', 0.16));
+    root.style.setProperty('--brand-dark', blendHexColor(accent, '#000000', 0.55));
+    root.style.setProperty('--brand-rgb', rgb.r + ', ' + rgb.g + ', ' + rgb.b);
+    root.style.setProperty('--brand-on', luminance > 0.58 ? '#06211a' : '#ffffff');
+  }
+
+  function persistThemePreferences() {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(themePrefs));
+      return true;
+    } catch (err) {
+      toast('No se pudo guardar la apariencia en este dispositivo.', 'warn');
+      return false;
+    }
+  }
+
+  applyThemePreferences();
 
   function loadFeedCache() {
     var c = readCache(CACHE_FEED_KEY, null);
@@ -992,8 +1135,8 @@
   var PLACEHOLDER_AVATAR = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">' +
     '<rect width="120" height="120" rx="60" fill="#1e293b"/>' +
-    '<circle cx="60" cy="46" r="20" fill="#34d399"/>' +
-    '<path d="M24 106c0-21 16-32 36-32s36 11 36 32" fill="#34d399"/></svg>'
+    '<circle cx="60" cy="46" r="20" fill="' + themePrefs.accent + '"/>' +
+    '<path d="M24 106c0-21 16-32 36-32s36 11 36 32" fill="' + themePrefs.accent + '"/></svg>'
   );
 
   function $(sel) { return document.querySelector(sel); }
@@ -1064,9 +1207,10 @@
     }
     var userId = params.userId || '';
     if (path === 'feed' || path === '') return { view: 'feed', userId: '' };
-    if (path === 'explore') return { view: 'explore', userId: '' };
+    if (path === 'explore') return { view: 'feed', userId: '' };
     if (path === 'search') return { view: 'search', userId: '' };
     if (path === 'notifications') return { view: 'notifications', userId: '' };
+    if (path === 'settings') return { view: 'settings', userId: '' };
     if (path === 'profile' || path.indexOf('profile/') === 0) {
       if (userId) return { view: 'profile', userId: userId };
       var id = path.indexOf('profile/') === 0 ? path.slice('profile/'.length) : '';
@@ -1081,9 +1225,9 @@
       var userId = opts.userId ? String(opts.userId) : (state.me ? state.me.userId : '');
       return userId ? 'profile?userId=' + encodeURIComponent(userId) : 'profile';
     }
-    if (view === 'explore') return 'explore';
     if (view === 'search') return 'search';
     if (view === 'notifications') return 'notifications';
+    if (view === 'settings') return 'settings';
     return 'feed';
   }
 
@@ -1110,7 +1254,7 @@
   function updateNotifBadges() {
     var n = parseInt(state.notifUnread, 10) || 0;
     var text = n > 9 ? '9+' : String(n);
-    ['#notifBadge', '#sideNotifCount'].forEach(function (sel) {
+    ['#notifBadge'].forEach(function (sel) {
       var el = $(sel);
       if (!el) return;
       el.textContent = text;
@@ -1670,14 +1814,6 @@
     $('#myProfileBtn').addEventListener('click', function () {
       if (state.me) navigate('profile', { userId: state.me.userId });
     });
-    $('#sideProfileBtn').addEventListener('click', function () {
-      closeDrawer();
-      if (state.me) navigate('profile', { userId: state.me.userId });
-    });
-    $('#sideEditBtn').addEventListener('click', function () {
-      closeDrawer();
-      openEditModal();
-    });
     $('#sideLogoutBtn').addEventListener('click', async function () {
       closeDrawer();
       try { await api('logout'); } catch (e) {}
@@ -1687,12 +1823,13 @@
     $all('.nav [data-view]').forEach(function (btn) {
       btn.addEventListener('click', function () { navigate(btn.dataset.view); });
     });
+    $all('.bottom-nav [data-app-view]').forEach(function (btn) {
+      btn.addEventListener('click', function () { navigate(btn.dataset.appView); });
+    });
     $all('[data-side-view]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var view = btn.dataset.sideView;
         closeDrawer();
-        if (view === 'profile') navigate('profile', { userId: state.me.userId });
-        else navigate(view);
+        navigate(btn.dataset.sideView);
       });
     });
 
@@ -1716,6 +1853,9 @@
     $all('.nav [data-view]').forEach(function (b) {
       b.classList.toggle('active', b.dataset.view === view);
     });
+    $all('.bottom-nav [data-app-view]').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.appView === view);
+    });
     $all('[data-side-view]').forEach(function (b) {
       b.classList.toggle('active', b.dataset.sideView === view);
     });
@@ -1733,9 +1873,9 @@
     window.scrollTo(0, 0);
     if (!opts.skipHash) syncHash(view, { userId: userId || undefined });
     if (view === 'feed') return renderFeed();
-    if (view === 'explore') return renderExplore();
     if (view === 'search') return renderSearch();
     if (view === 'notifications') return renderNotifications();
+    if (view === 'settings') return renderSettings();
     if (view === 'profile') return renderProfile(userId || (state.me ? state.me.userId : ''));
   }
 
@@ -1881,7 +2021,7 @@
       state.feed.offset += d.posts.length;
       state.feed.hasMore = d.hasMore;
       if (initial) saveFeedCache(d.posts);
-      renderMore('feed');
+      renderMore();
     } catch (err) {
       if (initial && !hadCached) list.innerHTML = emptyState('No se pudo cargar el feed.');
       toast(err.message || 'Error al cargar el feed', 'err');
@@ -1890,39 +2030,11 @@
     }
   }
 
-  async function renderExplore() {
-    $('#view').innerHTML = '<div class="feed-list" id="exploreList"></div><div id="exploreMore" class="center-actions"></div>';
-    state.explore = { offset: 0, hasMore: true, loading: false };
-    await loadExplore(true);
-  }
-
-  async function loadExplore(initial) {
-    if (state.explore.loading || !state.explore.hasMore) return;
-    state.explore.loading = true;
-    var list = $('#exploreList');
-    if (initial) list.innerHTML = loadingBlock();
-    try {
-      var d = await api('explorar', { offset: state.explore.offset, limit: 10 });
-      if (initial) list.innerHTML = '';
-      if (!d.posts.length && initial) list.innerHTML = emptyState('Todavía no hay publicaciones públicas.');
-      list.insertAdjacentHTML('beforeend', d.posts.map(postHTML).join(''));
-      state.explore.offset += d.posts.length;
-      state.explore.hasMore = d.hasMore;
-      renderMore('explore');
-    } catch (err) {
-      if (initial) list.innerHTML = emptyState('No se pudo cargar la exploración.');
-      toast(err.message || 'Error al cargar', 'err');
-    } finally {
-      state.explore.loading = false;
-    }
-  }
-
-  function renderMore(which) {
-    var box = $(which === 'feed' ? '#feedMore' : '#exploreMore');
+  function renderMore() {
+    var box = $('#feedMore');
     if (!box) return;
-    var has = which === 'feed' ? state.feed.hasMore : state.explore.hasMore;
-    box.innerHTML = has
-      ? '<button class="btn ghost" data-load-more="' + which + '" type="button">Cargar más</button>'
+    box.innerHTML = state.feed.hasMore
+      ? '<button class="btn ghost" data-load-more="feed" type="button">Cargar más</button>'
       : '';
   }
 
@@ -2203,12 +2315,90 @@
       updateShell();
       toast('Perfil actualizado', 'ok');
       if (state.view === 'profile') await renderProfile(state.me.userId);
+      else if (state.view === 'settings') renderSettings();
       else await navigate('profile', { userId: state.me.userId });
     } catch (err) {
       toast(err.message || 'No se pudo guardar el perfil', 'err');
     } finally {
       setBusy(btn, false);
     }
+  }
+
+  function updateThemePreference(key, value) {
+    if (key === 'mode') {
+      themePrefs.mode = value === 'dark' ? 'dark' : 'light';
+    } else if (key === 'accent' && isValidHexColor(value)) {
+      themePrefs.accent = value;
+    } else {
+      return;
+    }
+    applyThemePreferences();
+    var picker = $('#accentColor');
+    var modeSelect = $('#themeMode');
+    if (picker) picker.value = themePrefs.accent;
+    if (modeSelect) modeSelect.value = themePrefs.mode;
+    var valueLabel = $('#accentColorValue');
+    if (valueLabel) valueLabel.textContent = themePrefs.accent.toUpperCase();
+  }
+
+  function renderSettings() {
+    $('#view').innerHTML =
+      '<div class="settings-page">' +
+        '<header class="settings-heading"><h1>Configuración</h1>' +
+          '<p>Personaliza la apariencia de WorldLeaf en este dispositivo.</p></header>' +
+        '<section class="card settings-card">' +
+          '<h2>Apariencia</h2>' +
+          '<p>Elige cómo quieres ver la aplicación.</p>' +
+          '<label class="settings-row" for="themeMode">' +
+            '<span class="settings-row-label"><strong>Modo de color</strong>' +
+              '<span>Claro u oscuro</span></span>' +
+            '<select id="themeMode" class="settings-select">' +
+              '<option value="light">Claro</option><option value="dark">Oscuro</option>' +
+            '</select>' +
+          '</label>' +
+          '<label class="settings-row" for="accentColor">' +
+            '<span class="settings-row-label"><strong>Color principal</strong>' +
+              '<span>Elige cualquier color <span id="accentColorValue"></span></span></span>' +
+            '<input id="accentColor" class="settings-color" type="color" aria-label="Elegir color principal">' +
+          '</label>' +
+          '<div class="settings-row">' +
+            '<span class="settings-row-label"><strong>Restablecer apariencia</strong>' +
+              '<span>Volver al tema claro y al color original</span></span>' +
+            '<button id="resetThemeBtn" class="btn ghost small" type="button">Restablecer</button>' +
+          '</div>' +
+        '</section>' +
+        '<section class="card settings-card">' +
+          '<h2>Cuenta</h2>' +
+          '<p>Actualiza los datos visibles de tu perfil.</p>' +
+          '<button id="settingsEditProfileBtn" class="btn ghost" type="button">Editar mi perfil</button>' +
+        '</section>' +
+        '<section class="card settings-card">' +
+          '<h2>Acerca de</h2>' +
+          '<div class="settings-about">' +
+            '<div><strong>🌿 WorldLeaf Social</strong><span>Creado por JM-TechStudios</span></div>' +
+            '<span class="version">Versión 1.0</span>' +
+          '</div>' +
+        '</section>' +
+      '</div>';
+
+    $('#themeMode').value = themePrefs.mode;
+    $('#accentColor').value = themePrefs.accent;
+    $('#accentColorValue').textContent = themePrefs.accent.toUpperCase();
+    $('#themeMode').addEventListener('change', function (event) {
+      updateThemePreference('mode', event.target.value);
+      persistThemePreferences();
+    });
+    $('#accentColor').addEventListener('input', function (event) {
+      updateThemePreference('accent', event.target.value);
+    });
+    $('#accentColor').addEventListener('change', persistThemePreferences);
+    $('#resetThemeBtn').addEventListener('click', function () {
+      themePrefs = { mode: 'light', accent: '#087a55' };
+      applyThemePreferences();
+      persistThemePreferences();
+      renderSettings();
+    });
+    $('#settingsEditProfileBtn').addEventListener('click', openEditModal);
   }
 
   // ─────────────────────────────────────────────────────────────────────
@@ -2369,8 +2559,7 @@
 
     var moreBtn = e.target.closest('[data-load-more]');
     if (moreBtn) {
-      if (moreBtn.dataset.loadMore === 'feed') await loadFeed(false);
-      else await loadExplore(false);
+      await loadFeed(false);
       return;
     }
 
