@@ -1096,14 +1096,15 @@
     }
   }
 
-  function handleHashRoute() {
-    if (state.routeLock || !state.me) return;
+  function handleHashRoute(force) {
+    if ((!force && state.routeLock) || !state.me) return;
     var route = parseHashRoute(window.location.hash);
     var targetView = route.view || 'feed';
     var targetUserId = route.userId || (targetView === 'profile' ? state.me.userId : '');
     if (targetView === 'profile' && !targetUserId) targetUserId = state.me.userId;
-    if (state.view === targetView && String(state.profileUserId || '') === String(targetUserId || '')) return;
-    navigate(targetView, { userId: targetUserId, skipHash: true });
+    if (!force && state.view === targetView &&
+        String(state.profileUserId || '') === String(targetUserId || '')) return;
+    return navigate(targetView, { userId: targetUserId, skipHash: true });
   }
 
   function updateNotifBadges() {
@@ -1447,8 +1448,6 @@
     loadSuggestions();
     if (!window.location.hash || window.location.hash === '#') {
       syncHash(state.view || 'feed', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
-    } else {
-      handleHashRoute();
     }
   }
 
@@ -2462,7 +2461,7 @@
 
     if (state.me) {
       showApp();
-      handleHashRoute();
+      handleHashRoute(true);
     }
 
     try {
@@ -2473,8 +2472,8 @@
       updateShell();
       if ($('#appScreen').classList.contains('hidden')) {
         showApp();
+        handleHashRoute(true);
       }
-      handleHashRoute();
     } catch (err) {
       if (err && (err.code === 'AUTH' || err.error === 'AUTH')) {
         clearSession();
