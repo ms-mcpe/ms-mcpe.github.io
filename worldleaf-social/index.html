@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>WorldLeaf · Red Social</title>
 <style>
   :root {
@@ -66,6 +68,17 @@
   }
 
   * { box-sizing: border-box; }
+
+  body, body * {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input, textarea, select, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
 
   html, body {
     margin: 0;
@@ -547,8 +560,21 @@
     color: var(--muted);
   }
   .composer-bottom .btn { margin-left: auto; }
-  .preview { position: relative; margin: 12px 0 0 56px; }
-  .preview img { max-height: 220px; border-radius: 14px; border: 1px solid var(--line); }
+  .preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin: 12px 0 0 56px;
+  }
+  .preview-count { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+  .preview-item { position: relative; min-width: 0; }
+  .preview img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+  }
   .preview .remove {
     position: absolute;
     top: 8px;
@@ -568,9 +594,66 @@
   .post.pending .post-actions, .post.pending .icon-btn { pointer-events: none; }
   .post-head { display: flex; align-items: flex-start; gap: 10px; }
   .post-head .user-link { flex: 1; }
+  .post-menu-wrap, .comment-menu-wrap { position: relative; flex: 0 0 auto; }
+  .more-btn {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    font-size: 21px;
+    line-height: 1;
+  }
+  .more-btn:hover, .more-btn[aria-expanded="true"] { background: var(--panel-2); color: var(--text); }
+  .more-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 20;
+    min-width: 150px;
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+  .more-menu button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 9px;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .more-menu button:hover { background: var(--panel-2); }
+  .more-menu button.danger { color: var(--danger); }
+  .post.pending .post-menu-wrap { pointer-events: none; }
   .post-text { margin: 12px 0 10px; white-space: pre-wrap; word-wrap: break-word; font-size: 15.5px; }
-  .post-media { margin: 4px -18px 10px; }
-  .post-media img { width: 100%; max-height: 560px; object-fit: cover; display: block; cursor: zoom-in; }
+  .post-media {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    margin: 4px -18px 10px;
+  }
+  .post-media img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    cursor: zoom-in;
+  }
+  .post-media.single { grid-template-columns: 1fr; }
+  .post-media.single img { height: auto; max-height: 560px; object-fit: contain; }
   .post-actions { display: flex; gap: 6px; padding: 8px 0 10px; border-top: 1px solid rgba(30, 45, 71, .55); }
   .action {
     display: inline-flex;
@@ -602,8 +685,7 @@
   .bubble { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; flex: 1; min-width: 0; }
   .c-head { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
   .c-head strong { color: var(--text); font-size: 13px; }
-  .c-head button { margin-left: auto; background: none; border: none; color: var(--muted); font-size: 12px; }
-  .c-head button:hover { color: var(--danger); }
+  .c-head .comment-menu-wrap { margin-left: auto; }
   .bubble p { margin: 4px 0 0; font-size: 14px; white-space: pre-wrap; word-wrap: break-word; }
   .comment-form { display: flex; gap: 8px; padding-bottom: 8px; }
   .comment-form input {
@@ -690,6 +772,11 @@
   :root[data-radius="small"] { --radius: 10px; }
   :root[data-radius="medium"] { --radius: 18px; }
   :root[data-radius="large"] { --radius: 28px; }
+  @media (max-width: 480px) {
+    .confirm-card { padding: 22px; }
+    .confirm-card .modal-actions { flex-direction: column-reverse; }
+    .confirm-card .modal-actions .btn { width: 100%; }
+  }
 
   /* ─── Buscar ────────────────────────────────────────────────────── */
   .search-box { display: flex; gap: 10px; padding: 14px; margin-bottom: 18px; }
@@ -724,6 +811,27 @@
   .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .modal-head h3 { margin: 0; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+  .confirm-card { max-width: 430px; padding: 26px; }
+  .confirm-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(248, 113, 113, .28);
+    border-radius: 16px;
+    background: rgba(248, 113, 113, .12);
+    font-size: 22px;
+  }
+  .confirm-icon.neutral {
+    border-color: rgba(var(--brand-rgb), .28);
+    background: rgba(var(--brand-rgb), .12);
+  }
+  .confirm-card h3 { margin: 0 0 8px; font-size: 20px; }
+  .confirm-card p { margin: 0; color: var(--muted); line-height: 1.55; }
+  .confirm-card .modal-actions { margin-top: 24px; }
+  .edit-post-card .preview { margin: 8px 0 16px; }
+  .edit-post-actions { display: flex; align-items: center; gap: 12px; margin: 8px 0 16px; }
   .edit-cover {
     height: 130px;
     border-radius: 14px;
@@ -1005,6 +1113,54 @@
   </div>
 </div>
 
+<!-- ══════════════ EDITAR PUBLICACIÓN ══════════════ -->
+<div id="editPostModal" class="modal hidden" aria-hidden="true">
+  <section class="modal-card edit-post-card" role="dialog" aria-modal="true"
+    aria-labelledby="editPostTitle">
+    <div class="modal-head">
+      <h3 id="editPostTitle">Editar publicación</h3>
+      <button class="icon-btn" id="closeEditPostBtn" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <label class="field"><span>Descripción</span><textarea id="editPostText" maxlength="2000" rows="5"></textarea></label>
+    <div id="editPostImages" class="preview hidden"></div>
+    <div class="edit-post-actions">
+      <label class="file-btn">📷 Añadir imágenes<input id="editPostFiles" type="file" accept="image/*" multiple hidden></label>
+      <span class="muted" id="editPostImageCount">0 de 20 imágenes</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="cancelEditPostBtn" type="button">Cancelar</button>
+      <button class="btn primary" id="saveEditPostBtn" type="button">Guardar cambios</button>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════ EDITAR COMENTARIO ══════════════ -->
+<div id="editCommentModal" class="modal hidden" aria-hidden="true">
+  <section class="modal-card confirm-card" role="dialog" aria-modal="true"
+    aria-labelledby="editCommentTitle">
+    <h3 id="editCommentTitle">Editar comentario</h3>
+    <label class="field"><span>Comentario</span><textarea id="editCommentText" maxlength="500" rows="4"></textarea></label>
+    <div class="modal-actions">
+      <button class="btn ghost" id="cancelEditCommentBtn" type="button">Cancelar</button>
+      <button class="btn primary" id="saveEditCommentBtn" type="button">Guardar cambios</button>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════ DIÁLOGO DE LA APLICACIÓN ══════════════ -->
+<div id="appDialog" class="modal hidden" aria-hidden="true">
+  <section class="modal-card confirm-card" role="alertdialog" aria-modal="true"
+    aria-labelledby="appDialogTitle" aria-describedby="appDialogDescription" tabindex="-1">
+    <div id="appDialogIcon" class="confirm-icon neutral" aria-hidden="true">ℹ️</div>
+    <h3 id="appDialogTitle"></h3>
+    <p id="appDialogDescription"></p>
+    <div class="modal-actions">
+      <button class="btn ghost hidden" id="appDialogCancel" type="button"></button>
+      <button class="btn primary" id="appDialogConfirm" type="button"></button>
+    </div>
+  </section>
+</div>
+
 <!-- ══════════════ MODAL IMAGEN ══════════════ -->
 <div id="imageModal" class="modal hidden"><img id="imageModalImg" alt="Imagen"></div>
 
@@ -1064,11 +1220,102 @@
     profileUserId: '',
     routeLock: false,
     feed: { offset: 0, hasMore: true, loading: false },
-    pendingImage: null,
+    pendingImages: [],
+    appDialog: { resolve: null, returnFocus: null, hasCancel: false },
+    postEdit: null,
+    commentEdit: null,
     recoveryEmail: '',
     resetToken: '',
     edit: { avatar: null, cover: null }
   };
+
+  var Security = (function () {
+    var LIMITS = {
+      username: 30,
+      displayName: 50,
+      email: 120,
+      password: 100,
+      bio: 300,
+      post: 2000,
+      comment: 500,
+      search: 60,
+      imageBytes: 5 * 1024 * 1024,
+      postImagesBytes: 20 * 1024 * 1024,
+      postImages: 20
+    };
+    var IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    var IMAGE_HOSTS = ['googleusercontent.com'];
+
+    function sanitizeText(value) {
+      if (typeof value !== 'string') return '';
+      return value.replace(/\u0000/g, '').replace(/[\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '');
+    }
+
+    function escapeHtml(value) {
+      return String(value === null || value === undefined ? '' : value)
+        .replace(/[&<>"']/g, function (ch) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+    }
+
+    function isValidUsername(value) {
+      return typeof value === 'string' && /^[a-zA-Z0-9._]{3,30}$/.test(value);
+    }
+
+    function isValidEmail(value) {
+      return typeof value === 'string' &&
+        value.length <= LIMITS.email &&
+        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+    }
+
+    function isValidPassword(value) {
+      return typeof value === 'string' && value.length >= 8 && value.length <= LIMITS.password;
+    }
+
+    function validateImageFile(file) {
+      if (!file || IMAGE_TYPES.indexOf(file.type) === -1) {
+        return { valid: false, error: 'Formato no válido. Usa JPG, PNG, GIF o WEBP.' };
+      }
+      if (file.size > LIMITS.imageBytes) {
+        return { valid: false, error: 'La imagen supera el límite de 5 MB.' };
+      }
+      return { valid: true, error: '' };
+    }
+
+    function dataUrlSizeBytes(value) {
+      var comma = typeof value === 'string' ? value.indexOf(',') : -1;
+      if (comma < 0) return 0;
+      var base64Length = value.length - comma - 1;
+      var padding = value.slice(-2) === '==' ? 2 : (value.slice(-1) === '=' ? 1 : 0);
+      return Math.max(0, Math.floor(base64Length * 3 / 4) - padding);
+    }
+
+    function safeImageUrl(value, allowData) {
+      if (typeof value !== 'string' || value.length > 8 * 1024 * 1024) return '';
+      if (allowData && /^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(value)) return value;
+      try {
+        var parsed = new URL(value);
+        var hostAllowed = IMAGE_HOSTS.some(function (host) {
+          return parsed.hostname === host || parsed.hostname.endsWith('.' + host);
+        }) || parsed.hostname === 'drive.google.com' || parsed.hostname === 'docs.google.com';
+        return parsed.protocol === 'https:' && hostAllowed ? parsed.href : '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    return {
+      LIMITS: LIMITS,
+      sanitizeText: sanitizeText,
+      escapeHtml: escapeHtml,
+      isValidUsername: isValidUsername,
+      isValidEmail: isValidEmail,
+      isValidPassword: isValidPassword,
+      validateImageFile: validateImageFile,
+      dataUrlSizeBytes: dataUrlSizeBytes,
+      safeImageUrl: safeImageUrl
+    };
+  })();
 
   function isValidHexColor(value) {
     return /^#[0-9a-f]{6}$/i.test(String(value || ''));
@@ -1247,12 +1494,12 @@
   function val(sel) { var el = $(sel); return el ? el.value : ''; }
 
   function esc(value) {
-    return String(value === null || value === undefined ? '' : value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    return Security.escapeHtml(value);
+  }
+
+  function safeCount(value) {
+    var count = Number(value);
+    return isFinite(count) && count > 0 ? Math.floor(count) : 0;
   }
 
   function timeAgo(iso) {
@@ -1271,7 +1518,7 @@
 
   function avatarHTML(name, photo, cls) {
     cls = cls || '';
-    var src = photo ? esc(photo) : PLACEHOLDER_AVATAR;
+    var src = Security.safeImageUrl(photo, false) || PLACEHOLDER_AVATAR;
     return '<img class="avatar ' + cls + '" src="' + src + '" alt="" loading="lazy" ' +
       'onerror="this.onerror=null;this.src=\'' + PLACEHOLDER_AVATAR + '\'">';
   }
@@ -1455,12 +1702,9 @@
   // ─────────────────────────────────────────────────────────────────────
   function compressImage(file, maxDim, quality) {
     return new Promise(function (resolve, reject) {
-      if (!file || !file.type || file.type.indexOf('image/') !== 0) {
-        reject(new Error('El archivo no es una imagen'));
-        return;
-      }
-      if (file.size > 15 * 1024 * 1024) {
-        reject(new Error('La imagen supera los 15 MB'));
+      var validation = Security.validateImageFile(file);
+      if (!validation.valid) {
+        reject(new Error(validation.error));
         return;
       }
       var reader = new FileReader();
@@ -1521,12 +1765,19 @@
 
   async function onLogin(e) {
     e.preventDefault();
+    var identificador = Security.sanitizeText(val('#loginId')).trim();
+    var password = val('#loginPass');
+    if (!identificador || identificador.length > Security.LIMITS.email ||
+        !password || password.length > Security.LIMITS.password) {
+      toast('Revisa el usuario/correo y la contraseña.', 'warn');
+      return;
+    }
     var btn = e.target.querySelector('button[type="submit"]');
     setBusy(btn, true, 'Entrando...');
     try {
       var d = await api('login', {
-        identificador: val('#loginId'),
-        password: val('#loginPass')
+        identificador: identificador,
+        password: password
       });
       state.token = d.token;
       localStorage.setItem('wl_token', d.token);
@@ -1552,14 +1803,34 @@
 
   async function onRegister(e) {
     e.preventDefault();
+    var nombre = Security.sanitizeText(val('#regUser')).trim();
+    var nombreMostrado = Security.sanitizeText(val('#regDisplay')).trim();
+    var email = Security.sanitizeText(val('#regEmail')).trim().toLowerCase();
+    var password = val('#regPass');
+    if (!Security.isValidUsername(nombre)) {
+      toast('El usuario debe tener entre 3 y 30 caracteres: letras, números, punto o guion bajo.', 'warn');
+      return;
+    }
+    if (nombreMostrado.length > Security.LIMITS.displayName) {
+      toast('El nombre visible no puede superar 50 caracteres.', 'warn');
+      return;
+    }
+    if (!Security.isValidEmail(email)) {
+      toast('Escribe un correo electrónico válido.', 'warn');
+      return;
+    }
+    if (!Security.isValidPassword(password)) {
+      toast('La contraseña debe tener entre 8 y 100 caracteres.', 'warn');
+      return;
+    }
     var btn = e.target.querySelector('button[type="submit"]');
     setBusy(btn, true, 'Creando...');
     try {
       var d = await api('register', {
-        nombre: val('#regUser'),
-        nombreMostrado: val('#regDisplay'),
-        email: val('#regEmail'),
-        password: val('#regPass')
+        nombre: nombre,
+        nombreMostrado: nombreMostrado,
+        email: email,
+        password: password
       });
       state.token = d.token;
       localStorage.setItem('wl_token', d.token);
@@ -1592,8 +1863,8 @@
   }
 
   async function onRecoverySend() {
-    var email = val('#recEmail').trim();
-    if (!email) { toast('Escribe tu correo', 'warn'); return; }
+    var email = Security.sanitizeText(val('#recEmail')).trim().toLowerCase();
+    if (!Security.isValidEmail(email)) { toast('Escribe un correo electrónico válido.', 'warn'); return; }
     var btn = $('#recSendBtn');
     setBusy(btn, true, 'Enviando...');
     try {
@@ -1630,7 +1901,7 @@
 
   async function onRecoveryReset() {
     var pass = val('#recNewPass');
-    if (pass.length < 8) { toast('La contraseña debe tener al menos 8 caracteres', 'warn'); return; }
+    if (!Security.isValidPassword(pass)) { toast('La contraseña debe tener entre 8 y 100 caracteres.', 'warn'); return; }
     var btn = $('#recResetBtn');
     setBusy(btn, true, 'Guardando...');
     try {
@@ -1711,12 +1982,12 @@
   function updateShell() {
     if (!state.me) return;
     var img = $('#topAvatar');
-    img.src = state.me.fotoPerfil || PLACEHOLDER_AVATAR;
+    img.src = Security.safeImageUrl(state.me.fotoPerfil, false) || PLACEHOLDER_AVATAR;
     img.onerror = function () { img.onerror = null; img.src = PLACEHOLDER_AVATAR; };
 
     var sideImg = $('#sideAvatar');
     if (sideImg) {
-      sideImg.src = state.me.fotoPerfil || PLACEHOLDER_AVATAR;
+      sideImg.src = Security.safeImageUrl(state.me.fotoPerfil, false) || PLACEHOLDER_AVATAR;
       sideImg.onerror = function () { sideImg.onerror = null; sideImg.src = PLACEHOLDER_AVATAR; };
     }
     if ($('#sideName')) $('#sideName').textContent = state.me.nombreMostrado;
@@ -1731,9 +2002,9 @@
         '<span class="handle">@' + esc(state.me.nombre) + '</span></span>' +
       '</div>' +
       '<div class="mini-stats">' +
-        '<div><strong>' + state.me.stats.publicaciones + '</strong><span>publicaciones</span></div>' +
-        '<div><strong>' + state.me.stats.seguidores + '</strong><span>seguidores</span></div>' +
-        '<div><strong>' + state.me.stats.siguiendo + '</strong><span>siguiendo</span></div>' +
+        '<div><strong>' + safeCount(state.me.stats.publicaciones) + '</strong><span>publicaciones</span></div>' +
+        '<div><strong>' + safeCount(state.me.stats.seguidores) + '</strong><span>seguidores</span></div>' +
+        '<div><strong>' + safeCount(state.me.stats.siguiendo) + '</strong><span>siguiendo</span></div>' +
       '</div>' +
       '<button class="btn ghost small mini-btn" id="miniProfileBtn" type="button">Ver mi perfil</button>';
 
@@ -1903,8 +2174,47 @@
     $('#menuBtn').addEventListener('click', openDrawer);
     $('#sideCloseBtn').addEventListener('click', closeDrawer);
     $('#sideOverlay').addEventListener('click', closeDrawer);
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.post-menu-wrap, .comment-menu-wrap')) closeActionMenus();
+    });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeDrawer();
+      var dialog = $('#appDialog');
+      if (!dialog.classList.contains('hidden')) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          finishAppDialog(false);
+          return;
+        }
+        if (e.key === 'Tab') {
+          var focusable = state.appDialog.hasCancel
+            ? [$('#appDialogCancel'), $('#appDialogConfirm')]
+            : [$('#appDialogConfirm')];
+          var current = focusable.indexOf(document.activeElement);
+          if (current < 0 || (e.shiftKey && current === 0)) {
+            e.preventDefault();
+            focusable[e.shiftKey ? focusable.length - 1 : 0].focus();
+          } else if (!e.shiftKey && current === focusable.length - 1) {
+            e.preventDefault();
+            focusable[0].focus();
+          }
+          return;
+        }
+      }
+      if (e.key === 'Escape') {
+        if (!$('#editPostModal').classList.contains('hidden')) {
+          e.preventDefault();
+          closeEditPostModal();
+          return;
+        }
+        if (!$('#editCommentModal').classList.contains('hidden')) {
+          e.preventDefault();
+          closeEditCommentModal();
+          return;
+        }
+        closeActionMenus();
+        closeDrawer();
+      }
     });
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden && state.me) refreshNotifCount();
@@ -1947,6 +2257,29 @@
     $('#editCoverFile').addEventListener('change', function (e) { onEditImage(e, 'cover'); });
 
     $('#imageModal').addEventListener('click', function () { $('#imageModal').classList.add('hidden'); });
+    $('#closeEditPostBtn').addEventListener('click', closeEditPostModal);
+    $('#cancelEditPostBtn').addEventListener('click', closeEditPostModal);
+    $('#saveEditPostBtn').addEventListener('click', savePostEdit);
+    $('#editPostFiles').addEventListener('change', onEditPostImages);
+    $('#editPostImages').addEventListener('click', function (e) {
+      var remove = e.target.closest('[data-remove-edit-post-image]');
+      if (!remove || !state.postEdit) return;
+      state.postEdit.images.splice(Number(remove.dataset.removeEditPostImage), 1);
+      renderPostEditImages();
+    });
+    $('#editPostModal').addEventListener('click', function (e) {
+      if (e.target === $('#editPostModal') && !$('#saveEditPostBtn').disabled) closeEditPostModal();
+    });
+    $('#cancelEditCommentBtn').addEventListener('click', closeEditCommentModal);
+    $('#saveEditCommentBtn').addEventListener('click', saveCommentEdit);
+    $('#editCommentModal').addEventListener('click', function (e) {
+      if (e.target === $('#editCommentModal') && !$('#saveEditCommentBtn').disabled) closeEditCommentModal();
+    });
+    $('#appDialogCancel').addEventListener('click', function () { finishAppDialog(false); });
+    $('#appDialogConfirm').addEventListener('click', function () { finishAppDialog(true); });
+    $('#appDialog').addEventListener('click', function (e) {
+      if (e.target === $('#appDialog')) finishAppDialog(false);
+    });
     $('#editModal').addEventListener('click', function (e) {
       if (e.target === $('#editModal')) closeEditModal();
     });
@@ -1993,42 +2326,96 @@
       '</div>' +
       '<div id="composerPreview" class="preview hidden"></div>' +
       '<div class="composer-bottom">' +
-        '<label class="file-btn" title="Adjuntar una imagen">📷 Agregar imagen<input id="composerFile" type="file" accept="image/*" hidden></label>' +
+        '<label class="file-btn" title="Adjuntar hasta 20 imágenes">📷 Agregar imágenes<input id="composerFile" type="file" accept="image/*" multiple hidden></label>' +
         '<select id="composerVis"><option value="publico">Público</option><option value="seguidores">Solo seguidores</option></select>' +
         '<button id="composerSend" class="btn primary" type="button">Publicar</button>' +
       '</div>' +
     '</div>';
   }
 
+  function renderPendingImages() {
+    var box = $('#composerPreview');
+    if (!box) return;
+    if (!state.pendingImages.length) {
+      box.innerHTML = '';
+      box.classList.add('hidden');
+      return;
+    }
+    box.innerHTML = '<div class="preview-count">' + state.pendingImages.length + ' de 20 imágenes</div>' +
+      state.pendingImages.map(function (dataUrl, index) {
+        return '<div class="preview-item"><img src="' + esc(dataUrl) + '" alt="Vista previa ' + (index + 1) + '">' +
+          '<button type="button" class="remove" data-remove-pending-image="' + index +
+          '" aria-label="Quitar imagen ' + (index + 1) + '">✕</button></div>';
+      }).join('');
+    box.classList.remove('hidden');
+  }
+
   function bindComposer() {
     var file = $('#composerFile');
     if (file) {
-      file.addEventListener('change', async function (e) {
-        var f = e.target.files && e.target.files[0];
-        if (!f) return;
-        try {
-          var dataUrl = await compressImage(f, 1280, 0.82);
-          state.pendingImage = dataUrl;
-          var box = $('#composerPreview');
-          box.innerHTML = '<img src="' + dataUrl + '" alt="Vista previa"><button type="button" class="remove" id="removePreview">✕</button>';
-          box.classList.remove('hidden');
-          $('#removePreview').addEventListener('click', function () {
-            state.pendingImage = null;
-            box.innerHTML = '';
-            box.classList.add('hidden');
-            file.value = '';
-          });
-        } catch (err) {
-          toast(err.message || 'No se pudo procesar la imagen', 'err');
+      file.addEventListener('change', async function () {
+        var selected = Array.prototype.slice.call(file.files || []);
+        file.value = '';
+        if (!selected.length) return;
+        var remaining = 20 - state.pendingImages.length;
+        if (remaining <= 0) {
+          toast('Cada publicación permite hasta 20 imágenes.', 'warn');
+          return;
         }
+        var accepted = selected.slice(0, remaining);
+        var errors = [];
+        var send = $('#composerSend');
+        file.disabled = true;
+        if (send) send.disabled = true;
+        for (var i = 0; i < accepted.length; i++) {
+          try {
+            var compressed = await compressImage(accepted[i], 1280, 0.82);
+            var currentBytes = state.pendingImages.reduce(function (total, image) {
+              return total + Security.dataUrlSizeBytes(image);
+            }, 0);
+            if (currentBytes + Security.dataUrlSizeBytes(compressed) > Security.LIMITS.postImagesBytes) {
+              errors.push('Las imágenes superan el límite total de 20 MB');
+            } else {
+              state.pendingImages.push(compressed);
+            }
+          } catch (err) {
+            errors.push(err.message || 'No se pudo procesar una imagen');
+          }
+        }
+        renderPendingImages();
+        file.disabled = false;
+        if (send) send.disabled = false;
+        if (selected.length > accepted.length) toast('Solo se agregaron imágenes hasta el límite de 20.', 'warn');
+        if (errors.length) toast(errors[0] + (errors.length > 1 ? ' (' + errors.length + ' imágenes)' : ''), 'err');
+      });
+      $('#composerPreview').addEventListener('click', function (e) {
+        var remove = e.target.closest('[data-remove-pending-image]');
+        if (!remove) return;
+        state.pendingImages.splice(Number(remove.dataset.removePendingImage), 1);
+        renderPendingImages();
       });
     }
     var send = $('#composerSend');
     if (send) {
       send.addEventListener('click', async function () {
-        var texto = val('#composerText').trim();
-        var imagen = state.pendingImage || '';
-        if (!texto && !imagen) { toast('Escribe algo o adjunta una imagen', 'warn'); return; }
+        var texto = Security.sanitizeText(val('#composerText')).trim();
+        if (texto.length > Security.LIMITS.post) {
+          toast('La publicación supera los 2000 caracteres.', 'warn');
+          return;
+        }
+        var imagenes = state.pendingImages.slice();
+        if (imagenes.length > Security.LIMITS.postImages) {
+          toast('Cada publicación permite hasta 20 imágenes.', 'warn');
+          return;
+        }
+        var imageBytes = imagenes.reduce(function (total, image) {
+          return total + Security.dataUrlSizeBytes(image);
+        }, 0);
+        if (imageBytes > Security.LIMITS.postImagesBytes) {
+          toast('Las imágenes superan el límite total de 20 MB.', 'warn');
+          return;
+        }
+        if (!texto && !imagenes.length) { toast('Escribe algo o adjunta una imagen', 'warn'); return; }
         var visibilidad = val('#composerVis');
         var list = $('#feedList');
         var tempId = 'temp_' + Date.now();
@@ -2043,7 +2430,8 @@
           },
           fecha: new Date().toISOString(),
           texto: texto,
-          imagen: imagen,
+          imagen: imagenes[0] || '',
+          imagenes: imagenes,
           likes: 0,
           meGusta: false,
           comentarios: 0,
@@ -2055,16 +2443,18 @@
           if (tempEl) tempEl.classList.add('pending');
         }
 
-        var preview = $('#composerPreview');
         $('#composerText').value = '';
-        state.pendingImage = null;
-        if (preview) { preview.innerHTML = ''; preview.classList.add('hidden'); }
+        state.pendingImages = [];
+        renderPendingImages();
         var fileInput = $('#composerFile');
-        if (fileInput) fileInput.value = '';
+        if (fileInput) {
+          fileInput.value = '';
+          fileInput.disabled = true;
+        }
 
         setBusy(send, true, 'Publicando...');
         try {
-          var d = await api('crearPublicacion', { texto: texto, imagen: imagen, visibilidad: visibilidad });
+          var d = await api('crearPublicacion', { texto: texto, imagenes: imagenes, visibilidad: visibilidad });
           var el = document.querySelector('[data-post="' + tempId + '"]');
           if (el) el.outerHTML = postHTML(d.post);
           else if (list) list.insertAdjacentHTML('afterbegin', postHTML(d.post));
@@ -2074,20 +2464,11 @@
           var temp = document.querySelector('[data-post="' + tempId + '"]');
           if (temp) temp.remove();
           if ($('#composerText') && !val('#composerText').trim()) $('#composerText').value = texto;
-          if (!state.pendingImage) state.pendingImage = imagen || null;
-          if (imagen && preview && state.pendingImage === imagen) {
-            preview.innerHTML = '<img src="' + imagen + '" alt="Vista previa"><button type="button" class="remove" id="removePreview">✕</button>';
-            preview.classList.remove('hidden');
-            var remove = $('#removePreview');
-            if (remove) remove.addEventListener('click', function () {
-              state.pendingImage = null;
-              preview.innerHTML = '';
-              preview.classList.add('hidden');
-              if (fileInput) fileInput.value = '';
-            });
-          }
+          state.pendingImages = imagenes;
+          renderPendingImages();
           toast(err.message || 'No se pudo publicar', 'err');
         } finally {
+          if (fileInput) fileInput.disabled = false;
           setBusy(send, false);
         }
       });
@@ -2095,7 +2476,7 @@
   }
 
   async function renderFeed() {
-    state.pendingImage = null;
+    state.pendingImages = [];
     $('#view').innerHTML = composerHTML() +
       '<div id="feedList" class="feed-list"></div>' +
       '<div id="feedMore" class="center-actions"></div>';
@@ -2142,12 +2523,27 @@
   }
 
   function postHTML(p) {
-    var media = p.imagen
-      ? '<div class="post-media"><img src="' + esc(p.imagen) + '" data-full="' + esc(p.imagen) +
-        '" alt="Publicación" loading="lazy" onerror="this.closest(\'.post-media\').remove()"></div>'
+    var imageUrls = Array.isArray(p.imagenes) ? p.imagenes : (p.imagen ? [p.imagen] : []);
+    imageUrls = imageUrls.map(function (url) { return Security.safeImageUrl(url, true); })
+      .filter(function (url) { return !!url; }).slice(0, Security.LIMITS.postImages);
+    var likes = safeCount(p.likes);
+    var comments = safeCount(p.comentarios);
+    var media = imageUrls.length
+      ? '<div class="post-media' + (imageUrls.length === 1 ? ' single' : '') + '">' +
+        imageUrls.map(function (url, index) {
+          return '<img src="' + esc(url) + '" data-full="' + esc(url) +
+            '" alt="Imagen ' + (index + 1) + ' de la publicación" loading="lazy" ' +
+            'onerror="this.remove();var g=this.parentNode;if(g&&!g.querySelector(\'img\'))g.remove()">';
+        }).join('') + '</div>'
       : '';
-    var del = (p.puedeBorrar || p.esMio)
-      ? '<button class="icon-btn" data-delete-post="' + esc(p.postId) + '" type="button" title="Eliminar publicación">🗑</button>'
+    var menu = p.puedeEditar || p.puedeBorrar || p.esMio
+      ? '<div class="post-menu-wrap">' +
+        '<button class="more-btn" type="button" data-menu-toggle aria-label="Más opciones de publicación" aria-expanded="false">⋮</button>' +
+        '<div class="more-menu hidden" role="menu">' +
+          ((p.puedeEditar || p.esMio) ? '<button type="button" role="menuitem" data-edit-post>✏️ Editar</button>' : '') +
+          ((p.puedeBorrar || p.esMio) ? '<button class="danger" type="button" role="menuitem" data-delete-post="' + esc(p.postId) + '">🗑️ Eliminar</button>' : '') +
+        '</div>' +
+      '</div>'
       : '';
     return '<article class="card post" data-post="' + esc(p.postId) + '">' +
       '<header class="post-head">' +
@@ -2156,29 +2552,35 @@
           '<span class="who"><span class="name-row"><strong>' + esc(p.autor.nombreMostrado) + '</strong>' +
           roleBadgeHTML(p.autor.rol) + '</span>' +
           '<span class="handle">@' + esc(p.autor.nombre) + ' · ' + timeAgo(p.fecha) + '</span></span>' +
-        '</button>' + del +
+        '</button>' + menu +
       '</header>' +
       (p.texto ? '<p class="post-text">' + esc(p.texto) + '</p>' : '') +
       media +
       '<footer class="post-actions">' +
         '<button class="action ' + (p.meGusta ? 'liked' : '') + '" data-like="' + esc(p.postId) + '" type="button">' +
-          (p.meGusta ? '❤️' : '🤍') + ' <span>' + p.likes + '</span></button>' +
-        '<button class="action" data-comments="' + esc(p.postId) + '" type="button">💬 <span>' + p.comentarios + '</span></button>' +
+          (p.meGusta ? '❤️' : '🤍') + ' <span>' + esc(likes) + '</span></button>' +
+        '<button class="action" data-comments="' + esc(p.postId) + '" type="button">💬 <span>' + esc(comments) + '</span></button>' +
       '</footer>' +
       '<div class="comments hidden" data-comments-box="' + esc(p.postId) + '"></div>' +
     '</article>';
   }
 
   function commentHTML(c, postId) {
-    var del = (c.puedeBorrar || c.esMio)
-      ? '<button data-del-comment="' + esc(c.comentarioId) + '" data-post="' + esc(postId) + '" type="button">✕</button>'
+    var menu = c.puedeEditar || c.esMio || c.puedeBorrar
+      ? '<div class="comment-menu-wrap">' +
+        '<button class="more-btn" type="button" data-menu-toggle aria-label="Más opciones de comentario" aria-expanded="false">⋮</button>' +
+        '<div class="more-menu hidden" role="menu">' +
+          ((c.puedeEditar || c.esMio) ? '<button type="button" role="menuitem" data-edit-comment>✏️ Editar</button>' : '') +
+          (c.puedeBorrar ? '<button class="danger" type="button" role="menuitem" data-del-comment="' + esc(c.comentarioId) + '" data-post="' + esc(postId) + '">🗑️ Eliminar</button>' : '') +
+        '</div>' +
+      '</div>'
       : '';
     return '<div class="comment" data-comment-id="' + esc(c.comentarioId) + '">' +
       avatarHTML(c.autor.nombreMostrado, c.autor.fotoPerfil, 'sm') +
       '<div class="bubble">' +
         '<div class="c-head"><strong>' + esc(c.autor.nombreMostrado) + '</strong>' +
         roleBadgeHTML(c.autor.rol) +
-        '<span>' + timeAgo(c.fecha) + '</span>' + del + '</div>' +
+        '<span>' + timeAgo(c.fecha) + '</span>' + menu + '</div>' +
         '<p>' + esc(c.texto) + '</p>' +
       '</div>' +
     '</div>';
@@ -2233,8 +2635,9 @@
       var perfil = results[0].perfil;
       var posts = results[1].posts;
 
-      var coverStyle = perfil.fotoPortada
-        ? 'background-image:url(\'' + esc(perfil.fotoPortada) + '\')'
+      var safeCoverUrl = Security.safeImageUrl(perfil.fotoPortada, false);
+      var coverStyle = safeCoverUrl
+        ? 'background-image:url(\'' + esc(safeCoverUrl) + '\')'
         : '';
       var actions = perfil.esYo
         ? '<button class="btn ghost" id="openEditBtn" type="button">Editar perfil</button>'
@@ -2289,9 +2692,9 @@
             '<div class="handle">@' + esc(perfil.nombre) + (perfil.verificado ? ' <span class="badge">✓</span>' : '') + '</div>' +
             '<p class="bio">' + (perfil.bio ? esc(perfil.bio) : '<span class="muted">Sin biografía.</span>') + '</p>' +
             '<div class="stats">' +
-              '<span><strong>' + perfil.stats.publicaciones + '</strong> publicaciones</span>' +
-              '<span><strong data-stat-followers="' + esc(perfil.userId) + '">' + perfil.stats.seguidores + '</strong> seguidores</span>' +
-              '<span><strong>' + perfil.stats.siguiendo + '</strong> siguiendo</span>' +
+              '<span><strong>' + safeCount(perfil.stats.publicaciones) + '</strong> publicaciones</span>' +
+              '<span><strong data-stat-followers="' + esc(perfil.userId) + '">' + safeCount(perfil.stats.seguidores) + '</strong> seguidores</span>' +
+              '<span><strong>' + safeCount(perfil.stats.siguiendo) + '</strong> siguiendo</span>' +
             '</div>' +
             roleAdminBox +
             moderationBox +
@@ -2375,7 +2778,8 @@
     $('#editBio').value = state.me.bio || '';
     $('#editAvatarPreview').innerHTML = avatarHTML(state.me.nombreMostrado, state.me.fotoPerfil, 'xl');
     var cover = $('#editCoverPreview');
-    cover.style.backgroundImage = state.me.fotoPortada ? 'url(\'' + state.me.fotoPortada + '\')' : '';
+    var safeCoverUrl = Security.safeImageUrl(state.me.fotoPortada, false);
+    cover.style.backgroundImage = safeCoverUrl ? 'url("' + safeCoverUrl + '")' : '';
     $('#editAvatarFile').value = '';
     $('#editCoverFile').value = '';
     $('#editModal').classList.remove('hidden');
@@ -2383,6 +2787,287 @@
 
   function closeEditModal() {
     $('#editModal').classList.add('hidden');
+  }
+
+  function closeActionMenus() {
+    $all('.post-menu-wrap .more-menu, .comment-menu-wrap .more-menu').forEach(function (menu) {
+      menu.classList.add('hidden');
+    });
+    $all('[data-menu-toggle]').forEach(function (button) {
+      button.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function renderPostEditImages() {
+    var box = $('#editPostImages');
+    var counter = $('#editPostImageCount');
+    if (!state.postEdit || !box || !counter) return;
+    counter.textContent = state.postEdit.images.length + ' de 20 imágenes';
+    if (!state.postEdit.images.length) {
+      box.innerHTML = '';
+      box.classList.add('hidden');
+      return;
+    }
+    box.innerHTML = state.postEdit.images.map(function (url, index) {
+      var safeUrl = Security.safeImageUrl(url, true);
+      if (!safeUrl) return '';
+      return '<div class="preview-item"><img src="' + esc(safeUrl) + '" alt="Imagen ' + (index + 1) + '">' +
+        '<button type="button" class="remove" data-remove-edit-post-image="' + index +
+        '" aria-label="Quitar imagen ' + (index + 1) + '">✕</button></div>';
+    }).join('');
+    box.classList.remove('hidden');
+  }
+
+  function openPostEdit(article) {
+    if (!article || article.classList.contains('pending')) return;
+    var postId = article.dataset.post;
+    var text = article.querySelector('.post-text');
+    var images = Array.prototype.map.call(article.querySelectorAll('.post-media img'), function (img) {
+      return img.dataset.full || img.src;
+    }).filter(function (url) { return !!Security.safeImageUrl(url, false); });
+    state.postEdit = { postId: postId, article: article, images: images };
+    $('#editPostText').value = text ? text.textContent : '';
+    $('#editPostFiles').value = '';
+    renderPostEditImages();
+    $('#editPostModal').classList.remove('hidden');
+    $('#editPostModal').setAttribute('aria-hidden', 'false');
+    $('#editPostText').focus();
+  }
+
+  function closeEditPostModal() {
+    if ($('#saveEditPostBtn').disabled) return;
+    $('#editPostModal').classList.add('hidden');
+    $('#editPostModal').setAttribute('aria-hidden', 'true');
+    state.postEdit = null;
+  }
+
+  async function onEditPostImages(e) {
+    var input = e.target;
+    var selected = Array.prototype.slice.call(input.files || []);
+    input.value = '';
+    if (!state.postEdit || !selected.length) return;
+    var editState = state.postEdit;
+    var remaining = Security.LIMITS.postImages - state.postEdit.images.length;
+    if (remaining <= 0) {
+      toast('Cada publicación permite hasta 20 imágenes.', 'warn');
+      return;
+    }
+    var accepted = selected.slice(0, remaining);
+    var errors = [];
+    var saveButton = $('#saveEditPostBtn');
+    input.disabled = true;
+    saveButton.disabled = true;
+    $('#cancelEditPostBtn').disabled = true;
+    $('#closeEditPostBtn').disabled = true;
+    for (var i = 0; i < accepted.length; i++) {
+      if (state.postEdit !== editState) break;
+      try {
+        var dataUrl = await compressImage(accepted[i], 1280, 0.82);
+        if (state.postEdit !== editState) break;
+        var existingNewBytes = editState.images.reduce(function (total, image) {
+          return total + (image.indexOf('data:image/') === 0 ? Security.dataUrlSizeBytes(image) : 0);
+        }, 0);
+        if (existingNewBytes + Security.dataUrlSizeBytes(dataUrl) > Security.LIMITS.postImagesBytes) {
+          errors.push('Las imágenes nuevas superan el límite total de 20 MB');
+        } else {
+          editState.images.push(dataUrl);
+        }
+      } catch (err) {
+        errors.push(err.message || 'No se pudo procesar una imagen');
+      }
+    }
+    if (state.postEdit === editState) renderPostEditImages();
+    input.disabled = false;
+    saveButton.disabled = false;
+    $('#cancelEditPostBtn').disabled = false;
+    $('#closeEditPostBtn').disabled = false;
+    if (selected.length > accepted.length) toast('Solo se agregaron imágenes hasta el límite de 20.', 'warn');
+    if (errors.length) toast(errors[0], 'err');
+  }
+
+  async function savePostEdit() {
+    if (!state.postEdit) return;
+    var texto = Security.sanitizeText(val('#editPostText')).trim();
+    var imagenes = state.postEdit.images.slice();
+    if (texto.length > Security.LIMITS.post) {
+      toast('La publicación supera los 2000 caracteres.', 'warn');
+      return;
+    }
+    if (!texto && !imagenes.length) {
+      toast('La publicación debe tener texto o al menos una imagen.', 'warn');
+      return;
+    }
+    var btn = $('#saveEditPostBtn');
+    setBusy(btn, true, 'Guardando...');
+    $('#cancelEditPostBtn').disabled = true;
+    $('#closeEditPostBtn').disabled = true;
+    try {
+      var data = await api('actualizarPublicacion', {
+        postId: state.postEdit.postId,
+        texto: texto,
+        imagenes: imagenes
+      });
+      var article = state.postEdit.article;
+      var updatedMarkup = postHTML(data.post);
+      if (article && article.isConnected) article.outerHTML = updatedMarkup;
+      cacheUpdatePost(data.post.postId, data.post);
+      setBusy(btn, false);
+      $('#cancelEditPostBtn').disabled = false;
+      $('#closeEditPostBtn').disabled = false;
+      closeEditPostModal();
+      toast('Publicación actualizada', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo actualizar la publicación', 'err');
+    } finally {
+      setBusy(btn, false);
+      $('#cancelEditPostBtn').disabled = false;
+      $('#closeEditPostBtn').disabled = false;
+    }
+  }
+
+  function openCommentEdit(comment) {
+    var commentEl = comment.closest('.comment');
+    var textEl = commentEl && commentEl.querySelector('.bubble p');
+    if (!commentEl || !textEl) return;
+    state.commentEdit = { id: commentEl.dataset.commentId, element: commentEl };
+    $('#editCommentText').value = textEl.textContent || '';
+    $('#editCommentModal').classList.remove('hidden');
+    $('#editCommentModal').setAttribute('aria-hidden', 'false');
+    $('#editCommentText').focus();
+  }
+
+  function closeEditCommentModal() {
+    if ($('#saveEditCommentBtn').disabled) return;
+    $('#editCommentModal').classList.add('hidden');
+    $('#editCommentModal').setAttribute('aria-hidden', 'true');
+    state.commentEdit = null;
+  }
+
+  async function saveCommentEdit() {
+    if (!state.commentEdit) return;
+    var texto = Security.sanitizeText(val('#editCommentText')).trim();
+    if (!texto || texto.length > Security.LIMITS.comment) {
+      toast('Escribe un comentario de hasta 500 caracteres.', 'warn');
+      return;
+    }
+    var btn = $('#saveEditCommentBtn');
+    setBusy(btn, true, 'Guardando...');
+    $('#cancelEditCommentBtn').disabled = true;
+    try {
+      var data = await api('actualizarComentario', {
+        comentarioId: state.commentEdit.id,
+        texto: texto
+      });
+      var element = state.commentEdit.element;
+      var postId = data.comentario.postId;
+      if (element && element.isConnected) element.outerHTML = commentHTML(data.comentario, postId);
+      setBusy(btn, false);
+      $('#cancelEditCommentBtn').disabled = false;
+      closeEditCommentModal();
+      toast('Comentario actualizado', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo actualizar el comentario', 'err');
+    } finally {
+      setBusy(btn, false);
+      $('#cancelEditCommentBtn').disabled = false;
+    }
+  }
+
+  function showAppDialog(options) {
+    options = options || {};
+    if (state.appDialog.resolve) return Promise.resolve(false);
+    var modal = $('#appDialog');
+    var cancel = $('#appDialogCancel');
+    var confirm = $('#appDialogConfirm');
+    var hasCancel = options.cancelLabel !== undefined && options.cancelLabel !== null;
+    state.appDialog.returnFocus = document.activeElement;
+    state.appDialog.hasCancel = hasCancel;
+    $('#appDialogIcon').textContent = options.icon || (options.tone === 'danger' ? '⚠️' : 'ℹ️');
+    $('#appDialogIcon').className = 'confirm-icon' + (options.tone === 'danger' ? '' : ' neutral');
+    $('#appDialogTitle').textContent = options.title || 'WorldLeaf';
+    $('#appDialogDescription').textContent = options.message || '';
+    cancel.textContent = hasCancel ? options.cancelLabel : '';
+    cancel.classList.toggle('hidden', !hasCancel);
+    confirm.textContent = options.confirmLabel || (hasCancel ? 'Confirmar' : 'Entendido');
+    confirm.className = 'btn ' + (options.tone === 'danger' ? 'danger' : 'primary');
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+
+    return new Promise(function (resolve) {
+      state.appDialog.resolve = resolve;
+      (hasCancel ? cancel : confirm).focus();
+    });
+  }
+
+  function finishAppDialog(accepted) {
+    var resolve = state.appDialog.resolve;
+    if (!resolve) return;
+    var target = state.appDialog.returnFocus;
+    state.appDialog.resolve = null;
+    state.appDialog.returnFocus = null;
+    state.appDialog.hasCancel = false;
+    $('#appDialog').classList.add('hidden');
+    $('#appDialog').setAttribute('aria-hidden', 'true');
+    resolve(!!accepted);
+    if (target && target.isConnected) target.focus();
+  }
+
+  async function deletePostAfterConfirmation(trigger) {
+    var accepted = await showAppDialog({
+      title: '¿Deseas eliminar esta publicación?',
+      message: 'Esta acción no se puede deshacer. La publicación y sus imágenes se eliminarán.',
+      icon: '🗑️',
+      tone: 'danger',
+      cancelLabel: 'No, conservar',
+      confirmLabel: 'Sí, eliminar'
+    });
+    if (!accepted || !trigger || !trigger.isConnected) return;
+    var postId = trigger.dataset.deletePost;
+    try {
+      await api('eliminarPublicacion', { postId: postId });
+      var article = trigger.closest('.post');
+      if (article) article.remove();
+      cacheRemovePost(postId);
+      var nextDeleteButton = $('#view [data-delete-post]');
+      if (nextDeleteButton) nextDeleteButton.focus();
+      else if ($('#composerText')) $('#composerText').focus();
+      toast('Publicación eliminada', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo eliminar', 'err');
+    }
+  }
+
+  async function deleteCommentAfterConfirmation(trigger) {
+    var comment = trigger && trigger.closest('.comment');
+    if (!comment) return;
+    var menuButton = trigger.closest('.comment-menu-wrap').querySelector('[data-menu-toggle]');
+    closeActionMenus();
+    if (menuButton) menuButton.focus();
+    var accepted = await showAppDialog({
+      title: '¿Deseas eliminar este comentario?',
+      message: 'El comentario y su notificación asociada se eliminarán.',
+      icon: '🗑️',
+      tone: 'danger',
+      cancelLabel: 'No, conservar',
+      confirmLabel: 'Sí, eliminar'
+    });
+    if (!accepted || !comment.isConnected) return;
+    var postId = trigger.dataset.post;
+    try {
+      await api('eliminarComentario', { comentarioId: trigger.dataset.delComment });
+      comment.remove();
+      bumpCommentCount(postId, -1);
+      var count = document.querySelector('[data-comments="' + postId + '"] span');
+      cacheUpdatePost(postId, { comentarios: count ? safeCount(count.textContent) : 0 });
+      var box = document.querySelector('[data-comments-box="' + postId + '"]');
+      if (box && !box.querySelector('.comment')) {
+        var list = box.querySelector('.comments-list');
+        if (list) list.innerHTML = '<p class="muted" style="font-size:13px;margin:0 0 8px">Sin comentarios todavía.</p>';
+      }
+      toast('Comentario eliminado', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo borrar el comentario', 'err');
+    }
   }
 
   async function onEditImage(e, type) {
@@ -2395,7 +3080,9 @@
         $('#editAvatarPreview').innerHTML = '<img class="avatar xl" src="' + dataUrl + '" alt="">';
       } else {
         state.edit.cover = dataUrl;
-        $('#editCoverPreview').style.backgroundImage = 'url(\'' + dataUrl + '\')';
+        var safeCoverUrl = Security.safeImageUrl(dataUrl, true);
+        if (!safeCoverUrl) throw new Error('No se pudo validar la imagen de portada');
+        $('#editCoverPreview').style.backgroundImage = 'url("' + safeCoverUrl + '")';
       }
     } catch (err) {
       toast(err.message || 'No se pudo procesar la imagen', 'err');
@@ -2403,12 +3090,22 @@
   }
 
   async function saveEdit() {
+    var nombreMostrado = Security.sanitizeText(val('#editName')).trim();
+    var bio = Security.sanitizeText(val('#editBio')).trim();
+    if (!nombreMostrado || nombreMostrado.length > Security.LIMITS.displayName) {
+      toast('El nombre visible es obligatorio y admite hasta 50 caracteres.', 'warn');
+      return;
+    }
+    if (bio.length > Security.LIMITS.bio) {
+      toast('La biografía no puede superar 300 caracteres.', 'warn');
+      return;
+    }
     var btn = $('#saveEditBtn');
     setBusy(btn, true, 'Guardando...');
     try {
       var payload = {
-        nombreMostrado: val('#editName'),
-        bio: val('#editBio')
+        nombreMostrado: nombreMostrado,
+        bio: bio
       };
       if (state.edit.avatar) payload.fotoPerfil = state.edit.avatar;
       if (state.edit.cover) payload.fotoPortada = state.edit.cover;
@@ -2573,9 +3270,13 @@
   }
 
   async function doSearch() {
-    var q = val('#searchInput').trim();
+    var q = Security.sanitizeText(val('#searchInput')).trim();
     var box = $('#searchResults');
     if (!q) { box.innerHTML = emptyState('Escribe un nombre para buscar.'); return; }
+    if (q.length > Security.LIMITS.search) {
+      toast('La búsqueda no puede superar 60 caracteres.', 'warn');
+      return;
+    }
     box.innerHTML = loadingBlock();
     try {
       var d = await api('buscarUsuarios', { q: q });
@@ -2606,6 +3307,32 @@
   //  Delegación de eventos de la vista
   // ─────────────────────────────────────────────────────────────────────
   async function onViewClick(e) {
+    var menuToggle = e.target.closest('[data-menu-toggle]');
+    if (menuToggle) {
+      var menuWrap = menuToggle.closest('.post-menu-wrap, .comment-menu-wrap');
+      var menu = menuWrap && menuWrap.querySelector('.more-menu');
+      if (!menu) return;
+      var shouldOpen = menu.classList.contains('hidden');
+      closeActionMenus();
+      menu.classList.toggle('hidden', !shouldOpen);
+      menuToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      return;
+    }
+
+    var editPost = e.target.closest('[data-edit-post]');
+    if (editPost) {
+      closeActionMenus();
+      openPostEdit(editPost.closest('.post'));
+      return;
+    }
+
+    var editComment = e.target.closest('[data-edit-comment]');
+    if (editComment) {
+      closeActionMenus();
+      openCommentEdit(editComment);
+      return;
+    }
+
     var likeBtn = e.target.closest('[data-like]');
     if (likeBtn) {
       var postId = likeBtn.dataset.like;
@@ -2620,7 +3347,7 @@
       try {
         var d = await api('toggleLike', { postId: postId });
         likeBtn.classList.toggle('liked', d.meGusta);
-        likeBtn.innerHTML = (d.meGusta ? '❤️' : '🤍') + ' <span>' + d.likes + '</span>';
+        likeBtn.innerHTML = (d.meGusta ? '❤️' : '🤍') + ' <span>' + safeCount(d.likes) + '</span>';
         cacheUpdatePost(postId, { meGusta: d.meGusta, likes: d.likes });
       } catch (err) {
         likeBtn.classList.toggle('liked', wasLiked);
@@ -2640,36 +3367,16 @@
 
     var delComment = e.target.closest('[data-del-comment]');
     if (delComment) {
-      try {
-        await api('eliminarComentario', { comentarioId: delComment.dataset.delComment });
-        var box = delComment.closest('.comments');
-        var postIdC = delComment.dataset.post;
-        delComment.closest('.comment').remove();
-        bumpCommentCount(postIdC, -1);
-        var count = document.querySelector('[data-comments="' + postIdC + '"] span');
-        cacheUpdatePost(postIdC, { comentarios: count ? (parseInt(count.textContent, 10) || 0) : 0 });
-        if (box && !box.querySelector('.comment')) {
-          var list = box.querySelector('.comments-list');
-          if (list) list.innerHTML = '<p class="muted" style="font-size:13px;margin:0 0 8px">Sin comentarios todavía.</p>';
-        }
-      } catch (err) {
-        toast(err.message || 'No se pudo borrar el comentario', 'err');
-      }
+      deleteCommentAfterConfirmation(delComment);
       return;
     }
 
     var delPost = e.target.closest('[data-delete-post]');
     if (delPost) {
-      if (!confirm('¿Eliminar esta publicación?')) return;
-      try {
-        await api('eliminarPublicacion', { postId: delPost.dataset.deletePost });
-        var article = delPost.closest('.post');
-        if (article) article.remove();
-        cacheRemovePost(delPost.dataset.deletePost);
-        toast('Publicación eliminada', 'ok');
-      } catch (err) {
-        toast(err.message || 'No se pudo eliminar', 'err');
-      }
+      var postMenuButton = delPost.closest('.post-menu-wrap').querySelector('[data-menu-toggle]');
+      closeActionMenus();
+      if (postMenuButton) postMenuButton.focus();
+      deletePostAfterConfirmation(delPost);
       return;
     }
 
@@ -2719,8 +3426,11 @@
 
     var media = e.target.closest('.post-media img');
     if (media && media.dataset.full) {
-      $('#imageModalImg').src = media.dataset.full;
-      $('#imageModal').classList.remove('hidden');
+      var safeFullImage = Security.safeImageUrl(media.dataset.full, true);
+      if (safeFullImage) {
+        $('#imageModalImg').src = safeFullImage;
+        $('#imageModal').classList.remove('hidden');
+      }
     }
   }
 
@@ -2738,8 +3448,12 @@
     e.preventDefault();
     var postId = form.dataset.commentForm;
     var input = form.querySelector('input');
-    var texto = (input.value || '').trim();
+    var texto = Security.sanitizeText(input.value || '').trim();
     if (!texto) return;
+    if (texto.length > Security.LIMITS.comment) {
+      toast('El comentario no puede superar 500 caracteres.', 'warn');
+      return;
+    }
     var btn = form.querySelector('button');
     var box = document.querySelector('[data-comments-box="' + postId + '"]');
     var list = box ? box.querySelector('.comments-list') : null;
