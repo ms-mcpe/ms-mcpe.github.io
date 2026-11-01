@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-87bJW6LAAPgQ2HMPbdgu1+4pON8YJT1y+PBTBBSZKno=' https://script.google.com https://script.googleusercontent.com; style-src 'sha256-rC4Qu+qY+ki4ypyabUE9Y+V/INOX95Sk2XXGTJtbVv0='; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="theme-color" content="#07130f">
+  <meta name="description" content="WorldLeaf Social: una comunidad para jugadores de Minecraft Bedrock. Comparte publicaciones, descubre complementos y encuentra servidores.">
+  <title>WorldLeaf Social — La comunidad de Minecraft Bedrock</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07130f;
+      --panel: rgba(15, 32, 25, .82);
+      --panel-strong: #10251c;
+      --line: rgba(180, 226, 198, .13);
+      --text: #eff8f1;
+      --muted: #a0b7a8;
+      --green: #63e6a3;
+      --mint: #b6f5cf;
+      --max: 1160px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 82% 7%, rgba(52, 211, 153, .15), transparent 34rem),
+        radial-gradient(ellipse at 8% 36%, rgba(38, 130, 89, .12), transparent 32rem),
+        var(--bg);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+    a:focus-visible, summary:focus-visible { outline: 3px solid var(--mint); outline-offset: 4px; }
+
+    .wrap { width: min(var(--max), calc(100% - 48px)); margin-inline: auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 82px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+      font-weight: 760;
+      letter-spacing: -.04em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      aspect-ratio: 1;
+      place-items: center;
+      border: 1px solid rgba(99, 230, 163, .38);
+      border-radius: 13px;
+      color: var(--green);
+      background: rgba(99, 230, 163, .1);
+      font-size: 19px;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 550;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color .2s ease;
+    }
+
+    .nav-link:hover { color: var(--green); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.13fr) minmax(300px, .87fr);
+      align-items: center;
+      gap: 64px;
+      min-height: 610px;
+      padding-block: 84px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 22px;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 16px var(--green);
+      content: "";
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 720px;
+      margin-bottom: 22px;
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 760;
+      letter-spacing: -.065em;
+      line-height: 1.02;
+    }
+
+    h1 span {
+      color: var(--green);
+      background: linear-gradient(100deg, #70efad, #c0f7d3);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-copy {
+      max-width: 610px;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: clamp(16px, 1.8vw, 19px);
+    }
+
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 13px; }
+
+    .button {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 21px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 720;
+      text-decoration: none;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .button-primary {
+      color: #062015;
+      background: linear-gradient(110deg, #78efad, #b6f5cf);
+      box-shadow: 0 10px 32px rgba(67, 207, 135, .2);
+    }
+
+    .button-secondary {
+      border-color: var(--line);
+      color: var(--text);
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .download-note {
+      min-height: 24px;
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .visual {
+      position: relative;
+      display: grid;
+      min-height: 380px;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .visual::before {
+      position: absolute;
+      z-index: -1;
+      width: min(94%, 370px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(99, 230, 163, .2);
+      border-radius: 46% 54% 62% 38% / 44% 43% 57% 56%;
+      background: radial-gradient(circle at 42% 38%, rgba(84, 207, 137, .2), rgba(15, 32, 25, .18) 58%, transparent 72%);
+      box-shadow: 0 0 100px rgba(52, 211, 153, .1);
+      content: "";
+      transform: rotate(-12deg);
+    }
+
+    .community-card {
+      width: min(100%, 360px);
+      padding: 25px;
+      border: 1px solid rgba(191, 233, 205, .18);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(23, 47, 35, .94), rgba(10, 23, 17, .94));
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .35);
+      transform: rotate(2deg);
+    }
+
+    .card-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .online-dot { color: var(--green); }
+
+    .pixel-scene {
+      position: relative;
+      overflow: hidden;
+      height: 148px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(182, 245, 207, .1);
+      border-radius: 15px;
+      background: linear-gradient(#173c35 0 55%, #1b4e39 55% 70%, #143525 70%);
+    }
+
+    .pixel-scene::before, .pixel-scene::after {
+      position: absolute;
+      bottom: 0;
+      width: 42%;
+      height: 43%;
+      background: #34734a;
+      content: "";
+      clip-path: polygon(0 100%, 0 45%, 25% 45%, 25% 0, 52% 0, 52% 35%, 100% 35%, 100% 100%);
+    }
+
+    .pixel-scene::before { left: 0; }
+    .pixel-scene::after { right: 0; transform: scaleX(-1); }
+
+    .sun {
+      position: absolute;
+      top: 21px;
+      right: 47px;
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: #b9f4b4;
+      box-shadow: 0 0 34px rgba(185, 244, 180, .38);
+    }
+
+    .block {
+      position: absolute;
+      z-index: 1;
+      bottom: 31px;
+      left: 46%;
+      width: 47px;
+      height: 47px;
+      border: 3px solid rgba(5, 23, 17, .45);
+      background: #8c6443;
+      box-shadow: inset 0 9px #5d8a52, inset 0 15px #719e5c, 0 8px 18px rgba(0, 0, 0, .3);
+      transform: rotate(4deg);
+    }
+
+    .card-title { margin-bottom: 5px; font-size: 18px; font-weight: 740; letter-spacing: -.03em; }
+    .card-description { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .025);
+    }
+
+    .stat {
+      padding: 23px 26px;
+      text-align: center;
+    }
+
+    .stat + .stat { border-left: 1px solid var(--line); }
+    .stat strong { display: block; color: var(--green); font-size: 25px; letter-spacing: -.04em; }
+    .stat span { color: var(--muted); font-size: 12px; }
+
+    section { padding-block: 104px; }
+
+    .section-heading { max-width: 700px; margin-bottom: 42px; }
+
+    .section-heading h2 {
+      margin-bottom: 12px;
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: -.055em;
+      line-height: 1.1;
+    }
+
+    .section-heading p { margin-bottom: 0; color: var(--muted); }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature {
+      min-height: 205px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .015));
+    }
+
+    .feature-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 20px;
+      place-items: center;
+      border: 1px solid rgba(99, 230, 163, .2);
+      border-radius: 13px;
+      color: var(--green);
+      background: rgba(99, 230, 163, .08);
+      font-size: 19px;
+    }
+
+    .feature h3 { margin-bottom: 8px; font-size: 17px; letter-spacing: -.025em; }
+    .feature p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
+
+    .purpose {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 55px;
+      align-items: start;
+      padding: 35px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(115deg, rgba(19, 47, 33, .85), rgba(14, 28, 22, .62));
+    }
+
+    .purpose h2 { margin-bottom: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.05em; line-height: 1.12; }
+    .purpose p { margin-bottom: 13px; color: var(--muted); }
+    .purpose p:last-child { margin-bottom: 0; }
+
+    .faq-list { display: grid; gap: 10px; }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .025);
+    }
+
+    summary {
+      position: relative;
+      padding: 19px 52px 19px 20px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 670;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::after {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      color: var(--green);
+      content: "+";
+      font-size: 22px;
+      font-weight: 450;
+      transform: translateY(-50%);
+    }
+
+    details[open] summary::after { content: "−"; }
+    details p { padding: 0 20px 19px; margin: 0; color: var(--muted); font-size: 14px; }
+
+    .closing {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 33px;
+      border: 1px solid rgba(99, 230, 163, .2);
+      border-radius: 22px;
+      background: radial-gradient(ellipse at 90% 50%, rgba(52, 211, 153, .13), transparent 50%), var(--panel);
+    }
+
+    .closing h2 { margin: 0 0 5px; font-size: 27px; letter-spacing: -.04em; }
+    .closing p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-block: 27px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer a { text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; gap: 24px; min-height: 0; padding-block: 75px 50px; }
+      .visual { min-height: 320px; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .purpose { grid-template-columns: 1fr; gap: 22px; }
+      section { padding-block: 75px; }
+    }
+
+    @media (max-width: 540px) {
+      .wrap { width: min(var(--max), calc(100% - 32px)); }
+      .topbar { min-height: 70px; }
+      .nav-link { font-size: 12px; }
+      .hero { padding-top: 59px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature { min-height: 0; }
+      .stats { grid-template-columns: 1fr; }
+      .stat { padding: 15px; }
+      .stat + .stat { border-top: 1px solid var(--line); border-left: 0; }
+      .purpose, .closing { padding: 24px; }
+      .closing { align-items: flex-start; flex-direction: column; }
+      footer { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="index.html" aria-label="WorldLeaf Social, inicio">
+      <span class="brand-mark" aria-hidden="true">W</span>
+      <span>WorldLeaf <small>Social</small></span>
+    </a>
+    <a class="nav-link" href="index.html">Entrar a la comunidad <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow">Una comunidad hecha para Bedrock</p>
+          <h1 id="hero-title">Tu mundo. Tu gente. <span>WorldLeaf Social.</span></h1>
+          <p class="hero-copy">Conecta con otros jugadores de Minecraft Bedrock: comparte lo que construyes, descubre complementos y encuentra servidores para tu próxima aventura.</p>
+          <div class="actions">
+            <a class="button button-primary" id="download-link" href="https://www.dropbox.com/scl/fi/800z95oceze111ddxpsb4/WorldLeaf-Social-1.0.apk?rlkey=qsh3ru8xog8o4fkaxksmzain2&amp;st=kqm1vcr1&amp;dl=1" target="_blank" rel="noopener noreferrer">
+              <span aria-hidden="true">↓</span> Descargar para Android
+            </a>
+            <a class="button button-secondary" href="index.html">Conocer la comunidad</a>
+          </div>
+          <p class="download-note" id="download-status" aria-live="polite">APK de WorldLeaf Social · versión 1.0</p>
+        </div>
+
+        <div class="visual" aria-hidden="true">
+          <article class="community-card">
+            <div class="card-label"><span>WorldLeaf Social</span><span class="online-dot">● En comunidad</span></div>
+            <div class="pixel-scene"><span class="sun"></span><span class="block"></span></div>
+            <p class="card-title">Las aventuras se comparten.</p>
+            <p class="card-description">Ideas, complementos y nuevos mundos. Todo cerca de tu comunidad.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="stats" aria-label="Datos de WorldLeaf Social">
+        <div class="stat"><strong>Bedrock</strong><span>Una comunidad especializada</span></div>
+        <div class="stat"><strong id="download-count">—</strong><span>Descargas de WorldLeaf Social</span></div>
+        <div class="stat"><strong>Gratis</strong><span>Únete y explora la comunidad</span></div>
+      </div>
+
+      <section aria-labelledby="features-title">
+        <div class="section-heading">
+          <p class="eyebrow">Todo en un mismo lugar</p>
+          <h2 id="features-title">Más que una lista de addons.</h2>
+          <p>Un espacio para compartir con jugadores, encontrar contenido y descubrir servidores de Minecraft Bedrock.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <span class="feature-icon" aria-hidden="true">✦</span>
+            <h3>Publica y conversa</h3>
+            <p>Comparte ideas e imágenes, sigue a otros jugadores y participa con comentarios y reacciones.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon" aria-hidden="true">▧</span>
+            <h3>Descubre complementos</h3>
+            <p>Explora el catálogo, consulta detalles y organiza tus addons favoritos en tu biblioteca.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon" aria-hidden="true">⌖</span>
+            <h3>Encuentra servidores</h3>
+            <p>Conoce servidores Bedrock publicados por la comunidad y revisa su estado y jugadores.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon" aria-hidden="true">◎</span>
+            <h3>Tu perfil, tu espacio</h3>
+            <p>Personaliza tu perfil, comparte tus publicaciones y conecta con personas que juegan como tú.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon" aria-hidden="true">◇</span>
+            <h3>Guarda lo que te gusta</h3>
+            <p>Marca complementos como favoritos y crea colecciones privadas para tenerlos a mano.</p>
+          </article>
+          <article class="feature">
+            <span class="feature-icon" aria-hidden="true">⌘</span>
+            <h3>Una comunidad moderada</h3>
+            <p>Reporta problemas o contenido para que el equipo pueda revisarlo y mantener un mejor espacio.</p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="purpose-title">
+        <div class="purpose">
+          <h2 id="purpose-title">¿Cuál es el propósito del proyecto?</h2>
+          <div>
+            <p>WorldLeaf Social busca reunir en un solo lugar a quienes juegan Minecraft Bedrock. La idea es que compartir una construcción, encontrar inspiración o conocer gente para jugar sea más sencillo.</p>
+            <p>Además de la comunidad y sus publicaciones, la app integra un catálogo de complementos y un espacio para descubrir servidores. No es Minecraft ni está afiliada oficialmente con Mojang o Microsoft: es un proyecto comunitario independiente.</p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="faq-title">
+        <div class="section-heading">
+          <p class="eyebrow">Respuestas claras</p>
+          <h2 id="faq-title">Preguntas frecuentes</h2>
+          <p>Abre cada pregunta para consultar su respuesta.</p>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>¿Qué es WorldLeaf Social?</summary>
+            <p>Es una red social comunitaria enfocada en jugadores de Minecraft Bedrock. Permite crear un perfil, compartir publicaciones e imágenes, seguir personas, comentar y reaccionar.</p>
+          </details>
+          <details>
+            <summary>¿Para qué sirve y cuál es su propósito?</summary>
+            <p>Sirve para conectar a la comunidad Bedrock y facilitar que sus jugadores compartan experiencias, encuentren complementos y descubran servidores publicados por otros miembros.</p>
+          </details>
+          <details>
+            <summary>¿Puedo descargar addons o publicar un foro?</summary>
+            <p>La app incluye un catálogo de complementos con búsqueda, detalles y descargas. También puedes compartir publicaciones y conversar mediante comentarios; no hay una sección independiente llamada “foros”.</p>
+          </details>
+          <details>
+            <summary>¿Puedo encontrar servidores de Minecraft Bedrock?</summary>
+            <p>Sí. Hay un catálogo comunitario de servidores con información de disponibilidad y jugadores. Los usuarios pueden publicar un servidor si cumple las validaciones de la app.</p>
+          </details>
+          <details>
+            <summary>¿La aplicación es gratuita?</summary>
+            <p>Sí. La descarga de este APK es gratuita. Consulta siempre los avisos que aparecen al instalar aplicaciones descargadas fuera de una tienda oficial.</p>
+          </details>
+          <details>
+            <summary>¿Cómo instalo el APK?</summary>
+            <p>Descarga el archivo en Android, ábrelo y sigue las indicaciones del sistema. Android puede solicitar permiso para instalar aplicaciones desde esa fuente. Instala solo archivos que hayas obtenido de una fuente en la que confíes.</p>
+          </details>
+          <details>
+            <summary>¿WorldLeaf Social es una aplicación oficial de Minecraft?</summary>
+            <p>No. Es un proyecto independiente de la comunidad y no está afiliado, aprobado ni respaldado por Mojang o Microsoft. Minecraft es una marca de sus respectivos propietarios.</p>
+          </details>
+          <details>
+            <summary>¿Cómo se contabilizan las descargas?</summary>
+            <p>El contador registra cada activación del botón de descarga que llega al servicio de métricas. No confirma que el archivo se haya completado o instalado; solicitudes automatizadas podrían alterar una métrica pública.</p>
+          </details>
+        </div>
+      </section>
+
+      <section aria-label="Descargar WorldLeaf Social">
+        <div class="closing">
+          <div>
+            <h2>Tu próxima aventura empieza en comunidad.</h2>
+            <p>Descarga WorldLeaf Social para Android y únete a jugadores de Bedrock.</p>
+          </div>
+          <a class="button button-primary" href="https://www.dropbox.com/scl/fi/800z95oceze111ddxpsb4/WorldLeaf-Social-1.0.apk?rlkey=qsh3ru8xog8o4fkaxksmzain2&amp;st=kqm1vcr1&amp;dl=1" target="_blank" rel="noopener noreferrer">
+            <span aria-hidden="true">↓</span> Descargar APK
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="wrap">
+    <span>© <span id="year"></span> WorldLeaf Social · Proyecto comunitario independiente.</span>
+    <a href="index.html">Abrir la aplicación <span aria-hidden="true">↗</span></a>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var COUNTER_API = 'https://script.google.com/macros/s/AKfycbwCPig856nHfy0zRN4O9kdKpxs7VltqBFGEvD5WOlnFLLU7Db6SLkaux6t2Yi6g_HNC5w/exec';
+      var sequence = 0;
+      var countElement = document.getElementById('download-count');
+      var statusElement = document.getElementById('download-status');
+
+      function requestCounter(action) {
+        return new Promise(function (resolve, reject) {
+          var callbackName = '__wlSocialCounter' + (++sequence);
+          var script = document.createElement('script');
+          var timeout = window.setTimeout(function () {
+            cleanup();
+            reject(new Error('El contador no respondió.'));
+          }, 8000);
+
+          function cleanup() {
+            window.clearTimeout(timeout);
+            delete window[callbackName];
+            script.remove();
+          }
+
+          window[callbackName] = function (result) {
+            cleanup();
+            if (!result || result.ok !== true || !Number.isSafeInteger(result.app_social_downloads) || result.app_social_downloads < 0) {
+              reject(new Error('El servicio devolvió una respuesta no válida.'));
+              return;
+            }
+            resolve(result);
+          };
+
+          script.onerror = function () {
+            cleanup();
+            reject(new Error('No se pudo conectar con el contador.'));
+          };
+
+          var url = new URL(COUNTER_API);
+          url.searchParams.set('action', action);
+          url.searchParams.set('callback', callbackName);
+          script.src = url.toString();
+          script.async = true;
+          document.head.appendChild(script);
+        });
+      }
+
+      function showCount(result) {
+        countElement.textContent = new Intl.NumberFormat('es').format(result.app_social_downloads);
+      }
+
+      document.getElementById('year').textContent = String(new Date().getFullYear());
+
+      requestCounter('getAppSocialDownloads').then(showCount).catch(function () {
+        countElement.textContent = '—';
+        countElement.setAttribute('aria-label', 'Contador no disponible');
+      });
+
+      document.querySelectorAll('#download-link, .closing .button-primary').forEach(function (link) {
+        link.addEventListener('click', function () {
+          statusElement.textContent = 'Abriendo la descarga…';
+          requestCounter('incrementAppSocialDownloads').then(function (result) {
+            showCount(result);
+            statusElement.textContent = 'Descarga iniciada. El contador se actualizó correctamente.';
+          }).catch(function () {
+            statusElement.textContent = 'La descarga se abrió, pero no se pudo actualizar el contador.';
+          });
+        });
+      });
+    }());
+  </script>
+</body>
+</html>
