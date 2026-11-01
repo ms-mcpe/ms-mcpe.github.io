@@ -1410,7 +1410,7 @@
     addons: {
       items: [],
       q: '',
-      sort: 'populares',
+      sort: 'aleatorio',
       offset: 0,
       hasMore: true,
       loading: false,
@@ -3559,7 +3559,7 @@
     state.addons = {
       items: [],
       q: '',
-      sort: 'populares',
+      sort: 'aleatorio',
       offset: 0,
       hasMore: true,
       loading: false,
@@ -3635,6 +3635,7 @@
           '<button class="btn primary" type="submit">Buscar</button>' +
         '</div>' +
         '<select class="addons-sort" id="addonSort" data-addon-sort aria-label="Ordenar complementos">' +
+          '<option value="aleatorio"' + (a.sort === 'aleatorio' ? ' selected' : '') + '>Orden aleatorio</option>' +
           '<option value="populares"' + (a.sort === 'populares' ? ' selected' : '') + '>Más populares</option>' +
           '<option value="descargas"' + (a.sort === 'descargas' ? ' selected' : '') + '>Más descargados</option>' +
           '<option value="recientes"' + (a.sort === 'recientes' ? ' selected' : '') + '>Más recientes</option>' +
@@ -3692,6 +3693,24 @@
     }
   }
 
+  function shuffleAddons(items) {
+    for (var i = items.length - 1; i > 0; i--) {
+      var index = Math.floor(Math.random() * (i + 1));
+      var item = items[i];
+      items[i] = items[index];
+      items[index] = item;
+    }
+    return items;
+  }
+
+  function insertAddonsRandomly(items, additions) {
+    additions.forEach(function (addon) {
+      var index = Math.floor(Math.random() * (items.length + 1));
+      items.splice(index, 0, addon);
+    });
+    return items;
+  }
+
   async function loadAddons(reset) {
     var a = state.addons;
     if (a.loading && !reset) return;
@@ -3715,7 +3734,14 @@
         limit: 48
       });
       if (seq !== a.seq) return;
-      a.items = reset ? (data.addons || []) : a.items.concat(data.addons || []);
+      var received = data.addons || [];
+      if (a.sort === 'aleatorio') {
+        a.items = reset
+          ? shuffleAddons(received)
+          : insertAddonsRandomly(a.items, received);
+      } else {
+        a.items = reset ? received : a.items.concat(received);
+      }
       a.offset = Number(data.nextOffset) || a.items.length;
       a.hasMore = !!data.hasMore;
       a.fallback = !!data.fallback;
@@ -4079,8 +4105,8 @@
       clearTimeout(state.addons.searchTimer);
       state.addons.searchTimer = null;
     }
-    var value = String(sort.value || 'populares');
-    if (['populares', 'descargas', 'recientes', 'nombre'].indexOf(value) < 0) value = 'populares';
+    var value = String(sort.value || 'aleatorio');
+    if (['aleatorio', 'populares', 'descargas', 'recientes', 'nombre'].indexOf(value) < 0) value = 'aleatorio';
     if (state.addons.sort === value) return;
     state.addons.sort = value;
     state.addons.loaded = true;
