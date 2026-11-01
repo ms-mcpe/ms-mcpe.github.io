@@ -944,7 +944,7 @@
     align-items: center;
     justify-content: center;
     gap: 9px;
-    width: min(220px, 42vw);
+    width: min(180px, 30vw);
     min-height: 44px;
     border: 1px solid transparent;
     border-radius: 14px;
@@ -955,6 +955,169 @@
   .bottom-nav button:hover { background: var(--panel-2); color: var(--text); }
   .bottom-nav button.active { background: rgba(var(--brand-rgb), .13); color: var(--brand); }
   .bottom-nav .bottom-icon { font-size: 18px; line-height: 1; }
+
+  /* ─── Complementos ─────────────────────────────────────────────── */
+  .addons-page { display: flex; flex-direction: column; gap: 18px; }
+  .addons-hero {
+    padding: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    background:
+      radial-gradient(420px 180px at 12% 0%, rgba(var(--brand-rgb), .18), transparent 70%),
+      linear-gradient(180deg, var(--panel), var(--bg-soft));
+  }
+  .addons-hero h1 { margin: 0; font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.03em; }
+  .addons-hero p { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
+  .addons-count { color: var(--muted); font-size: 13px; white-space: nowrap; }
+  .addons-toolbar { display: flex; gap: 10px; padding: 12px; align-items: center; flex-wrap: wrap; }
+  .addons-search { display: flex; flex: 1; min-width: 220px; gap: 8px; }
+  .addons-search input {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    outline: none;
+  }
+  .addons-search input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(var(--brand-rgb), .12); }
+  .addons-sort {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 11px 12px;
+    min-width: 150px;
+  }
+  .addons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px;
+  }
+  .addon-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    text-align: left;
+    color: var(--text);
+    background: linear-gradient(180deg, var(--panel), var(--bg-soft));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .addon-card:hover { transform: translateY(-2px); border-color: rgba(var(--brand-rgb), .45); }
+  .addon-card:active { transform: scale(.99); }
+  .addon-cover {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--panel-2);
+    overflow: hidden;
+  }
+  .addon-cover img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .addon-cover-fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 34px;
+    color: rgba(var(--brand-rgb), .55);
+    background:
+      radial-gradient(circle at 25% 20%, rgba(var(--brand-rgb), .18), transparent 55%),
+      var(--panel-2);
+  }
+  .addon-gallery-main .addon-cover-fallback { position: static; height: 100%; }
+  .addon-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .addon-title { font-weight: 800; line-height: 1.28; word-break: break-word; }
+  .addon-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
+  .addon-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(var(--brand-rgb), .1);
+    color: var(--brand);
+    font-weight: 700;
+  }
+  .addon-stats { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; margin-top: auto; }
+  .addon-stats span { display: inline-flex; align-items: center; gap: 4px; }
+  .addon-footer { display: flex; justify-content: center; padding: 8px 0 20px; }
+  .addon-empty { padding: 42px 20px; text-align: center; color: var(--muted); }
+  .addon-detail { max-width: 760px; width: 100%; }
+  .addon-detail .modal-head { align-items: flex-start; gap: 12px; }
+  .addon-detail-id {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    word-break: break-all;
+  }
+  .addon-detail h3 { margin: 0; font-size: 24px; line-height: 1.2; }
+  .addon-detail-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 10px 0 16px; color: var(--muted); font-size: 13px; }
+  .addon-gallery-main {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+  }
+  .addon-gallery-main img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #0b0d10;
+    display: block;
+  }
+  .addon-gallery-main .addon-cover-fallback { position: absolute; inset: 0; height: 100%; }
+  .addon-thumbs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 2px 4px;
+    scrollbar-width: thin;
+  }
+  .addon-thumb {
+    flex: 0 0 82px;
+    height: 58px;
+    padding: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background: var(--panel-2);
+  }
+  .addon-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .addon-thumb.active { border-color: var(--brand); }
+  .addon-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+  .addon-actions .btn { flex: 1; min-width: 150px; }
+  .addon-like-btn.liked { background: rgba(248, 113, 113, .12); border-color: rgba(248, 113, 113, .4); color: #fb7185; }
+  .addon-like-btn.liked:disabled { opacity: 1; }
+  .addon-description { white-space: pre-wrap; line-height: 1.65; border-top: 1px solid var(--line); padding-top: 16px; }
+  .addon-translated {
+    display: inline-flex;
+    margin-bottom: 10px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(var(--brand-rgb), .1);
+    color: var(--brand);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .addon-detail-loading { padding: 50px 0; }
 
   @media (max-width: 600px) {
     .settings-row { align-items: flex-start; }
@@ -1056,6 +1219,7 @@
     <nav class="side-nav">
       <p class="side-title">Navegación</p>
       <button type="button" data-side-view="search">🔎 Buscar</button>
+      <button type="button" data-side-view="addons">🧩 Complementos</button>
       <p class="side-title">Cuenta</p>
       <button type="button" id="sideLogoutBtn" class="danger">🚪 Cerrar sesión</button>
     </nav>
@@ -1066,6 +1230,7 @@
     <button class="brand" id="homeBtn" type="button"><span class="logo">🌿</span><span class="brand-text">WorldLeaf</span></button>
     <nav class="nav">
       <button type="button" data-view="search">Buscar</button>
+      <button type="button" data-view="addons">Complementos</button>
     </nav>
     <div class="top-actions">
       <button class="bell-btn" id="notifBtn" type="button" title="Notificaciones" aria-label="Notificaciones">🔔<span id="notifBadge" class="badge-count hidden">0</span></button>
@@ -1086,7 +1251,8 @@
   </main>
   <nav class="bottom-nav" aria-label="Navegación principal">
     <button type="button" data-app-view="feed"><span class="bottom-icon" aria-hidden="true">🏠</span>Inicio</button>
-    <button type="button" data-app-view="settings"><span class="bottom-icon" aria-hidden="true">⚙️</span>Configuración</button>
+    <button type="button" data-app-view="addons"><span class="bottom-icon" aria-hidden="true">🧩</span>Complementos</button>
+    <button type="button" data-app-view="settings"><span class="bottom-icon" aria-hidden="true">⚙️</span>Ajustes</button>
   </nav>
 </div>
 
@@ -1144,6 +1310,20 @@
       <button class="btn ghost" id="cancelEditCommentBtn" type="button">Cancelar</button>
       <button class="btn primary" id="saveEditCommentBtn" type="button">Guardar cambios</button>
     </div>
+  </section>
+</div>
+
+<!-- ══════════════ DETALLE DE COMPLEMENTO ══════════════ -->
+<div id="addonModal" class="modal hidden" aria-hidden="true">
+  <section class="modal-card addon-detail" role="dialog" aria-modal="true" aria-labelledby="addonDetailTitle">
+    <div class="modal-head">
+      <div>
+        <span class="addon-detail-id" id="addonDetailId">ID</span>
+        <h3 id="addonDetailTitle">Complemento</h3>
+      </div>
+      <button class="icon-btn" id="closeAddonBtn" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="addonDetailBody"></div>
   </section>
 </div>
 
@@ -1226,7 +1406,23 @@
     commentEdit: null,
     recoveryEmail: '',
     resetToken: '',
-    edit: { avatar: null, cover: null }
+    edit: { avatar: null, cover: null },
+    addons: {
+      items: [],
+      q: '',
+      sort: 'populares',
+      offset: 0,
+      hasMore: true,
+      loading: false,
+      seq: 0,
+      loaded: false,
+      fallback: false,
+      error: '',
+      searchTimer: null,
+      detail: null,
+      detailSeq: 0,
+      galleryIndex: 0
+    }
   };
 
   var Security = (function () {
@@ -1304,6 +1500,37 @@
       }
     }
 
+    function isPrivateHost(hostname) {
+      var host = String(hostname || '').toLowerCase();
+      if (!host || host === 'localhost' || host.endsWith('.local')) return true;
+      var ipv4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+      if (ipv4) {
+        var a = Number(ipv4[1]);
+        var b = Number(ipv4[2]);
+        if (a === 10 || a === 127 || a === 0) return true;
+        if (a === 169 && b === 254) return true;
+        if (a === 172 && b >= 16 && b <= 31) return true;
+        if (a === 192 && b === 168) return true;
+      }
+      return host === '[::1]' || host === '::1';
+    }
+
+    function safeExternalUrl(value, allowHttp) {
+      if (typeof value !== 'string' || !value || value.length > 4096) return '';
+      try {
+        var parsed = new URL(value.trim());
+        if (parsed.protocol !== 'https:' && !(allowHttp && parsed.protocol === 'http:')) return '';
+        if (parsed.username || parsed.password || isPrivateHost(parsed.hostname)) return '';
+        return parsed.href;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function safeExternalImageUrl(value) {
+      return safeExternalUrl(value, false);
+    }
+
     return {
       LIMITS: LIMITS,
       sanitizeText: sanitizeText,
@@ -1313,7 +1540,9 @@
       isValidPassword: isValidPassword,
       validateImageFile: validateImageFile,
       dataUrlSizeBytes: dataUrlSizeBytes,
-      safeImageUrl: safeImageUrl
+      safeImageUrl: safeImageUrl,
+      safeExternalUrl: safeExternalUrl,
+      safeExternalImageUrl: safeExternalImageUrl
     };
   })();
 
@@ -1480,6 +1709,7 @@
     removeCache(CACHE_PROFILE_KEY);
     removeCache(CACHE_FEED_KEY);
     removeCache(CACHE_NOTIF_KEY);
+    resetAddonsState();
   }
 
   var PLACEHOLDER_AVATAR = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
@@ -1559,6 +1789,7 @@
     if (path === 'feed' || path === '') return { view: 'feed', userId: '' };
     if (path === 'explore') return { view: 'feed', userId: '' };
     if (path === 'search') return { view: 'search', userId: '' };
+    if (path === 'addons') return { view: 'addons', userId: '' };
     if (path === 'notifications') return { view: 'notifications', userId: '' };
     if (path === 'settings') return { view: 'settings', userId: '' };
     if (path === 'profile' || path.indexOf('profile/') === 0) {
@@ -1576,6 +1807,7 @@
       return userId ? 'profile?userId=' + encodeURIComponent(userId) : 'profile';
     }
     if (view === 'search') return 'search';
+    if (view === 'addons') return 'addons';
     if (view === 'notifications') return 'notifications';
     if (view === 'settings') return 'settings';
     return 'feed';
@@ -2212,6 +2444,11 @@
           closeEditCommentModal();
           return;
         }
+        if (!$('#addonModal').classList.contains('hidden')) {
+          e.preventDefault();
+          closeAddonDetail();
+          return;
+        }
         closeActionMenus();
         closeDrawer();
       }
@@ -2248,7 +2485,15 @@
 
     var appEl = $('#appScreen');
     appEl.addEventListener('click', onViewClick);
+    appEl.addEventListener('input', onViewInput);
     appEl.addEventListener('submit', onViewSubmit);
+    appEl.addEventListener('change', onViewChange);
+
+    $('#closeAddonBtn').addEventListener('click', closeAddonDetail);
+    $('#addonDetailBody').addEventListener('click', onAddonDetailClick);
+    $('#addonModal').addEventListener('click', function (e) {
+      if (e.target === $('#addonModal')) closeAddonDetail();
+    });
 
     $('#closeEditBtn').addEventListener('click', closeEditModal);
     $('#cancelEditBtn').addEventListener('click', closeEditModal);
@@ -2310,6 +2555,7 @@
     if (!opts.skipHash) syncHash(view, { userId: userId || undefined });
     if (view === 'feed') return renderFeed();
     if (view === 'search') return renderSearch();
+    if (view === 'addons') return renderAddons();
     if (view === 'notifications') return renderNotifications();
     if (view === 'settings') return renderSettings();
     if (view === 'profile') return renderProfile(userId || (state.me ? state.me.userId : ''));
@@ -3304,9 +3550,393 @@
   }
 
   // ─────────────────────────────────────────────────────────────────────
+  //  Complementos
+  // ─────────────────────────────────────────────────────────────────────
+  function resetAddonsState() {
+    if (state.addons && state.addons.searchTimer) {
+      clearTimeout(state.addons.searchTimer);
+    }
+    state.addons = {
+      items: [],
+      q: '',
+      sort: 'populares',
+      offset: 0,
+      hasMore: true,
+      loading: false,
+      seq: 0,
+      loaded: false,
+      fallback: false,
+      error: '',
+      searchTimer: null,
+      detail: null,
+      detailSeq: 0,
+      galleryIndex: 0
+    };
+    var modal = document.getElementById('addonModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+    var body = document.getElementById('addonDetailBody');
+    if (body) body.innerHTML = '';
+  }
+
+  function addonSafeImage(url) {
+    return Security.safeExternalImageUrl(url);
+  }
+
+  function addonCoverHTML(addon) {
+    var src = addonSafeImage(addon.imagen);
+    return '<div class="addon-cover">' +
+      '<div class="addon-cover-fallback" aria-hidden="true">🧩</div>' +
+      (src ? '<img src="' + esc(src) + '" alt="' + esc(addon.nombre) + '" loading="lazy" ' +
+        'onerror="this.onerror=null;this.style.display=\'none\'">' : '') +
+      '</div>';
+  }
+
+  function addonDateLabel(value) {
+    if (!value) return '';
+    var label = timeAgo(value);
+    return label || String(value);
+  }
+
+  function addonCardHTML(addon) {
+    var category = addon.categoria || 'Complemento';
+    var version = addon.version ? '<span class="addon-chip">v' + esc(addon.version) + '</span>' : '';
+    var author = addon.subidoPor ? '<span>por ' + esc(addon.subidoPor) + '</span>' : '';
+    var date = addonDateLabel(addon.fecha);
+    return '<button class="addon-card" type="button" data-addon-open="' + esc(addon.id) + '">' +
+      addonCoverHTML(addon) +
+      '<div class="addon-body">' +
+        '<div class="addon-title">' + esc(addon.nombre) + '</div>' +
+        '<div class="addon-meta"><span class="addon-chip">' + esc(category) + '</span>' + version + '</div>' +
+        '<div class="addon-stats">' +
+          '<span>❤️ ' + safeCount(addon.likes) + '</span>' +
+          '<span>⬇️ ' + safeCount(addon.descargas) + '</span>' +
+        '</div>' +
+        '<div class="addon-meta">' + author + (date ? '<span>' + esc(date) + '</span>' : '') + '</div>' +
+      '</div>' +
+    '</button>';
+  }
+
+  function renderAddons() {
+    var a = state.addons;
+    var view = $('#view');
+    view.innerHTML = '<div class="addons-page">' +
+      '<div class="card addons-hero">' +
+        '<div><h1>Complementos</h1>' +
+        '<p>Descubre addons para ampliar tu experiencia. Busca por nombre o categoría y abre cada ficha para ver su galería, descripción y enlace de descarga.</p></div>' +
+        '<span class="addons-count" id="addonsCount"></span>' +
+      '</div>' +
+      '<form class="card addons-toolbar" data-addon-search-form>' +
+        '<div class="addons-search">' +
+          '<input type="search" id="addonSearchInput" maxlength="60" autocomplete="off" ' +
+            'placeholder="Buscar complementos..." value="' + esc(a.q) + '" aria-label="Buscar complementos">' +
+          '<button class="btn primary" type="submit">Buscar</button>' +
+        '</div>' +
+        '<select class="addons-sort" id="addonSort" data-addon-sort aria-label="Ordenar complementos">' +
+          '<option value="populares"' + (a.sort === 'populares' ? ' selected' : '') + '>Más populares</option>' +
+          '<option value="descargas"' + (a.sort === 'descargas' ? ' selected' : '') + '>Más descargados</option>' +
+          '<option value="recientes"' + (a.sort === 'recientes' ? ' selected' : '') + '>Más recientes</option>' +
+          '<option value="nombre"' + (a.sort === 'nombre' ? ' selected' : '') + '>Nombre A-Z</option>' +
+        '</select>' +
+      '</form>' +
+      '<p class="muted hidden" id="addonsNotice"></p>' +
+      '<div class="addons-grid" id="addonsGrid"></div>' +
+      '<div class="addon-footer" id="addonsFooter"></div>' +
+    '</div>';
+    renderAddonsGrid();
+    if (!a.loaded && !a.loading) loadAddons(true);
+  }
+
+  function renderAddonsGrid() {
+    var a = state.addons;
+    var grid = $('#addonsGrid');
+    if (!grid) return;
+    var count = $('#addonsCount');
+    if (count) {
+      count.textContent = a.loaded
+        ? (a.items.length + (a.hasMore ? '+' : '') + ' complemento' + (a.items.length === 1 && !a.hasMore ? '' : 's'))
+        : '';
+    }
+    var notice = $('#addonsNotice');
+    if (notice) {
+      notice.textContent = a.fallback && a.q
+        ? 'No hubo coincidencias exactas. Mostrando resultados similares.'
+        : '';
+      notice.classList.toggle('hidden', !notice.textContent);
+    }
+
+    if (a.loading && !a.items.length) {
+      grid.innerHTML = '<div class="center-load" style="grid-column:1/-1"><div class="spinner"></div></div>';
+    } else if (a.error && !a.items.length) {
+      grid.innerHTML = '<div class="addon-empty" style="grid-column:1/-1">' + esc(a.error) + '</div>';
+    } else if (!a.items.length) {
+      grid.innerHTML = '<div class="addon-empty" style="grid-column:1/-1">' +
+        (a.q ? 'No se encontraron complementos para “' + esc(a.q) + '”.' : 'Todavía no hay complementos disponibles.') +
+        '</div>';
+    } else {
+      grid.innerHTML = a.items.map(addonCardHTML).join('');
+    }
+
+    var footer = $('#addonsFooter');
+    if (!footer) return;
+    if (a.loading && a.items.length) {
+      footer.innerHTML = '<div class="spinner"></div>';
+    } else if (a.hasMore && !a.error) {
+      footer.innerHTML = '<button class="btn ghost" type="button" data-addon-more>Cargar más</button>';
+    } else if (a.items.length) {
+      footer.innerHTML = '<span class="muted">No hay más resultados.</span>';
+    } else {
+      footer.innerHTML = '';
+    }
+  }
+
+  async function loadAddons(reset) {
+    var a = state.addons;
+    if (a.loading && !reset) return;
+    if (!reset && !a.hasMore) return;
+    if (reset) {
+      a.offset = 0;
+      a.items = [];
+      a.hasMore = true;
+      a.loaded = true;
+      a.error = '';
+      a.fallback = false;
+    }
+    a.loading = true;
+    var seq = ++a.seq;
+    renderAddonsGrid();
+    try {
+      var data = await api('getAddons', {
+        q: a.q,
+        sort: a.sort,
+        offset: a.offset,
+        limit: 48
+      });
+      if (seq !== a.seq) return;
+      a.items = reset ? (data.addons || []) : a.items.concat(data.addons || []);
+      a.offset = Number(data.nextOffset) || a.items.length;
+      a.hasMore = !!data.hasMore;
+      a.fallback = !!data.fallback;
+      a.loaded = true;
+    } catch (err) {
+      if (seq !== a.seq) return;
+      a.error = (err && err.message) || 'No se pudieron cargar los complementos.';
+      if (!a.items.length) toast(a.error, 'err');
+    } finally {
+      if (seq === a.seq) {
+        a.loading = false;
+        renderAddonsGrid();
+      }
+    }
+  }
+
+  function findAddon(id) {
+    if (state.addons.detail && String(state.addons.detail.id) === String(id)) {
+      return state.addons.detail;
+    }
+    for (var i = 0; i < state.addons.items.length; i++) {
+      if (String(state.addons.items[i].id) === String(id)) return state.addons.items[i];
+    }
+    return null;
+  }
+
+  function syncAddonState(addon) {
+    var items = state.addons.items;
+    for (var i = 0; i < items.length; i++) {
+      if (String(items[i].id) === String(addon.id)) {
+        items[i].likes = addon.likes;
+        items[i].descargas = addon.descargas;
+        items[i].meGusta = addon.meGusta;
+        break;
+      }
+    }
+    renderAddonsGrid();
+  }
+
+  function addonDetailGalleryHTML(addon) {
+    var images = (addon.imagenes || []).map(addonSafeImage).filter(function (url) { return !!url; });
+    var index = Math.min(Math.max(0, state.addons.galleryIndex), Math.max(0, images.length - 1));
+    var main = '<div class="addon-cover-fallback" aria-hidden="true">🧩</div>' +
+      (images[index]
+        ? '<img id="addonGalleryMain" src="' + esc(images[index]) + '" alt="' + esc(addon.nombre) + '" ' +
+          'onerror="this.onerror=null;this.style.display=\'none\'">'
+        : '');
+    var thumbs = images.length > 1
+      ? '<div class="addon-thumbs" role="list">' + images.slice(1).map(function (url, i) {
+          var imageIndex = i + 1;
+          return '<button class="addon-thumb' + (imageIndex === index ? ' active' : '') + '" type="button" ' +
+            'data-addon-thumb="' + imageIndex + '" role="listitem" aria-label="Imagen ' + (imageIndex + 1) + '">' +
+            '<img src="' + esc(url) + '" alt="" loading="lazy" ' +
+            'onerror="this.onerror=null;this.parentNode.style.display=\'none\'"></button>';
+        }).join('') + '</div>'
+      : '';
+    return { images: images, html: '<div class="addon-gallery-main">' + main + '</div>' + thumbs };
+  }
+
+  function renderAddonDetail() {
+    var addon = state.addons.detail;
+    if (!addon) return;
+    var gallery = addonDetailGalleryHTML(addon);
+    var category = addon.categoria || 'Complemento';
+    var version = addon.version ? '<span>Versión ' + esc(addon.version) + '</span>' : '';
+    var author = addon.subidoPor ? '<span>por ' + esc(addon.subidoPor) + '</span>' : '';
+    var date = addonDateLabel(addon.fecha);
+    var desc = addon.descripcion
+      ? '<div class="addon-description">' + esc(addon.descripcion) + '</div>'
+      : '<p class="muted">Sin descripción disponible.</p>';
+    var translated = addon.descripcionTraducida
+      ? '<span class="addon-translated">Descripción traducida automáticamente</span>'
+      : '';
+
+    $('#addonDetailId').textContent = 'ID ' + addon.id;
+    $('#addonDetailTitle').textContent = addon.nombre;
+    $('#addonDetailBody').innerHTML =
+      '<div class="addon-detail-meta">' +
+        '<span class="addon-chip">' + esc(category) + '</span>' + version + author +
+        (date ? '<span>' + esc(date) + '</span>' : '') +
+        '<span>❤️ ' + safeCount(addon.likes) + '</span>' +
+        '<span>⬇️ ' + safeCount(addon.descargas) + '</span>' +
+      '</div>' +
+      gallery.html +
+      '<div class="addon-actions">' +
+        '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
+          'data-addon-like="' + esc(addon.id) + '"' + (addon.meGusta ? ' disabled' : '') + '>' +
+          (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
+          ' <span>' + safeCount(addon.likes) + '</span></button>' +
+        '<button class="btn primary" type="button" data-addon-download="' + esc(addon.id) + '">' +
+          '⬇️ Descargar</button>' +
+      '</div>' +
+      translated + desc;
+  }
+
+  async function openAddonDetail(id) {
+    var modal = $('#addonModal');
+    var seq = ++state.addons.detailSeq;
+    state.addons.detail = null;
+    state.addons.galleryIndex = 0;
+    $('#addonDetailId').textContent = 'ID ' + id;
+    $('#addonDetailTitle').textContent = 'Cargando complemento...';
+    $('#addonDetailBody').innerHTML = '<div class="center-load addon-detail-loading"><div class="spinner"></div></div>';
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    var closeBtn = $('#closeAddonBtn');
+    if (closeBtn) closeBtn.focus();
+    try {
+      var data = await api('getAddon', { id: id });
+      if (seq !== state.addons.detailSeq) return;
+      state.addons.detail = data.addon;
+      state.addons.galleryIndex = 0;
+      renderAddonDetail();
+    } catch (err) {
+      if (seq !== state.addons.detailSeq) return;
+      $('#addonDetailTitle').textContent = 'Complemento';
+      $('#addonDetailBody').innerHTML = '<div class="addon-empty">' +
+        esc((err && err.message) || 'No se pudo cargar el complemento.') + '</div>';
+      toast((err && err.message) || 'No se pudo cargar el complemento.', 'err');
+    }
+  }
+
+  function closeAddonDetail() {
+    state.addons.detailSeq += 1;
+    state.addons.detail = null;
+    var modal = $('#addonModal');
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    $('#addonDetailBody').innerHTML = '';
+  }
+
+  function selectAddonImage(index) {
+    var addon = state.addons.detail;
+    if (!addon) return;
+    var images = (addon.imagenes || []).map(addonSafeImage).filter(function (url) { return !!url; });
+    if (!images.length) return;
+    var next = Math.min(Math.max(0, Number(index) || 0), images.length - 1);
+    state.addons.galleryIndex = next;
+    var main = $('#addonGalleryMain');
+    if (main) {
+      main.style.display = '';
+      main.src = images[next];
+    }
+    $all('[data-addon-thumb]').forEach(function (btn) {
+      btn.classList.toggle('active', Number(btn.dataset.addonThumb) === next);
+    });
+  }
+
+  async function likeAddon(id) {
+    var addon = findAddon(id);
+    if (!addon || addon.meGusta) return;
+    var button = document.querySelector('[data-addon-like="' + id + '"]');
+    if (button) button.disabled = true;
+    var previousLikes = safeCount(addon.likes);
+    addon.meGusta = true;
+    addon.likes = previousLikes + 1;
+    renderAddonDetail();
+    try {
+      var data = await api('likeAddon', { id: id });
+      addon.meGusta = !!data.meGusta;
+      if (data.likes !== null && data.likes !== undefined) addon.likes = safeCount(data.likes);
+      if (state.addons.detail && String(state.addons.detail.id) === String(id)) renderAddonDetail();
+      syncAddonState(addon);
+      if (data.yaRegistrado) toast('Ya habías dado me gusta a este complemento.', 'warn');
+    } catch (err) {
+      addon.meGusta = false;
+      addon.likes = previousLikes;
+      if (state.addons.detail && String(state.addons.detail.id) === String(id)) renderAddonDetail();
+      syncAddonState(addon);
+      toast((err && err.message) || 'No se pudo dar me gusta.', 'err');
+    }
+  }
+
+  async function downloadAddon(id) {
+    var addon = findAddon(id);
+    if (!addon) return;
+    var url = Security.safeExternalUrl(addon.urlDescarga, true);
+    if (!url) {
+      toast('Este complemento no tiene un enlace de descarga válido.', 'err');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+    try {
+      var data = await api('descargarAddon', { id: id });
+      if (data && data.descargas !== null && data.descargas !== undefined) {
+        addon.descargas = safeCount(data.descargas);
+        if (state.addons.detail && String(state.addons.detail.id) === String(id)) renderAddonDetail();
+        syncAddonState(addon);
+      }
+    } catch (err) {
+      console.error('No se pudo registrar la descarga: ' + ((err && err.message) || err));
+    }
+  }
+
+  function onAddonDetailClick(e) {
+    var close = e.target.closest('[data-addon-close]');
+    if (close) { closeAddonDetail(); return; }
+    var thumb = e.target.closest('[data-addon-thumb]');
+    if (thumb) { selectAddonImage(thumb.dataset.addonThumb); return; }
+    var like = e.target.closest('[data-addon-like]');
+    if (like) { likeAddon(like.dataset.addonLike); return; }
+    var download = e.target.closest('[data-addon-download]');
+    if (download) { downloadAddon(download.dataset.addonDownload); }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
   //  Delegación de eventos de la vista
   // ─────────────────────────────────────────────────────────────────────
   async function onViewClick(e) {
+    var addonOpen = e.target.closest('[data-addon-open]');
+    if (addonOpen) {
+      await openAddonDetail(addonOpen.dataset.addonOpen);
+      return;
+    }
+
+    var addonMore = e.target.closest('[data-addon-more]');
+    if (addonMore) {
+      await loadAddons(false);
+      return;
+    }
+
     var menuToggle = e.target.closest('[data-menu-toggle]');
     if (menuToggle) {
       var menuWrap = menuToggle.closest('.post-menu-wrap, .comment-menu-wrap');
@@ -3442,7 +4072,52 @@
     });
   }
 
+  function onViewChange(e) {
+    var sort = e.target.closest('[data-addon-sort]');
+    if (!sort) return;
+    if (state.addons.searchTimer) {
+      clearTimeout(state.addons.searchTimer);
+      state.addons.searchTimer = null;
+    }
+    var value = String(sort.value || 'populares');
+    if (['populares', 'descargas', 'recientes', 'nombre'].indexOf(value) < 0) value = 'populares';
+    if (state.addons.sort === value) return;
+    state.addons.sort = value;
+    state.addons.loaded = true;
+    loadAddons(true);
+  }
+
+  function onViewInput(e) {
+    var input = e.target.closest('#addonSearchInput');
+    if (!input) return;
+    var addons = state.addons;
+    var q = Security.sanitizeText(input.value || '').trim().slice(0, 60);
+    if (addons.q === q) return;
+    addons.q = q;
+    if (addons.searchTimer) clearTimeout(addons.searchTimer);
+    addons.loaded = true;
+    addons.searchTimer = setTimeout(function () {
+      addons.searchTimer = null;
+      loadAddons(true);
+    }, 300);
+  }
+
   async function onViewSubmit(e) {
+    var addonForm = e.target.closest('[data-addon-search-form]');
+    if (addonForm) {
+      e.preventDefault();
+      if (state.addons.searchTimer) {
+        clearTimeout(state.addons.searchTimer);
+        state.addons.searchTimer = null;
+      }
+      var input = addonForm.querySelector('#addonSearchInput');
+      var q = Security.sanitizeText(input ? input.value : '').trim().slice(0, 60);
+      state.addons.q = q;
+      state.addons.loaded = true;
+      await loadAddons(true);
+      return;
+    }
+
     var form = e.target.closest('[data-comment-form]');
     if (!form) return;
     e.preventDefault();
