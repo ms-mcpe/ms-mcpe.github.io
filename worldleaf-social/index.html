@@ -1137,12 +1137,58 @@
     color: var(--text);
     max-width: 100%;
   }
-  .feed-toolbar + .composer { margin-top: 12px; }
-  .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .feed-toolbar { order: 2; }
+  .composer { order: 1; }
+  .feed-list, #feedMore { order: 3; }
+  .feed-composer-group { display: flex; flex-direction: column; gap: 12px; }
+  .feed-toolbar + .composer { margin-top: 0; }
+  .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
   .server-card { overflow: hidden; }
-  .server-cover { width: 100%; aspect-ratio: 16 / 9; background: var(--panel-2); object-fit: cover; display: block; }
-  .server-body { padding: 16px; }
-  .server-address { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
+  .server-summary {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    gap: 14px;
+    padding: 12px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .server-summary:hover { background: var(--panel-2); }
+  .server-cover {
+    flex: 0 0 78px;
+    width: 78px;
+    height: 78px;
+    border-radius: 12px;
+    background: var(--panel-2);
+    object-fit: cover;
+  }
+  .server-cover-fallback {
+    display: grid;
+    flex: 0 0 78px;
+    width: 78px;
+    height: 78px;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--panel-2);
+    font-size: 30px;
+  }
+  .server-summary-body { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+  .server-summary-title { overflow: hidden; margin: 0; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; font-weight: 700; }
+  .server-summary-meta { color: var(--muted); font-size: 13px; }
+  .server-summary-players { color: var(--text); font-size: 13px; font-weight: 700; }
+  .server-detail-cover { width: 100%; max-height: 260px; margin-bottom: 16px; border-radius: 14px; object-fit: cover; }
+  .server-detail-meta { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 14px; }
+  .server-copy-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; margin: 10px 0; }
+  .server-copy-row code { overflow-wrap: anywhere; }
+  .server-detail-motd { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .server-detail-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .server-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin: 4px 0 12px; }
+  .server-toolbar label { color: var(--muted); font-size: 13px; font-weight: 600; }
+  .server-add-toggle { align-self: flex-start; }
   .server-status { font-size: 13px; font-weight: 700; }
   .server-status.online { color: var(--brand); }
   .server-status.offline { color: var(--danger); }
@@ -1361,6 +1407,17 @@
   </section>
 </div>
 
+<!-- ══════════════ DETALLE DE SERVIDOR ══════════════ -->
+<div id="serverDetailModal" class="modal hidden" aria-hidden="true">
+  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="serverDetailTitle">
+    <div class="modal-head">
+      <h3 id="serverDetailTitle">Servidor</h3>
+      <button class="icon-btn" id="closeServerDetailBtn" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="serverDetailBody"></div>
+  </section>
+</div>
+
 <!-- ══════════════ DIÁLOGO DE LA APLICACIÓN ══════════════ -->
 <div id="appDialog" class="modal hidden" aria-hidden="true">
   <section class="modal-card confirm-card" role="alertdialog" aria-modal="true"
@@ -1435,7 +1492,10 @@
     routeLock: false,
     feed: { offset: 0, hasMore: true, loading: false, filter: 'siguiendo', seq: 0 },
     report: { targetUser: null, searchTimer: null, searchSeq: 0, reports: [], loaded: false },
-    servers: { items: [], loaded: false, image: '', editId: '' },
+    servers: {
+      items: [], loaded: false, image: '', editId: '', formOpen: false,
+      detailId: '', detailOpener: null, sort: 'recientes'
+    },
     pendingImages: [],
     appDialog: { resolve: null, returnFocus: null, hasCancel: false },
     postEdit: null,
@@ -2480,6 +2540,22 @@
           return;
         }
       }
+      var serverModal = $('#serverDetailModal');
+      if (e.key === 'Tab' && !serverModal.classList.contains('hidden')) {
+        var serverFocusables = serverModal.querySelectorAll(
+          'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (!serverFocusables.length) return;
+        var firstServerFocusable = serverFocusables[0];
+        var lastServerFocusable = serverFocusables[serverFocusables.length - 1];
+        if (e.shiftKey && document.activeElement === firstServerFocusable) {
+          e.preventDefault();
+          lastServerFocusable.focus();
+        } else if (!e.shiftKey && document.activeElement === lastServerFocusable) {
+          e.preventDefault();
+          firstServerFocusable.focus();
+        }
+      }
       if (e.key === 'Escape') {
         if (!$('#editPostModal').classList.contains('hidden')) {
           e.preventDefault();
@@ -2494,6 +2570,11 @@
         if (!$('#addonModal').classList.contains('hidden')) {
           e.preventDefault();
           closeAddonDetail();
+          return;
+        }
+        if (!$('#serverDetailModal').classList.contains('hidden')) {
+          e.preventDefault();
+          closeServerDetail();
           return;
         }
         closeActionMenus();
@@ -2543,6 +2624,11 @@
     });
     $('#addonModal').addEventListener('click', function (e) {
       if (e.target === $('#addonModal')) closeAddonDetail();
+    });
+    $('#closeServerDetailBtn').addEventListener('click', closeServerDetail);
+    $('#serverDetailBody').addEventListener('click', onServerDetailClick);
+    $('#serverDetailModal').addEventListener('click', function (e) {
+      if (e.target === $('#serverDetailModal')) closeServerDetail();
     });
 
     $('#closeEditBtn').addEventListener('click', closeEditModal);
@@ -2778,6 +2864,8 @@
     state.pendingImages = [];
     state.feed = { offset: 0, hasMore: true, loading: false, filter: selectedFilter, seq: feedSeq };
     $('#view').innerHTML =
+      '<div class="feed-composer-group">' +
+      composerHTML() +
       '<div class="card feed-toolbar"><label for="feedFilter">Mostrar: </label>' +
         '<select class="feed-filter" id="feedFilter" data-feed-filter>' +
           '<option value="siguiendo"' + (selectedFilter === 'siguiendo' ? ' selected' : '') + '>Siguiendo</option>' +
@@ -2786,7 +2874,7 @@
           '<option value="populares"' + (selectedFilter === 'populares' ? ' selected' : '') + '>Más populares</option>' +
         '</select>' +
       '</div>' +
-      composerHTML() +
+      '</div>' +
       '<div id="feedList" class="feed-list"></div>' +
       '<div id="feedMore" class="center-actions"></div>';
     bindComposer();
@@ -4444,33 +4532,149 @@
   }
 
   function serverCardHTML(server) {
+    var players = server.jugadores === null || server.jugadores === undefined
+      ? 'Jugadores no disponibles'
+      : safeCount(server.jugadores) + ' jugadores';
+    var image = Security.safeImageUrl(server.imagen, false);
+    return '<article class="card server-card" data-server="' + esc(server.id) + '">' +
+      '<button class="server-summary" type="button" data-server-open="' + esc(server.id) +
+        '" aria-label="Ver detalles de ' + esc(server.nombre) + '">' +
+        (image
+          ? '<img class="server-cover" src="' + esc(image) + '" alt="" loading="lazy">'
+          : '<span class="server-cover-fallback" aria-hidden="true">🎮</span>') +
+        '<span class="server-summary-body">' +
+          '<span class="server-summary-title">' + esc(server.nombre) + '</span>' +
+          '<span class="server-summary-meta">Publicado por @' + esc(server.autor.nombre) + '</span>' +
+          '<span class="server-summary-players">' + esc(players) + '</span>' +
+        '</span>' +
+      '</button></article>';
+  }
+
+  function openServerDetail(serverId) {
+    var server = state.servers.items.find(function (item) {
+      return String(item.id) === String(serverId);
+    });
+    if (!server) {
+      toast('No se encontró la información de este servidor.', 'err');
+      return;
+    }
+    state.servers.detailId = String(server.id);
+    state.servers.detailOpener = document.activeElement;
+    var modal = $('#serverDetailModal');
+    var image = Security.safeImageUrl(server.imagen, false);
     var status = server.online
       ? '<span class="server-status online">● Activo</span>'
       : '<span class="server-status offline">● Inactivo</span>';
-    var players = server.jugadores === null || server.maxJugadores === null
-      ? 'Jugadores: datos no disponibles'
-      : 'Jugadores: ' + safeCount(server.jugadores) + ' / ' + safeCount(server.maxJugadores);
-    var image = Security.safeImageUrl(server.imagen, false);
-    return '<article class="card server-card" data-server="' + esc(server.id) + '">' +
-      (image ? '<img class="server-cover" src="' + esc(image) + '" alt="Imagen de ' + esc(server.nombre) + '" loading="lazy">' : '') +
-      '<div class="server-body">' +
-        '<h2>' + esc(server.nombre) + '</h2>' +
-        '<div class="muted">por <button class="link-inline" type="button" data-user="' +
-          esc(server.autor.userId) + '">@' + esc(server.autor.nombre) + '</button></div>' +
-        '<p class="server-address"><code>' + esc(server.host + ':' + server.port) + '</code>' +
-          '<button class="btn ghost small" data-server-copy="' + esc(server.host + ':' + server.port) +
-          '" type="button">Copiar</button></p>' +
-        '<p>' + status + '</p><p class="muted">' + esc(players) + '</p>' +
-        (server.version ? '<p class="muted">Versión: ' + esc(server.version) + '</p>' : '') +
-        (server.motd ? '<p class="muted">' + esc(server.motd) + '</p>' : '') +
-        '<small class="muted">Actualizado ' + esc(server.actualizado ? timeAgo(server.actualizado) : 'sin datos') +
-        ' · agregado ' + esc(timeAgo(server.fecha)) + '</small>' +
-        (server.esMio ? '<div class="modal-actions">' +
-          '<button class="btn ghost small" data-server-edit="' + esc(server.id) +
-            '" type="button">Editar servidor</button>' +
-          '<button class="btn danger small" data-server-delete="' + esc(server.id) +
-            '" type="button">Eliminar servidor</button></div>' : '') +
-      '</div></article>';
+    var players = server.jugadores === null || server.jugadores === undefined ||
+      server.maxJugadores === null || server.maxJugadores === undefined
+      ? 'Datos de jugadores no disponibles'
+      : safeCount(server.jugadores) + ' / ' + safeCount(server.maxJugadores);
+    $('#serverDetailTitle').textContent = server.nombre;
+    $('#serverDetailBody').innerHTML =
+      (image ? '<img class="server-detail-cover" src="' + esc(image) + '" alt="Imagen de ' +
+        esc(server.nombre) + '">' : '') +
+      '<div class="server-detail-meta">' + status +
+        '<span><strong>' + esc(players) + '</strong></span>' +
+        (server.version ? '<span>Versión ' + esc(server.version) + '</span>' : '') +
+      '</div>' +
+      '<p class="muted">Publicado por <button class="link-inline" type="button" data-user="' +
+        esc(server.autor.userId) + '">@' + esc(server.autor.nombre) + '</button></p>' +
+      '<div class="server-copy-row"><code>' + esc(server.host) + '</code>' +
+        '<button class="btn ghost small" type="button" data-server-copy="host" data-server-value="' +
+          esc(server.host) + '">Copiar IP</button></div>' +
+      '<div class="server-copy-row"><code>' + esc(server.port) + '</code>' +
+        '<button class="btn ghost small" type="button" data-server-copy="port" data-server-value="' +
+          esc(server.port) + '">Copiar puerto</button></div>' +
+      (server.motd ? '<section><h4>Descripción del servidor</h4><p class="server-detail-motd">' +
+        esc(server.motd) + '</p></section>' : '') +
+      '<p class="muted">Estado consultado: ' +
+        esc(server.actualizado ? timeAgo(server.actualizado) : 'sin datos') +
+        ' · Publicado ' + esc(timeAgo(server.fecha)) + '</p>' +
+      (server.esMio ? '<div class="server-detail-actions">' +
+        '<button class="btn ghost small" type="button" data-server-edit="' + esc(server.id) +
+          '">Editar servidor</button>' +
+        '<button class="btn danger small" type="button" data-server-delete="' + esc(server.id) +
+          '">Eliminar servidor</button></div>' : '');
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    $('#closeServerDetailBtn').focus();
+  }
+
+  function closeServerDetail() {
+    state.servers.detailId = '';
+    var modal = $('#serverDetailModal');
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    $('#serverDetailBody').innerHTML = '';
+    if (state.servers.detailOpener && state.servers.detailOpener.isConnected) {
+      state.servers.detailOpener.focus();
+    }
+    state.servers.detailOpener = null;
+  }
+
+  function sortServers(servers) {
+    return servers.slice().sort(function (a, b) {
+      if (state.servers.sort === 'masUsuarios' || state.servers.sort === 'menosUsuarios') {
+        var aKnown = a.jugadores !== null && a.jugadores !== undefined;
+        var bKnown = b.jugadores !== null && b.jugadores !== undefined;
+        if (aKnown !== bKnown) return aKnown ? -1 : 1;
+        if (aKnown && Number(a.jugadores) !== Number(b.jugadores)) {
+          var playersOrder = Number(a.jugadores) - Number(b.jugadores);
+          return state.servers.sort === 'masUsuarios' ? -playersOrder : playersOrder;
+        }
+      } else {
+        var aDate = Date.parse(a.fecha) || 0;
+        var bDate = Date.parse(b.fecha) || 0;
+        if (aDate !== bDate) {
+          return state.servers.sort === 'recientes' ? bDate - aDate : aDate - bDate;
+        }
+      }
+      return String(a.nombre || '').localeCompare(String(b.nombre || ''), 'es');
+    });
+  }
+
+  async function onServerDetailClick(e) {
+    var copy = e.target.closest('[data-server-copy]');
+    if (copy) {
+      e.stopPropagation();
+      try {
+        await navigator.clipboard.writeText(copy.dataset.serverValue);
+        toast(copy.dataset.serverCopy === 'host' ? 'IP copiada.' : 'Puerto copiado.', 'ok');
+      } catch (err) {
+        toast('No se pudo copiar. Selecciona el valor manualmente.', 'warn');
+      }
+      return;
+    }
+    var edit = e.target.closest('[data-server-edit]');
+    if (edit) {
+      e.stopPropagation();
+      var serverToEdit = state.servers.items.find(function (item) {
+        return String(item.id) === String(edit.dataset.serverEdit) && item.esMio;
+      });
+      if (!serverToEdit) {
+        toast('No se encontró tu servidor para editar.', 'err');
+        return;
+      }
+      closeServerDetail();
+      state.servers.editId = serverToEdit.id;
+      state.servers.image = serverToEdit.imagen || '';
+      renderServersGrid();
+      var serverName = $('[data-server-form] [name="nombre"]');
+      if (serverName) serverName.focus();
+      return;
+    }
+    var remove = e.target.closest('[data-server-delete]');
+    if (remove) {
+      e.stopPropagation();
+      await deleteServer(remove.dataset.serverDelete);
+      return;
+    }
+    var author = e.target.closest('[data-user]');
+    if (author) {
+      e.stopPropagation();
+      closeServerDetail();
+      navigate('profile', { userId: author.dataset.user });
+    }
   }
 
   function renderServersGrid() {
@@ -4505,7 +4709,8 @@
         '</form>'
       : (myServer
         ? '<p class="muted">Ya publicaste un servidor. Cada cuenta puede agregar solo uno.</p>'
-        : '<form class="card settings-card" data-server-form>' +
+        : (state.servers.formOpen
+          ? '<form class="card settings-card" data-server-form>' +
             '<h2>Agregar servidor Bedrock</h2>' +
             '<p>El servidor debe aparecer activo y mostrar jugadores en mcsrvstat.us para poder publicarse.</p>' +
             '<label class="field"><span>Nombre</span><input name="nombre" maxlength="60" required></label>' +
@@ -4514,12 +4719,28 @@
             '<label class="field"><span>Imagen del servidor (opcional, una imagen)</span>' +
               '<input id="serverImageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>' +
             '<div id="serverImagePreview" class="preview hidden"></div>' +
-            '<button class="btn primary" type="submit">Verificar y publicar</button>' +
-          '</form>');
+            '<div class="modal-actions"><button class="btn primary" type="submit">Verificar y publicar</button>' +
+              '<button class="btn ghost" data-server-add-cancel type="button">Cancelar</button></div>' +
+          '</form>'
+          : ''));
     container.innerHTML =
+      (myServer || editingServer ? '' : '<button class="btn primary server-add-toggle" type="button" ' +
+        'data-server-add-toggle aria-expanded="' + (state.servers.formOpen ? 'true' : 'false') + '">' +
+        (state.servers.formOpen ? 'Cerrar formulario' : '＋ Subir servidor') + '</button>') +
       serverForm +
       (servers.length
-        ? '<div class="server-grid">' + servers.map(serverCardHTML).join('') + '</div>'
+        ? '<div class="server-toolbar"><label for="serverSort">Ordenar:</label>' +
+          '<select id="serverSort" class="settings-select" data-server-sort aria-label="Ordenar servidores">' +
+            '<option value="recientes"' + (state.servers.sort === 'recientes' ? ' selected' : '') +
+              '>Más recientes</option>' +
+            '<option value="antiguos"' + (state.servers.sort === 'antiguos' ? ' selected' : '') +
+              '>Más antiguos</option>' +
+            '<option value="masUsuarios"' + (state.servers.sort === 'masUsuarios' ? ' selected' : '') +
+              '>Más usuarios</option>' +
+            '<option value="menosUsuarios"' + (state.servers.sort === 'menosUsuarios' ? ' selected' : '') +
+              '>Menos usuarios</option>' +
+          '</select></div>' +
+          '<div class="server-grid">' + sortServers(servers).map(serverCardHTML).join('') + '</div>'
         : '<div class="card addon-empty">Todavía no hay servidores publicados.</div>');
     var imageInput = $('#serverImageInput');
     if (imageInput) {
@@ -4557,6 +4778,7 @@
 
   async function renderServers() {
     state.servers.image = '';
+    state.servers.formOpen = false;
     $('#view').innerHTML = '<div class="addons-page"><div class="card addons-hero">' +
       '<div><h1>Servidores Bedrock</h1><p>Descubre servidores publicados por la comunidad. El estado y los jugadores se actualizan automáticamente.</p></div>' +
       '</div><div id="serversContent" class="addons-page">' + loadingBlock() + '</div></div>';
@@ -4591,6 +4813,7 @@
       await api(editingId ? 'actualizarServidor' : 'crearServidor', data);
       state.servers.image = '';
       state.servers.editId = '';
+      state.servers.formOpen = false;
       toast(editingId ? 'Servidor actualizado.' : 'Servidor verificado y publicado.', 'ok');
       await renderServers();
     } catch (err) {
@@ -4611,6 +4834,8 @@
       confirmLabel: 'Eliminar'
     });
     if (!accepted) return;
+    var detailOpener = state.servers.detailOpener;
+    closeServerDetail();
     try {
       await api('eliminarServidor', { serverId: serverId });
       state.servers.editId = '';
@@ -4618,6 +4843,8 @@
       await renderServers();
     } catch (err) {
       toast(err.message || 'No se pudo eliminar el servidor.', 'err');
+      openServerDetail(serverId);
+      state.servers.detailOpener = detailOpener;
     }
   }
 
@@ -4625,20 +4852,24 @@
   //  Delegación de eventos de la vista
   // ─────────────────────────────────────────────────────────────────────
   async function onViewClick(e) {
-    var serverEdit = e.target.closest('[data-server-edit]');
-    if (serverEdit) {
-      var serverToEdit = state.servers.items.find(function (item) {
-        return String(item.id) === String(serverEdit.dataset.serverEdit) && item.esMio;
-      });
-      if (!serverToEdit) {
-        toast('No se encontró tu servidor para editar.', 'err');
-        return;
-      }
-      state.servers.editId = serverToEdit.id;
-      state.servers.image = serverToEdit.imagen || '';
+    var serverOpen = e.target.closest('[data-server-open]');
+    if (serverOpen) {
+      openServerDetail(serverOpen.dataset.serverOpen);
+      return;
+    }
+    if (e.target.closest('[data-server-add-toggle]')) {
+      state.servers.formOpen = !state.servers.formOpen;
       renderServersGrid();
-      var serverName = $('[data-server-form] [name="nombre"]');
-      if (serverName) serverName.focus();
+      if (state.servers.formOpen) {
+        var serverHost = $('[data-server-form] [name="host"]');
+        if (serverHost) serverHost.focus();
+      }
+      return;
+    }
+    if (e.target.closest('[data-server-add-cancel]')) {
+      state.servers.formOpen = false;
+      state.servers.image = '';
+      renderServersGrid();
       return;
     }
     if (e.target.closest('[data-server-edit-cancel]')) {
@@ -4683,21 +4914,6 @@
     var reportSave = e.target.closest('[data-report-save]');
     if (reportSave) {
       await saveReportReview(reportSave);
-      return;
-    }
-    var serverDelete = e.target.closest('[data-server-delete]');
-    if (serverDelete) {
-      await deleteServer(serverDelete.dataset.serverDelete);
-      return;
-    }
-    var serverCopy = e.target.closest('[data-server-copy]');
-    if (serverCopy) {
-      try {
-        await navigator.clipboard.writeText(serverCopy.dataset.serverCopy);
-        toast('IP y puerto copiados.', 'ok');
-      } catch (err) {
-        toast('No se pudo copiar. Selecciona la IP y el puerto manualmente.', 'warn');
-      }
       return;
     }
     var addonOpen = e.target.closest('[data-addon-open]');
@@ -4848,6 +5064,19 @@
   }
 
   function onViewChange(e) {
+    var serverSort = e.target.closest('[data-server-sort]');
+    if (serverSort) {
+      var selectedServerSort = String(serverSort.value || 'recientes');
+      if (['recientes', 'antiguos', 'masUsuarios', 'menosUsuarios'].indexOf(selectedServerSort) < 0) {
+        selectedServerSort = 'recientes';
+      }
+      state.servers.sort = selectedServerSort;
+      var serverGrid = $('.server-grid');
+      if (serverGrid) {
+        serverGrid.innerHTML = sortServers(state.servers.items || []).map(serverCardHTML).join('');
+      }
+      return;
+    }
     if (e.target.closest('[data-server-form] [name="removeImage"]')) {
       renderServerImagePreview();
       return;
