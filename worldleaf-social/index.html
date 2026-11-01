@@ -930,10 +930,12 @@
   .bottom-nav {
     position: fixed;
     inset: auto 0 0;
+    width: min(100%, 760px);
+    margin-inline: auto;
     z-index: 45;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
     padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     background: rgba(var(--bg-rgb), .94);
     border-top: 1px solid var(--line);
@@ -944,17 +946,25 @@
     align-items: center;
     justify-content: center;
     gap: 9px;
-    width: min(180px, 30vw);
+    width: 100%;
+    min-width: 0;
     min-height: 44px;
     border: 1px solid transparent;
     border-radius: 14px;
     background: transparent;
     color: var(--muted);
     font-weight: 700;
+    white-space: nowrap;
   }
   .bottom-nav button:hover { background: var(--panel-2); color: var(--text); }
   .bottom-nav button.active { background: rgba(var(--brand-rgb), .13); color: var(--brand); }
   .bottom-nav .bottom-icon { font-size: 18px; line-height: 1; }
+  @media (max-width: 600px) {
+    .bottom-nav { width: 100%; gap: 4px; padding-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right)); }
+    .bottom-nav button { flex-direction: column; gap: 0; min-height: 48px; padding: 6px 2px; }
+    .bottom-nav .bottom-label { display: none; }
+    .bottom-nav .bottom-icon { font-size: 21px; }
+  }
 
   /* ─── Complementos ─────────────────────────────────────────────── */
   .addons-page { display: flex; flex-direction: column; gap: 18px; }
@@ -1118,6 +1128,27 @@
     font-weight: 700;
   }
   .addon-detail-loading { padding: 50px 0; }
+  .feed-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 12px; }
+  .feed-filter {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 9px 12px;
+    color: var(--text);
+    max-width: 100%;
+  }
+  .feed-toolbar + .composer { margin-top: 12px; }
+  .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .server-card { overflow: hidden; }
+  .server-cover { width: 100%; aspect-ratio: 16 / 9; background: var(--panel-2); object-fit: cover; display: block; }
+  .server-body { padding: 16px; }
+  .server-address { display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
+  .server-status { font-size: 13px; font-weight: 700; }
+  .server-status.online { color: var(--brand); }
+  .server-status.offline { color: var(--danger); }
+  .report-suggestions { display: flex; flex-direction: column; gap: 6px; margin: -4px 0 12px; }
+  .report-suggestion { width: 100%; text-align: left; }
+  .report-item { padding: 14px; border-bottom: 1px solid var(--line); }
 
   @media (max-width: 600px) {
     .settings-row { align-items: flex-start; }
@@ -1220,6 +1251,7 @@
       <p class="side-title">Navegación</p>
       <button type="button" data-side-view="search">🔎 Buscar</button>
       <button type="button" data-side-view="addons">🧩 Complementos</button>
+      <button type="button" data-side-view="servers">🖥️ Servidores</button>
       <p class="side-title">Cuenta</p>
       <button type="button" id="sideLogoutBtn" class="danger">🚪 Cerrar sesión</button>
     </nav>
@@ -1231,6 +1263,7 @@
     <nav class="nav">
       <button type="button" data-view="search">Buscar</button>
       <button type="button" data-view="addons">Complementos</button>
+      <button type="button" data-view="servers">Servidores</button>
     </nav>
     <div class="top-actions">
       <button class="bell-btn" id="notifBtn" type="button" title="Notificaciones" aria-label="Notificaciones">🔔<span id="notifBadge" class="badge-count hidden">0</span></button>
@@ -1250,9 +1283,10 @@
     <aside class="right"></aside>
   </main>
   <nav class="bottom-nav" aria-label="Navegación principal">
-    <button type="button" data-app-view="feed"><span class="bottom-icon" aria-hidden="true">🏠</span>Inicio</button>
-    <button type="button" data-app-view="addons"><span class="bottom-icon" aria-hidden="true">🧩</span>Complementos</button>
-    <button type="button" data-app-view="settings"><span class="bottom-icon" aria-hidden="true">⚙️</span>Ajustes</button>
+    <button type="button" data-app-view="feed" aria-label="Inicio" title="Inicio"><span class="bottom-icon" aria-hidden="true">🏠</span><span class="bottom-label">Inicio</span></button>
+    <button type="button" data-app-view="addons" aria-label="Complementos" title="Complementos"><span class="bottom-icon" aria-hidden="true">🧩</span><span class="bottom-label">Complementos</span></button>
+    <button type="button" data-app-view="servers" aria-label="Servidores" title="Servidores"><span class="bottom-icon" aria-hidden="true">🖥️</span><span class="bottom-label">Servidores</span></button>
+    <button type="button" data-app-view="settings" aria-label="Ajustes" title="Ajustes"><span class="bottom-icon" aria-hidden="true">⚙️</span><span class="bottom-label">Ajustes</span></button>
   </nav>
 </div>
 
@@ -1399,7 +1433,9 @@
     view: 'feed',
     profileUserId: '',
     routeLock: false,
-    feed: { offset: 0, hasMore: true, loading: false },
+    feed: { offset: 0, hasMore: true, loading: false, filter: 'siguiendo', seq: 0 },
+    report: { targetUser: null, searchTimer: null, searchSeq: 0, reports: [], loaded: false },
+    servers: { items: [], loaded: false, image: '', editId: '' },
     pendingImages: [],
     appDialog: { resolve: null, returnFocus: null, hasCancel: false },
     postEdit: null,
@@ -1418,6 +1454,10 @@
       loaded: false,
       fallback: false,
       error: '',
+      scope: 'all',
+      collectionId: '',
+      library: null,
+      libraryPromise: null,
       searchTimer: null,
       detail: null,
       detailSeq: 0,
@@ -1639,11 +1679,16 @@
   function loadFeedCache() {
     var c = readCache(CACHE_FEED_KEY, null);
     if (!c || !c.at || Date.now() - c.at > CACHE_FEED_TTL) return null;
-    return Array.isArray(c.posts) ? c.posts : null;
+    return c.filter === (state.feed && state.feed.filter || 'siguiendo') &&
+      Array.isArray(c.posts) ? c.posts : null;
   }
 
   function saveFeedCache(posts) {
-    writeCache(CACHE_FEED_KEY, { at: Date.now(), posts: (posts || []).slice(0, 10) });
+    writeCache(CACHE_FEED_KEY, {
+      at: Date.now(),
+      filter: state.feed && state.feed.filter || 'siguiendo',
+      posts: (posts || []).slice(0, 10)
+    });
   }
 
   function cachePrependPost(post) {
@@ -1790,6 +1835,7 @@
     if (path === 'explore') return { view: 'feed', userId: '' };
     if (path === 'search') return { view: 'search', userId: '' };
     if (path === 'addons') return { view: 'addons', userId: '' };
+    if (path === 'servers') return { view: 'servers', userId: '' };
     if (path === 'notifications') return { view: 'notifications', userId: '' };
     if (path === 'settings') return { view: 'settings', userId: '' };
     if (path === 'profile' || path.indexOf('profile/') === 0) {
@@ -1808,6 +1854,7 @@
     }
     if (view === 'search') return 'search';
     if (view === 'addons') return 'addons';
+    if (view === 'servers') return 'servers';
     if (view === 'notifications') return 'notifications';
     if (view === 'settings') return 'settings';
     return 'feed';
@@ -2491,6 +2538,9 @@
 
     $('#closeAddonBtn').addEventListener('click', closeAddonDetail);
     $('#addonDetailBody').addEventListener('click', onAddonDetailClick);
+    $('#addonDetailBody').addEventListener('change', function (e) {
+      if (e.target.closest('[data-addon-collection-select]')) updateAddonCollectionButton();
+    });
     $('#addonModal').addEventListener('click', function (e) {
       if (e.target === $('#addonModal')) closeAddonDetail();
     });
@@ -2556,6 +2606,7 @@
     if (view === 'feed') return renderFeed();
     if (view === 'search') return renderSearch();
     if (view === 'addons') return renderAddons();
+    if (view === 'servers') return renderServers();
     if (view === 'notifications') return renderNotifications();
     if (view === 'settings') return renderSettings();
     if (view === 'profile') return renderProfile(userId || (state.me ? state.me.userId : ''));
@@ -2722,12 +2773,23 @@
   }
 
   async function renderFeed() {
+    var selectedFilter = state.feed && state.feed.filter || 'siguiendo';
+    var feedSeq = (state.feed && state.feed.seq || 0) + 1;
     state.pendingImages = [];
-    $('#view').innerHTML = composerHTML() +
+    state.feed = { offset: 0, hasMore: true, loading: false, filter: selectedFilter, seq: feedSeq };
+    $('#view').innerHTML =
+      '<div class="card feed-toolbar"><label for="feedFilter">Mostrar: </label>' +
+        '<select class="feed-filter" id="feedFilter" data-feed-filter>' +
+          '<option value="siguiendo"' + (selectedFilter === 'siguiendo' ? ' selected' : '') + '>Siguiendo</option>' +
+          '<option value="todos"' + (selectedFilter === 'todos' ? ' selected' : '') + '>Todos</option>' +
+          '<option value="imagenes"' + (selectedFilter === 'imagenes' ? ' selected' : '') + '>Con imágenes</option>' +
+          '<option value="populares"' + (selectedFilter === 'populares' ? ' selected' : '') + '>Más populares</option>' +
+        '</select>' +
+      '</div>' +
+      composerHTML() +
       '<div id="feedList" class="feed-list"></div>' +
       '<div id="feedMore" class="center-actions"></div>';
     bindComposer();
-    state.feed = { offset: 0, hasMore: true, loading: false };
 
     var list = $('#feedList');
     var cached = loadFeedCache();
@@ -2736,13 +2798,22 @@
   }
 
   async function loadFeed(initial) {
-    if (state.feed.loading || !state.feed.hasMore) return;
+    if ((state.feed.loading && !initial) || !state.feed.hasMore) return;
+    if (initial) state.feed.seq = (state.feed.seq || 0) + 1;
+    var requestSeq = state.feed.seq;
+    var requestFilter = state.feed.filter || 'siguiendo';
     state.feed.loading = true;
     var list = $('#feedList');
+    if (!list) return;
     var hadCached = initial && !!list.querySelector('.post');
     if (initial && !hadCached) list.innerHTML = loadingBlock();
     try {
-      var d = await api('getFeed', { offset: state.feed.offset, limit: 10 });
+      var d = await api('getFeed', {
+        offset: state.feed.offset,
+        limit: 10,
+        filter: requestFilter
+      });
+      if (requestSeq !== state.feed.seq || requestFilter !== state.feed.filter || !$('#feedList')) return;
       if (initial) list.innerHTML = '';
       if (!d.posts.length && initial) {
         list.innerHTML = emptyState('Aún no hay publicaciones. ¡Sigue a alguien o publica algo!');
@@ -2753,10 +2824,11 @@
       if (initial) saveFeedCache(d.posts);
       renderMore();
     } catch (err) {
+      if (requestSeq !== state.feed.seq) return;
       if (initial && !hadCached) list.innerHTML = emptyState('No se pudo cargar el feed.');
       toast(err.message || 'Error al cargar el feed', 'err');
     } finally {
-      state.feed.loading = false;
+      if (requestSeq === state.feed.seq) state.feed.loading = false;
     }
   }
 
@@ -3471,6 +3543,29 @@
           '<button id="settingsEditProfileBtn" class="btn ghost" type="button">Editar mi perfil</button>' +
         '</section>' +
         '<section class="card settings-card">' +
+          '<h2>Ayuda y reportes</h2>' +
+          '<p>Envía un error de la aplicación o reporta una cuenta. Los reportes son privados.</p>' +
+          '<form data-report-form>' +
+            '<label class="field"><span>Tipo</span><select id="reportType">' +
+              '<option value="error">Error de la aplicación</option>' +
+              '<option value="cuenta">Reportar una cuenta</option>' +
+            '</select></label>' +
+            '<div id="reportTargetWrap" class="hidden">' +
+              '<label class="field"><span>Cuenta a reportar</span>' +
+                '<input id="reportTargetSearch" maxlength="60" autocomplete="off" placeholder="Escribe @usuario"></label>' +
+              '<div id="reportTargetSelected" class="muted"></div>' +
+              '<div id="reportTargetSuggestions" class="report-suggestions"></div>' +
+            '</div>' +
+            '<label class="field"><span>Título</span><input id="reportTitle" maxlength="120" required></label>' +
+            '<label class="field"><span>Detalles</span><textarea id="reportDetails" maxlength="2500" rows="4" required></textarea></label>' +
+            '<button class="btn primary" type="submit">Enviar reporte</button>' +
+          '</form>' +
+          (roleKey(state.me.rol) === 'admin' || roleKey(state.me.rol) === 'owner'
+            ? '<div class="report-admin"><h3>Revisar reportes</h3>' +
+              '<div id="reportQueue"><div class="center-load"><div class="spinner"></div></div></div></div>'
+            : '') +
+        '</section>' +
+        '<section class="card settings-card">' +
           '<h2>Acerca de</h2>' +
           '<div class="settings-about">' +
             '<div><strong>🌿 WorldLeaf Social</strong><span>Creado por JM-TechStudios</span></div>' +
@@ -3496,6 +3591,138 @@
       renderSettings();
     });
     $('#settingsEditProfileBtn').addEventListener('click', openEditModal);
+    if (roleKey(state.me.rol) === 'admin' || roleKey(state.me.rol) === 'owner') loadReports();
+  }
+
+  function reportItemHTML(report) {
+    var status = report.estado || 'pendiente';
+    var statusOptions = [
+      ['pendiente', 'Pendiente'],
+      ['en_revision', 'En revisión'],
+      ['resuelto', 'Resuelto'],
+      ['descartado', 'Descartado']
+    ];
+    var target = report.targetUserId
+      ? '<p>Cuenta: <button class="link-inline" type="button" data-user="' +
+        esc(report.targetUserId) + '">@' + esc(report.targetUsername) + '</button></p>'
+      : '';
+    var reporter = report.reporter
+      ? '<p class="muted">Reportado por @' + esc(report.reporter.username) + '</p>'
+      : '';
+    return '<article class="report-item" data-report-item="' + esc(report.reportId) + '">' +
+      '<strong>' + esc(report.tipo === 'cuenta' ? 'Cuenta' : 'Error de la app') +
+        ' · ' + esc(report.titulo) + '</strong>' +
+      reporter + target + '<p>' + esc(report.detalle) + '</p>' +
+      '<small class="muted">' + esc(timeAgo(report.fecha)) + '</small>' +
+      '<label class="field"><span>Estado</span><select data-report-status>' +
+        statusOptions.map(function (option) {
+          return '<option value="' + option[0] + '"' + (status === option[0] ? ' selected' : '') +
+            '>' + option[1] + '</option>';
+        }).join('') +
+      '</select></label>' +
+      '<label class="field"><span>Nota de moderación</span><textarea data-report-note maxlength="1000" rows="2">' +
+        esc(report.notaAdmin || '') + '</textarea></label>' +
+      '<button class="btn ghost small" data-report-save="' + esc(report.reportId) +
+        '" type="button">Guardar revisión</button></article>';
+  }
+
+  async function loadReports() {
+    var queue = $('#reportQueue');
+    if (!queue) return;
+    queue.innerHTML = loadingBlock();
+    try {
+      var data = await api('getReportes');
+      state.report.reports = data.reportes || [];
+      state.report.loaded = true;
+      queue.innerHTML = state.report.reports.length
+        ? state.report.reports.map(reportItemHTML).join('')
+        : '<p class="muted">No hay reportes pendientes.</p>';
+    } catch (err) {
+      queue.innerHTML = '<p class="muted">' + esc(err.message || 'No se pudieron cargar los reportes.') + '</p>';
+    }
+  }
+
+  async function saveReportReview(button) {
+    var item = button.closest('[data-report-item]');
+    if (!item) return;
+    setBusy(button, true, 'Guardando...');
+    try {
+      await api('actualizarReporte', {
+        reportId: item.dataset.reportItem,
+        estado: item.querySelector('[data-report-status]').value,
+        notaAdmin: item.querySelector('[data-report-note]').value
+      });
+      toast('Revisión guardada.', 'ok');
+      await loadReports();
+    } catch (err) {
+      toast(err.message || 'No se pudo guardar la revisión.', 'err');
+    } finally {
+      setBusy(button, false);
+    }
+  }
+
+  function setReportType(type) {
+    var isAccount = type === 'cuenta';
+    var wrap = $('#reportTargetWrap');
+    if (wrap) wrap.classList.toggle('hidden', !isAccount);
+    state.report.targetUser = null;
+    var selected = $('#reportTargetSelected');
+    if (selected) selected.textContent = '';
+    var suggestions = $('#reportTargetSuggestions');
+    if (suggestions) suggestions.innerHTML = '';
+  }
+
+  async function searchReportTarget(query, sequence) {
+    var suggestions = $('#reportTargetSuggestions');
+    if (!suggestions || !query) {
+      if (suggestions) suggestions.innerHTML = '';
+      return;
+    }
+    suggestions.innerHTML = '<span class="muted">Buscando cuentas...</span>';
+    try {
+      var data = await api('buscarUsuarios', { q: query });
+      if (sequence !== state.report.searchSeq) return;
+      var matches = (data.usuarios || []).filter(function (user) {
+        return String(user.userId) !== String(state.me.userId);
+      });
+      suggestions.innerHTML = matches.length
+        ? matches.map(function (user) {
+          return '<button class="btn ghost small report-suggestion" type="button" data-report-select="' +
+            esc(user.userId) + '" data-report-username="' + esc(user.nombre) + '">' +
+            esc(user.nombreMostrado) + ' · @' + esc(user.nombre) + '</button>';
+        }).join('')
+        : '<span class="muted">No se encontraron cuentas.</span>';
+    } catch (err) {
+      if (sequence !== state.report.searchSeq) return;
+      suggestions.innerHTML = '<span class="muted">' + esc(err.message || 'No se pudo buscar la cuenta.') + '</span>';
+    }
+  }
+
+  async function submitReport(form) {
+    var type = val('#reportType');
+    var target = state.report.targetUser;
+    if (type === 'cuenta' && !target) {
+      toast('Busca y selecciona la cuenta que deseas reportar.', 'warn');
+      return;
+    }
+    var button = form.querySelector('[type="submit"]');
+    setBusy(button, true, 'Enviando...');
+    try {
+      await api('crearReporte', {
+        tipo: type,
+        targetUserId: type === 'cuenta' ? target.userId : '',
+        titulo: val('#reportTitle'),
+        detalle: val('#reportDetails')
+      });
+      form.reset();
+      setReportType('error');
+      toast('Reporte enviado de forma privada.', 'ok');
+      if (state.report.loaded) await loadReports();
+    } catch (err) {
+      toast(err.message || 'No se pudo enviar el reporte.', 'err');
+    } finally {
+      setBusy(button, false);
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────
@@ -3567,6 +3794,10 @@
       loaded: false,
       fallback: false,
       error: '',
+      scope: 'all',
+      collectionId: '',
+      library: null,
+      libraryPromise: null,
       searchTimer: null,
       detail: null,
       detailSeq: 0,
@@ -3642,12 +3873,156 @@
           '<option value="nombre"' + (a.sort === 'nombre' ? ' selected' : '') + '>Nombre A-Z</option>' +
         '</select>' +
       '</form>' +
+      '<section class="card addons-toolbar">' +
+        '<label for="addonScope">Mi biblioteca</label>' +
+        '<select class="addons-sort" id="addonScope" data-addon-scope>' +
+          '<option value="all">Todo el catálogo</option><option value="favorites">Mis favoritos</option>' +
+        '</select>' +
+        '<input class="addons-sort" id="addonCollectionName" maxlength="40" placeholder="Nombre de colección">' +
+        '<button class="btn ghost small" data-collection-create type="button">Crear</button>' +
+        '<button class="btn ghost small" data-collection-rename type="button">Renombrar</button>' +
+        '<button class="btn danger small" data-collection-delete type="button">Eliminar</button>' +
+      '</section>' +
       '<p class="muted hidden" id="addonsNotice"></p>' +
       '<div class="addons-grid" id="addonsGrid"></div>' +
       '<div class="addon-footer" id="addonsFooter"></div>' +
     '</div>';
     renderAddonsGrid();
+    renderAddonScopeOptions();
+    if (!a.library && !a.libraryPromise) {
+      loadAddonLibrary().catch(function (err) {
+        toast((err && err.message) || 'No se pudo cargar tu biblioteca de complementos.', 'err');
+      });
+    }
     if (!a.loaded && !a.loading) loadAddons(true);
+  }
+
+  function renderAddonScopeOptions() {
+    var select = $('#addonScope');
+    if (!select) return;
+    var a = state.addons;
+    var collections = a.library && a.library.colecciones || [];
+    var options = '<option value="all">Todo el catálogo</option>' +
+      '<option value="favorites">Mis favoritos (' + (a.library ? a.library.favoritos.length : 0) + ')</option>' +
+      collections.map(function (collection) {
+        return '<option value="collection:' + esc(collection.id) + '">' +
+          esc(collection.nombre) + ' (' + collection.addonIds.length + ')</option>';
+      }).join('');
+    select.innerHTML = options;
+    var selectedValue = a.scope === 'collection' ? 'collection:' + a.collectionId : a.scope;
+    if (!Array.prototype.some.call(select.options, function (option) { return option.value === selectedValue; })) {
+      a.scope = 'all';
+      a.collectionId = '';
+      selectedValue = 'all';
+    }
+    select.value = selectedValue;
+    var hasCollection = a.scope === 'collection' && !!a.collectionId;
+    ['[data-collection-rename]', '[data-collection-delete]'].forEach(function (selector) {
+      var button = $(selector);
+      if (button) button.disabled = !hasCollection;
+    });
+  }
+
+  async function loadAddonLibrary() {
+    var a = state.addons;
+    if (a.libraryPromise) return a.libraryPromise;
+    a.libraryPromise = api('getAddonCollections').then(function (library) {
+      if (state.addons !== a) return null;
+      a.library = {
+        favoritos: library.favoritos || [],
+        colecciones: library.colecciones || []
+      };
+      renderAddonScopeOptions();
+      return a.library;
+    }).then(function (result) {
+      a.libraryPromise = null;
+      return result;
+    }, function (err) {
+      console.error('No se pudo cargar la biblioteca de complementos: ' +
+        ((err && err.message) || err));
+      a.libraryPromise = null;
+      throw err;
+    });
+    return a.libraryPromise;
+  }
+
+  async function createAddonCollection() {
+    var input = $('#addonCollectionName');
+    if (!input || !input.value.trim()) {
+      toast('Escribe un nombre para la colección.', 'warn');
+      return;
+    }
+    try {
+      await loadAddonLibrary();
+      if (!state.addons.library) throw new Error('No se pudo actualizar tu biblioteca.');
+      var data = await api('crearAddonCollection', { nombre: input.value.trim() });
+      if (!state.addons.library.colecciones.some(function (item) {
+        return String(item.id) === String(data.coleccion.id);
+      })) state.addons.library.colecciones.push(data.coleccion);
+      state.addons.scope = 'collection';
+      state.addons.collectionId = data.coleccion.id;
+      state.addons.offset = 0;
+      state.addons.loaded = true;
+      input.value = '';
+      renderAddonScopeOptions();
+      await loadAddons(true);
+      toast('Colección creada.', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo crear la colección.', 'err');
+    }
+  }
+
+  async function renameAddonCollection() {
+    var a = state.addons;
+    var collection = a.library && a.library.colecciones.find(function (item) {
+      return String(item.id) === String(a.collectionId);
+    });
+    var input = $('#addonCollectionName');
+    if (!collection || !input || !input.value.trim()) {
+      toast('Selecciona una colección y escribe el nuevo nombre.', 'warn');
+      return;
+    }
+    try {
+      await api('renombrarAddonCollection', {
+        collectionId: collection.id,
+        nombre: input.value.trim()
+      });
+      collection.nombre = input.value.trim();
+      input.value = '';
+      renderAddonScopeOptions();
+      toast('Colección renombrada.', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo renombrar la colección.', 'err');
+    }
+  }
+
+  async function deleteAddonCollection() {
+    var a = state.addons;
+    var collection = a.library && a.library.colecciones.find(function (item) {
+      return String(item.id) === String(a.collectionId);
+    });
+    if (!collection) return;
+    var accepted = await showAppDialog({
+      title: '¿Eliminar la colección?',
+      message: 'Se eliminará la colección y su lista, pero los complementos y sus favoritos no cambiarán.',
+      tone: 'danger',
+      cancelLabel: 'Cancelar',
+      confirmLabel: 'Eliminar'
+    });
+    if (!accepted) return;
+    try {
+      await api('eliminarAddonCollection', { collectionId: collection.id });
+      a.library.colecciones = a.library.colecciones.filter(function (item) {
+        return String(item.id) !== String(collection.id);
+      });
+      a.scope = 'all';
+      a.collectionId = '';
+      renderAddonScopeOptions();
+      await loadAddons(true);
+      toast('Colección eliminada.', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo eliminar la colección.', 'err');
+    }
   }
 
   function renderAddonsGrid() {
@@ -3730,6 +4105,8 @@
       var data = await api('getAddons', {
         q: a.q,
         sort: a.sort,
+        scope: a.scope,
+        collectionId: a.scope === 'collection' ? a.collectionId : '',
         offset: a.offset,
         limit: 48
       });
@@ -3815,6 +4192,11 @@
     var translated = addon.descripcionTraducida
       ? '<span class="addon-translated">Descripción traducida automáticamente</span>'
       : '';
+    var collections = state.addons.library && state.addons.library.colecciones || [];
+    var firstCollection = collections[0];
+    var firstContainsAddon = !!(firstCollection && firstCollection.addonIds.some(function (id) {
+      return String(id) === String(addon.id);
+    }));
 
     $('#addonDetailId').textContent = 'ID ' + addon.id;
     $('#addonDetailTitle').textContent = addon.nombre;
@@ -3831,10 +4213,111 @@
           'data-addon-like="' + esc(addon.id) + '"' + (addon.meGusta ? ' disabled' : '') + '>' +
           (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
           ' <span>' + safeCount(addon.likes) + '</span></button>' +
+        '<button class="btn ghost" type="button" data-addon-favorite="' + esc(addon.id) + '">' +
+          (addon.favorito ? '★ Quitar de favoritos' : '☆ Añadir a favoritos') + '</button>' +
         '<button class="btn primary" type="button" data-addon-download="' + esc(addon.id) + '">' +
           '⬇️ Descargar</button>' +
       '</div>' +
+      '<div class="addon-actions">' +
+        '<select class="addons-sort" data-addon-collection-select aria-label="Colección para este complemento">' +
+          addonCollectionOptionsHTML() +
+        '</select>' +
+        '<button class="btn ghost" type="button" data-addon-collection-toggle="' + esc(addon.id) + '"' +
+          (collections.length ? '' : ' disabled') + '>' +
+          (firstContainsAddon ? 'Quitar de colección' : 'Añadir a colección') +
+        '</button>' +
+      '</div>' +
       translated + desc;
+  }
+
+  function addonCollectionOptionsHTML() {
+    var collections = state.addons.library && state.addons.library.colecciones || [];
+    if (!collections.length) return '<option value="">Crea una colección primero</option>';
+    return collections.map(function (collection) {
+      return '<option value="' + esc(collection.id) + '">' + esc(collection.nombre) + '</option>';
+    }).join('');
+  }
+
+  function selectedAddonCollectionContains(addonId) {
+    var select = $('#addonDetailBody [data-addon-collection-select]');
+    var collectionId = select ? select.value : '';
+    var collections = state.addons.library && state.addons.library.colecciones || [];
+    var collection = collections.find(function (item) {
+      return String(item.id) === String(collectionId);
+    });
+    return !!(collection && collection.addonIds.some(function (id) {
+      return String(id) === String(addonId);
+    }));
+  }
+
+  function updateAddonCollectionButton() {
+    var addon = state.addons.detail;
+    var button = $('#addonDetailBody [data-addon-collection-toggle]');
+    if (!addon || !button) return;
+    var collections = state.addons.library && state.addons.library.colecciones || [];
+    button.disabled = !collections.length;
+    button.textContent = selectedAddonCollectionContains(addon.id)
+      ? 'Quitar de colección'
+      : 'Añadir a colección';
+  }
+
+  async function toggleAddonFavorite(id) {
+    var addon = findAddon(id);
+    if (!addon) return;
+    var button = $('#addonDetailBody [data-addon-favorite]');
+    if (button) button.disabled = true;
+    try {
+      var result = await api('toggleAddonFavorite', { id: id });
+      addon.favorito = !!result.favorito;
+      if (state.addons.library) {
+        var favorites = state.addons.library.favoritos;
+        state.addons.library.favoritos = addon.favorito
+          ? (favorites.indexOf(String(id)) >= 0 ? favorites : favorites.concat([String(id)]))
+          : favorites.filter(function (favoriteId) { return String(favoriteId) !== String(id); });
+      }
+      if (state.addons.detail && String(state.addons.detail.id) === String(id)) renderAddonDetail();
+      renderAddonScopeOptions();
+      if (state.addons.scope === 'favorites' && !addon.favorito) await loadAddons(true);
+    } catch (err) {
+      toast(err.message || 'No se pudo actualizar el favorito.', 'err');
+      if (button) button.disabled = false;
+    }
+  }
+
+  async function toggleAddonInCollection(id) {
+    var addon = findAddon(id);
+    var select = $('#addonDetailBody [data-addon-collection-select]');
+    var collectionId = select && select.value;
+    var library = state.addons.library;
+    var collection = library && library.colecciones.find(function (item) {
+      return String(item.id) === String(collectionId);
+    });
+    if (!addon || !collection) {
+      toast('Selecciona una colección válida.', 'warn');
+      return;
+    }
+    var button = $('#addonDetailBody [data-addon-collection-toggle]');
+    if (button) button.disabled = true;
+    try {
+      var result = await api('toggleAddonCollectionItem', {
+        id: id,
+        collectionId: collection.id
+      });
+      collection.addonIds = result.agregado
+        ? (collection.addonIds.some(function (addonId) { return String(addonId) === String(id); })
+          ? collection.addonIds
+          : collection.addonIds.concat([String(id)]))
+        : collection.addonIds.filter(function (addonId) { return String(addonId) !== String(id); });
+      renderAddonScopeOptions();
+      if (state.addons.scope === 'collection' &&
+          String(state.addons.collectionId) === String(collection.id) && !result.agregado) {
+        await loadAddons(true);
+      }
+      renderAddonDetail();
+    } catch (err) {
+      toast(err.message || 'No se pudo actualizar la colección.', 'err');
+      if (button) button.disabled = false;
+    }
   }
 
   async function openAddonDetail(id) {
@@ -3851,6 +4334,15 @@
     if (closeBtn) closeBtn.focus();
     try {
       var data = await api('getAddon', { id: id });
+      if (seq !== state.addons.detailSeq) return;
+      if (!state.addons.library) {
+        try {
+          await loadAddonLibrary();
+        } catch (libraryError) {
+          toast((libraryError && libraryError.message) ||
+            'No se pudo cargar tu biblioteca de complementos.', 'err');
+        }
+      }
       if (seq !== state.addons.detailSeq) return;
       state.addons.detail = data.addon;
       state.addons.galleryIndex = 0;
@@ -3943,14 +4435,271 @@
     if (thumb) { selectAddonImage(thumb.dataset.addonThumb); return; }
     var like = e.target.closest('[data-addon-like]');
     if (like) { likeAddon(like.dataset.addonLike); return; }
+    var favorite = e.target.closest('[data-addon-favorite]');
+    if (favorite) { toggleAddonFavorite(favorite.dataset.addonFavorite); return; }
+    var collection = e.target.closest('[data-addon-collection-toggle]');
+    if (collection) { toggleAddonInCollection(collection.dataset.addonCollectionToggle); return; }
     var download = e.target.closest('[data-addon-download]');
     if (download) { downloadAddon(download.dataset.addonDownload); }
+  }
+
+  function serverCardHTML(server) {
+    var status = server.online
+      ? '<span class="server-status online">● Activo</span>'
+      : '<span class="server-status offline">● Inactivo</span>';
+    var players = server.jugadores === null || server.maxJugadores === null
+      ? 'Jugadores: datos no disponibles'
+      : 'Jugadores: ' + safeCount(server.jugadores) + ' / ' + safeCount(server.maxJugadores);
+    var image = Security.safeImageUrl(server.imagen, false);
+    return '<article class="card server-card" data-server="' + esc(server.id) + '">' +
+      (image ? '<img class="server-cover" src="' + esc(image) + '" alt="Imagen de ' + esc(server.nombre) + '" loading="lazy">' : '') +
+      '<div class="server-body">' +
+        '<h2>' + esc(server.nombre) + '</h2>' +
+        '<div class="muted">por <button class="link-inline" type="button" data-user="' +
+          esc(server.autor.userId) + '">@' + esc(server.autor.nombre) + '</button></div>' +
+        '<p class="server-address"><code>' + esc(server.host + ':' + server.port) + '</code>' +
+          '<button class="btn ghost small" data-server-copy="' + esc(server.host + ':' + server.port) +
+          '" type="button">Copiar</button></p>' +
+        '<p>' + status + '</p><p class="muted">' + esc(players) + '</p>' +
+        (server.version ? '<p class="muted">Versión: ' + esc(server.version) + '</p>' : '') +
+        (server.motd ? '<p class="muted">' + esc(server.motd) + '</p>' : '') +
+        '<small class="muted">Actualizado ' + esc(server.actualizado ? timeAgo(server.actualizado) : 'sin datos') +
+        ' · agregado ' + esc(timeAgo(server.fecha)) + '</small>' +
+        (server.esMio ? '<div class="modal-actions">' +
+          '<button class="btn ghost small" data-server-edit="' + esc(server.id) +
+            '" type="button">Editar servidor</button>' +
+          '<button class="btn danger small" data-server-delete="' + esc(server.id) +
+            '" type="button">Eliminar servidor</button></div>' : '') +
+      '</div></article>';
+  }
+
+  function renderServersGrid() {
+    var container = $('#serversContent');
+    if (!container) return;
+    var servers = state.servers.items || [];
+    var myServer = servers.find(function (server) { return server.esMio; });
+    var editingServer = myServer && String(state.servers.editId) === String(myServer.id)
+      ? myServer
+      : null;
+    var serverForm = editingServer
+      ? '<form class="card settings-card" data-server-form data-server-edit-id="' + esc(editingServer.id) + '">' +
+          '<h2>Editar servidor</h2>' +
+          '<label class="field"><span>Nombre</span><input name="nombre" maxlength="60" value="' +
+            esc(editingServer.nombre) + '" required></label>' +
+          '<label class="field"><span>IP o dominio (sin puerto)</span><input name="host" maxlength="253" value="' +
+            esc(editingServer.host) + '" required></label>' +
+          '<label class="field"><span>Puerto</span><input name="port" type="number" min="1" max="65535" value="' +
+            esc(editingServer.port) + '" required></label>' +
+          '<p class="muted">Si cambias la dirección, se volverá a verificar que el servidor esté activo y muestre jugadores.</p>' +
+          '<label class="field"><span>Cambiar imagen</span>' +
+            '<input id="serverImageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>' +
+          '<label class="settings-row"><span>Quitar imagen actual</span>' +
+            '<input name="removeImage" type="checkbox"' + (!editingServer.imagen ? ' disabled' : '') + '></label>' +
+          '<div id="serverImagePreview" class="preview' + (editingServer.imagen ? '' : ' hidden') + '">' +
+            (editingServer.imagen && Security.safeExternalImageUrl(editingServer.imagen)
+              ? '<div class="preview-item"><img src="' + esc(Security.safeExternalImageUrl(editingServer.imagen)) +
+                '" alt="Imagen actual del servidor"></div>' : '') +
+          '</div>' +
+          '<div class="modal-actions"><button class="btn primary" type="submit">Guardar cambios</button>' +
+            '<button class="btn ghost" data-server-edit-cancel type="button">Cancelar</button></div>' +
+        '</form>'
+      : (myServer
+        ? '<p class="muted">Ya publicaste un servidor. Cada cuenta puede agregar solo uno.</p>'
+        : '<form class="card settings-card" data-server-form>' +
+            '<h2>Agregar servidor Bedrock</h2>' +
+            '<p>El servidor debe aparecer activo y mostrar jugadores en mcsrvstat.us para poder publicarse.</p>' +
+            '<label class="field"><span>Nombre</span><input name="nombre" maxlength="60" required></label>' +
+            '<label class="field"><span>IP o dominio (sin puerto)</span><input name="host" maxlength="253" placeholder="play.ejemplo.net" required></label>' +
+            '<label class="field"><span>Puerto</span><input name="port" type="number" min="1" max="65535" value="19132" required></label>' +
+            '<label class="field"><span>Imagen del servidor (opcional, una imagen)</span>' +
+              '<input id="serverImageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>' +
+            '<div id="serverImagePreview" class="preview hidden"></div>' +
+            '<button class="btn primary" type="submit">Verificar y publicar</button>' +
+          '</form>');
+    container.innerHTML =
+      serverForm +
+      (servers.length
+        ? '<div class="server-grid">' + servers.map(serverCardHTML).join('') + '</div>'
+        : '<div class="card addon-empty">Todavía no hay servidores publicados.</div>');
+    var imageInput = $('#serverImageInput');
+    if (imageInput) {
+      imageInput.addEventListener('change', async function () {
+        var file = imageInput.files && imageInput.files[0];
+        imageInput.value = '';
+        if (!file) return;
+        try {
+          var result = await compressImage(file, 1280, 0.82);
+          if (Security.dataUrlSizeBytes(result) > 5 * 1024 * 1024) {
+            throw new Error('La imagen supera el límite de 5 MB.');
+          }
+          state.servers.image = result;
+          var removeImage = $('[data-server-form] [name="removeImage"]');
+          if (removeImage) removeImage.checked = false;
+          renderServerImagePreview();
+        } catch (err) {
+          toast(err.message || 'No se pudo procesar la imagen.', 'err');
+        }
+      });
+    }
+  }
+
+  function renderServerImagePreview() {
+    var preview = $('#serverImagePreview');
+    if (!preview) return;
+    var removeImage = $('[data-server-form] [name="removeImage"]');
+    var imageUrl = removeImage && removeImage.checked ? '' : state.servers.image;
+    var safeUrl = imageUrl && Security.safeImageUrl(imageUrl, true);
+    preview.innerHTML = safeUrl
+      ? '<div class="preview-item"><img src="' + esc(safeUrl) + '" alt="Vista previa del servidor"></div>'
+      : '';
+    preview.classList.toggle('hidden', !safeUrl);
+  }
+
+  async function renderServers() {
+    state.servers.image = '';
+    $('#view').innerHTML = '<div class="addons-page"><div class="card addons-hero">' +
+      '<div><h1>Servidores Bedrock</h1><p>Descubre servidores publicados por la comunidad. El estado y los jugadores se actualizan automáticamente.</p></div>' +
+      '</div><div id="serversContent" class="addons-page">' + loadingBlock() + '</div></div>';
+    try {
+      var data = await api('getServers');
+      state.servers.items = data.servidores || [];
+      state.servers.loaded = true;
+      renderServersGrid();
+    } catch (err) {
+      var content = $('#serversContent');
+      if (content) content.innerHTML = '<div class="card addon-empty">' +
+        esc(err.message || 'No se pudieron cargar los servidores.') + '</div>';
+    }
+  }
+
+  async function submitServer(form) {
+    var button = form.querySelector('[type="submit"]');
+    var data = {
+      nombre: form.elements.nombre.value,
+      imagen: form.elements.removeImage && form.elements.removeImage.checked
+        ? ''
+        : state.servers.image || ''
+    };
+    var editingId = form.dataset.serverEditId || '';
+    if (editingId) {
+      data.serverId = editingId;
+    }
+    data.host = form.elements.host.value;
+    data.port = form.elements.port.value;
+    setBusy(button, true, editingId ? 'Guardando...' : 'Verificando...');
+    try {
+      await api(editingId ? 'actualizarServidor' : 'crearServidor', data);
+      state.servers.image = '';
+      state.servers.editId = '';
+      toast(editingId ? 'Servidor actualizado.' : 'Servidor verificado y publicado.', 'ok');
+      await renderServers();
+    } catch (err) {
+      toast(err.message || (editingId
+        ? 'No se pudieron guardar los cambios del servidor.'
+        : 'No se pudo agregar el servidor.'), 'err');
+    } finally {
+      setBusy(button, false);
+    }
+  }
+
+  async function deleteServer(serverId) {
+    var accepted = await showAppDialog({
+      title: '¿Eliminar servidor?',
+      message: 'El servidor dejará de mostrarse en el catálogo.',
+      tone: 'danger',
+      cancelLabel: 'Cancelar',
+      confirmLabel: 'Eliminar'
+    });
+    if (!accepted) return;
+    try {
+      await api('eliminarServidor', { serverId: serverId });
+      state.servers.editId = '';
+      toast('Servidor eliminado.', 'ok');
+      await renderServers();
+    } catch (err) {
+      toast(err.message || 'No se pudo eliminar el servidor.', 'err');
+    }
   }
 
   // ─────────────────────────────────────────────────────────────────────
   //  Delegación de eventos de la vista
   // ─────────────────────────────────────────────────────────────────────
   async function onViewClick(e) {
+    var serverEdit = e.target.closest('[data-server-edit]');
+    if (serverEdit) {
+      var serverToEdit = state.servers.items.find(function (item) {
+        return String(item.id) === String(serverEdit.dataset.serverEdit) && item.esMio;
+      });
+      if (!serverToEdit) {
+        toast('No se encontró tu servidor para editar.', 'err');
+        return;
+      }
+      state.servers.editId = serverToEdit.id;
+      state.servers.image = serverToEdit.imagen || '';
+      renderServersGrid();
+      var serverName = $('[data-server-form] [name="nombre"]');
+      if (serverName) serverName.focus();
+      return;
+    }
+    if (e.target.closest('[data-server-edit-cancel]')) {
+      state.servers.editId = '';
+      state.servers.image = '';
+      renderServersGrid();
+      return;
+    }
+    if (e.target.closest('[data-collection-create]')) {
+      await createAddonCollection();
+      return;
+    }
+    if (e.target.closest('[data-collection-rename]')) {
+      await renameAddonCollection();
+      return;
+    }
+    if (e.target.closest('[data-collection-delete]')) {
+      await deleteAddonCollection();
+      return;
+    }
+    var addonFavorite = e.target.closest('[data-addon-favorite]');
+    if (addonFavorite) {
+      await toggleAddonFavorite(addonFavorite.dataset.addonFavorite);
+      return;
+    }
+    var collectionToggle = e.target.closest('[data-addon-collection-toggle]');
+    if (collectionToggle) {
+      await toggleAddonInCollection(collectionToggle.dataset.addonCollectionToggle);
+      return;
+    }
+    var reportTarget = e.target.closest('[data-report-select]');
+    if (reportTarget) {
+      state.report.targetUser = {
+        userId: reportTarget.dataset.reportSelect,
+        username: reportTarget.dataset.reportUsername
+      };
+      $('#reportTargetSearch').value = '@' + state.report.targetUser.username;
+      $('#reportTargetSelected').textContent = 'Cuenta seleccionada: @' + state.report.targetUser.username;
+      $('#reportTargetSuggestions').innerHTML = '';
+      return;
+    }
+    var reportSave = e.target.closest('[data-report-save]');
+    if (reportSave) {
+      await saveReportReview(reportSave);
+      return;
+    }
+    var serverDelete = e.target.closest('[data-server-delete]');
+    if (serverDelete) {
+      await deleteServer(serverDelete.dataset.serverDelete);
+      return;
+    }
+    var serverCopy = e.target.closest('[data-server-copy]');
+    if (serverCopy) {
+      try {
+        await navigator.clipboard.writeText(serverCopy.dataset.serverCopy);
+        toast('IP y puerto copiados.', 'ok');
+      } catch (err) {
+        toast('No se pudo copiar. Selecciona la IP y el puerto manualmente.', 'warn');
+      }
+      return;
+    }
     var addonOpen = e.target.closest('[data-addon-open]');
     if (addonOpen) {
       await openAddonDetail(addonOpen.dataset.addonOpen);
@@ -4099,6 +4848,49 @@
   }
 
   function onViewChange(e) {
+    if (e.target.closest('[data-server-form] [name="removeImage"]')) {
+      renderServerImagePreview();
+      return;
+    }
+    var reportType = e.target.closest('#reportType');
+    if (reportType) {
+      setReportType(reportType.value);
+      return;
+    }
+    var feedFilter = e.target.closest('[data-feed-filter]');
+    if (feedFilter) {
+      var selected = String(feedFilter.value || 'siguiendo');
+      if (['siguiendo', 'todos', 'imagenes', 'populares'].indexOf(selected) < 0) selected = 'siguiendo';
+      if (selected === state.feed.filter) return;
+      state.feed.filter = selected;
+      state.feed.offset = 0;
+      state.feed.hasMore = true;
+      var feedList = $('#feedList');
+      if (feedList) feedList.innerHTML = loadingBlock();
+      loadFeed(true);
+      return;
+    }
+    var addonScope = e.target.closest('[data-addon-scope]');
+    if (addonScope) {
+      var selectedScope = String(addonScope.value || 'all');
+      if (selectedScope === 'favorites') {
+        state.addons.scope = 'favorites';
+        state.addons.collectionId = '';
+      } else if (selectedScope.indexOf('collection:') === 0) {
+        state.addons.scope = 'collection';
+        state.addons.collectionId = selectedScope.slice('collection:'.length);
+      } else {
+        state.addons.scope = 'all';
+        state.addons.collectionId = '';
+      }
+      state.addons.loaded = true;
+      loadAddons(true);
+      return;
+    }
+    if (e.target.closest('[data-addon-collection-select]')) {
+      updateAddonCollectionButton();
+      return;
+    }
     var sort = e.target.closest('[data-addon-sort]');
     if (!sort) return;
     if (state.addons.searchTimer) {
@@ -4115,20 +4907,47 @@
 
   function onViewInput(e) {
     var input = e.target.closest('#addonSearchInput');
-    if (!input) return;
-    var addons = state.addons;
-    var q = Security.sanitizeText(input.value || '').trim().slice(0, 60);
-    if (addons.q === q) return;
-    addons.q = q;
-    if (addons.searchTimer) clearTimeout(addons.searchTimer);
-    addons.loaded = true;
-    addons.searchTimer = setTimeout(function () {
-      addons.searchTimer = null;
-      loadAddons(true);
+    if (input) {
+      var addons = state.addons;
+      var q = Security.sanitizeText(input.value || '').trim().slice(0, 60);
+      if (addons.q !== q) {
+        addons.q = q;
+        if (addons.searchTimer) clearTimeout(addons.searchTimer);
+        addons.loaded = true;
+        addons.searchTimer = setTimeout(function () {
+          addons.searchTimer = null;
+          loadAddons(true);
+        }, 300);
+      }
+      return;
+    }
+    var targetInput = e.target.closest('#reportTargetSearch');
+    if (!targetInput) return;
+    state.report.targetUser = null;
+    var selected = $('#reportTargetSelected');
+    if (selected) selected.textContent = '';
+    var query = Security.sanitizeText(targetInput.value || '').replace(/^@/, '').trim().slice(0, 60);
+    if (state.report.searchTimer) clearTimeout(state.report.searchTimer);
+    var seq = ++state.report.searchSeq;
+    state.report.searchTimer = setTimeout(function () {
+      state.report.searchTimer = null;
+      searchReportTarget(query, seq);
     }, 300);
   }
 
   async function onViewSubmit(e) {
+    var reportForm = e.target.closest('[data-report-form]');
+    if (reportForm) {
+      e.preventDefault();
+      await submitReport(reportForm);
+      return;
+    }
+    var serverForm = e.target.closest('[data-server-form]');
+    if (serverForm) {
+      e.preventDefault();
+      await submitServer(serverForm);
+      return;
+    }
     var addonForm = e.target.closest('[data-addon-search-form]');
     if (addonForm) {
       e.preventDefault();
