@@ -1404,7 +1404,7 @@
         <h2><span aria-hidden="true">03</span>Convivencia segura</h2>
         <p>No se permite contenido sexual explícito o para adultos, explotación, gore, acoso, amenazas, odio ni divulgar datos personales ajenos. Trata a los demás con respeto. El contenido que incumpla estas reglas puede retirarse y la cuenta puede suspenderse temporal o permanentemente.</p>
       </section>
-      <p class="policy-note">Puedes editar tu perfil o solicitar la eliminación de tu cuenta desde Ajustes; esto también puede borrar tus publicaciones y archivos asociados. Este aviso resume las reglas y el uso de datos, no sustituye una política legal completa ni asesoría jurídica. Para consultas sobre tus datos, contacta al administrador de WorldLeaf.</p>
+      <p class="policy-note">Puedes editar tu perfil o solicitar la eliminación de tu cuenta desde Ajustes; esto también puede borrar tus publicaciones y archivos asociados.</p>
     </div>
     <footer class="policy-footer">
       <label class="policy-accept">
@@ -1659,9 +1659,22 @@
     try { localStorage.removeItem(key); } catch (e) { /* nada */ }
   }
 
+  function getPolicySessionStatus(userId) {
+    var session = readCache(POLICY_SESSION_KEY, null);
+    if (!session || String(session.userId) !== String(userId)) return '';
+    return session.status === 'accepted' || session.status === 'pending'
+      ? session.status
+      : '';
+  }
+
+  function setPolicySessionStatus(userId, status) {
+    writeCache(POLICY_SESSION_KEY, { userId: String(userId), status: status });
+  }
+
   var CACHE_PROFILE_KEY = 'wl_profile';
   var CACHE_FEED_KEY = 'wl_feed_cache';
   var CACHE_NOTIF_KEY = 'wl_notif_cache';
+  var POLICY_SESSION_KEY = 'wl_policy_session';
   var THEME_STORAGE_KEY = 'wl_theme_preferences';
   var THEME_PALETTES = {
     light: { bg: '#f3f7f5', surface: '#ffffff', border: '#dce7e1' },
@@ -2017,6 +2030,7 @@
     removeCache(CACHE_PROFILE_KEY);
     removeCache(CACHE_FEED_KEY);
     removeCache(CACHE_NOTIF_KEY);
+    removeCache(POLICY_SESSION_KEY);
     resetAddonsState();
   }
 
@@ -2243,7 +2257,10 @@
       reject(res || { code: 'BLOCKED', message: 'Tu cuenta ha sido suspendida.' });
       return;
     }
-    if (res && res.error === 'POLICY_REQUIRED' && state.me) showPolicyGate();
+    if (res && res.error === 'POLICY_REQUIRED' && state.me) {
+      forceLogout();
+      toast('Inicia sesión nuevamente para revisar las políticas.', 'warn');
+    }
     if (res && res.error === 'AUTH' && state.me) forceLogout();
     reject(res || { code: 'SERVER', message: 'Error desconocido' });
   }
@@ -2340,10 +2357,11 @@
       removeCache(CACHE_FEED_KEY);
       removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
-      if (state.me.politicasAceptadas) {
+      if (getPolicySessionStatus(state.me.userId) === 'accepted') {
         showApp();
         await navigate('feed');
       } else {
+        setPolicySessionStatus(state.me.userId, 'pending');
         showPolicyGate();
       }
     } catch (err) {
@@ -2399,13 +2417,8 @@
       removeCache(CACHE_FEED_KEY);
       removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
-      if (state.me.politicasAceptadas) {
-        showApp();
-        toast('¡Bienvenido a WorldLeaf!', 'ok');
-        await navigate('feed');
-      } else {
-        showPolicyGate();
-      }
+      setPolicySessionStatus(state.me.userId, 'pending');
+      showPolicyGate();
     } catch (err) {
       toast(err.message || 'No se pudo crear la cuenta', 'err');
     } finally {
@@ -2556,6 +2569,7 @@
     try {
       await api('aceptarPoliticas');
       if (state.me) {
+        setPolicySessionStatus(state.me.userId, 'accepted');
         state.me.politicasAceptadas = true;
         writeCache(CACHE_PROFILE_KEY, state.me);
       }
@@ -5942,13 +5956,19 @@
     if (!state.token) {
       state.me = null;
       removeCache(CACHE_PROFILE_KEY);
+      removeCache(POLICY_SESSION_KEY);
       showAuth();
       return;
     }
 
-    if (state.me && state.me.politicasAceptadas) {
-      showApp();
-      handleHashRoute(true);
+    if (state.me) {
+      var cachedPolicyStatus = getPolicySessionStatus(state.me.userId);
+      if (cachedPolicyStatus === 'pending') {
+        showPolicyGate();
+      } else if (cachedPolicyStatus === 'accepted' || state.me.politicasAceptadas) {
+        showApp();
+        handleHashRoute(true);
+      }
     }
 
     try {
@@ -5958,9 +5978,14 @@
       state.notifUnread = d.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       updateShell();
-      if (!state.me.politicasAceptadas) {
+      var policyStatus = getPolicySessionStatus(state.me.userId);
+      if (policyStatus === 'pending' || !state.me.politicasAceptadas) {
+        setPolicySessionStatus(state.me.userId, 'pending');
         showPolicyGate();
       } else {
+        if (policyStatus !== 'accepted') {
+          setPolicySessionStatus(state.me.userId, 'accepted');
+        }
         showApp();
         handleHashRoute(true);
       }
@@ -5973,7 +5998,9 @@
         clearSession();
         showBlockedScreen(err.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
       } else if (state.me) {
-        if (state.me.politicasAceptadas) {
+        if (getPolicySessionStatus(state.me.userId) === 'accepted' ||
+            (getPolicySessionStatus(state.me.userId) !== 'pending' &&
+             state.me.politicasAceptadas)) {
           showApp();
           toast('Sin conexión: mostrando datos guardados', 'warn');
         } else {
