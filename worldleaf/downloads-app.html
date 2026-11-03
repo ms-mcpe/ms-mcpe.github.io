@@ -386,6 +386,19 @@
 
         .social-card .stats { margin-bottom: 12px; }
 
+        .social-info-link {
+            display: inline-flex;
+            margin-top: 13px;
+            color: #cabbff;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-color: rgba(202, 187, 255, .4);
+            text-underline-offset: 3px;
+        }
+
+        .social-info-link:hover { color: #e1d5ff; }
+
         .btn-download-social {
             border-color: rgba(201, 178, 255, .45);
             background: linear-gradient(135deg, #9c79ec, #7652c9);
@@ -598,6 +611,7 @@
                 </svg>
                 Descargar APK de WorldLeaf Social
             </a>
+            <a class="social-info-link" href="social.html">Conoce la comunidad de WorldLeaf Social</a>
             <div class="error-msg" id="socialCounterError" role="status">No se pudo actualizar el contador de descargas.</div>
         </section>
         </div>
