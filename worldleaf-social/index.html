@@ -1659,22 +1659,9 @@
     try { localStorage.removeItem(key); } catch (e) { /* nada */ }
   }
 
-  function getPolicySessionStatus(userId) {
-    var session = readCache(POLICY_SESSION_KEY, null);
-    if (!session || String(session.userId) !== String(userId)) return '';
-    return session.status === 'accepted' || session.status === 'pending'
-      ? session.status
-      : '';
-  }
-
-  function setPolicySessionStatus(userId, status) {
-    writeCache(POLICY_SESSION_KEY, { userId: String(userId), status: status });
-  }
-
   var CACHE_PROFILE_KEY = 'wl_profile';
   var CACHE_FEED_KEY = 'wl_feed_cache';
   var CACHE_NOTIF_KEY = 'wl_notif_cache';
-  var POLICY_SESSION_KEY = 'wl_policy_session';
   var THEME_STORAGE_KEY = 'wl_theme_preferences';
   var THEME_PALETTES = {
     light: { bg: '#f3f7f5', surface: '#ffffff', border: '#dce7e1' },
@@ -2030,7 +2017,6 @@
     removeCache(CACHE_PROFILE_KEY);
     removeCache(CACHE_FEED_KEY);
     removeCache(CACHE_NOTIF_KEY);
-    removeCache(POLICY_SESSION_KEY);
     resetAddonsState();
   }
 
@@ -2212,7 +2198,7 @@
   // ─────────────────────────────────────────────────────────────────────
   var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
 
-  function api(action, data, skipPolicyRetry) {
+  function api(action, data) {
     data = data || {};
     var payload = Object.assign({ action: action, token: state.token || '' }, data);
     var inside = !!(window.google && window.google.script && window.google.script.run);
@@ -2221,7 +2207,7 @@
       return new Promise(function (resolve, reject) {
         google.script.run
           .withSuccessHandler(function (raw) {
-            resolverRespuesta(raw, resolve, reject, action, data, !skipPolicyRetry);
+            resolverRespuesta(raw, resolve, reject);
           })
           .withFailureHandler(function (err) {
             reject({ code: 'NETWORK', message: (err && err.message) || 'Error de conexión' });
@@ -2242,7 +2228,7 @@
       return res.text();
     }).then(function (raw) {
       return new Promise(function (resolve, reject) {
-        resolverRespuesta(raw, resolve, reject, action, data, !skipPolicyRetry);
+        resolverRespuesta(raw, resolve, reject);
       });
     }).catch(function (err) {
       if (err && (err.code || err.error || err.ok === false)) throw err;
@@ -2250,7 +2236,7 @@
     });
   }
 
-  function resolverRespuesta(raw, resolve, reject, action, data, allowPolicyRetry) {
+  function resolverRespuesta(raw, resolve, reject) {
     var res;
     try { res = JSON.parse(raw); }
     catch (e) { reject({ code: 'SERVER', message: 'Respuesta inválida del servidor' }); return; }
@@ -2260,19 +2246,6 @@
       showBlockedScreen(res.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
       reject(res || { code: 'BLOCKED', message: 'Tu cuenta ha sido suspendida.' });
       return;
-    }
-    if (res && res.error === 'POLICY_REQUIRED' && state.me) {
-      var policyStatus = getPolicySessionStatus(state.me.userId);
-      if (policyStatus === 'accepted' && allowPolicyRetry && action !== 'aceptarPoliticas') {
-        api('aceptarPoliticas', {}, true)
-          .then(function () { return api(action, data, true); })
-          .then(resolve, reject);
-        return;
-      }
-      if (policyStatus !== 'accepted') {
-        setPolicySessionStatus(state.me.userId, 'pending');
-        showPolicyGate();
-      }
     }
     if (res && res.error === 'AUTH' && state.me) forceLogout();
     reject(res || { code: 'SERVER', message: 'Error desconocido' });
@@ -2364,23 +2337,13 @@
       localStorage.setItem('wl_token', d.token);
       var session = await api('getMe');
       state.me = session.perfil;
-      state.me.politicasAceptadas = !!session.politicasAceptadas;
       state.notifUnread = session.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       removeCache(CACHE_FEED_KEY);
       removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
-      if (getPolicySessionStatus(state.me.userId) === 'accepted') {
-        // The local session can outlive a policy record missing on the backend.
-        await api('aceptarPoliticas', {}, true);
-        state.me.politicasAceptadas = true;
-        writeCache(CACHE_PROFILE_KEY, state.me);
-        showApp();
-        await navigate('feed');
-      } else {
-        setPolicySessionStatus(state.me.userId, 'pending');
-        showPolicyGate();
-      }
+      showApp();
+      await navigate('feed');
     } catch (err) {
       if (err && err.error === 'BLOCKED') {
         clearSession();
@@ -2428,14 +2391,13 @@
       localStorage.setItem('wl_token', d.token);
       var session = await api('getMe');
       state.me = session.perfil;
-      state.me.politicasAceptadas = !!session.politicasAceptadas;
       state.notifUnread = session.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       removeCache(CACHE_FEED_KEY);
       removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
-      setPolicySessionStatus(state.me.userId, 'pending');
-      showPolicyGate();
+      showApp();
+      await navigate('feed');
     } catch (err) {
       toast(err.message || 'No se pudo crear la cuenta', 'err');
     } finally {
@@ -2577,30 +2539,15 @@
 
   function forceLogout() {
     clearSession();
-    showAuth();
+    showPolicyGate();
     resetRecovery();
     switchAuthPanel('login');
   }
 
-  async function acceptPolicies() {
-    var button = $('#acceptPolicyBtn');
-    setBusy(button, true, 'Guardando...');
-    try {
-      await api('aceptarPoliticas');
-      if (state.me) {
-        setPolicySessionStatus(state.me.userId, 'accepted');
-        state.me.politicasAceptadas = true;
-        writeCache(CACHE_PROFILE_KEY, state.me);
-      }
-      $('#policyGate').classList.add('hidden');
-      showApp();
-      handleHashRoute(true);
-    } catch (err) {
-      toast(err.message || 'No se pudo guardar la aceptación. Inténtalo de nuevo.', 'err');
-    } finally {
-      setBusy(button, false);
-      button.disabled = !$('#policyCheck').checked;
-    }
+  function acceptPolicies() {
+    if (!$('#policyCheck').checked) return;
+    $('#policyGate').classList.add('hidden');
+    showAuth();
   }
 
   // ─────────────────────────────────────────────────────────────────────
@@ -5975,44 +5922,23 @@
     if (!state.token) {
       state.me = null;
       removeCache(CACHE_PROFILE_KEY);
-      removeCache(POLICY_SESSION_KEY);
-      showAuth();
+      showPolicyGate();
       return;
     }
 
     if (state.me) {
-      var cachedPolicyStatus = getPolicySessionStatus(state.me.userId);
-      if (cachedPolicyStatus === 'pending') {
-        showPolicyGate();
-      } else if (cachedPolicyStatus === 'accepted' || state.me.politicasAceptadas) {
-        showApp();
-        handleHashRoute(true);
-      }
+      showApp();
+      handleHashRoute(true);
     }
 
     try {
       var d = await api('getMe');
       state.me = d.perfil;
-      state.me.politicasAceptadas = !!d.politicasAceptadas;
       state.notifUnread = d.notificacionesSinLeer || 0;
       writeCache(CACHE_PROFILE_KEY, state.me);
       updateShell();
-      var policyStatus = getPolicySessionStatus(state.me.userId);
-      if (policyStatus === 'pending' ||
-          (policyStatus !== 'accepted' && !state.me.politicasAceptadas)) {
-        setPolicySessionStatus(state.me.userId, 'pending');
-        showPolicyGate();
-      } else {
-        if (policyStatus === 'accepted' && !state.me.politicasAceptadas) {
-          await api('aceptarPoliticas', {}, true);
-          state.me.politicasAceptadas = true;
-          writeCache(CACHE_PROFILE_KEY, state.me);
-        } else if (policyStatus !== 'accepted') {
-          setPolicySessionStatus(state.me.userId, 'accepted');
-        }
-        showApp();
-        handleHashRoute(true);
-      }
+      showApp();
+      handleHashRoute(true);
     } catch (err) {
       if (err && (err.code === 'AUTH' || err.error === 'AUTH')) {
         clearSession();
@@ -6022,19 +5948,11 @@
         clearSession();
         showBlockedScreen(err.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
       } else if (state.me) {
-        if (getPolicySessionStatus(state.me.userId) === 'accepted' ||
-            (getPolicySessionStatus(state.me.userId) !== 'pending' &&
-             state.me.politicasAceptadas)) {
-          showApp();
-          toast('Sin conexión: mostrando datos guardados', 'warn');
-        } else {
-          clearSession();
-          showAuth();
-          toast('Conéctate para verificar la aceptación de las políticas.', 'warn');
-        }
+        showApp();
+        toast('Sin conexión: mostrando datos guardados', 'warn');
       } else {
         clearSession();
-        showAuth();
+        showPolicyGate();
       }
     }
   }
