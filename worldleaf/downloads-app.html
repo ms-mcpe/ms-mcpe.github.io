@@ -3,92 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorldLeaf - Descargar APK</title>
+    <title>WorldLeaf y WorldLeaf Social — Descargas</title>
     <style>
+        :root {
+            color-scheme: dark;
+            --page-bg: #080d0c;
+            --line: rgba(211, 235, 222, 0.1);
+            --muted: #91a29a;
+            --green: #67e69a;
+            --violet: #b69aff;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(ellipse at 50% 0%, #0f2a1a 0%, #080c14 70%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #e8edf0;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-user-drag: none;
+            padding: 64px 24px;
+            color: #edf5f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background:
+                radial-gradient(ellipse at 14% 0%, rgba(34, 197, 94, 0.13), transparent 34rem),
+                radial-gradient(ellipse at 92% 38%, rgba(139, 92, 246, 0.09), transparent 28rem),
+                var(--page-bg);
+            -webkit-font-smoothing: antialiased;
         }
 
-        img {
-            -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
-            user-drag: none;
+        body::before {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            content: "";
             pointer-events: none;
+            opacity: 0.22;
+            background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 56px 56px;
+            mask-image: linear-gradient(to bottom, black, transparent 75%);
+        }
+
+        img { display: block; max-width: 100%; }
+
+        .downloads-list {
+            display: grid;
+            gap: 24px;
+            width: min(100%, 1000px);
+            margin: 0 auto;
+        }
+
+        .page-heading {
+            margin: 0 0 14px 4px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 14px currentColor;
+            content: "";
+        }
+
+        .page-title {
+            margin-top: 14px;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 760;
+            letter-spacing: -0.055em;
+            line-height: 1.05;
+        }
+
+        .page-description {
+            max-width: 540px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.65;
         }
 
         .card {
-            background: rgba(18, 28, 22, 0.75);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(74, 222, 128, 0.12);
-            border-radius: 28px;
-            padding: 40px 32px 32px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
             position: relative;
             overflow: hidden;
+            padding: 30px;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(21, 33, 28, 0.96), rgba(13, 20, 18, 0.96));
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255,255,255,.04);
         }
 
         .card::before {
-            content: '';
             position: absolute;
-            top: -60%;
-            left: -60%;
-            width: 220%;
-            height: 220%;
-            background: radial-gradient(circle at 30% 20%, rgba(74, 222, 128, 0.04), transparent 60%);
-            pointer-events: none;
+            top: 0;
+            left: 30px;
+            width: 82px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--green), transparent);
+            content: "";
         }
 
-        .brand {
-            font-size: 34px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: inline-block;
-        }
-
-        .brand::after {
-            content: 'Leaf';
-            font-weight: 300;
-            background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .product-heading {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 26px;
         }
 
         .icon-wrap {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px;
-            border-radius: 22%;
+            display: grid;
+            width: 68px;
+            height: 68px;
+            flex: 0 0 68px;
+            place-items: center;
             overflow: hidden;
-            background: rgba(0,0,0,0.3);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid rgba(255,255,255,.11);
+            border-radius: 19px;
+            background: rgba(255,255,255,.06);
+            box-shadow: 0 8px 28px rgba(0,0,0,.24);
         }
 
         .app-icon {
@@ -97,196 +136,313 @@
             object-fit: cover;
         }
 
-        .version-badge {
+        .product-copy { min-width: 0; }
+
+        .brand {
             display: inline-block;
-            background: rgba(74, 222, 128, 0.12);
-            color: #86efac;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 12px;
-            border-radius: 100px;
-            margin-top: 8px;
-            letter-spacing: 0.3px;
-            border: 1px solid rgba(74, 222, 128, 0.15);
+            font-size: 30px;
+            font-weight: 780;
+            letter-spacing: -0.045em;
+            line-height: 1.1;
+            background: linear-gradient(110deg, #d8ffe5, #53da88);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .version-badge {
+            display: inline-flex;
+            margin: 9px 0 0 8px;
+            padding: 4px 9px;
+            vertical-align: 4px;
+            border: 1px solid rgba(103, 230, 154, .2);
+            border-radius: 999px;
+            background: rgba(103, 230, 154, .08);
+            color: #9cebb9;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .04em;
         }
 
         .subtitle {
+            margin-top: 8px;
+            color: var(--muted);
             font-size: 13px;
-            color: #8899a0;
-            margin-top: 6px;
-            font-weight: 400;
         }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-kicker {
+            margin-bottom: 5px;
+            color: #74877d;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .download-option {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            padding: 20px;
+            border: 1px solid rgba(214, 237, 223, .09);
+            border-radius: 18px;
+            background: linear-gradient(155deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+            transition: border-color .2s ease, transform .2s ease, background .2s ease;
+        }
+
+        .download-option:hover {
+            transform: translateY(-2px);
+            border-color: rgba(103, 230, 154, .22);
+            background: linear-gradient(155deg, rgba(103,230,154,.07), rgba(255,255,255,.02));
+        }
+
+        .download-option-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 56px;
+            margin-bottom: 19px;
+        }
+
+        .download-option-heading h4 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -.015em;
+        }
+
+        .download-description {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .download-format {
+            flex-shrink: 0;
+            padding: 5px 8px;
+            border: 1px solid rgba(103, 230, 154, .18);
+            border-radius: 8px;
+            background: rgba(103, 230, 154, .06);
+            color: #9cebb9;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .07em;
+        }
+
+        .platform-mark {
+            display: flex;
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            border: 1px solid rgba(103,230,154,.16);
+            border-radius: 12px;
+            background: rgba(103,230,154,.08);
+            color: var(--green);
+        }
+
+        .platform-mark svg { width: 19px; height: 19px; }
 
         .stats {
             display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin: 28px 0 30px;
-            padding: 18px 20px;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.04);
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+            margin-bottom: 14px;
+            padding: 13px 14px;
+            border: 1px solid rgba(255,255,255,.055);
+            border-radius: 13px;
+            background: rgba(0,0,0,.16);
         }
 
         .stat-item {
-            flex: 1;
             display: flex;
+            min-width: 0;
+            flex: 1;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             gap: 2px;
         }
 
-        .stat-divider {
-            width: 1px;
-            background: rgba(255,255,255,0.06);
-        }
+        .stat-divider { align-self: stretch; width: 1px; background: rgba(255,255,255,.09); }
 
         .stat-num {
-            font-size: 26px;
-            font-weight: 700;
-            color: #e8edf0;
-            line-height: 1.2;
-            transition: opacity 0.4s ease;
-            min-height: 31px;
+            min-height: 29px;
+            color: #edf5f0;
+            font-size: 23px;
+            font-weight: 730;
+            letter-spacing: -.04em;
+            line-height: 1.25;
+            transition: opacity .3s ease;
         }
 
-        .stat-num.loading {
-            opacity: 0.3;
-        }
+        .stat-num.loading { opacity: .35; }
 
         .stat-label {
-            font-size: 11px;
+            color: #82938a;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .075em;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #6a7a82;
-            font-weight: 600;
         }
 
-        .stat-icon {
-            font-size: 14px;
-            margin-bottom: 2px;
-            opacity: 0.5;
-        }
+        .stat-icon { display: none; }
 
         .btn-download {
             display: inline-flex;
+            min-height: 48px;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 9px;
             width: 100%;
-            padding: 16px 28px;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: #fff;
-            font-size: 17px;
-            font-weight: 700;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
+            padding: 12px 16px;
+            border: 1px solid rgba(126, 238, 164, .45);
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3cbd72, #20995a);
+            box-shadow: 0 8px 24px rgba(31, 172, 91, .17), inset 0 1px rgba(255,255,255,.16);
+            color: #04150b;
+            font-size: 13px;
+            font-weight: 760;
+            text-align: center;
             text-decoration: none;
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 8px 28px rgba(34, 197, 94, 0.25);
-            position: relative;
-            letter-spacing: 0.3px;
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }
 
         .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 36px rgba(34, 197, 94, 0.35);
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+            box-shadow: 0 11px 28px rgba(31,172,91,.25);
         }
 
-        .btn-download:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
-        }
-
-        .btn-download svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-
-        .error-msg {
-            font-size: 11px;
-            color: #f87171;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .platform-tabs {
-            display: flex;
-            gap: 8px;
-            margin: 20px 0 0;
-            justify-content: center;
-        }
-
-        .platform-tab {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            color: #8899a0;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .platform-tab:hover {
-            background: rgba(255,255,255,0.08);
-            color: #c0cdd4;
-        }
-
-        .platform-tab.active {
-            background: rgba(74, 222, 128, 0.12);
-            border-color: rgba(74, 222, 128, 0.25);
-            color: #4ade80;
-        }
-
-        .platform-tab svg {
-            width: 16px;
-            height: 16px;
-        }
+        .btn-download:active { transform: translateY(0); }
+        .btn-download:focus-visible { outline: 2px solid #d5ffe2; outline-offset: 3px; }
+        .btn-download svg { width: 17px; height: 17px; flex: 0 0 auto; }
 
         .btn-download-win {
-            background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
-            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.25) !important;
+            border-color: rgba(113, 174, 255, .4);
+            background: linear-gradient(135deg, #5b9df5, #3976d4);
+            box-shadow: 0 8px 24px rgba(59,130,246,.16), inset 0 1px rgba(255,255,255,.16);
+            color: #071323;
         }
 
-        .btn-download-win:hover {
-            box-shadow: 0 12px 36px rgba(59, 130, 246, 0.35) !important;
+        .btn-download-win:hover { box-shadow: 0 11px 28px rgba(59,130,246,.25); }
+
+        .social-card {
+            display: grid;
+            grid-template-columns: minmax(220px, .75fr) minmax(0, 1.25fr);
+            align-items: center;
+            gap: 26px;
+            border-color: rgba(182, 154, 255, .16);
+            background: linear-gradient(120deg, rgba(31, 24, 46, .96), rgba(17, 20, 25, .97) 70%);
         }
 
-        .btn-download-win:active {
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2) !important;
+        .social-card::before {
+            width: 100px;
+            background: linear-gradient(90deg, var(--violet), transparent);
         }
 
-        .btn-download-web {
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
-            box-shadow: 0 8px 28px rgba(139, 92, 246, 0.25) !important;
+        .social-brand {
+            background: linear-gradient(110deg, #e1d5ff, #ac8aff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .btn-download-web:hover {
-            box-shadow: 0 12px 36px rgba(139, 92, 246, 0.35) !important;
+        .social-card .version-badge {
+            border-color: rgba(182,154,255,.22);
+            background: rgba(182,154,255,.08);
+            color: #cabbff;
         }
 
-        .brand.social-brand::after {
-            content: none;
+        .social-card .icon-wrap { border-color: rgba(182,154,255,.2); }
+        .social-card .download-option { border-color: rgba(182,154,255,.13); }
+        .social-card .download-format {
+            border-color: rgba(182,154,255,.23);
+            background: rgba(182,154,255,.08);
+            color: #cabbff;
         }
 
-        .hidden {
-            display: none !important;
+        .social-card .stats { margin-bottom: 12px; }
+
+        .btn-download-social {
+            border-color: rgba(201, 178, 255, .45);
+            background: linear-gradient(135deg, #9c79ec, #7652c9);
+            box-shadow: 0 8px 24px rgba(139,92,246,.2), inset 0 1px rgba(255,255,255,.16);
+            color: #100a20;
         }
 
-        @media (max-width: 420px) {
-            .card { padding: 28px 20px 24px; }
-            .brand { font-size: 28px; }
-            .stat-num { font-size: 22px; }
-            .stats { gap: 16px; padding: 14px 12px; }
-            .platform-tabs { gap: 5px; }
-            .platform-tab { gap: 5px; padding: 10px 11px; font-size: 12px; }
+        .btn-download-social:hover { box-shadow: 0 11px 28px rgba(139,92,246,.3); }
+
+        .error-msg {
+            display: none;
+            grid-column: 1 / -1;
+            margin: 0;
+            padding: 12px 14px;
+            border: 1px solid rgba(248,113,113,.2);
+            border-radius: 12px;
+            background: rgba(127,29,29,.18);
+            color: #fca5a5;
+            font-size: 12px;
+        }
+
+        .page-footer {
+            padding: 8px 4px 0;
+            color: #64736c;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 42px 18px; }
+            .card { padding: 24px; }
+            .social-card { grid-template-columns: 1fr; gap: 20px; }
+            .social-card .product-heading { margin-bottom: 0; }
+        }
+
+        @media (max-width: 520px) {
+            body { padding: 30px 14px; }
+            .downloads-list { gap: 16px; }
+            .page-heading { margin: 0 2px 6px; }
+            .page-title { font-size: 34px; }
+            .page-description { font-size: 13px; }
+            .card { padding: 20px 16px; border-radius: 20px; }
+            .product-heading { gap: 13px; margin-bottom: 21px; }
+            .icon-wrap { width: 58px; height: 58px; flex-basis: 58px; border-radius: 16px; }
+            .brand { font-size: 25px; }
+            .version-badge { margin-top: 7px; padding: 3px 7px; font-size: 9px; }
+            .subtitle { margin-top: 6px; font-size: 12px; }
+            .download-options { grid-template-columns: 1fr; gap: 11px; }
+            .download-option { padding: 16px; }
+            .download-option-heading { min-height: 0; margin-bottom: 14px; }
+            .platform-mark { margin-bottom: 11px; }
+            .stat-num { font-size: 21px; }
+            .social-card { gap: 16px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
         }
     </style>
 </head>
@@ -302,110 +458,157 @@
     
 <body>
 
-<div class="card">
-    <div class="icon-wrap">
-        <img src="icon.png" alt="WorldLeaf" class="app-icon" id="appIcon" onerror="this.style.display='none'">
-    </div>
+<main class="downloads-list">
+    <div class="error-msg" id="errorMsg" role="status">Error al conectar con el servidor</div>
 
-    <div class="brand" id="brandName">World</div>
+    <header class="page-heading">
+        <p class="eyebrow">WorldLeaf · Minecraft Bedrock</p>
+        <h1 class="page-title">Centro de descargas</h1>
+        <p class="page-description">Elige tu plataforma y descarga la versión oficial. Cada producto y versión, claramente organizados.</p>
+    </header>
 
-    <div class="version-badge" id="versionBadge">v1.17.0</div>
-
-    <div class="subtitle" id="appSubtitle">WorldLeaf — Complementos Minecraft Completamente gratis</div>
-
-    <div class="platform-tabs">
-        <button class="platform-tab active" data-platform="android" id="tabAndroid">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.523 15.3414c-.0515.0438-.103.0807-.1482.1245-.5745.5527-1.1786.9453-1.8014 1.1939-.2068.0819-.4212.1411-.6424.1753-.0641.01-.1289.0149-.1939.0149-.3459 0-.6698-.1245-.9218-.3473l-.0018-.0018c-.1163-.1049-.215-.2311-.2947-.3726-.0413-.0734-.0776-.1498-.1105-.2283-.0054-.0129-.0105-.0259-.0158-.0388-.1216-.2265-.198-.4751-.2283-.7416-.003-.0259-.0054-.052-.0073-.0781-.0065-.0894-.0105-.1798-.0105-.2715 0-.0877.004-.1742.0105-.2606.0019-.0261.0043-.0522.0073-.0781.0303-.2665.1067-.5151.2283-.7416.0053-.0129.0104-.0259.0158-.0388.0329-.0785.0692-.1549.1105-.2283.0797-.1415.1784-.2677.2947-.3726C7.5532 14.8545 7.8771 14.73 8.223 14.73c.065 0 .1298.0049.1939.0149.2212.0342.4356.0934.6424.1753.6228.2486 1.2269.6412 1.8014 1.1939.0452.0438.0967.0807.1482.1245l.0105.0087c.1478.1227.2826.219.4081.2947.0413.025.0847.0457.1283.0638.0087.0036.0175.0068.0263.01.0648.0237.132.04.2005.0485.0087.0011.0175.0018.0263.0022.138.0075.2811-.0173.4251-.0766a1.676 1.676 0 00.4914-.2836c.1324-.1221.2438-.2758.3275-.4503.014-.029.0269-.059.0388-.0899.0207-.0527.0388-.1072.054-.1634.0046-.0171.0089-.0343.0132-.0516.0244-.0983.042-.2.0515-.3056.002-.0214.0037-.0428.005-.0644.0035-.058.0057-.1167.0057-.1761 0-.0594-.0022-.1181-.0057-.1761-.0013-.0216-.003-.043-.005-.0644-.0095-.1053-.0271-.2073-.0515-.3056a3.218 3.218 0 00-.0132-.0516c-.0152-.0562-.0333-.1107-.054-.1634-.0119-.0309-.0248-.061-.0388-.0899-.0837-.1745-.1951-.3282-.3275-.4503a1.676 1.676 0 00-.4914-.2836c-.144-.0593-.2871-.0841-.4251-.0766a1.56 1.56 0 00-.2005.0022c-.0087.0004-.0176.0011-.0263.0022-.0685.0085-.1357.0248-.2005.0485a.937.937 0 00-.0263.01c-.0436.0181-.087.0388-.1283.0638-.1255.0757-.2603.172-.4081.2947zM8.5 2C6.567 2 5 3.567 5 5.5V19c0 1.933 1.567 3.5 3.5 3.5h1v2c0 .552.448 1 1 1s1-.448 1-1v-2h2v2c0 .552.448 1 1 1s1-.448 1-1v-2h1c1.933 0 3.5-1.567 3.5-3.5v-2H8.5V2z"/></svg>
-            Android
-        </button>
-        <button class="platform-tab" data-platform="windows" id="tabWindows">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 12V6.75l8-1.25V12H3zm0 .5h8v5.75l-8-1.25V12.5zM11.5 12V5.25l9.5-1.5V12h-9.5zm0 .5h9.5v7.75l-9.5-1.5V12.5z"/></svg>
-            Windows
-        </button>
-        <button class="platform-tab" data-platform="web" id="tabWeb">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
-            Android
-        </button>
-    </div>
-
-    <div class="stats" id="stats-android">
-        <div class="stat-item">
-            <div class="stat-icon">📦</div>
-            <div class="stat-num loading" id="addonCount">--</div>
-            <div class="stat-label">Complementos</div>
+    <section class="card" aria-labelledby="worldleaf-title">
+        <div class="product-heading">
+            <div class="icon-wrap">
+                <img src="icon.png" alt="WorldLeaf" class="app-icon">
+            </div>
+            <div class="product-copy">
+                <h2 class="brand" id="worldleaf-title">WorldLeaf</h2>
+                <div class="version-badge">v1.17.0</div>
+                <p class="subtitle">Complementos de Minecraft, completamente gratis.</p>
+            </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <div class="stat-icon">⬇️</div>
-            <div class="stat-num loading" id="downloadCount">--</div>
-            <div class="stat-label">Descargas APK</div>
+
+        <div class="section-heading">
+            <div>
+                <p class="section-kicker">Aplicación principal</p>
+                <h3 class="section-title">Descargas disponibles</h3>
+            </div>
         </div>
-    </div>
 
-    <div class="stats hidden" id="stats-windows">
-        <div class="stat-item">
-            <div class="stat-icon">📦</div>
-            <div class="stat-num loading" id="addonCountWin">--</div>
-            <div class="stat-label">Complementos</div>
+        <div class="download-options">
+            <section class="download-option" aria-labelledby="android-title">
+                <div class="platform-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.1 8.1 5.7 5.7a.5.5 0 0 1 .86-.5L8 7.6a8.6 8.6 0 0 1 8 0l1.44-2.4a.5.5 0 1 1 .86.5l-1.4 2.4a7.3 7.3 0 0 1 3.2 5.9H3.9a7.3 7.3 0 0 1 3.2-5.9ZM8 11a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Zm8 0a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM4 14.5h16v3.8a1.7 1.7 0 0 1-1.7 1.7h-.8v2a1 1 0 0 1-2 0v-2h-7v2a1 1 0 0 1-2 0v-2h-.8A1.7 1.7 0 0 1 4 18.3v-3.8Z"/></svg>
+                </div>
+                <div class="download-option-heading">
+                    <div>
+                        <h4 id="android-title">WorldLeaf para Android</h4>
+                        <p class="download-description">Instalador para dispositivos Android.</p>
+                    </div>
+                    <span class="download-format">APK</span>
+                </div>
+                <div class="stats" id="stats-android">
+                    <div class="stat-item">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-num loading" id="addonCount">--</div>
+                        <div class="stat-label">Complementos</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⬇️</div>
+                        <div class="stat-num loading" id="downloadCount">--</div>
+                        <div class="stat-label">Descargas APK</div>
+                    </div>
+                </div>
+                <a href="https://www.dropbox.com/scl/fi/cct9u56wdxj7whc20i67n/WorldLeaf-1.17.0.apk?rlkey=17honrihogku6nihlqwrnshfr&st=fds46rfd&dl=1"
+                   class="btn-download" id="downloadBtn" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
+                        <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
+                    </svg>
+                    Descargar WorldLeaf para Android
+                </a>
+            </section>
+
+            <section class="download-option" aria-labelledby="windows-title">
+                <div class="platform-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.2 10.8 4v7.4H3V5.2Zm8.8-1.4L21 2.4v9h-9.2V3.8ZM3 12.6h7.8V20L3 18.8v-6.2Zm8.8 0H21v9l-9.2-1.4v-7.6Z"/></svg>
+                </div>
+                <div class="download-option-heading">
+                    <div>
+                        <h4 id="windows-title">WorldLeaf para Windows</h4>
+                        <p class="download-description">Instalador para equipos con Windows.</p>
+                    </div>
+                    <span class="download-format">EXE</span>
+                </div>
+                <div class="stats" id="stats-windows">
+                    <div class="stat-item">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-num loading" id="addonCountWin">--</div>
+                        <div class="stat-label">Complementos</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⬇️</div>
+                        <div class="stat-num loading" id="downloadCountWin">--</div>
+                        <div class="stat-label">Descargas EXE</div>
+                    </div>
+                </div>
+                <a href="https://www.dropbox.com/scl/fi/il3dz1avm2xjsru5mrl64/WorldLeaf-Setup-1.17.0.exe?rlkey=hcb2v6zo0hzslcjqguhgnp5s4&st=tpujxc9c&dl=1"
+                   class="btn-download btn-download-win" id="downloadBtnWin" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
+                        <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
+                    </svg>
+                    Descargar WorldLeaf para Windows
+                </a>
+            </section>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <div class="stat-icon">⬇️</div>
-            <div class="stat-num loading" id="downloadCountWin">--</div>
-            <div class="stat-label">Descargas EXE</div>
+    </section>
+
+    <section class="card social-card" aria-labelledby="social-title">
+        <div class="product-heading">
+            <div class="icon-wrap">
+                <img src="icon.png" alt="WorldLeaf Social" class="app-icon">
+            </div>
+            <div class="product-copy">
+                <h2 class="brand social-brand" id="social-title">WorldLeaf Social</h2>
+                <div class="version-badge">v1.0</div>
+                <p class="subtitle">Comunidad para Minecraft Bedrock.</p>
+            </div>
         </div>
-    </div>
 
-    <div class="stats hidden" id="stats-web">
-        <div class="stat-item">
-            <div class="stat-icon">📦</div>
-            <div class="stat-num loading" id="addonCountWeb">--</div>
-            <div class="stat-label">Complementos</div>
+        <div class="social-download">
+        <div class="section-heading">
+            <div>
+                <p class="section-kicker">Aplicación para Android</p>
+                <h3 class="section-title">Descarga WorldLeaf Social</h3>
+            </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <div class="stat-icon">🌐</div>
-            <div class="stat-num loading" id="webAccessCount">--</div>
-            <div class="stat-label">Descargar APK</div>
+        <section class="download-option" aria-labelledby="social-app-title">
+            <div class="download-option-heading">
+                <div>
+                    <h4 id="social-app-title">WorldLeaf Social</h4>
+                    <p class="download-description">Instala la versión 1.0 en tu dispositivo Android.</p>
+                </div>
+                <span class="download-format">APK</span>
+            </div>
+            <div class="stats" id="stats-social">
+                <div class="stat-item">
+                    <div class="stat-num loading" id="socialDownloadCount">--</div>
+                    <div class="stat-label">Descargas APK</div>
+                </div>
+            </div>
+            <a href="https://www.dropbox.com/scl/fi/800z95oceze111ddxpsb4/WorldLeaf-Social-1.0.apk?rlkey=qsh3ru8xog8o4fkaxksmzain2&st=wtwzspf3&dl=1"
+               class="btn-download btn-download-social" id="downloadSocialBtn" target="_blank" rel="noopener noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
+                    <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
+                </svg>
+                Descargar APK de WorldLeaf Social
+            </a>
+            <div class="error-msg" id="socialCounterError" role="status">No se pudo actualizar el contador de descargas.</div>
+        </section>
         </div>
-    </div>
+    </section>
 
-    <a href="https://www.dropbox.com/scl/fi/cct9u56wdxj7whc20i67n/WorldLeaf-1.17.0.apk?rlkey=17honrihogku6nihlqwrnshfr&st=fds46rfd&dl=1"
-       class="btn-download" id="downloadBtn" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
-            <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
-        </svg>
-        Descargar APK
-    </a>
-
-    <a href="https://www.dropbox.com/scl/fi/il3dz1avm2xjsru5mrl64/WorldLeaf-Setup-1.17.0.exe?rlkey=hcb2v6zo0hzslcjqguhgnp5s4&st=tpujxc9c&dl=1"
-       class="btn-download btn-download-win hidden" id="downloadBtnWin" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3v12m0 0-4-4m4 4 4-4"/>
-            <path d="M3 16v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/>
-        </svg>
-        Descargar EXE
-    </a>
-
-    <a href="https://www.dropbox.com/scl/fi/800z95oceze111ddxpsb4/WorldLeaf-Social-1.0.apk?rlkey=qsh3ru8xog8o4fkaxksmzain2&st=wtwzspf3&dl=1"
-       class="btn-download btn-download-web hidden" id="openWebAppBtn" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 3h7v7"/>
-            <path d="M10 14 21 3"/>
-            <path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/>
-        </svg>
-      Descargar APK
-    </a>
-
-    <div class="error-msg" id="errorMsg">Error al conectar con el servidor</div>
-    <div class="error-msg" id="webCounterError" role="status">No se pudo actualizar el contador de accesos.</div>
-</div>
+    <footer class="page-footer">WorldLeaf · Descargas oficiales</footer>
+</main>
 
 <script>
 (function() {
     var GAS_URL = 'https://script.google.com/macros/s/AKfycbwCPig856nHfy0zRN4O9kdKpxs7VltqBFGEvD5WOlnFLLU7Db6SLkaux6t2Yi6g_HNC5w/exec';
-    var socialAccessCount = null;
     var callbackSequence = 0;
 
     function fmt(n) { return n >= 1000000 ? (n/1000000).toFixed(1).replace(/\.0$/,'')+'M' : n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(n); }
@@ -414,10 +617,7 @@
     var acEl = document.getElementById('addonCount');
     var dlWinEl = document.getElementById('downloadCountWin');
     var acWinEl = document.getElementById('addonCountWin');
-    var acWebEl = document.getElementById('addonCountWeb');
-    var webAccessEl = document.getElementById('webAccessCount');
-    var appIcon = document.getElementById('appIcon');
-    var currentPlatform = 'android';
+    var socialDownloadEl = document.getElementById('socialDownloadCount');
 
     var cached = localStorage.getItem('wl_stats');
     if (cached) {
@@ -427,7 +627,6 @@
         dlEl.textContent = fmt(c.d);
         acWinEl.textContent = fmt(c.a);
         dlWinEl.textContent = fmt(c.dw || 0);
-        acWebEl.textContent = fmt(c.a);
       } catch(e) {}
     }
 
@@ -437,7 +636,6 @@
         dlEl.textContent = fmt(d.total_descargas);
         acWinEl.textContent = fmt(d.total_addons);
         dlWinEl.textContent = fmt(d.total_descargas_windows || 0);
-        acWebEl.textContent = fmt(d.total_addons);
         localStorage.setItem('wl_stats', JSON.stringify({a:d.total_addons, d:d.total_descargas, dw:d.total_descargas_windows || 0}));
       }
     };
@@ -474,15 +672,14 @@
       document.body.appendChild(script);
     }
 
-    function setSocialAccessCount(value) {
-      socialAccessCount = value;
-      webAccessEl.textContent = fmt(value);
-      webAccessEl.classList.remove('loading');
+    function setSocialDownloadCount(value) {
+      socialDownloadEl.textContent = fmt(value);
+      socialDownloadEl.classList.remove('loading');
     }
 
-    requestSocialCounter('getAppSocialDownloads', setSocialAccessCount, function() {
-      webAccessEl.textContent = '--';
-      webAccessEl.setAttribute('aria-label', 'Contador no disponible');
+    requestSocialCounter('getAppSocialDownloads', setSocialDownloadCount, function() {
+      socialDownloadEl.textContent = '--';
+      socialDownloadEl.setAttribute('aria-label', 'Contador no disponible');
     });
 
     var statsScript = document.createElement('script');
@@ -494,47 +691,6 @@
     setTimeout(function() {
       if (statsScript.parentNode) statsScript.parentNode.removeChild(statsScript);
     }, 8000);
-
-    function setSelectedPlatform(platform) {
-      var isWin = platform === 'windows';
-      var isWeb = platform === 'web';
-      document.getElementById('stats-android').classList.toggle('hidden', isWin || isWeb);
-      document.getElementById('stats-windows').classList.toggle('hidden', !isWin);
-      document.getElementById('stats-web').classList.toggle('hidden', !isWeb);
-      document.getElementById('downloadBtn').classList.toggle('hidden', isWin || isWeb);
-      document.getElementById('downloadBtnWin').classList.toggle('hidden', !isWin);
-      document.getElementById('openWebAppBtn').classList.toggle('hidden', !isWeb);
-
-      var socialMode = isWeb;
-      appIcon.style.display = '';
-      appIcon.alt = socialMode ? 'WorldLeaf Social' : 'WorldLeaf';
-      appIcon.onerror = function() {
-        if (socialMode && !this.src.endsWith('/icon.png')) {
-          this.src = 'icon.png';
-        } else {
-          this.style.display = 'none';
-        }
-      };
-      appIcon.src = socialMode ? 'social.png' : 'icon.png';
-
-      var brand = document.getElementById('brandName');
-      brand.textContent = socialMode ? 'WorldLeaf Social' : 'World';
-      brand.classList.toggle('social-brand', socialMode);
-      document.getElementById('versionBadge').classList.toggle('hidden', socialMode);
-      document.getElementById('appSubtitle').textContent = socialMode
-        ? 'WorldLeaf Social — Comunidad para Minecraft Bedrock'
-        : 'WorldLeaf — Complementos Minecraft Completamente gratis';
-      document.title = socialMode ? 'WorldLeaf Social — Minecraft Bedrock' : 'WorldLeaf - Descargar APK';
-    }
-
-    document.querySelectorAll('.platform-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        currentPlatform = this.dataset.platform;
-        document.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.remove('active'); });
-        this.classList.add('active');
-        setSelectedPlatform(currentPlatform);
-      });
-    });
 
     document.getElementById('downloadBtn').addEventListener('click', function() {
         dlEl.textContent = fmt((parseInt(dlEl.textContent.replace(/[^0-9]/g,'')) || 0) + 1);
@@ -552,11 +708,11 @@
         setTimeout(function() { document.body.removeChild(s); }, 2000);
     });
 
-    document.getElementById('openWebAppBtn').addEventListener('click', function() {
-      var counterError = document.getElementById('webCounterError');
+    document.getElementById('downloadSocialBtn').addEventListener('click', function() {
+      var counterError = document.getElementById('socialCounterError');
       counterError.style.display = 'none';
       requestSocialCounter('incrementAppSocialDownloads', function(value) {
-        setSocialAccessCount(value);
+        setSocialDownloadCount(value);
       }, function() {
         counterError.style.display = 'block';
       });
