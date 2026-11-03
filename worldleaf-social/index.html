@@ -106,14 +106,133 @@
   .policy-gate {
     position: fixed; inset: 0; z-index: 300;
     display: grid; place-items: center; overflow-y: auto;
-    padding: 20px; background: var(--bg);
+    padding: clamp(12px, 3vw, 32px);
+    background:
+      radial-gradient(800px 460px at 8% 0%, rgba(var(--brand-rgb), .18), transparent 62%),
+      radial-gradient(700px 420px at 100% 100%, rgba(59, 130, 246, .12), transparent 60%),
+      var(--bg);
   }
-  .policy-card { width: min(680px, 100%); max-height: 100%; overflow-y: auto; }
-  .policy-card h1 { margin: 0 0 8px; font-size: 24px; }
-  .policy-card h2 { margin: 20px 0 8px; font-size: 16px; }
-  .policy-card p, .policy-card li { color: var(--muted); line-height: 1.6; }
-  .policy-accept { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; }
-  .policy-accept input { flex: 0 0 auto; margin-top: 5px; }
+  .policy-card {
+    display: flex;
+    flex-direction: column;
+    width: min(760px, 100%);
+    max-height: min(900px, calc(100vh - 40px));
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(var(--brand-rgb), .24);
+    border-radius: 26px;
+    background: var(--panel);
+    box-shadow: 0 28px 90px rgba(0, 0, 0, .38);
+  }
+  .policy-header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 26px 30px 22px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(135deg, rgba(var(--brand-rgb), .12), transparent 72%);
+  }
+  .policy-mark {
+    display: grid;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border: 1px solid rgba(var(--brand-rgb), .25);
+    border-radius: 16px;
+    background: rgba(var(--brand-rgb), .12);
+    font-size: 24px;
+  }
+  .policy-eyebrow {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--brand);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+  }
+  .policy-card h1 { margin: 0; font-size: clamp(22px, 4vw, 28px); line-height: 1.2; }
+  .policy-header p { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
+  .policy-content {
+    display: grid;
+    flex: 1 1 auto;
+    gap: 12px;
+    min-height: 0;
+    padding: 20px 30px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .policy-section {
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(var(--brand-rgb), .035);
+  }
+  .policy-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px;
+    font-size: 15px;
+  }
+  .policy-section h2 span {
+    display: grid;
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: 9px;
+    background: rgba(var(--brand-rgb), .14);
+    color: var(--brand);
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .policy-section p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+  .policy-section + .policy-section { margin: 0; }
+  .policy-warning {
+    border-color: rgba(245, 158, 11, .32);
+    background: rgba(245, 158, 11, .07);
+  }
+  .policy-warning h2 span { color: #fbbf24; background: rgba(245, 158, 11, .16); }
+  .policy-rules { border-color: rgba(var(--brand-rgb), .24); }
+  .policy-note { padding: 2px 4px; font-size: 12px !important; }
+  .policy-footer {
+    flex: 0 0 auto;
+    padding: 16px 30px 22px;
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .policy-accept {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 0 0 16px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .policy-accept input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    accent-color: var(--brand);
+  }
+  .policy-footer .modal-actions { margin: 0; }
+  @media (max-width: 600px) {
+    .policy-gate { padding: 10px; }
+    .policy-card { max-height: calc(100vh - 20px); border-radius: 20px; }
+    .policy-header { gap: 12px; padding: 20px 18px 16px; }
+    .policy-mark { flex-basis: 40px; width: 40px; height: 40px; border-radius: 13px; }
+    .policy-content { gap: 10px; padding: 14px 16px; }
+    .policy-section { padding: 14px; }
+    .policy-footer { padding: 14px 16px 18px; }
+    .policy-footer .modal-actions { flex-direction: column-reverse; }
+    .policy-footer .modal-actions .btn { width: 100%; }
+  }
   .boot-screen {
     position: fixed; inset: 0; z-index: 200;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1260,28 +1379,43 @@
 
 <section id="policyGate" class="policy-gate hidden" aria-labelledby="policyTitle">
   <div class="card policy-card">
-    <h1 id="policyTitle">Privacidad y convivencia</h1>
-    <p>Para continuar, lee y acepta este aviso.</p>
-    <h2>Privacidad</h2>
-    <ul>
-      <li>Usamos tu nombre de usuario, nombre visible, correo, datos de sesión, perfil, publicaciones, comentarios e imágenes para prestar las funciones sociales.</li>
-      <li>Los datos de perfil y contenido se guardan en los servicios de Google configurados por WorldLeaf. No publiques contraseñas, datos financieros ni información privada de otras personas.</li>
-      <li>Puedes editar tu perfil o solicitar la eliminación de tu cuenta desde Ajustes. La eliminación puede borrar también tus publicaciones y archivos asociados.</li>
-    </ul>
-    <h2>Reglas de la comunidad</h2>
-    <ul>
-      <li>No se permite contenido sexual explícito o para adultos, explotación, gore, acoso, amenazas, odio ni divulgar datos personales ajenos.</li>
-      <li>Trata a los demás con respeto. El contenido que infrinja estas reglas puede retirarse y la cuenta puede suspenderse temporal o permanentemente.</li>
-    </ul>
-    <p>Este aviso resume las reglas y el uso de datos del servicio; no sustituye una política legal completa ni asesoría jurídica. Las solicitudes sobre tus datos pueden dirigirse al administrador de WorldLeaf.</p>
-    <label class="policy-accept">
-      <input id="policyCheck" type="checkbox">
-      <span>He leído y acepto las políticas de privacidad y convivencia.</span>
-    </label>
-    <div class="modal-actions">
-      <button id="policyExitBtn" class="btn ghost" type="button">Cerrar sesión y salir</button>
-      <button id="acceptPolicyBtn" class="btn primary" type="button" disabled>Aceptar y continuar</button>
+    <header class="policy-header">
+      <span class="policy-mark" aria-hidden="true">🌿</span>
+      <div>
+        <span class="policy-eyebrow">WORLDLEAF · COMUNIDAD</span>
+        <h1 id="policyTitle">Tu privacidad importa</h1>
+        <p>Lee estas pautas para continuar y compartir de forma segura.</p>
+      </div>
+    </header>
+    <div class="policy-content">
+      <section class="policy-section">
+        <h2><span aria-hidden="true">01</span>Cómo usamos tus datos</h2>
+        <p>Los datos de tu cuenta y sesión nos permiten mantener tu acceso y asociar a tu perfil lo que publiques, como publicaciones, comentarios y servidores. Usamos tu correo para funciones de la cuenta, incluida la recuperación de acceso mediante servicios de Google. La información se almacena en la base de datos y la unidad de almacenamiento de WorldLeaf, con medidas de seguridad, y se utiliza para operar las funciones de la aplicación.</p>
+      </section>
+      <section class="policy-section policy-warning">
+        <h2><span aria-hidden="true">!</span>Cuida tu información personal</h2>
+        <p>No publiques tu nombre real, ubicación actual o habitual, domicilio, teléfono, escuela o lugar de trabajo, documentos, contraseñas, datos financieros ni otros datos que puedan identificarte o permitir que te localicen. No compartas tampoco información personal de otras personas.</p>
+      </section>
+      <section class="policy-section">
+        <h2><span aria-hidden="true">02</span>Comparte con responsabilidad</h2>
+        <p>WorldLeaf procura proteger la privacidad de la comunidad, pero el contenido puede ser visible para otras personas según su tipo y configuración. Cada usuario es responsable de lo que comparte. Sigue estas recomendaciones y publica solo información que estés dispuesto a mostrar.</p>
+      </section>
+      <section class="policy-section policy-rules">
+        <h2><span aria-hidden="true">03</span>Convivencia segura</h2>
+        <p>No se permite contenido sexual explícito o para adultos, explotación, gore, acoso, amenazas, odio ni divulgar datos personales ajenos. Trata a los demás con respeto. El contenido que incumpla estas reglas puede retirarse y la cuenta puede suspenderse temporal o permanentemente.</p>
+      </section>
+      <p class="policy-note">Puedes editar tu perfil o solicitar la eliminación de tu cuenta desde Ajustes; esto también puede borrar tus publicaciones y archivos asociados. Este aviso resume las reglas y el uso de datos, no sustituye una política legal completa ni asesoría jurídica. Para consultas sobre tus datos, contacta al administrador de WorldLeaf.</p>
     </div>
+    <footer class="policy-footer">
+      <label class="policy-accept">
+        <input id="policyCheck" type="checkbox">
+        <span>He leído y acepto las políticas de privacidad y convivencia.</span>
+      </label>
+      <div class="modal-actions">
+        <button id="policyExitBtn" class="btn ghost" type="button">Cerrar sesión y salir</button>
+        <button id="acceptPolicyBtn" class="btn primary" type="button" disabled>Aceptar y continuar</button>
+      </div>
+    </footer>
   </div>
 </section>
 
