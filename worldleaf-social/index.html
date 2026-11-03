@@ -2212,7 +2212,7 @@
   // ─────────────────────────────────────────────────────────────────────
   var API_URL = 'https://script.google.com/macros/s/AKfycbyIrIlhsgjpNcpOcT-aWnpjSSc-HdiDQTu3HqI1I5ZfOWqL_lBoyYj05034THSy1gKEyQ/exec';
 
-  function api(action, data) {
+  function api(action, data, skipPolicyRetry) {
     data = data || {};
     var payload = Object.assign({ action: action, token: state.token || '' }, data);
     var inside = !!(window.google && window.google.script && window.google.script.run);
@@ -2220,7 +2220,9 @@
     if (inside) {
       return new Promise(function (resolve, reject) {
         google.script.run
-          .withSuccessHandler(function (raw) { resolverRespuesta(raw, resolve, reject); })
+          .withSuccessHandler(function (raw) {
+            resolverRespuesta(raw, resolve, reject, action, data, !skipPolicyRetry);
+          })
           .withFailureHandler(function (err) {
             reject({ code: 'NETWORK', message: (err && err.message) || 'Error de conexión' });
           })
@@ -2239,14 +2241,16 @@
       if (!res.ok) throw { code: 'NETWORK', message: 'El servidor respondió ' + res.status };
       return res.text();
     }).then(function (raw) {
-      return new Promise(function (resolve, reject) { resolverRespuesta(raw, resolve, reject); });
+      return new Promise(function (resolve, reject) {
+        resolverRespuesta(raw, resolve, reject, action, data, !skipPolicyRetry);
+      });
     }).catch(function (err) {
       if (err && (err.code || err.error || err.ok === false)) throw err;
       throw { code: 'NETWORK', message: 'No se pudo conectar con el servidor' };
     });
   }
 
-  function resolverRespuesta(raw, resolve, reject) {
+  function resolverRespuesta(raw, resolve, reject, action, data, allowPolicyRetry) {
     var res;
     try { res = JSON.parse(raw); }
     catch (e) { reject({ code: 'SERVER', message: 'Respuesta inválida del servidor' }); return; }
@@ -2258,8 +2262,17 @@
       return;
     }
     if (res && res.error === 'POLICY_REQUIRED' && state.me) {
-      forceLogout();
-      toast('Inicia sesión nuevamente para revisar las políticas.', 'warn');
+      var policyStatus = getPolicySessionStatus(state.me.userId);
+      if (policyStatus === 'accepted' && allowPolicyRetry && action !== 'aceptarPoliticas') {
+        api('aceptarPoliticas', {}, true)
+          .then(function () { return api(action, data, true); })
+          .then(resolve, reject);
+        return;
+      }
+      if (policyStatus !== 'accepted') {
+        setPolicySessionStatus(state.me.userId, 'pending');
+        showPolicyGate();
+      }
     }
     if (res && res.error === 'AUTH' && state.me) forceLogout();
     reject(res || { code: 'SERVER', message: 'Error desconocido' });
@@ -2358,6 +2371,10 @@
       removeCache(CACHE_NOTIF_KEY);
       e.target.reset();
       if (getPolicySessionStatus(state.me.userId) === 'accepted') {
+        // The local session can outlive a policy record missing on the backend.
+        await api('aceptarPoliticas', {}, true);
+        state.me.politicasAceptadas = true;
+        writeCache(CACHE_PROFILE_KEY, state.me);
         showApp();
         await navigate('feed');
       } else {
@@ -2528,6 +2545,8 @@
   function showPolicyGate() {
     hideBoot();
     hideBlockedScreen();
+    $('#policyCheck').checked = false;
+    $('#acceptPolicyBtn').disabled = true;
     $('#authScreen').classList.add('hidden');
     $('#appScreen').classList.add('hidden');
     $('#policyGate').classList.remove('hidden');
@@ -5979,11 +5998,16 @@
       writeCache(CACHE_PROFILE_KEY, state.me);
       updateShell();
       var policyStatus = getPolicySessionStatus(state.me.userId);
-      if (policyStatus === 'pending' || !state.me.politicasAceptadas) {
+      if (policyStatus === 'pending' ||
+          (policyStatus !== 'accepted' && !state.me.politicasAceptadas)) {
         setPolicySessionStatus(state.me.userId, 'pending');
         showPolicyGate();
       } else {
-        if (policyStatus !== 'accepted') {
+        if (policyStatus === 'accepted' && !state.me.politicasAceptadas) {
+          await api('aceptarPoliticas', {}, true);
+          state.me.politicasAceptadas = true;
+          writeCache(CACHE_PROFILE_KEY, state.me);
+        } else if (policyStatus !== 'accepted') {
           setPolicySessionStatus(state.me.userId, 'accepted');
         }
         showApp();
