@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>WorldLeaf · Red Social</title>
+<title>Prizmothyn · Comunidad y catálogo</title>
 <style>
   :root {
     color-scheme: light;
@@ -409,7 +409,32 @@
     color: var(--text);
     white-space: nowrap;
   }
-  .brand .logo { color: var(--brand); }
+  .brand-logo {
+    position: relative;
+    display: inline-flex;
+    width: 26px;
+    height: 30px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand-logo::before {
+    position: absolute;
+    inset: 3px -4px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(45, 145, 255, .7), rgba(38, 104, 255, .2) 48%, transparent 76%);
+    filter: blur(5px);
+    content: "";
+  }
+  .brand-logo img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: auto;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 4px rgba(67, 159, 255, .55));
+  }
   .nav { display: none; }
   .nav button {
     border: none;
@@ -424,6 +449,21 @@
   .nav button.active { background: rgba(var(--brand-rgb), .14); color: var(--brand); }
   .top-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .avatar-btn { background: none; border: none; padding: 0; border-radius: 50%; }
+  .guest-access-btn {
+    min-height: 40px;
+    padding: 0 18px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .guest-composer { text-align: center; }
+  .guest-composer .composer-top { align-items: center; text-align: left; }
+  .guest-composer p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .auth-back { margin-top: 14px; }
+  .auth-note { margin: 14px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: center; }
+  .guest-login-btn { width: 100%; margin-top: 12px; }
+  .addons-guest-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .menu-btn, .bell-btn {
     position: relative;
     display: inline-flex;
@@ -613,6 +653,13 @@
     padding: 26px clamp(14px, 4vw, 40px) 100px;
     align-items: start;
   }
+  .layout.catalog-layout {
+    display: block;
+    max-width: 1440px;
+  }
+  .layout.catalog-layout .left,
+  .layout.catalog-layout .right { display: none; }
+  .layout.catalog-layout .center { width: 100%; }
   .left { position: sticky; top: 86px; display: flex; flex-direction: column; gap: 16px; }
   .center { min-width: 0; }
   .right { position: sticky; top: 86px; }
@@ -1112,6 +1159,104 @@
 
   /* ─── Complementos ─────────────────────────────────────────────── */
   .addons-page { display: flex; flex-direction: column; gap: 18px; }
+  .catalog-page { display: flex; flex-direction: column; gap: 24px; }
+  .catalog-masthead {
+    position: relative;
+    display: flex;
+    min-height: 230px;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    overflow: hidden;
+    padding: clamp(24px, 5vw, 48px);
+    background:
+      radial-gradient(ellipse at 82% 18%, rgba(56, 189, 248, .2), transparent 38%),
+      radial-gradient(ellipse at 14% 0%, rgba(var(--brand-rgb), .23), transparent 55%),
+      linear-gradient(135deg, var(--panel), var(--bg-soft));
+  }
+  .catalog-masthead::after {
+    position: absolute;
+    top: -90px;
+    right: 4%;
+    width: 260px;
+    height: 260px;
+    border: 1px solid rgba(var(--brand-rgb), .16);
+    border-radius: 50%;
+    box-shadow: 0 0 0 30px rgba(var(--brand-rgb), .035), 0 0 0 62px rgba(var(--brand-rgb), .025);
+    content: "";
+    pointer-events: none;
+  }
+  .catalog-masthead-copy { position: relative; z-index: 1; max-width: 680px; }
+  .catalog-eyebrow { color: var(--brand); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+  .catalog-masthead h1 { margin: 10px 0 0; font-size: clamp(30px, 5vw, 48px); line-height: 1.06; letter-spacing: -.045em; }
+  .catalog-masthead p { max-width: 62ch; margin-top: 12px; color: var(--muted); }
+  .catalog-masthead-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .catalog-categories { display: flex; flex-wrap: wrap; gap: 9px; }
+  .catalog-category {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    transition: border-color .15s ease, transform .15s ease, background .15s ease;
+  }
+  .catalog-category:hover { transform: translateY(-1px); border-color: rgba(var(--brand-rgb), .55); }
+  .catalog-category-count {
+    display: inline-grid;
+    min-width: 1.8em;
+    height: 1.8em;
+    place-items: center;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgba(var(--brand-rgb), .1);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .catalog-shelf { display: flex; flex-direction: column; gap: 13px; }
+  .catalog-shelf-head { display: flex; align-items: end; justify-content: space-between; gap: 14px; }
+  .catalog-shelf-head h2 { font-size: clamp(19px, 2.4vw, 24px); letter-spacing: -.025em; }
+  .catalog-shelf-head p { margin-top: 3px; color: var(--muted); font-size: 13px; }
+  .catalog-shelf-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .catalog-shelf-grid .addon-card { min-width: 0; }
+  .catalog-shelf-message { grid-column: 1 / -1; padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); color: var(--muted); }
+  .catalog-shelf-message .btn { margin-top: 12px; }
+  .catalog-shelf-footer { display: flex; justify-content: flex-end; }
+  .catalog-all-link { color: var(--brand); font-size: 13px; font-weight: 750; }
+  .catalog-all-link:hover { text-decoration: underline; }
+  .catalog-filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+  .catalog-filter-label { margin-right: 3px; color: var(--muted); font-size: 13px; font-weight: 700; }
+  .catalog-category[aria-pressed="true"] { border-color: var(--brand); background: rgba(var(--brand-rgb), .12); color: var(--brand); }
+  .catalog-sort-wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .catalog-sort-wrap label { color: var(--muted); font-size: 13px; font-weight: 700; }
+  .catalog-sort-control { display: flex; align-items: center; gap: 8px; }
+  .catalog-section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .catalog-section-title h2 { font-size: 22px; }
+  .catalog-join { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 22px; }
+  .catalog-join h2 { font-size: 19px; }
+  .catalog-join p { margin-top: 5px; }
+  @media (max-width: 980px) {
+    .catalog-shelf-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 650px) {
+    .catalog-masthead { min-height: 0; padding: 24px; }
+    .catalog-masthead::after { right: -120px; }
+    .catalog-shelf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .catalog-shelf-head { align-items: flex-start; }
+    .catalog-sort-wrap, .catalog-sort-control { width: 100%; }
+    .catalog-sort-control .addons-sort { flex: 1; }
+    .catalog-join { align-items: flex-start; flex-direction: column; }
+  }
+  @media (max-width: 380px) {
+    .catalog-shelf-grid { grid-template-columns: 1fr; }
+  }
   .addons-hero {
     padding: 24px;
     display: flex;
@@ -1357,15 +1502,16 @@
     .nav { display: none; }
     .topbar { gap: 10px; }
     .brand { gap: 6px; font-size: 17px; }
-    .brand span.logo { font-size: 22px; }
+    .brand-logo { width: 23px; height: 27px; }
+    .brand-logo img { height: 25px; }
   }
 </style>
 </head>
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <span class="logo">🌿</span>
-  <span>Cargando WorldLeaf…</span>
+  <span class="logo">✦</span>
+  <span>Cargando Prizmothyn…</span>
 </div>
 
 <div id="blockedScreen" class="blocked-screen hidden" aria-live="assertive">
@@ -1380,7 +1526,7 @@
 <section id="policyGate" class="policy-gate hidden" aria-labelledby="policyTitle">
   <div class="card policy-card">
     <header class="policy-header">
-      <span class="policy-mark" aria-hidden="true">🌿</span>
+      <span class="policy-mark" aria-hidden="true">✦</span>
       <div>
         <span class="policy-eyebrow">WORLDLEAF · COMUNIDAD</span>
         <h1 id="policyTitle">Tu privacidad importa</h1>
@@ -1390,7 +1536,7 @@
     <div class="policy-content">
       <section class="policy-section">
         <h2><span aria-hidden="true">01</span>Cómo usamos tus datos</h2>
-        <p>Los datos de tu cuenta y sesión nos permiten mantener tu acceso y asociar a tu perfil lo que publiques, como publicaciones, comentarios y servidores. Usamos tu correo para funciones de la cuenta, incluida la recuperación de acceso mediante servicios de Google. La información se almacena en la base de datos y la unidad de almacenamiento de WorldLeaf, con medidas de seguridad, y se utiliza para operar las funciones de la aplicación.</p>
+        <p>Los datos de tu cuenta y sesión nos permiten mantener tu acceso y asociar a tu perfil lo que publiques, como publicaciones, comentarios y servidores. Usamos tu correo para funciones de la cuenta, incluida la recuperación de acceso mediante servicios de Google. La información se almacena en la base de datos y la unidad de almacenamiento de Prizmothyn, con medidas de seguridad, y se utiliza para operar las funciones de la aplicación.</p>
       </section>
       <section class="policy-section policy-warning">
         <h2><span aria-hidden="true">!</span>Cuida tu información personal</h2>
@@ -1398,7 +1544,7 @@
       </section>
       <section class="policy-section">
         <h2><span aria-hidden="true">02</span>Comparte con responsabilidad</h2>
-        <p>WorldLeaf procura proteger la privacidad de la comunidad, pero el contenido puede ser visible para otras personas según su tipo y configuración. Cada usuario es responsable de lo que comparte. Sigue estas recomendaciones y publica solo información que estés dispuesto a mostrar.</p>
+        <p>Prizmothyn procura proteger la privacidad de la comunidad, pero el contenido puede ser visible para otras personas según su tipo y configuración. Cada usuario es responsable de lo que comparte. Sigue estas recomendaciones y publica solo información que estés dispuesto a mostrar.</p>
       </section>
       <section class="policy-section policy-rules">
         <h2><span aria-hidden="true">03</span>Convivencia segura</h2>
@@ -1422,8 +1568,8 @@
 <!-- ══════════════ PANTALLA DE AUTENTICACIÓN ══════════════ -->
 <section id="authScreen" class="auth hidden">
   <div class="auth-card">
-    <div class="auth-brand"><span class="logo">🌿</span> WorldLeaf</div>
-    <p class="auth-sub">Conecta, comparte y haz crecer tu mundo.</p>
+    <div class="auth-brand"><span class="logo">✦</span> Prizmothyn</div>
+    <p class="auth-sub">Explora la comunidad sin cuenta o accede para publicar, comentar y seguir personas.</p>
 
     <div class="tabs">
       <button class="tab active" data-tab="login" type="button">Entrar</button>
@@ -1463,6 +1609,8 @@
       </div>
       <button class="link" type="button" id="backLoginBtn">Volver a iniciar sesión</button>
     </form>
+    <p class="auth-note">Al iniciar sesión o crear una cuenta aceptas las políticas de privacidad y convivencia de Prizmothyn.</p>
+    <button class="link auth-back" type="button" id="authBackBtn">Seguir explorando sin cuenta</button>
   </div>
 </section>
 
@@ -1482,25 +1630,30 @@
     </div>
     <nav class="side-nav">
       <p class="side-title">Navegación</p>
+      <button type="button" data-side-view="home">⌂ Inicio</button>
+      <button type="button" data-side-view="feed">📝 Publicaciones</button>
       <button type="button" data-side-view="search">🔎 Buscar</button>
-      <button type="button" data-side-view="addons">🧩 Complementos</button>
+      <button type="button" data-side-view="addons">🧩 Catálogo</button>
       <button type="button" data-side-view="servers">🖥️ Servidores</button>
       <button type="button" id="sideAdminBtn" class="hidden" data-side-view="admin">🛡️ Administración</button>
       <p class="side-title">Cuenta</p>
+      <button type="button" id="sideLoginBtn" class="hidden">👤 Iniciar sesión o crear cuenta</button>
       <button type="button" id="sideLogoutBtn" class="danger">🚪 Cerrar sesión</button>
     </nav>
   </aside>
 
   <header class="topbar">
     <button class="menu-btn" id="menuBtn" type="button" title="Abrir menú" aria-label="Abrir menú">☰</button>
-    <button class="brand" id="homeBtn" type="button"><span class="logo">🌿</span><span class="brand-text">WorldLeaf</span></button>
+    <button class="brand" id="homeBtn" type="button" aria-label="Prizmothyn, inicio"><span class="brand-logo"><img src="icon/icon.png" alt=""></span><span class="brand-text">Prizmothyn</span></button>
     <nav class="nav">
       <button type="button" data-view="search">Buscar</button>
-      <button type="button" data-view="addons">Complementos</button>
+      <button type="button" data-view="feed">Publicaciones</button>
+      <button type="button" data-view="addons">Catálogo</button>
       <button type="button" data-view="servers">Servidores</button>
     </nav>
     <div class="top-actions">
       <button class="bell-btn" id="notifBtn" type="button" title="Notificaciones" aria-label="Notificaciones">🔔<span id="notifBadge" class="badge-count hidden">0</span></button>
+      <button class="btn primary guest-access-btn hidden" id="guestAccessBtn" type="button">Acceder</button>
       <button class="avatar-btn" id="myProfileBtn" type="button" title="Mi perfil" aria-label="Abrir mi perfil"><img id="topAvatar" class="avatar md" alt=""></button>
     </div>
   </header>
@@ -1517,9 +1670,9 @@
     <aside class="right"></aside>
   </main>
   <nav class="bottom-nav" aria-label="Navegación principal">
-    <button type="button" data-app-view="feed" aria-label="Inicio" title="Inicio"><span class="bottom-icon" aria-hidden="true">🏠</span><span class="bottom-label">Inicio</span></button>
-    <button type="button" data-app-view="addons" aria-label="Complementos" title="Complementos"><span class="bottom-icon" aria-hidden="true">🧩</span><span class="bottom-label">Complementos</span></button>
-    <button type="button" data-app-view="servers" aria-label="Servidores" title="Servidores"><span class="bottom-icon" aria-hidden="true">🖥️</span><span class="bottom-label">Servidores</span></button>
+    <button type="button" data-app-view="home" aria-label="Inicio" title="Inicio"><span class="bottom-icon" aria-hidden="true">🏠</span><span class="bottom-label">Inicio</span></button>
+    <button type="button" data-app-view="feed" aria-label="Publicaciones" title="Publicaciones"><span class="bottom-icon" aria-hidden="true">📝</span><span class="bottom-label">Publicaciones</span></button>
+    <button type="button" data-app-view="addons" aria-label="Catálogo" title="Catálogo"><span class="bottom-icon" aria-hidden="true">🧩</span><span class="bottom-label">Catálogo</span></button>
     <button type="button" data-app-view="settings" aria-label="Ajustes" title="Ajustes"><span class="bottom-icon" aria-hidden="true">⚙️</span><span class="bottom-label">Ajustes</span></button>
   </nav>
 </div>
@@ -1564,7 +1717,7 @@
     <label class="field"><span id="editPostTextLabel">Descripción</span>
       <textarea id="editPostText" maxlength="1000" rows="5"></textarea></label>
     <div id="editPostMiniTools" class="hidden">
-      <p class="muted">Solo HTML/CSS estático. JavaScript, formularios y acceso a WorldLeaf están bloqueados.</p>
+      <p class="muted">Solo HTML/CSS estático. JavaScript, formularios y acceso a Prizmothyn están bloqueados.</p>
       <button id="previewEditMiniRender" class="btn ghost small" type="button">Vista previa aislada</button>
       <div id="editPostMiniPreview" class="mini-render-preview hidden"></div>
     </div>
@@ -1687,7 +1840,7 @@
     me: readCache(CACHE_PROFILE_KEY, null),
     notifUnread: (notifCacheInicial && notifCacheInicial.at &&
       Date.now() - notifCacheInicial.at <= CACHE_NOTIF_TTL && notifCacheInicial.sinLeer) || 0,
-    view: 'feed',
+    view: 'home',
     profileUserId: '',
     routeLock: false,
     feed: { offset: 0, hasMore: true, loading: false, filter: 'todos', seq: 0 },
@@ -1707,7 +1860,8 @@
     addons: {
       items: [],
       q: '',
-      sort: 'aleatorio',
+      sort: 'recientes',
+      category: '',
       offset: 0,
       hasMore: true,
       loading: false,
@@ -1723,6 +1877,11 @@
       detail: null,
       detailSeq: 0,
       galleryIndex: 0
+    },
+    homeCatalog: {
+      shelves: {}, loadedAt: 0, seq: 0, categoryCounts: null,
+      categoryCountsLoadedAt: 0, categoryCountsAttemptedAt: 0,
+      categoryCountsLoading: false, categoryCountsError: false
     }
   };
 
@@ -2086,7 +2245,7 @@
 
   function parseHashRoute(hash) {
     var raw = String(hash || '').replace(/^#/, '');
-    if (!raw) return { view: 'feed', userId: '' };
+    if (!raw) return { view: 'home', userId: '' };
     var path = raw.split('?')[0];
     var qs = raw.indexOf('?') >= 0 ? raw.slice(raw.indexOf('?') + 1) : '';
     var params = {};
@@ -2100,8 +2259,9 @@
       });
     }
     var userId = params.userId || '';
-    if (path === 'feed' || path === '') return { view: 'feed', userId: '' };
+    if (path === 'feed') return { view: 'feed', userId: '' };
     if (path === 'explore') return { view: 'feed', userId: '' };
+    if (path === 'home' || path === '') return { view: 'home', userId: '' };
     if (path === 'search') return { view: 'search', userId: '' };
     if (path === 'addons') return { view: 'addons', userId: '' };
     if (path === 'servers') return { view: 'servers', userId: '' };
@@ -2113,7 +2273,7 @@
       var id = path.indexOf('profile/') === 0 ? path.slice('profile/'.length) : '';
       return { view: 'profile', userId: decodeURIComponent(id || '') };
     }
-    return { view: 'feed', userId: '' };
+    return { view: 'home', userId: '' };
   }
 
   function routeToHash(view, opts) {
@@ -2122,13 +2282,15 @@
       var userId = opts.userId ? String(opts.userId) : (state.me ? state.me.userId : '');
       return userId ? 'profile?userId=' + encodeURIComponent(userId) : 'profile';
     }
+    if (view === 'feed') return 'feed';
     if (view === 'search') return 'search';
+    if (view === 'home') return 'home';
     if (view === 'addons') return 'addons';
     if (view === 'servers') return 'servers';
     if (view === 'notifications') return 'notifications';
     if (view === 'settings') return 'settings';
     if (view === 'admin') return 'admin';
-    return 'feed';
+    return 'home';
   }
 
   function syncHash(view, opts) {
@@ -2141,11 +2303,17 @@
   }
 
   function handleHashRoute(force) {
-    if ((!force && state.routeLock) || !state.me) return;
+    if (!force && state.routeLock) return;
     var route = parseHashRoute(window.location.hash);
-    var targetView = route.view || 'feed';
-    var targetUserId = route.userId || (targetView === 'profile' ? state.me.userId : '');
-    if (targetView === 'profile' && !targetUserId) targetUserId = state.me.userId;
+    var targetView = route.view || 'home';
+    if (!state.me) {
+      if (targetView === 'notifications' || targetView === 'admin') {
+        targetView = 'home';
+      }
+      if (targetView === 'profile' && !route.userId) targetView = 'home';
+    }
+    var targetUserId = route.userId || (targetView === 'profile' && state.me ? state.me.userId : '');
+    if (targetView === 'profile' && !targetUserId && state.me) targetUserId = state.me.userId;
     if (!force && state.view === targetView &&
         String(state.profileUserId || '') === String(targetUserId || '')) return;
     return navigate(targetView, { userId: targetUserId, skipHash: true });
@@ -2299,6 +2467,18 @@
     $('#recSendBtn').addEventListener('click', onRecoverySend);
     $('#recVerifyBtn').addEventListener('click', onRecoveryVerify);
     $('#recResetBtn').addEventListener('click', onRecoveryReset);
+    $('#authBackBtn').addEventListener('click', function () {
+      resetRecovery();
+      showApp();
+      handleHashRoute(true);
+    });
+  }
+
+  function requireLogin(message) {
+    if (state.me) return true;
+    if (message) toast(message, 'warn');
+    showAuth();
+    return false;
   }
 
   function switchTab(tab) {
@@ -2533,15 +2713,16 @@
     updateShell();
     loadSuggestions();
     if (!window.location.hash || window.location.hash === '#') {
-      syncHash(state.view || 'feed', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
+      syncHash(state.view || 'home', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
     }
   }
 
   function forceLogout() {
     clearSession();
-    showPolicyGate();
     resetRecovery();
     switchAuthPanel('login');
+    showApp();
+    handleHashRoute(true);
   }
 
   function acceptPolicies() {
@@ -2554,7 +2735,53 @@
   //  Shell (barra, mini perfil, sugerencias)
   // ─────────────────────────────────────────────────────────────────────
   function updateShell() {
-    if (!state.me) return;
+    var guest = !state.me;
+    var accessBtn = $('#guestAccessBtn');
+    var profileBtn = $('#myProfileBtn');
+    var loginBtn = $('#sideLoginBtn');
+    var logoutBtn = $('#sideLogoutBtn');
+    var adminButton = $('#sideAdminBtn');
+
+    if (accessBtn) accessBtn.classList.toggle('hidden', !guest);
+    if (profileBtn) profileBtn.classList.toggle('hidden', guest);
+    if (loginBtn) loginBtn.classList.toggle('hidden', !guest);
+    if (logoutBtn) logoutBtn.classList.toggle('hidden', guest);
+    if (adminButton) {
+      adminButton.classList.toggle('hidden', guest || roleKey(state.me.rol) === 'user');
+    }
+
+    if (guest) {
+      var guestTopImg = $('#topAvatar');
+      if (guestTopImg) {
+        guestTopImg.src = PLACEHOLDER_AVATAR;
+        guestTopImg.onerror = null;
+      }
+      var guestSideImg = $('#sideAvatar');
+      if (guestSideImg) {
+        guestSideImg.src = PLACEHOLDER_AVATAR;
+        guestSideImg.onerror = null;
+      }
+      if ($('#sideName')) $('#sideName').textContent = 'Invitado';
+      if ($('#sideHandle')) $('#sideHandle').textContent = 'Explora sin cuenta';
+      if ($('#sideRole')) $('#sideRole').innerHTML = '';
+      if ($('#notifBadge')) $('#notifBadge').classList.add('hidden');
+      var mini = $('#miniProfile');
+      if (mini) {
+        mini.innerHTML =
+          '<div class="mini-top">' + avatarHTML('', '', 'md') +
+            '<span class="who"><strong>Invitado</strong>' +
+            '<span class="handle">Explorando Prizmothyn</span></span>' +
+          '</div>' +
+          '<p class="muted" style="font-size:13px;margin-top:14px;line-height:1.5">' +
+            'Inicia sesión o crea una cuenta para publicar, comentar, seguir personas y recibir notificaciones.' +
+          '</p>' +
+          '<button class="btn primary small mini-btn" id="miniProfileBtn" type="button">Iniciar sesión o crear cuenta</button>';
+        var guestMiniBtn = $('#miniProfileBtn');
+        if (guestMiniBtn) guestMiniBtn.addEventListener('click', showAuth);
+      }
+      return;
+    }
+
     var img = $('#topAvatar');
     img.src = Security.safeImageUrl(state.me.fotoPerfil, false) || PLACEHOLDER_AVATAR;
     img.onerror = function () { img.onerror = null; img.src = PLACEHOLDER_AVATAR; };
@@ -2567,10 +2794,6 @@
     if ($('#sideName')) $('#sideName').textContent = state.me.nombreMostrado;
     if ($('#sideHandle')) $('#sideHandle').textContent = '@' + state.me.nombre;
     if ($('#sideRole')) $('#sideRole').innerHTML = roleBadgeHTML(state.me.rol);
-    var adminButton = $('#sideAdminBtn');
-    if (adminButton) {
-      adminButton.classList.toggle('hidden', roleKey(state.me.rol) === 'user');
-    }
 
     $('#miniProfile').innerHTML =
       '<div class="mini-top">' +
@@ -2665,6 +2888,7 @@
   }
 
   async function renderNotifications() {
+    if (!state.me) { showAuth(); return; }
     var cached = loadNotifCache();
     var items = cached && Array.isArray(cached.items) ? cached.items : [];
     $('#view').innerHTML =
@@ -2748,7 +2972,7 @@
   }
 
   function bindApp() {
-    $('#homeBtn').addEventListener('click', function () { navigate('feed'); });
+    $('#homeBtn').addEventListener('click', function () { navigate('home'); });
     $('#menuBtn').addEventListener('click', openDrawer);
     $('#sideCloseBtn').addEventListener('click', closeDrawer);
     $('#sideOverlay').addEventListener('click', closeDrawer);
@@ -2827,9 +3051,18 @@
       if (!document.hidden && state.me) refreshNotifCount();
     }, 180000);
 
-    $('#notifBtn').addEventListener('click', function () { navigate('notifications'); });
+    $('#notifBtn').addEventListener('click', function () {
+      if (!state.me) { showAuth(); return; }
+      navigate('notifications');
+    });
     $('#myProfileBtn').addEventListener('click', function () {
       if (state.me) navigate('profile', { userId: state.me.userId });
+      else showAuth();
+    });
+    $('#guestAccessBtn').addEventListener('click', function () { showAuth(); });
+    $('#sideLoginBtn').addEventListener('click', function () {
+      closeDrawer();
+      showAuth();
     });
     $('#sideLogoutBtn').addEventListener('click', async function () {
       closeDrawer();
@@ -2929,11 +3162,29 @@
 
   async function navigate(view, opts) {
     opts = opts || {};
+    if (view === 'addons' && Object.prototype.hasOwnProperty.call(opts, 'category')) {
+      state.addons.category = String(opts.category || '');
+      state.addons.q = '';
+      state.addons.sort = 'recientes';
+      state.addons.scope = 'all';
+      state.addons.collectionId = '';
+      state.addons.loaded = false;
+    }
+    var layout = document.querySelector('.layout');
+    if (layout) layout.classList.toggle('catalog-layout', view === 'home' || view === 'addons');
     if (view === 'admin' && (!state.me || roleKey(state.me.rol) === 'user')) {
       toast('Solo Admin, Owner o App pueden abrir Administración.', 'err');
-      view = 'feed';
+      view = 'home';
+      if (layout) layout.classList.add('catalog-layout');
+    }
+    if (!state.me && view === 'notifications') {
+      showAuth();
+      return;
     }
     var userId = opts.userId ? String(opts.userId) : '';
+    if (view === 'profile' && !userId && !state.me) {
+      view = 'home';
+    }
     state.view = view;
     if (view === 'profile') state.profileUserId = userId;
     else state.profileUserId = '';
@@ -2943,6 +3194,7 @@
     window.scrollTo(0, 0);
     if (!opts.skipHash) syncHash(view, { userId: userId || undefined });
     if (view === 'feed') return renderFeed();
+    if (view === 'home') return renderHomeCatalog();
     if (view === 'search') return renderSearch();
     if (view === 'addons') return renderAddons();
     if (view === 'servers') return renderServers();
@@ -2956,6 +3208,17 @@
   //  Feed y publicaciones
   // ─────────────────────────────────────────────────────────────────────
   function composerHTML() {
+    if (!state.me) {
+      return '<div class="card composer guest-composer">' +
+        '<div class="composer-top">' +
+          avatarHTML('', '', 'md') +
+          '<div><strong>¿Quieres participar?</strong>' +
+            '<p>Inicia sesión o crea una cuenta para publicar en la comunidad.</p></div>' +
+        '</div>' +
+        '<button class="btn primary block" data-open-auth type="button" style="margin-top:14px">' +
+          'Acceder para publicar</button>' +
+      '</div>';
+    }
     var isOwner = hasOwnerPrivileges(state.me.rol);
     var maxChars = isOwner ? Security.LIMITS.ownerPost : Security.LIMITS.post;
     return '<div class="card composer">' +
@@ -2970,7 +3233,7 @@
       '<p id="composerLimit" class="muted">' +
         (isOwner ? 'Máximo 3000 caracteres.' : 'Máximo 1000 caracteres.') + '</p>' +
       '<div id="miniRenderTools" class="hidden">' +
-        '<p class="muted">Solo HTML/CSS estático. JavaScript, formularios y acceso a WorldLeaf están bloqueados.</p>' +
+        '<p class="muted">Solo HTML/CSS estático. JavaScript, formularios y acceso a Prizmothyn están bloqueados.</p>' +
         '<button id="previewComposerMiniRender" class="btn ghost small" type="button">Vista previa aislada</button>' +
         '<div id="composerMiniRenderPreview" class="mini-render-preview hidden"></div>' +
       '</div>' +
@@ -3238,6 +3501,7 @@
 
   async function renderFeed() {
     var selectedFilter = state.feed && state.feed.filter || 'todos';
+    if (!state.me && selectedFilter === 'siguiendo') selectedFilter = 'todos';
     var feedSeq = (state.feed && state.feed.seq || 0) + 1;
     state.pendingImages = [];
     state.feed = { offset: 0, hasMore: true, loading: false, filter: selectedFilter, seq: feedSeq };
@@ -3246,7 +3510,7 @@
       composerHTML() +
       '<div class="card feed-toolbar"><label for="feedFilter">Mostrar: </label>' +
         '<select class="feed-filter" id="feedFilter" data-feed-filter>' +
-          '<option value="siguiendo"' + (selectedFilter === 'siguiendo' ? ' selected' : '') + '>Siguiendo</option>' +
+          (state.me ? '<option value="siguiendo"' + (selectedFilter === 'siguiendo' ? ' selected' : '') + '>Siguiendo</option>' : '') +
           '<option value="todos"' + (selectedFilter === 'todos' ? ' selected' : '') + '>Publicaciones recientes</option>' +
           '<option value="imagenes"' + (selectedFilter === 'imagenes' ? ' selected' : '') + '>Con imágenes</option>' +
           '<option value="populares"' + (selectedFilter === 'populares' ? ' selected' : '') + '>Más populares</option>' +
@@ -3282,7 +3546,9 @@
       if (requestSeq !== state.feed.seq || requestFilter !== state.feed.filter || !$('#feedList')) return;
       if (initial) list.innerHTML = '';
       if (!d.posts.length && initial) {
-        list.innerHTML = emptyState('Aún no hay publicaciones. ¡Sigue a alguien o publica algo!');
+        list.innerHTML = emptyState(state.me
+          ? 'Aún no hay publicaciones. ¡Sigue a alguien o publica algo!'
+          : 'Aún no hay publicaciones públicas. Vuelve más tarde o accede para participar.');
       }
       list.insertAdjacentHTML('beforeend', d.posts.map(postHTML).join(''));
       state.feed.offset += d.posts.length;
@@ -3379,10 +3645,12 @@
     return '<div class="comments-list">' +
       (comments.length ? comments.map(function (c) { return commentHTML(c, postId); }).join('') : '<p class="muted" style="font-size:13px;margin:0 0 8px">Sin comentarios todavía.</p>') +
       '</div>' +
-      '<form class="comment-form" data-comment-form="' + esc(postId) + '">' +
-        '<input maxlength="500" placeholder="Escribe un comentario..." required>' +
-        '<button class="btn small primary" type="submit">Enviar</button>' +
-      '</form>';
+      (state.me
+        ? '<form class="comment-form" data-comment-form="' + esc(postId) + '">' +
+            '<input maxlength="500" placeholder="Escribe un comentario..." required>' +
+            '<button class="btn small primary" type="submit">Enviar</button>' +
+          '</form>'
+        : '<button class="btn small primary block" data-open-auth type="button">Acceder para comentar</button>');
   }
 
   async function toggleComments(postId, btn) {
@@ -3823,7 +4091,7 @@
     state.appDialog.hasCancel = hasCancel;
     $('#appDialogIcon').textContent = options.icon || (options.tone === 'danger' ? '⚠️' : 'ℹ️');
     $('#appDialogIcon').className = 'confirm-icon' + (options.tone === 'danger' ? '' : ' neutral');
-    $('#appDialogTitle').textContent = options.title || 'WorldLeaf';
+    $('#appDialogTitle').textContent = options.title || 'Prizmothyn';
     $('#appDialogDescription').textContent = options.message || '';
     cancel.textContent = hasCancel ? options.cancelLabel : '';
     cancel.classList.toggle('hidden', !hasCancel);
@@ -4184,7 +4452,7 @@
     $('#view').innerHTML =
       '<div class="settings-page">' +
         '<header class="settings-heading"><h1>Configuración</h1>' +
-          '<p>Personaliza la apariencia de WorldLeaf en este dispositivo.</p></header>' +
+          '<p>Personaliza la apariencia de Prizmothyn en este dispositivo.</p></header>' +
         '<section class="card settings-card">' +
           '<h2>Apariencia</h2>' +
           '<p>Elige cómo quieres ver la aplicación.</p>' +
@@ -4245,28 +4513,34 @@
         '</section>' +
         '<section class="card settings-card">' +
           '<h2>Cuenta</h2>' +
-          '<p>Actualiza los datos visibles de tu perfil.</p>' +
-          '<button id="settingsEditProfileBtn" class="btn ghost" type="button">Editar mi perfil</button>' +
+          (state.me
+            ? '<p>Actualiza los datos visibles de tu perfil.</p>' +
+              '<button id="settingsEditProfileBtn" class="btn ghost" type="button">Editar mi perfil</button>'
+            : '<p>Inicia sesión o crea una cuenta para editar tu perfil, seguir personas y recibir notificaciones.</p>' +
+              '<button class="btn primary" data-open-auth type="button">Iniciar sesión o crear cuenta</button>') +
         '</section>' +
         '<section class="card settings-card">' +
           '<h2>Ayuda y reportes</h2>' +
-          '<p>Envía un error de la aplicación o reporta una cuenta. Los reportes son privados.</p>' +
-          '<form data-report-form>' +
-            '<label class="field"><span>Tipo</span><select id="reportType">' +
-              '<option value="error">Error de la aplicación</option>' +
-              '<option value="cuenta">Reportar una cuenta</option>' +
-            '</select></label>' +
-            '<div id="reportTargetWrap" class="hidden">' +
-              '<label class="field"><span>Cuenta a reportar</span>' +
-                '<input id="reportTargetSearch" maxlength="60" autocomplete="off" placeholder="Escribe @usuario"></label>' +
-              '<div id="reportTargetSelected" class="muted"></div>' +
-              '<div id="reportTargetSuggestions" class="report-suggestions"></div>' +
-            '</div>' +
-            '<label class="field"><span>Título</span><input id="reportTitle" maxlength="120" required></label>' +
-            '<label class="field"><span>Detalles</span><textarea id="reportDetails" maxlength="2500" rows="4" required></textarea></label>' +
-            '<button class="btn primary" type="submit">Enviar reporte</button>' +
-          '</form>' +
-          (roleKey(state.me.rol) === 'admin' || hasOwnerPrivileges(state.me.rol)
+          (state.me
+            ? '<p>Envía un error de la aplicación o reporta una cuenta. Los reportes son privados.</p>' +
+              '<form data-report-form>' +
+                '<label class="field"><span>Tipo</span><select id="reportType">' +
+                  '<option value="error">Error de la aplicación</option>' +
+                  '<option value="cuenta">Reportar una cuenta</option>' +
+                '</select></label>' +
+                '<div id="reportTargetWrap" class="hidden">' +
+                  '<label class="field"><span>Cuenta a reportar</span>' +
+                    '<input id="reportTargetSearch" maxlength="60" autocomplete="off" placeholder="Escribe @usuario"></label>' +
+                  '<div id="reportTargetSelected" class="muted"></div>' +
+                  '<div id="reportTargetSuggestions" class="report-suggestions"></div>' +
+                '</div>' +
+                '<label class="field"><span>Título</span><input id="reportTitle" maxlength="120" required></label>' +
+                '<label class="field"><span>Detalles</span><textarea id="reportDetails" maxlength="2500" rows="4" required></textarea></label>' +
+                '<button class="btn primary" type="submit">Enviar reporte</button>' +
+              '</form>'
+            : '<p>Inicia sesión para enviar reportes a nuestro equipo.</p>' +
+              '<button class="btn ghost" data-open-auth type="button">Acceder para reportar</button>') +
+          (state.me && (roleKey(state.me.rol) === 'admin' || hasOwnerPrivileges(state.me.rol))
             ? '<div class="report-admin"><h3>Revisar reportes</h3>' +
               '<div id="reportQueue"><div class="center-load"><div class="spinner"></div></div></div></div>'
             : '') +
@@ -4274,7 +4548,7 @@
         '<section class="card settings-card">' +
           '<h2>Acerca de</h2>' +
           '<div class="settings-about">' +
-            '<div><strong>🌿 WorldLeaf Social</strong><span>Creado por JM-TechStudios</span></div>' +
+            '<div><strong>✦ Prizmothyn</strong><span>Creado por JM-TechStudios</span></div>' +
             '<span class="version">Versión 1.0</span>' +
           '</div>' +
         '</section>' +
@@ -4296,8 +4570,9 @@
       persistThemePreferences();
       renderSettings();
     });
-    $('#settingsEditProfileBtn').addEventListener('click', openEditModal);
-    if (roleKey(state.me.rol) === 'admin' || hasOwnerPrivileges(state.me.rol)) loadReports();
+    var settingsEditBtn = $('#settingsEditProfileBtn');
+    if (settingsEditBtn) settingsEditBtn.addEventListener('click', openEditModal);
+    if (state.me && (roleKey(state.me.rol) === 'admin' || hasOwnerPrivileges(state.me.rol))) loadReports();
   }
 
   function reportItemHTML(report) {
@@ -4492,7 +4767,8 @@
     state.addons = {
       items: [],
       q: '',
-      sort: 'aleatorio',
+      sort: 'recientes',
+      category: '',
       offset: 0,
       hasMore: true,
       loading: false,
@@ -4556,46 +4832,251 @@
     '</button>';
   }
 
+  var HOME_CATALOG_SHELVES = [
+    { key: 'popular', title: 'Más populares', description: 'Los complementos más descargados y con más actividad.', sort: 'populares' },
+    { key: 'recommended', title: 'Recomendaciones', description: 'Selección destacada según los me gusta de la comunidad.', sort: 'valorados' },
+    { key: 'recent', title: 'Más recientes', description: 'Lo último que se agregó al catálogo.', sort: 'recientes' }
+  ];
+  var ADDON_CATEGORIES = [
+    { id: 'texturas', label: 'Texturas', icon: '🎨' },
+    { id: 'addons', label: 'Addons', icon: '🧩' },
+    { id: 'mapas', label: 'Mapas', icon: '🗺️' },
+    { id: 'skins', label: 'Skins', icon: '🧑‍🎨' },
+    { id: 'scripts', label: 'Scripts', icon: '⚙️' },
+    { id: 'versiones', label: 'Versiones', icon: '📦' }
+  ];
+
+  function formatCategoryCount(value) {
+    var count = safeCount(value);
+    if (count < 1000) return String(count);
+    var divisor = count >= 1000000000 ? 1000000000
+      : (count >= 1000000 ? 1000000 : 1000);
+    var suffix = divisor === 1000000000 ? 'B' : (divisor === 1000000 ? 'M' : 'k');
+    var compact = (count / divisor).toFixed(count < divisor * 10 ? 1 : 0)
+      .replace(/\.0$/, '');
+    return compact + suffix;
+  }
+
+  function addonCategoryCountHTML(categoryId) {
+    var catalog = state.homeCatalog;
+    var hasCounts = catalog.categoryCounts &&
+      Object.prototype.hasOwnProperty.call(catalog.categoryCounts, categoryId);
+    var label = hasCounts
+      ? formatCategoryCount(catalog.categoryCounts[categoryId])
+      : (catalog.categoryCountsError ? '—' : '…');
+    var description = hasCounts
+      ? safeCount(catalog.categoryCounts[categoryId]) + ' complementos publicados'
+      : (catalog.categoryCountsError ? 'No se pudo cargar la cantidad' : 'Cargando cantidad');
+    return '<span class="catalog-category-count" data-category-count="' +
+      esc(categoryId) + '" title="' + esc(description) + '">' + esc(label) + '</span>';
+  }
+
+  function addonCategoryButtonHTML(category, view) {
+    var attribute = view === 'home' ? 'data-home-category' : 'data-addon-category';
+    var selected = view === 'addons'
+      ? ' aria-pressed="' + (state.addons.category === category.id ? 'true' : 'false') + '"'
+      : '';
+    return '<button class="catalog-category" type="button" ' + attribute + '="' +
+      esc(category.id) + '"' + selected + '>' + category.icon + ' ' + esc(category.label) +
+      ' ' + addonCategoryCountHTML(category.id) + '</button>';
+  }
+
+  function renderAddonCategoryCounts() {
+    document.querySelectorAll('[data-category-count]').forEach(function (badge) {
+      var categoryId = badge.getAttribute('data-category-count');
+      badge.outerHTML = addonCategoryCountHTML(categoryId);
+    });
+  }
+
+  async function loadAddonCategoryCounts() {
+    var catalog = state.homeCatalog;
+    var now = Date.now();
+    if (catalog.categoryCountsLoading ||
+        (catalog.categoryCounts && now - catalog.categoryCountsLoadedAt < 5 * 60 * 1000) ||
+        (catalog.categoryCountsError && now - catalog.categoryCountsAttemptedAt < 60 * 1000)) return;
+    catalog.categoryCountsLoading = true;
+    catalog.categoryCountsError = false;
+    catalog.categoryCountsAttemptedAt = now;
+    renderAddonCategoryCounts();
+    try {
+      var data = await api('getAddonCategoryCounts');
+      var categories = ADDON_CATEGORIES.map(function (category) { return category.id; });
+      if (!data || !data.counts || !categories.every(function (categoryId) {
+        return Number.isSafeInteger(data.counts[categoryId]) && data.counts[categoryId] >= 0;
+      })) {
+        throw new Error('La respuesta de cantidades por categoría no es válida.');
+      }
+      catalog.categoryCounts = data.counts;
+      catalog.categoryCountsLoadedAt = Date.now();
+    } catch (err) {
+      catalog.categoryCountsError = true;
+      console.error('No se pudieron cargar las cantidades por categoría: ' +
+        ((err && err.message) || err));
+      if (state.view === 'home' || state.view === 'addons') {
+        toast('No se pudieron cargar las cantidades por categoría.', 'warn');
+      }
+    } finally {
+      catalog.categoryCountsLoading = false;
+      renderAddonCategoryCounts();
+    }
+  }
+
+  function renderHomeShelves() {
+    HOME_CATALOG_SHELVES.forEach(function (shelf) {
+      var container = document.querySelector('[data-home-shelf="' + shelf.key + '"]');
+      if (!container) return;
+      var result = state.homeCatalog.shelves[shelf.key];
+      if (!result) {
+        container.innerHTML = '<div class="catalog-shelf-message"><div class="spinner"></div></div>';
+      } else if (result.error) {
+        container.innerHTML = '<div class="catalog-shelf-message">' + esc(result.error) +
+          '<div><button class="btn ghost small" data-home-retry type="button">Reintentar</button></div></div>';
+      } else if (!result.items.length) {
+        container.innerHTML = '<div class="catalog-shelf-message">Todavía no hay complementos en esta sección.</div>';
+      } else {
+        container.innerHTML = result.items.map(addonCardHTML).join('');
+      }
+    });
+  }
+
+  async function loadHomeCatalog(force) {
+    var home = state.homeCatalog;
+    if (!force && Date.now() - home.loadedAt < 5 * 60 * 1000) {
+      renderHomeShelves();
+      return;
+    }
+    var requestSeq = ++home.seq;
+    home.shelves = {};
+    renderHomeShelves();
+    await Promise.all(HOME_CATALOG_SHELVES.map(function (shelf) {
+      return api('getAddons', {
+        q: '',
+        sort: shelf.sort,
+        category: '',
+        scope: 'all',
+        offset: 0,
+        limit: 4
+      }).then(function (data) {
+        if (requestSeq !== home.seq) return;
+        home.shelves[shelf.key] = { items: data.addons || [], error: '' };
+      }).catch(function (err) {
+        if (requestSeq !== home.seq) return;
+        console.error('No se pudo cargar la sección "' + shelf.title + '": ' +
+          ((err && err.message) || err));
+        home.shelves[shelf.key] = {
+          items: [],
+          error: (err && err.message) || 'No se pudo cargar esta sección.'
+        };
+      });
+    }));
+    if (requestSeq !== home.seq) return;
+    home.loadedAt = Date.now();
+    if (state.view === 'home') renderHomeShelves();
+  }
+
+  function renderHomeCatalog() {
+    $('#view').innerHTML = '<div class="catalog-page">' +
+      '<section class="card catalog-masthead">' +
+        '<div class="catalog-masthead-copy">' +
+          '<span class="catalog-eyebrow">Prizmothyn · Minecraft Bedrock</span>' +
+          '<h1>Encuentra tu próxima aventura</h1>' +
+          '<p>Explora todo el contenido publicado y descarga addons sin registrarte. Inicia sesión para comentar, dar me gusta, seguir personas o guardar favoritos.</p>' +
+          '<div class="catalog-masthead-actions">' +
+            '<button class="btn primary" type="button" data-home-browse>Explorar catálogo</button>' +
+            '<button class="btn ghost" type="button" data-home-feed>Ver publicaciones</button>' +
+          '</div>' +
+        '</div>' +
+        (!state.me
+          ? '<button class="btn ghost" type="button" data-open-auth>Iniciar sesión</button>'
+          : '') +
+      '</section>' +
+      '<section class="catalog-filter-row" aria-label="Categorías del catálogo">' +
+        '<span class="catalog-filter-label">Explorar por:</span>' +
+        ADDON_CATEGORIES.map(function (category) {
+          return addonCategoryButtonHTML(category, 'home');
+        }).join('') +
+      '</section>' +
+      HOME_CATALOG_SHELVES.map(function (shelf) {
+        return '<section class="catalog-shelf">' +
+          '<header class="catalog-shelf-head"><div><h2>' + esc(shelf.title) + '</h2>' +
+          '<p>' + esc(shelf.description) + '</p></div>' +
+          '<button class="btn ghost small" type="button" data-home-browse="' +
+            esc(shelf.sort) + '">Ver catálogo</button></header>' +
+          '<div class="catalog-shelf-grid" data-home-shelf="' + esc(shelf.key) + '"></div>' +
+          '</section>';
+      }).join('') +
+      '<section class="card catalog-join">' +
+        '<div><h2>¿Quieres compartir algo con la comunidad?</h2>' +
+        '<p class="muted">Crea una cuenta para publicar, comentar y guardar tus complementos favoritos.</p></div>' +
+        (state.me
+          ? '<button class="btn primary" type="button" data-home-feed>Ir a publicaciones</button>'
+          : '<button class="btn primary" type="button" data-open-auth>Unirme a Prizmothyn</button>') +
+      '</section>' +
+    '</div>';
+    renderHomeShelves();
+    loadHomeCatalog(false);
+    loadAddonCategoryCounts();
+  }
+
   function renderAddons() {
     var a = state.addons;
+    if (!state.me) {
+      a.scope = 'all';
+      a.collectionId = '';
+      a.library = null;
+      a.libraryPromise = null;
+    }
     var view = $('#view');
     view.innerHTML = '<div class="addons-page">' +
       '<div class="card addons-hero">' +
-        '<div><h1>Complementos</h1>' +
-        '<p>Descubre addons para ampliar tu experiencia. Busca por nombre o categoría y abre cada ficha para ver su galería, descripción y enlace de descarga.</p></div>' +
+        '<div><h1>Catálogo de contenido</h1>' +
+        '<p>Explora todo el contenido publicado y descarga addons sin registrarte. Inicia sesión para comentar, dar me gusta, seguir personas o guardar favoritos.</p></div>' +
         '<span class="addons-count" id="addonsCount"></span>' +
       '</div>' +
+      '<section class="catalog-filter-row" aria-label="Filtrar por categoría">' +
+        '<span class="catalog-filter-label">Categorías:</span>' +
+        '<button class="catalog-category" type="button" data-addon-category="" aria-pressed="' +
+          (!a.category ? 'true' : 'false') + '">Todo</button>' +
+        ADDON_CATEGORIES.map(function (category) {
+          return addonCategoryButtonHTML(category, 'addons');
+        }).join('') +
+      '</section>' +
       '<form class="card addons-toolbar" data-addon-search-form>' +
         '<div class="addons-search">' +
           '<input type="search" id="addonSearchInput" maxlength="60" autocomplete="off" ' +
-            'placeholder="Buscar complementos..." value="' + esc(a.q) + '" aria-label="Buscar complementos">' +
+            'placeholder="Buscar en el catálogo..." value="' + esc(a.q) + '" aria-label="Buscar en el catálogo">' +
           '<button class="btn primary" type="submit">Buscar</button>' +
         '</div>' +
-        '<select class="addons-sort" id="addonSort" data-addon-sort aria-label="Ordenar complementos">' +
-          '<option value="aleatorio"' + (a.sort === 'aleatorio' ? ' selected' : '') + '>Orden aleatorio</option>' +
-          '<option value="populares"' + (a.sort === 'populares' ? ' selected' : '') + '>Más populares</option>' +
+        '<label class="catalog-sort-control"><span class="catalog-filter-label">Ordenar:</span>' +
+        '<select class="addons-sort" id="addonSort" data-addon-sort aria-label="Ordenar catálogo">' +
           '<option value="descargas"' + (a.sort === 'descargas' ? ' selected' : '') + '>Más descargados</option>' +
+          '<option value="valorados"' + (a.sort === 'valorados' ? ' selected' : '') + '>Mejor valorados</option>' +
           '<option value="recientes"' + (a.sort === 'recientes' ? ' selected' : '') + '>Más recientes</option>' +
-          '<option value="nombre"' + (a.sort === 'nombre' ? ' selected' : '') + '>Nombre A-Z</option>' +
-        '</select>' +
+        '</select></label>' +
       '</form>' +
-      '<section class="card addons-toolbar">' +
-        '<label for="addonScope">Mi biblioteca</label>' +
-        '<select class="addons-sort" id="addonScope" data-addon-scope>' +
-          '<option value="all">Todo el catálogo</option><option value="favorites">Mis favoritos</option>' +
-        '</select>' +
-        '<input class="addons-sort" id="addonCollectionName" maxlength="40" placeholder="Nombre de colección">' +
-        '<button class="btn ghost small" data-collection-create type="button">Crear</button>' +
-        '<button class="btn ghost small" data-collection-rename type="button">Renombrar</button>' +
-        '<button class="btn danger small" data-collection-delete type="button">Eliminar</button>' +
-      '</section>' +
+      (state.me
+        ? '<section class="card addons-toolbar">' +
+            '<label for="addonScope">Mi biblioteca</label>' +
+            '<select class="addons-sort" id="addonScope" data-addon-scope>' +
+              '<option value="all">Todo el catálogo</option><option value="favorites">Mis favoritos</option>' +
+            '</select>' +
+            '<input class="addons-sort" id="addonCollectionName" maxlength="40" placeholder="Nombre de colección">' +
+            '<button class="btn ghost small" data-collection-create type="button">Crear</button>' +
+            '<button class="btn ghost small" data-collection-rename type="button">Renombrar</button>' +
+            '<button class="btn danger small" data-collection-delete type="button">Eliminar</button>' +
+          '</section>'
+        : '<section class="card addons-toolbar addons-guest-bar">' +
+            '<p class="muted" style="margin:0">Inicia sesión para guardar favoritos y organizar colecciones.</p>' +
+            '<button class="btn primary small" data-open-auth type="button">Acceder</button>' +
+          '</section>') +
       '<p class="muted hidden" id="addonsNotice"></p>' +
       '<div class="addons-grid" id="addonsGrid"></div>' +
       '<div class="addon-footer" id="addonsFooter"></div>' +
     '</div>';
     renderAddonsGrid();
     renderAddonScopeOptions();
-    if (!a.library && !a.libraryPromise) {
+    loadAddonCategoryCounts();
+    if (state.me && !a.library && !a.libraryPromise) {
       loadAddonLibrary().catch(function (err) {
         toast((err && err.message) || 'No se pudo cargar tu biblioteca de complementos.', 'err');
       });
@@ -4774,24 +5255,6 @@
     }
   }
 
-  function shuffleAddons(items) {
-    for (var i = items.length - 1; i > 0; i--) {
-      var index = Math.floor(Math.random() * (i + 1));
-      var item = items[i];
-      items[i] = items[index];
-      items[index] = item;
-    }
-    return items;
-  }
-
-  function insertAddonsRandomly(items, additions) {
-    additions.forEach(function (addon) {
-      var index = Math.floor(Math.random() * (items.length + 1));
-      items.splice(index, 0, addon);
-    });
-    return items;
-  }
-
   async function loadAddons(reset) {
     var a = state.addons;
     if (a.loading && !reset) return;
@@ -4811,6 +5274,7 @@
       var data = await api('getAddons', {
         q: a.q,
         sort: a.sort,
+        category: a.category,
         scope: a.scope,
         collectionId: a.scope === 'collection' ? a.collectionId : '',
         offset: a.offset,
@@ -4818,13 +5282,7 @@
       });
       if (seq !== a.seq) return;
       var received = data.addons || [];
-      if (a.sort === 'aleatorio') {
-        a.items = reset
-          ? shuffleAddons(received)
-          : insertAddonsRandomly(a.items, received);
-      } else {
-        a.items = reset ? received : a.items.concat(received);
-      }
+      a.items = reset ? received : a.items.concat(received);
       a.offset = Number(data.nextOffset) || a.items.length;
       a.hasMore = !!data.hasMore;
       a.fallback = !!data.fallback;
@@ -4903,6 +5361,25 @@
     var firstContainsAddon = !!(firstCollection && firstCollection.addonIds.some(function (id) {
       return String(id) === String(addon.id);
     }));
+    var memberActions = state.me
+      ? '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
+          'data-addon-like="' + esc(addon.id) + '"' + (addon.meGusta ? ' disabled' : '') + '>' +
+          (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
+          ' <span>' + safeCount(addon.likes) + '</span></button>' +
+        '<button class="btn ghost" type="button" data-addon-favorite="' + esc(addon.id) + '">' +
+          (addon.favorito ? '★ Quitar de favoritos' : '☆ Añadir a favoritos') + '</button>'
+      : '';
+    var collectionActions = state.me
+      ? '<div class="addon-actions">' +
+          '<select class="addons-sort" data-addon-collection-select aria-label="Colección para este complemento">' +
+            addonCollectionOptionsHTML() +
+          '</select>' +
+          '<button class="btn ghost" type="button" data-addon-collection-toggle="' + esc(addon.id) + '"' +
+            (collections.length ? '' : ' disabled') + '>' +
+            (firstContainsAddon ? 'Quitar de colección' : 'Añadir a colección') +
+          '</button>' +
+        '</div>'
+      : '';
 
     $('#addonDetailId').textContent = 'ID ' + addon.id;
     $('#addonDetailTitle').textContent = addon.nombre;
@@ -4915,24 +5392,11 @@
       '</div>' +
       gallery.html +
       '<div class="addon-actions">' +
-        '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
-          'data-addon-like="' + esc(addon.id) + '"' + (addon.meGusta ? ' disabled' : '') + '>' +
-          (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
-          ' <span>' + safeCount(addon.likes) + '</span></button>' +
-        '<button class="btn ghost" type="button" data-addon-favorite="' + esc(addon.id) + '">' +
-          (addon.favorito ? '★ Quitar de favoritos' : '☆ Añadir a favoritos') + '</button>' +
+        memberActions +
         '<button class="btn primary" type="button" data-addon-download="' + esc(addon.id) + '">' +
           '⬇️ Descargar</button>' +
       '</div>' +
-      '<div class="addon-actions">' +
-        '<select class="addons-sort" data-addon-collection-select aria-label="Colección para este complemento">' +
-          addonCollectionOptionsHTML() +
-        '</select>' +
-        '<button class="btn ghost" type="button" data-addon-collection-toggle="' + esc(addon.id) + '"' +
-          (collections.length ? '' : ' disabled') + '>' +
-          (firstContainsAddon ? 'Quitar de colección' : 'Añadir a colección') +
-        '</button>' +
-      '</div>' +
+      collectionActions +
       translated + desc;
   }
 
@@ -5041,7 +5505,7 @@
     try {
       var data = await api('getAddon', { id: id });
       if (seq !== state.addons.detailSeq) return;
-      if (!state.addons.library) {
+      if (state.me && !state.addons.library) {
         try {
           await loadAddonLibrary();
         } catch (libraryError) {
@@ -5140,11 +5604,23 @@
     var thumb = e.target.closest('[data-addon-thumb]');
     if (thumb) { selectAddonImage(thumb.dataset.addonThumb); return; }
     var like = e.target.closest('[data-addon-like]');
-    if (like) { likeAddon(like.dataset.addonLike); return; }
+    if (like) {
+      if (!requireLogin('Inicia sesión para dar me gusta a los complementos.')) return;
+      likeAddon(like.dataset.addonLike);
+      return;
+    }
     var favorite = e.target.closest('[data-addon-favorite]');
-    if (favorite) { toggleAddonFavorite(favorite.dataset.addonFavorite); return; }
+    if (favorite) {
+      if (!requireLogin('Inicia sesión para guardar complementos en tu biblioteca.')) return;
+      toggleAddonFavorite(favorite.dataset.addonFavorite);
+      return;
+    }
     var collection = e.target.closest('[data-addon-collection-toggle]');
-    if (collection) { toggleAddonInCollection(collection.dataset.addonCollectionToggle); return; }
+    if (collection) {
+      if (!requireLogin('Inicia sesión para organizar tus complementos.')) return;
+      toggleAddonInCollection(collection.dataset.addonCollectionToggle);
+      return;
+    }
     var download = e.target.closest('[data-addon-download]');
     if (download) { downloadAddon(download.dataset.addonDownload); }
   }
@@ -5304,6 +5780,7 @@
     if (!container) return;
     var servers = state.servers.items || [];
     var myServer = servers.find(function (server) { return server.esMio; });
+    var guest = !state.me;
     var canAddServer = hasOwnerPrivileges(state.me && state.me.rol) || state.servers.canAdd;
     var editingServer = servers.find(function (server) {
       return server.esMio && String(state.servers.editId) === String(server.id);
@@ -5330,7 +5807,9 @@
           '<div class="modal-actions"><button class="btn primary" type="submit">Guardar cambios</button>' +
             '<button class="btn ghost" data-server-edit-cancel type="button">Cancelar</button></div>' +
         '</form>'
-      : (!canAddServer
+      : (guest
+        ? '<button class="btn primary block" data-open-auth type="button">Acceder para publicar tu servidor</button>'
+        : (!canAddServer
         ? '<p class="muted">Ya publicaste un servidor. Las cuentas Usuario y Admin pueden agregar solo uno.</p>'
         : (state.servers.formOpen
           ? '<form class="card settings-card" data-server-form>' +
@@ -5347,9 +5826,9 @@
             '<div class="modal-actions"><button class="btn primary" type="submit">Publicar servidor</button>' +
               '<button class="btn ghost" data-server-add-cancel type="button">Cancelar</button></div>' +
           '</form>'
-          : ''));
+          : '')));
     container.innerHTML =
-      (!canAddServer || editingServer ? '' : '<button class="btn primary server-add-toggle" type="button" ' +
+      (!canAddServer || editingServer || guest ? '' : '<button class="btn primary server-add-toggle" type="button" ' +
         'data-server-add-toggle aria-expanded="' + (state.servers.formOpen ? 'true' : 'false') + '">' +
         (state.servers.formOpen ? 'Cerrar formulario' : '＋ Subir servidor') + '</button>') +
       serverForm +
@@ -5478,13 +5957,58 @@
   //  Delegación de eventos de la vista
   // ─────────────────────────────────────────────────────────────────────
   async function onViewClick(e) {
+    if (e.target.closest('[data-open-auth]')) {
+      showAuth();
+      return;
+    }
+    if (e.target.closest('[data-home-feed]')) {
+      navigate('feed');
+      return;
+    }
+    var homeBrowse = e.target.closest('[data-home-browse]');
+    if (homeBrowse) {
+      var homeSort = String(homeBrowse.dataset.homeBrowse || 'recientes');
+      if (['populares', 'valorados', 'recientes'].indexOf(homeSort) < 0) homeSort = 'recientes';
+      state.addons.q = '';
+      state.addons.sort = homeSort;
+      state.addons.category = '';
+      state.addons.scope = 'all';
+      state.addons.collectionId = '';
+      state.addons.loaded = false;
+      navigate('addons');
+      return;
+    }
+    if (e.target.closest('[data-home-retry]')) {
+      await loadHomeCatalog(true);
+      return;
+    }
+    var homeCategory = e.target.closest('[data-home-category]');
+    if (homeCategory) {
+      navigate('addons', { category: homeCategory.dataset.homeCategory });
+      return;
+    }
+    var addonCategory = e.target.closest('[data-addon-category]');
+    if (addonCategory) {
+      var category = String(addonCategory.dataset.addonCategory || '');
+      if (category !== state.addons.category) {
+        state.addons.category = category;
+        state.addons.loaded = true;
+        loadAddons(true);
+        $all('[data-addon-category]').forEach(function (button) {
+          button.setAttribute('aria-pressed', button.dataset.addonCategory === category ? 'true' : 'false');
+        });
+      }
+      return;
+    }
     var deleteWord = e.target.closest('[data-admin-word-delete]');
     if (deleteWord) {
+      if (!requireLogin()) return;
       await deleteAdminWord(deleteWord.dataset.adminWordDelete);
       return;
     }
     var reactivateUser = e.target.closest('[data-admin-reactivate]');
     if (reactivateUser) {
+      if (!requireLogin()) return;
       await reactivateAdminUser(reactivateUser.dataset.adminReactivate);
       return;
     }
@@ -5494,6 +6018,7 @@
       return;
     }
     if (e.target.closest('[data-server-add-toggle]')) {
+      if (!requireLogin('Inicia sesión o crea una cuenta para publicar tu servidor.')) return;
       state.servers.formOpen = !state.servers.formOpen;
       renderServersGrid();
       if (state.servers.formOpen) {
@@ -5515,24 +6040,29 @@
       return;
     }
     if (e.target.closest('[data-collection-create]')) {
+      if (!requireLogin()) return;
       await createAddonCollection();
       return;
     }
     if (e.target.closest('[data-collection-rename]')) {
+      if (!requireLogin()) return;
       await renameAddonCollection();
       return;
     }
     if (e.target.closest('[data-collection-delete]')) {
+      if (!requireLogin()) return;
       await deleteAddonCollection();
       return;
     }
     var addonFavorite = e.target.closest('[data-addon-favorite]');
     if (addonFavorite) {
+      if (!requireLogin('Inicia sesión para guardar complementos en tu biblioteca.')) return;
       await toggleAddonFavorite(addonFavorite.dataset.addonFavorite);
       return;
     }
     var collectionToggle = e.target.closest('[data-addon-collection-toggle]');
     if (collectionToggle) {
+      if (!requireLogin('Inicia sesión para organizar tus complementos.')) return;
       await toggleAddonInCollection(collectionToggle.dataset.addonCollectionToggle);
       return;
     }
@@ -5549,6 +6079,7 @@
     }
     var reportSave = e.target.closest('[data-report-save]');
     if (reportSave) {
+      if (!requireLogin()) return;
       await saveReportReview(reportSave);
       return;
     }
@@ -5578,6 +6109,7 @@
 
     var editPost = e.target.closest('[data-edit-post]');
     if (editPost) {
+      if (!requireLogin()) return;
       closeActionMenus();
       openPostEdit(editPost.closest('.post'));
       return;
@@ -5585,6 +6117,7 @@
 
     var editComment = e.target.closest('[data-edit-comment]');
     if (editComment) {
+      if (!requireLogin()) return;
       closeActionMenus();
       openCommentEdit(editComment);
       return;
@@ -5592,6 +6125,7 @@
 
     var likeBtn = e.target.closest('[data-like]');
     if (likeBtn) {
+      if (!requireLogin('Inicia sesión o crea una cuenta para dar me gusta.')) return;
       var postId = likeBtn.dataset.like;
       if (likeBtn.dataset.busy) return;
       likeBtn.dataset.busy = '1';
@@ -5624,12 +6158,14 @@
 
     var delComment = e.target.closest('[data-del-comment]');
     if (delComment) {
+      if (!requireLogin()) return;
       deleteCommentAfterConfirmation(delComment);
       return;
     }
 
     var delPost = e.target.closest('[data-delete-post]');
     if (delPost) {
+      if (!requireLogin()) return;
       var postMenuButton = delPost.closest('.post-menu-wrap').querySelector('[data-menu-toggle]');
       closeActionMenus();
       if (postMenuButton) postMenuButton.focus();
@@ -5651,6 +6187,7 @@
 
     var followBtn = e.target.closest('[data-follow]');
     if (followBtn) {
+      if (!requireLogin('Inicia sesión o crea una cuenta para seguir a otras personas.')) return;
       var uid = followBtn.dataset.follow;
       if (followBtn.dataset.busy) return;
       followBtn.dataset.busy = '1';
@@ -5762,8 +6299,8 @@
       clearTimeout(state.addons.searchTimer);
       state.addons.searchTimer = null;
     }
-    var value = String(sort.value || 'aleatorio');
-    if (['aleatorio', 'populares', 'descargas', 'recientes', 'nombre'].indexOf(value) < 0) value = 'aleatorio';
+    var value = String(sort.value || 'recientes');
+    if (['descargas', 'valorados', 'recientes'].indexOf(value) < 0) value = 'recientes';
     if (state.addons.sort === value) return;
     state.addons.sort = value;
     state.addons.loaded = true;
@@ -5815,24 +6352,28 @@
     var wordForm = e.target.closest('[data-admin-word-form]');
     if (wordForm) {
       e.preventDefault();
+      if (!requireLogin()) return;
       await submitAdminWord(wordForm);
       return;
     }
     var suspendForm = e.target.closest('[data-admin-suspend]');
     if (suspendForm) {
       e.preventDefault();
+      if (!requireLogin()) return;
       await submitAdminSuspension(suspendForm);
       return;
     }
     var reportForm = e.target.closest('[data-report-form]');
     if (reportForm) {
       e.preventDefault();
+      if (!requireLogin('Inicia sesión o crea una cuenta para enviar reportes.')) return;
       await submitReport(reportForm);
       return;
     }
     var serverForm = e.target.closest('[data-server-form]');
     if (serverForm) {
       e.preventDefault();
+      if (!requireLogin('Inicia sesión o crea una cuenta para publicar servidores.')) return;
       await submitServer(serverForm);
       return;
     }
@@ -5854,6 +6395,7 @@
     var form = e.target.closest('[data-comment-form]');
     if (!form) return;
     e.preventDefault();
+    if (!requireLogin('Inicia sesión o crea una cuenta para comentar.')) return;
     var postId = form.dataset.commentForm;
     var input = form.querySelector('input');
     var texto = Security.sanitizeText(input.value || '').trim();
@@ -5913,7 +6455,7 @@
     bindAuth();
     bindApp();
     window.addEventListener('hashchange', function () {
-      if (!state.me || $('#blockedScreen').classList.contains('hidden') === false) return;
+      if ($('#blockedScreen').classList.contains('hidden') === false) return;
       if (state.routeLock) return;
       handleHashRoute();
     });
@@ -5922,7 +6464,8 @@
     if (!state.token) {
       state.me = null;
       removeCache(CACHE_PROFILE_KEY);
-      showPolicyGate();
+      showApp();
+      handleHashRoute(true);
       return;
     }
 
@@ -5942,8 +6485,10 @@
     } catch (err) {
       if (err && (err.code === 'AUTH' || err.error === 'AUTH')) {
         clearSession();
-        showAuth();
-        toast('Tu sesión expiró. Inicia sesión de nuevo.', 'warn');
+        state.me = null;
+        showApp();
+        handleHashRoute(true);
+        toast('Tu sesión expiró. Ahora estás explorando como invitado.', 'warn');
       } else if (err && (err.code === 'BLOCKED' || err.error === 'BLOCKED')) {
         clearSession();
         showBlockedScreen(err.message || 'Tu cuenta ha sido suspendida.', 'Cuenta baneada');
@@ -5952,7 +6497,8 @@
         toast('Sin conexión: mostrando datos guardados', 'warn');
       } else {
         clearSession();
-        showPolicyGate();
+        showApp();
+        handleHashRoute(true);
       }
     }
   }
