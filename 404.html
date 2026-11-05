@@ -1,299 +1,322 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página No Encontrada | WorldLeaf</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <title>Comunicado Oficial | JM-techStudios</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Orbitron -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#7c3aed',
+                            indigo: '#4f46e5',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            dark: '#0a0a12',
+                            card: 'rgba(18, 18, 30, 0.65)'
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(124, 58, 237, 0.3)' },
+                            '100%': { boxShadow: '0 0 35px rgba(124, 58, 237, 0.6), 0 0 15px rgba(6, 182, 212, 0.4)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-color: #00d4ff;
-            --secondary-color: #5b3ff0;
-            --bg-dark: #050810;
-            --glass-bg: rgba(11, 13, 28, 0.75);
-            --glass-border: rgba(91, 63, 240, 0.25);
-            --text-primary: #eef2ff;
-            --text-secondary: #8892b0;
+        /* Modern Glassmorphism & Custom Glows */
+        .glass-card {
+            background: rgba(16, 16, 28, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glow-bg-1 {
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, rgba(0,0,0,0) 70%);
+        }
+        
+        .glow-bg-2 {
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, rgba(0,0,0,0) 70%);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--bg-dark);
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-primary);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Ambient glowing background blobs */
-        .background-blobs {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .blob {
-            position: absolute;
-            filter: blur(120px);
-            border-radius: 50%;
-            opacity: 0.35;
-            animation: moveBlobs 12s infinite alternate ease-in-out;
-        }
-
-        .blob-1 {
-            width: 350px;
-            height: 350px;
-            top: -50px;
-            left: -50px;
-            background: radial-gradient(circle, var(--primary-color), transparent);
-        }
-
-        .blob-2 {
-            width: 450px;
-            height: 450px;
-            bottom: -100px;
-            right: -50px;
-            background: radial-gradient(circle, var(--secondary-color), transparent);
-            animation-delay: -4s;
-        }
-
-        @keyframes moveBlobs {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(60px, 80px) scale(1.15); }
-        }
-
-        /* Modern Grid overlay */
-        .grid-overlay {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(91, 63, 240, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(91, 63, 240, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 40%, transparent 100%);
-        }
-
-        /* Card Container */
-        .card {
-            text-align: center;
-            padding: 3.5rem 2.5rem;
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(91, 63, 240, 0.15);
-            max-width: 480px;
-            width: 90%;
-            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-            position: relative;
-            z-index: 10;
-        }
-
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Brand Icon / Logo */
-        .brand-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(91, 63, 240, 0.4);
-            animation: iconFloat 4s ease-in-out infinite;
-        }
-
-        .brand-icon img {
-            width: 50px;
-            height: 50px;
-        }
-
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff 30%, var(--primary-color) 100%);
+        .text-gradient {
+            background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #34d399 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -2px;
         }
 
-        h2 {
-            font-size: 1.35rem;
-            font-weight: 600;
-            margin-bottom: 1.25rem;
-            color: var(--text-primary);
+        .text-gradient-danger {
+            background: linear-gradient(135deg, #ff4b4b 0%, #ff8533 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        p {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 2rem;
+        /* Animated background mesh grid */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
 
-        /* Countdown Loader Circle */
-        .timer-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-        }
-
-        .timer-svg {
-            transform: rotate(-90deg);
-            width: 80px;
-            height: 80px;
-        }
-
-        .timer-circle-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.05);
-            stroke-width: 6;
-        }
-
-        .timer-circle {
-            fill: none;
-            stroke: url(#timerGrad);
-            stroke-width: 6;
-            stroke-dasharray: 220;
-            stroke-dashoffset: 0;
-            stroke-linecap: round;
-            animation: countdown 3s linear forwards;
-        }
-
-        @keyframes countdown {
-            from { stroke-dashoffset: 0; }
-            to { stroke-dashoffset: 220; }
-        }
-
-        .timer-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
-        }
-
-        /* Button link override */
-        .btn-redirect {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #fff;
-            background: linear-gradient(135deg, var(--secondary-color), #3d1fa3);
-            padding: 12px 36px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 10px 24px rgba(91, 63, 240, 0.35);
-            transition: all 0.3s ease;
-        }
-
-        .btn-redirect:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(91, 63, 240, 0.5);
-            filter: brightness(1.1);
-        }
-
-        /* Watermark / Brand Signature */
-        .watermark {
-            position: absolute;
-            bottom: 25px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: rgba(255, 255, 255, 0.12);
-            text-transform: uppercase;
-            pointer-events: none;
+        /* Anti-Selección de texto global */
+        *, *::before, *::after {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
         }
     </style>
 </head>
-<body>
+<body class="bg-brand-dark text-slate-200 font-sans min-h-full flex flex-col justify-between relative overflow-x-hidden antialiased select-none" oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 
-    <div class="background-blobs">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-    </div>
+    <!-- Background Glow Effects -->
+    <div class="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full glow-bg-1 pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full glow-bg-2 pointer-events-none z-0"></div>
+    <div class="fixed inset-0 bg-grid pointer-events-none z-0"></div>
 
-    <div class="grid-overlay"></div>
-
-    <div class="card">
-        <div class="brand-icon">
-            <img src="icon.png" alt="WorldLeaf Logo" onerror="this.src='worldleaf/icon-192.png'">
+    <!-- Header / Brand Identifier -->
+    <header class="w-full py-6 px-4 z-10">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-cyan-400 p-[1px] flex items-center justify-center shadow-lg shadow-purple-950/50">
+                    <div class="w-full h-full bg-brand-dark rounded-[11px] flex items-center justify-center">
+                        <i class="fa-solid fa-microchip text-purple-400 text-lg"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-display font-bold tracking-wider text-white text-lg block leading-none">JM-techStudios</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Official Notice</span>
+                </div>
+            </div>
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                Aviso Importante
+            </span>
         </div>
-        <h1>404</h1>
-        <h2>Página no encontrada</h2>
-        <p>El recurso que buscas no existe o ha sido movido. Te redirigiremos automáticamente a nuestro sitio principal.</p>
-        
-        <div class="timer-container">
-            <svg class="timer-svg">
-                <defs>
-                    <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="var(--secondary-color)" />
-                        <stop offset="100%" stop-color="var(--primary-color)" />
-                    </linearGradient>
-                </defs>
-                <circle class="timer-circle-bg" cx="40" cy="40" r="35" />
-                <circle class="timer-circle" cx="40" cy="40" r="35" />
-            </svg>
-            <div class="timer-text" id="countdown-number">3</div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex items-center justify-center px-4 py-8 z-10">
+        <div class="max-w-2xl w-full">
+            
+            <!-- Main Glass Card Container -->
+            <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden animate-fade-in-up border border-slate-700/40">
+                
+                <!-- Decorative Top Accent Bar -->
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-purple-500 to-emerald-400"></div>
+
+                <!-- Alert Icon Badge -->
+                <div class="flex justify-center mb-6">
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 shadow-xl shadow-red-950/30 animate-float">
+                            <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
+                        </div>
+                        <div class="absolute -bottom-2 -right-2 bg-slate-900 border border-slate-700 text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-mono">
+                            STATUS: CLEARED
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Headline -->
+                <div class="text-center space-y-2 mb-8">
+                    <h1 class="font-display text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                        Todos los proyectos han sido <span class="text-gradient-danger underline decoration-red-500/40">eliminados</span>
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-400 font-mono tracking-wide">
+                        COMUNICADO OFICIAL • JM-TECHSTUDIOS
+                    </p>
+                </div>
+
+                <!-- Official Message Content -->
+                <div class="space-y-6 text-slate-300 text-sm sm:text-base leading-relaxed">
+                    
+                    <!-- Primary Notice Box -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-sm relative">
+                        <div class="flex gap-4 items-start">
+                            <div class="mt-1 text-red-400 text-lg">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-200 font-medium">
+                                    Esta decisión de la eliminación de todos los proyectos fue una <strong class="text-white font-semibold underline decoration-purple-400/50">orden directa de JM-techStudios</strong> debido a que dejan los proyectos permanentemente.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hope / Reconstruction Message Box -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-purple-950/30 to-emerald-950/30 border border-emerald-500/20 backdrop-blur-sm">
+                        <div class="flex gap-4 items-start">
+                            <div class="mt-1 text-emerald-400 text-lg">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-emerald-400 font-semibold mb-1 text-sm uppercase tracking-wider">Un mensaje de esperanza</h3>
+                                <p class="text-slate-200">
+                                    Pero aún existe una pizca de esperanza: <strong class="text-white font-semibold">no todo cae por completo</strong>. Es posible la reconstrucción de nuevas páginas y futuros proyectos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action Banner -->
+                    <div class="text-center pt-2">
+                        <p class="text-sm sm:text-base text-slate-300 mb-6 font-medium">
+                            Para informarse de futuros proyectos o futuras creaciones sigan el canal oficial:
+                        </p>
+
+                        <!-- Buttons Wrapper -->
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center items-stretch">
+                            <!-- Direct WhatsApp Channel Link Button -->
+                            <a href="https://whatsapp.com/channel/0029VbEBUiSCHDynxetvd23p" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="group relative inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-bold text-white bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 hover:from-emerald-500 hover:to-teal-400 transition-all duration-300 shadow-lg shadow-emerald-900/40 hover:shadow-emerald-500/30 hover:scale-[1.02] active:scale-[0.98]">
+                                <i class="fa-brands fa-whatsapp text-2xl group-hover:rotate-12 transition-transform duration-300"></i>
+                                <span>Unirse al Canal de WhatsApp</span>
+                                <i class="fa-solid fa-arrow-right text-xs opacity-70 group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+
+                            <!-- Copy Link Button -->
+                            <button onclick="copyChannelLink()" 
+                                    id="copyBtn"
+                                    class="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 hover:text-white transition-all duration-200 active:scale-[0.98]">
+                                <i class="fa-regular fa-copy text-base" id="copyIcon"></i>
+                                <span id="copyText">Copiar Enlace</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Toast Notification for Copy Action -->
+            <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/95 border border-emerald-500/50 text-emerald-400 px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 text-sm font-medium opacity-0 pointer-events-none transition-all duration-300 z-50">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+                <span>¡Enlace copiado al portapapeles!</span>
+            </div>
+
         </div>
+    </main>
 
-        <a href="https://ms-mcpe.github.io/worldleaf" class="btn-redirect">
-            Ir Ahora
-        </a>
-    </div>
+    <!-- Footer -->
+    <footer class="w-full py-6 text-center text-xs text-slate-500 z-10">
+        <p>© JM-techStudios. Todos los derechos reservados.</p>
+    </footer>
 
-    <div class="watermark">WorldLeaf</div>
-
+    <!-- Simple Copy Script -->
     <script>
-        const targetUrl = "https://ms-mcpe.github.io/worldleaf";
-        let timeLeft = 3;
-        const countdownEl = document.getElementById("countdown-number");
+        // Bloqueo de Clic Derecho (Anti-ContextMenu)
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
 
-        const interval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft >= 0) {
-                countdownEl.textContent = timeLeft;
+        // Bloqueo de selección de texto adicional
+        document.addEventListener('selectstart', function (e) {
+            e.preventDefault();
+        });
+
+        // Anti Teclas F1 a F12 y Anti combinaciones con Ctrl
+        document.addEventListener('keydown', function (e) {
+            // Teclas F1 a F12 (KeyCode 112 al 123)
+            if (e.keyCode >= 112 && e.keyCode <= 123) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
             }
-            if (timeLeft === 0) {
-                clearInterval(interval);
-                window.location.href = targetUrl;
+
+            // Teclas F15 o atajos de DevTools en Mac/Windows
+            if (e.key.startsWith('F') && !isNaN(e.key.substring(1))) {
+                e.preventDefault();
+                return false;
             }
-        }, 1000);
+
+            // Bloqueo de combinaciones con Ctrl / Cmd (Meta key)
+            if (e.ctrlKey || e.metaKey) {
+                const key = e.key.toLowerCase();
+                // Bloquear Ctrl + C, U, S, P, A, I, J, C, K, H
+                if (['c', 'u', 's', 'p', 'a', 'i', 'j', 'k', 'h'].includes(key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }
+
+            // Bloqueo de Ctrl + Shift + I / J / C (DevTools)
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey) {
+                const key = e.key.toLowerCase();
+                if (['i', 'j', 'c', 'k'].includes(key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }
+        });
+
+        function copyChannelLink() {
+            const url = "https://whatsapp.com/channel/0029VbEBUiSCHDynxetvd23p";
+            
+            // Copia directa al portapapeles en contexto de iframe / navegador
+            const tempInput = document.createElement("input");
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Update UI feedback
+            const toast = document.getElementById("toast");
+            const copyText = document.getElementById("copyText");
+            const copyIcon = document.getElementById("copyIcon");
+
+            copyText.textContent = "¡Copiado!";
+            copyIcon.className = "fa-solid fa-check text-emerald-400";
+
+            // Show Toast
+            toast.classList.remove("opacity-0", "pointer-events-none", "translate-y-2");
+            toast.classList.add("opacity-100", "translate-y-0");
+
+            setTimeout(() => {
+                toast.classList.remove("opacity-100", "translate-y-0");
+                toast.classList.add("opacity-0", "pointer-events-none", "translate-y-2");
+                copyText.textContent = "Copiar Enlace";
+                copyIcon.className = "fa-regular fa-copy";
+            }, 3000);
+        }
     </script>
 </body>
 </html>
