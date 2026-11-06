@@ -1328,7 +1328,6 @@
       radial-gradient(circle at 25% 20%, rgba(var(--brand-rgb), .18), transparent 55%),
       var(--panel-2);
   }
-  .addon-gallery-main .addon-cover-fallback { position: static; height: 100%; }
   .addon-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
   .addon-title { font-weight: 800; line-height: 1.28; word-break: break-word; }
   .addon-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; color: var(--muted); font-size: 12px; }
@@ -1415,42 +1414,35 @@
   }
   .addon-detail h3 { margin: 0; font-size: 24px; line-height: 1.2; }
   .addon-detail-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 10px 0 16px; color: var(--muted); font-size: 13px; }
-  .addon-gallery-main {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--panel-2);
-    border: 1px solid var(--line);
-  }
-  .addon-gallery-main img {
-    position: relative;
-    z-index: 1;
+  .addon-detail-gallery { display: flex; flex-direction: column; gap: 14px; }
+  .addon-gallery-image {
+    display: grid;
+    place-items: center;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: #0b0d10;
-    display: block;
-  }
-  .addon-gallery-main .addon-cover-fallback { position: absolute; inset: 0; height: 100%; }
-  .addon-thumbs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 10px 2px 4px;
-    scrollbar-width: thin;
-  }
-  .addon-thumb {
-    flex: 0 0 82px;
-    height: 58px;
-    padding: 0;
-    border-radius: 10px;
+    min-height: 120px;
+    margin: 0;
     overflow: hidden;
-    border: 2px solid transparent;
+    border: 1px solid var(--line);
+    border-radius: 16px;
     background: var(--panel-2);
   }
-  .addon-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .addon-thumb.active { border-color: var(--brand); }
+  .addon-gallery-image img {
+    display: block;
+    max-width: 100%;
+    max-height: min(78vh, 900px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  .addon-detail-gallery-empty {
+    display: grid;
+    min-height: 180px;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel-2);
+    color: var(--muted);
+  }
   .addon-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
   .addon-actions .btn { flex: 1; min-width: 150px; }
   .addon-actions-primary .addon-like-btn { flex: 0 0 auto; min-width: 92px; }
@@ -1530,10 +1522,6 @@
     margin: 0 auto;
     padding-top: 20px;
   }
-  .addon-detail-modal .addon-gallery-main {
-    max-height: min(68vh, 760px);
-    aspect-ratio: 16 / 9;
-  }
   .addon-detail-modal .addon-description { margin-top: 18px; }
   @media (max-width: 600px) {
     .addon-detail-modal .addon-detail { padding: 0 14px 28px; }
@@ -1541,10 +1529,7 @@
     .addon-detail-modal .addon-detail-id { max-width: min(55vw, 260px); }
     .addon-detail-modal .addon-detail h3 { font-size: 19px; }
     .addon-detail-modal #addonDetailBody { padding-top: 14px; }
-    .addon-detail-modal .addon-gallery-main {
-      max-height: 58vh;
-      aspect-ratio: 4 / 3;
-    }
+    .addon-detail-modal .addon-gallery-image img { max-height: 70vh; }
     .addon-detail-modal .modal-head-actions { gap: 6px; }
     .addon-detail-modal .addon-detail-share-actions .btn { min-width: 0; padding: 8px 10px; }
   }
@@ -2291,8 +2276,7 @@
       searchTimer: null,
       detail: null,
       detailRoute: null,
-      detailSeq: 0,
-      galleryIndex: 0
+      detailSeq: 0
     },
     homeCatalog: {
       shelves: {}, loadedAt: 0, seq: 0,
@@ -2734,8 +2718,7 @@
     if (path.indexOf('addon/') === 0) {
       return {
         view: 'addonDetail',
-        addonId: decodeURIComponent(path.slice('addon/'.length)),
-        fromHash: params.from || ''
+        addonId: decodeURIComponent(path.slice('addon/'.length))
       };
     }
     if (path === 'feed') return { view: 'feed', userId: '' };
@@ -2791,29 +2774,18 @@
     if (!force && state.routeLock) return;
     var route = parseHashRoute(window.location.hash);
     if (route.view === 'addonDetail') {
-      var previousRoute = route.fromHash ? parseHashRoute(route.fromHash) : { view: 'addons' };
-      var previousView = previousRoute.view === 'addonDetail' ? 'addons' : previousRoute.view;
-      if (previousView !== state.view ||
-          (previousView === 'addons' &&
-           previousRoute.category !== undefined &&
-           previousRoute.category !== state.addons.category)) {
-        navigate(previousView, {
-          skipHash: true,
-          category: previousView === 'addons' ? previousRoute.category : undefined,
-          userId: previousRoute.userId || ''
-        });
-      }
       if (!route.addonId) {
         history.replaceState(null, '', '#addons');
         return navigate('addons', { skipHash: true });
       }
+      var canonicalAddonHash = '#addon/' + encodeURIComponent(route.addonId);
+      if (window.location.hash !== canonicalAddonHash) {
+        history.replaceState(null, '', canonicalAddonHash);
+      }
       if (state.addons.detailRoute &&
           String(state.addons.detailRoute.id) === String(route.addonId) &&
           !$('#addonModal').classList.contains('hidden')) return;
-      return openAddonDetail(route.addonId, {
-        fromRoute: true,
-        fromHash: route.fromHash || '#addons'
-      });
+      return openAddonDetail(route.addonId, { fromRoute: true });
     }
     if (!$('#addonModal').classList.contains('hidden') && state.addons.detailRoute) {
       closeAddonDetail({ skipHistory: true });
@@ -6255,8 +6227,7 @@
       searchTimer: null,
       detail: null,
       detailRoute: null,
-      detailSeq: 0,
-      galleryIndex: 0
+      detailSeq: 0
     };
     var modal = document.getElementById('addonModal');
     if (modal) {
@@ -6272,6 +6243,16 @@
 
   function addonSafeImage(url) {
     return Security.safeExternalImageUrl(url);
+  }
+
+  function addonImageUrls_(addon) {
+    var source = addon.imagenes;
+    if (typeof source === 'string') {
+      source = source.split('|');
+    } else if (!Array.isArray(source)) {
+      source = addon.imagen ? [addon.imagen] : [];
+    }
+    return source.map(addonSafeImage).filter(function (url) { return !!url; });
   }
 
   function addonCoverHTML(addon) {
@@ -7562,23 +7543,17 @@
   }
 
   function addonDetailGalleryHTML(addon) {
-    var images = (addon.imagenes || []).map(addonSafeImage).filter(function (url) { return !!url; });
-    var index = Math.min(Math.max(0, state.addons.galleryIndex), Math.max(0, images.length - 1));
-    var main = '<div class="addon-cover-fallback" aria-hidden="true">🧩</div>' +
-      (images[index]
-        ? '<img id="addonGalleryMain" src="' + esc(images[index]) + '" alt="' + esc(addon.nombre) + '" ' +
-          'onerror="this.onerror=null;this.style.display=\'none\'">'
-        : '');
-    var thumbs = images.length > 1
-      ? '<div class="addon-thumbs" role="list">' + images.slice(1).map(function (url, i) {
-          var imageIndex = i + 1;
-          return '<button class="addon-thumb' + (imageIndex === index ? ' active' : '') + '" type="button" ' +
-            'data-addon-thumb="' + imageIndex + '" role="listitem" aria-label="Imagen ' + (imageIndex + 1) + '">' +
-            '<img src="' + esc(url) + '" alt="" loading="lazy" ' +
-            'onerror="this.onerror=null;this.parentNode.style.display=\'none\'"></button>';
+    var images = addonImageUrls_(addon);
+    var html = images.length
+      ? '<div class="addon-detail-gallery" aria-label="Imágenes del complemento">' +
+        images.map(function (url, index) {
+          return '<figure class="addon-gallery-image"><img src="' + esc(url) + '" alt="' +
+            esc(addon.nombre) + ' - imagen ' + (index + 1) + '" loading="' +
+            (index === 0 ? 'eager' : 'lazy') + '" decoding="async" ' +
+            'onerror="this.onerror=null;this.parentNode.style.display=\'none\'"></figure>';
         }).join('') + '</div>'
-      : '';
-    return { images: images, html: '<div class="addon-gallery-main">' + main + '</div>' + thumbs };
+      : '<div class="addon-detail-gallery-empty">🧩 Sin imágenes disponibles.</div>';
+    return html;
   }
 
   function renderAddonDetail() {
@@ -7631,7 +7606,7 @@
         '<span>❤️ ' + safeCount(addon.likes) + '</span>' +
         '<span>⬇️ ' + safeCount(addon.descargas) + '</span>' +
       '</div>' +
-      gallery.html +
+      gallery +
       '<div class="addon-actions addon-actions-primary">' +
         likeAction +
         '<button class="btn primary" type="button" data-addon-download="' + esc(addon.id) + '">' +
@@ -7735,24 +7710,16 @@
   async function openAddonDetail(id) {
     var options = arguments.length > 1 ? arguments[1] || {} : {};
     var modal = $('#addonModal');
-    var fromHash = options.fromHash || window.location.hash || '#addons';
-    if (fromHash.indexOf('#addon/') === 0) fromHash = '#addons';
     if (!options.fromRoute) {
-      if (state.addons.category && fromHash === '#addons') {
-        fromHash += '?category=' + encodeURIComponent(state.addons.category);
-      }
-      var detailHash = '#addon/' + encodeURIComponent(String(id)) +
-        '?from=' + encodeURIComponent(fromHash);
+      var detailHash = '#addon/' + encodeURIComponent(String(id));
       window.history.pushState({ addonDetail: true }, '', detailHash);
       state.addons.detailRoute = {
         id: String(id),
-        fromHash: fromHash,
         pushed: true
       };
     } else {
       state.addons.detailRoute = {
         id: String(id),
-        fromHash: fromHash,
         pushed: false
       };
     }
@@ -7764,7 +7731,6 @@
     $('#addonShareBtn').classList.remove('hidden');
     var seq = ++state.addons.detailSeq;
     state.addons.detail = null;
-    state.addons.galleryIndex = 0;
     $('#addonDetailId').textContent = 'ID ' + id;
     $('#addonDetailTitle').textContent = 'Cargando complemento...';
     $('#addonDetailBody').innerHTML = '<div class="center-load addon-detail-loading"><div class="spinner"></div></div>';
@@ -7785,7 +7751,6 @@
       }
       if (seq !== state.addons.detailSeq) return;
       state.addons.detail = data.addon;
-      state.addons.galleryIndex = 0;
       renderAddonDetail();
     } catch (err) {
       if (seq !== state.addons.detailSeq) return;
@@ -7818,26 +7783,9 @@
       return;
     }
     if (window.location.hash.indexOf('#addon/') === 0) {
-      window.history.replaceState(null, '', detailRoute.fromHash || '#addons');
+      window.history.replaceState(null, '', '#addons');
       handleHashRoute(true);
     }
-  }
-
-  function selectAddonImage(index) {
-    var addon = state.addons.detail;
-    if (!addon) return;
-    var images = (addon.imagenes || []).map(addonSafeImage).filter(function (url) { return !!url; });
-    if (!images.length) return;
-    var next = Math.min(Math.max(0, Number(index) || 0), images.length - 1);
-    state.addons.galleryIndex = next;
-    var main = $('#addonGalleryMain');
-    if (main) {
-      main.style.display = '';
-      main.src = images[next];
-    }
-    $all('[data-addon-thumb]').forEach(function (btn) {
-      btn.classList.toggle('active', Number(btn.dataset.addonThumb) === next);
-    });
   }
 
   async function likeAddon(id) {
@@ -7891,16 +7839,13 @@
   async function shareAddon(id) {
     var addon = findAddon(id);
     if (!addon) return;
-    var shareUrl = window.location.href;
+    var shareUrl = window.location.href.split('#')[0] + '#addon/' + encodeURIComponent(String(id));
     var details = [
       addon.nombre,
       'Categoría: ' + (addon.categoria || 'Complemento'),
       addon.version ? 'Versión: ' + addon.version : '',
-      addon.subidoPor ? 'Publicado por: ' + addon.subidoPor : '',
       addon.descripcion ? String(addon.descripcion).slice(0, 500) : ''
     ].filter(Boolean);
-    var downloadUrl = Security.safeExternalUrl(addon.urlDescarga, true);
-    if (downloadUrl) details.push('Descarga: ' + downloadUrl);
     var text = details.join('\n');
 
     if (navigator.share) {
@@ -7941,8 +7886,6 @@
   function onAddonDetailClick(e) {
     var close = e.target.closest('[data-addon-close]');
     if (close) { closeAddonDetail(); return; }
-    var thumb = e.target.closest('[data-addon-thumb]');
-    if (thumb) { selectAddonImage(thumb.dataset.addonThumb); return; }
     var like = e.target.closest('[data-addon-like]');
     if (like) {
       if (!requireLogin('Inicia sesión para dar me gusta a los complementos.')) return;
