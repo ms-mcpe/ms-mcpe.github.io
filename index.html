@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
 <link rel="icon" href="icon/icon.png" type="image/png">
-<title>Prizmothyn · Comunidad y catálogo</title>
+<title>Prizmothyn · Addons Bedrock</title>
 <style>
   :root {
     color-scheme: light;
@@ -2080,6 +2080,15 @@
   var CACHE_PROFILE_KEY = 'wl_profile';
   var CACHE_FEED_KEY = 'wl_feed_cache';
   var CACHE_NOTIF_KEY = 'wl_notif_cache';
+  var CACHE_ADDON_CATEGORY_COUNTS_KEY = 'wl_addon_category_counts';
+  var CACHE_ADDON_CATEGORY_LISTS_KEY = 'wl_addon_category_lists_v2';
+  var ADDON_CATEGORY_ADDON_IDS = [
+    'todos', 'texturas', 'addons', 'mapas', 'skins', 'scripts', 'versiones'
+  ];
+  var ADDON_CATEGORY_PAGE_SIZE = 48;
+  var ADDON_CATEGORY_COUNT_IDS = [
+    'todos', 'texturas', 'addons', 'mapas', 'skins', 'scripts', 'versiones', 'semillas'
+  ];
   var THEME_STORAGE_KEY = 'wl_theme_preferences';
   var THEME_PALETTES = {
     light: { bg: '#f3f7f5', surface: '#ffffff', border: '#dce7e1' },
@@ -2097,8 +2106,60 @@
   };
   var CACHE_FEED_TTL = 10 * 60 * 1000;
   var CACHE_NOTIF_TTL = 10 * 60 * 1000;
+  var ADDON_CATEGORY_COUNTS_CACHE_TTL = 5 * 60 * 1000;
+  var ADDON_CATEGORY_LISTS_REFRESH_TTL = 5 * 60 * 1000;
   var CATALOG_VIEW_CACHE_TTL = 60 * 1000;
   var notifCacheInicial = readCache(CACHE_NOTIF_KEY, null);
+  var cachedAddonCategoryCounts = readCache(CACHE_ADDON_CATEGORY_COUNTS_KEY, null);
+  var rawAddonCategoryLists = readCache(CACHE_ADDON_CATEGORY_LISTS_KEY, null);
+  var cachedAddonCategoryLists = null;
+  var validAddonCategoryLists = !!(rawAddonCategoryLists &&
+    rawAddonCategoryLists.version === 2 &&
+    Number.isFinite(rawAddonCategoryLists.loadedAt) &&
+    Array.isArray(rawAddonCategoryLists.addons) &&
+    rawAddonCategoryLists.categories &&
+    Array.isArray(rawAddonCategoryLists.semillas));
+  if (validAddonCategoryLists) {
+    validAddonCategoryLists = rawAddonCategoryLists.addons.every(function (item) {
+      return item && typeof item === 'object' && typeof item.id === 'string' &&
+        typeof item.nombre === 'string' && typeof item.categoria === 'string';
+    }) && rawAddonCategoryLists.semillas.every(function (item) {
+      return item && typeof item === 'object' && typeof item.id === 'string' &&
+        typeof item.titulo === 'string';
+    }) && ADDON_CATEGORY_ADDON_IDS.every(function (categoryId) {
+      var indices = rawAddonCategoryLists.categories[categoryId];
+      return Array.isArray(indices) && indices.every(function (index) {
+        return Number.isSafeInteger(index) && index >= 0 &&
+          index < rawAddonCategoryLists.addons.length;
+      });
+    });
+  }
+  if (validAddonCategoryLists) {
+    var hydratedCategoryLists = {};
+    ADDON_CATEGORY_ADDON_IDS.forEach(function (categoryId) {
+      hydratedCategoryLists[categoryId] =
+        rawAddonCategoryLists.categories[categoryId].map(function (index) {
+          return rawAddonCategoryLists.addons[index];
+        });
+    });
+    hydratedCategoryLists.semillas = rawAddonCategoryLists.semillas;
+    cachedAddonCategoryLists = {
+      loadedAt: rawAddonCategoryLists.loadedAt,
+      categories: hydratedCategoryLists
+    };
+  }
+  if (!cachedAddonCategoryCounts ||
+      !Number.isFinite(cachedAddonCategoryCounts.loadedAt) ||
+      !cachedAddonCategoryCounts.counts ||
+      !ADDON_CATEGORY_COUNT_IDS.slice(1).every(function (categoryId) {
+        return Number.isSafeInteger(cachedAddonCategoryCounts.counts[categoryId]) &&
+          cachedAddonCategoryCounts.counts[categoryId] >= 0;
+      }) ||
+      (Object.prototype.hasOwnProperty.call(cachedAddonCategoryCounts.counts, 'todos') &&
+        (!Number.isSafeInteger(cachedAddonCategoryCounts.counts.todos) ||
+          cachedAddonCategoryCounts.counts.todos < 0))) {
+    cachedAddonCategoryCounts = null;
+  }
   var themePrefs = loadThemePreferences();
 
   var state = {
@@ -2139,6 +2200,10 @@
       cache: {},
       cacheKey: '',
       firstPage: [],
+      categoryLists: cachedAddonCategoryLists ? cachedAddonCategoryLists.categories : null,
+      categoryListsLoadedAt: cachedAddonCategoryLists ? cachedAddonCategoryLists.loadedAt : 0,
+      categoryListsLoading: false, categoryListsRefreshPending: false,
+      categoryListsRefreshPromise: null,
       scope: 'all',
       collectionId: '',
       library: null,
@@ -2149,13 +2214,26 @@
       galleryIndex: 0
     },
     homeCatalog: {
-      shelves: {}, loadedAt: 0, seq: 0, categoryCounts: null,
-      categoryCountsLoadedAt: 0, categoryCountsAttemptedAt: 0,
-      categoryCountsLoading: false, categoryCountsError: false
+      shelves: {}, loadedAt: 0, seq: 0,
+      categoryCounts: cachedAddonCategoryCounts ? cachedAddonCategoryCounts.counts : null,
+      categoryCountsLoadedAt: cachedAddonCategoryCounts ? cachedAddonCategoryCounts.loadedAt : 0,
+      categoryCountsAttemptedAt: 0, categoryCountsStartupRefreshRequested: false,
+      categoryCountsLoading: false,
+      categoryCountsRefreshPending: false, categoryCountsError: false
     },
     seeds: {
-      items: [], offset: 0, hasMore: true, loading: false, loaded: false, loadedAt: 0,
-      firstPage: [], seq: 0, q: '',
+      items: cachedAddonCategoryLists
+        ? cachedAddonCategoryLists.categories.semillas.slice(0, ADDON_CATEGORY_PAGE_SIZE) : [],
+      offset: cachedAddonCategoryLists
+        ? Math.min(cachedAddonCategoryLists.categories.semillas.length, ADDON_CATEGORY_PAGE_SIZE) : 0,
+      hasMore: cachedAddonCategoryLists
+        ? cachedAddonCategoryLists.categories.semillas.length > ADDON_CATEGORY_PAGE_SIZE : true,
+      loading: false, loaded: !!cachedAddonCategoryLists,
+      loadedAt: cachedAddonCategoryLists ? cachedAddonCategoryLists.loadedAt : 0,
+      firstPage: cachedAddonCategoryLists
+        ? cachedAddonCategoryLists.categories.semillas.slice(0, ADDON_CATEGORY_PAGE_SIZE) : [],
+      fullItems: cachedAddonCategoryLists ? cachedAddonCategoryLists.categories.semillas : null,
+      seq: 0, q: '',
       editor: { open: false, id: '', images: [], files: [] },
       detail: null
     },
@@ -6230,6 +6308,8 @@
     if (!confirmed) return;
     try {
       await api('eliminarSemilla', { seedId: seed.id });
+      loadAddonCategoryCounts(true);
+      refreshAddonCategoryLists_(true);
       closeAddonDetail();
       clearSeedPendingFiles_();
       state.seeds.editor = { open: false, id: '', images: [], files: [] };
@@ -6333,6 +6413,17 @@
     options = options || {};
     if (seeds.loading && !reset) return;
     if (!reset && !seeds.hasMore) return;
+    if (!reset && !seeds.q && Array.isArray(seeds.fullItems)) {
+      var cachedSeedPage = seeds.fullItems.slice(
+        seeds.offset, seeds.offset + ADDON_CATEGORY_PAGE_SIZE
+      );
+      seeds.items = seeds.items.concat(cachedSeedPage);
+      seeds.offset += cachedSeedPage.length;
+      seeds.hasMore = seeds.offset < seeds.fullItems.length;
+      seeds.loaded = true;
+      renderSeedCards_();
+      return;
+    }
     var previousItems = seeds.items.slice();
     var previousFirstPage = seeds.firstPage.slice();
     var previousOffset = seeds.offset;
@@ -6524,6 +6615,8 @@
         coordenadas: coordenadas
       };
       await api('publicarSemilla', payload);
+      loadAddonCategoryCounts(true);
+      refreshAddonCategoryLists_(true);
       clearSeedPendingFiles_();
       state.seeds.editor.open = false;
       state.seeds.q = '';
@@ -6603,6 +6696,20 @@
     ]);
   }
 
+  function canUseCompleteAddonCategoryCache_(addons) {
+    return !!(addons.category !== 'semillas' && addons.categoryLists &&
+      !addons.q && addons.scope === 'all' &&
+      addons.sort === 'recientes');
+  }
+
+  function completeAddonCategoryList_(addons) {
+    if (!canUseCompleteAddonCategoryCache_(addons)) return null;
+    var categoryId = addons.category || 'todos';
+    return Array.isArray(addons.categoryLists[categoryId])
+      ? addons.categoryLists[categoryId]
+      : null;
+  }
+
   function activateAddonListCache_(addons) {
     var key = addonListCacheKey_(addons);
     if (addons.cacheKey === key) return;
@@ -6610,6 +6717,22 @@
     addons.loading = false;
     addons.cacheKey = key;
     var cached = addons.cache[key];
+    if (!cached) {
+      var completeItems = completeAddonCategoryList_(addons);
+      if (completeItems) {
+        var firstPage = completeItems.slice(0, ADDON_CATEGORY_PAGE_SIZE);
+        cached = addons.cache[key] = {
+          items: firstPage,
+          offset: firstPage.length,
+          hasMore: completeItems.length > firstPage.length,
+          fallback: false,
+          firstPage: firstPage.slice(),
+          fullItems: completeItems,
+          loadedAt: addons.categoryListsLoadedAt,
+          usedAt: Date.now()
+        };
+      }
+    }
     if (cached) {
       addons.items = cached.items.slice();
       addons.offset = cached.offset;
@@ -6638,6 +6761,9 @@
       hasMore: addons.hasMore,
       fallback: addons.fallback,
       firstPage: addons.firstPage.slice(),
+      fullItems: Array.isArray(addons.cache[key] && addons.cache[key].fullItems)
+        ? addons.cache[key].fullItems
+        : null,
       loadedAt: Date.now(),
       usedAt: Date.now()
     };
@@ -6657,12 +6783,143 @@
     });
   }
 
-  async function loadAddonCategoryCounts() {
+  function applyCompleteAddonCategoryLists_() {
+    var addons = state.addons;
+    Object.keys(addons.cache).forEach(function (key) {
+      if (Array.isArray(addons.cache[key].fullItems)) delete addons.cache[key];
+    });
+    addons.cacheKey = '';
+    if (state.view === 'addons' && canUseCompleteAddonCategoryCache_(addons)) {
+      activateAddonListCache_(addons);
+      renderAddonsGrid();
+    }
+
+    var seeds = state.seeds;
+    seeds.fullItems = addons.categoryLists.semillas;
+    if (state.view === 'addons' && addons.category === 'semillas' && !seeds.q) {
+      seeds.items = seeds.fullItems.slice(0, ADDON_CATEGORY_PAGE_SIZE);
+      seeds.firstPage = seeds.items.slice();
+      seeds.offset = seeds.items.length;
+      seeds.hasMore = seeds.fullItems.length > seeds.offset;
+      seeds.loaded = true;
+      seeds.loadedAt = addons.categoryListsLoadedAt;
+      seeds.error = '';
+      renderSeedCards_();
+    }
+  }
+
+  function refreshAddonCategoryLists_(force) {
+    var addons = state.addons;
+    if (addons.categoryListsLoading) {
+      if (force) addons.categoryListsRefreshPending = true;
+      return addons.categoryListsRefreshPromise;
+    }
+    if (!force && addons.categoryLists &&
+        Date.now() - addons.categoryListsLoadedAt < ADDON_CATEGORY_LISTS_REFRESH_TTL) {
+      return Promise.resolve();
+    }
+    addons.categoryListsLoading = true;
+    addons.categoryListsRefreshPromise = api('getAddonCategoryLists').then(function (data) {
+      var categories = data && data.categories;
+      var sourceAddons = data && data.addons;
+      var sourceSeeds = data && data.semillas;
+      var valid = Array.isArray(sourceAddons) && Array.isArray(sourceSeeds) && categories &&
+        sourceAddons.every(function (item) {
+          return item && typeof item.id === 'string' && item.id &&
+            typeof item.nombre === 'string' && typeof item.categoria === 'string' &&
+            Number.isSafeInteger(item.likes) && item.likes >= 0 &&
+            Number.isSafeInteger(item.descargas) && item.descargas >= 0;
+        }) && sourceSeeds.every(function (item) {
+          return item && typeof item.id === 'string' && typeof item.titulo === 'string';
+        }) && ADDON_CATEGORY_ADDON_IDS.every(function (categoryId) {
+          var indices = categories[categoryId];
+          return Array.isArray(indices) && indices.every(function (index) {
+            return Number.isSafeInteger(index) && index >= 0 && index < sourceAddons.length;
+          });
+        });
+      if (!valid) throw new Error('La respuesta de listas del catálogo no es válida.');
+
+      var addonRecords = sourceAddons.map(function (item) {
+        return {
+          id: item.id,
+          nombre: item.nombre,
+          imagen: item.imagen || '',
+          categoria: item.categoria,
+          likes: item.likes,
+          descargas: item.descargas,
+          subidoPor: item.subidoPor || '',
+          version: item.version || '',
+          fecha: item.fecha || ''
+        };
+      });
+      var categoryIndices = {};
+      var lists = {};
+      ADDON_CATEGORY_ADDON_IDS.forEach(function (categoryId) {
+        categoryIndices[categoryId] = categories[categoryId].slice();
+        lists[categoryId] = categoryIndices[categoryId].map(function (index) {
+          return addonRecords[index];
+        });
+      });
+      var seeds = sourceSeeds;
+      lists.semillas = seeds;
+
+      var loadedAt = Date.now();
+      var cache = {
+        version: 2,
+        loadedAt: loadedAt,
+        addons: addonRecords,
+        categories: categoryIndices,
+        semillas: seeds
+      };
+      try {
+        localStorage.setItem(CACHE_ADDON_CATEGORY_LISTS_KEY, JSON.stringify(cache));
+      } catch (storageError) {
+        console.error('No se pudieron guardar las listas completas del catálogo en localStorage: ' +
+          ((storageError && storageError.message) || storageError));
+        if (state.view === 'home' || state.view === 'addons') {
+          toast('No hay espacio disponible para guardar el catálogo completo en este dispositivo.', 'warn');
+        }
+        return;
+      }
+
+      addons.categoryLists = lists;
+      addons.categoryListsLoadedAt = loadedAt;
+      applyCompleteAddonCategoryLists_();
+    }).catch(function (err) {
+      console.error('No se pudieron actualizar las listas completas del catálogo: ' +
+        ((err && err.message) || err));
+      if (!addons.categoryLists && (state.view === 'home' || state.view === 'addons')) {
+        toast((err && err.message) || 'No se pudo cargar el catálogo completo.', 'warn');
+      }
+    }).then(function () {
+      addons.categoryListsLoading = false;
+      addons.categoryListsRefreshPromise = null;
+      if (addons.categoryListsRefreshPending) {
+        addons.categoryListsRefreshPending = false;
+        return refreshAddonCategoryLists_(true);
+      }
+    });
+    return addons.categoryListsRefreshPromise;
+  }
+
+  function refreshAddonCategoryCountsOnStartup_() {
+    var catalog = state.homeCatalog;
+    var forceRefresh = !catalog.categoryCountsStartupRefreshRequested;
+    catalog.categoryCountsStartupRefreshRequested = true;
+    return loadAddonCategoryCounts(forceRefresh);
+  }
+
+  async function loadAddonCategoryCounts(forceRefresh) {
     var catalog = state.homeCatalog;
     var now = Date.now();
-    if (catalog.categoryCountsLoading ||
-        (catalog.categoryCounts && now - catalog.categoryCountsLoadedAt < 5 * 60 * 1000) ||
-        (catalog.categoryCountsError && now - catalog.categoryCountsAttemptedAt < 60 * 1000)) return;
+    if (catalog.categoryCountsLoading) {
+      if (forceRefresh) catalog.categoryCountsRefreshPending = true;
+      return;
+    }
+    if (!forceRefresh &&
+        ((catalog.categoryCounts && now - catalog.categoryCountsLoadedAt <
+          ADDON_CATEGORY_COUNTS_CACHE_TTL) ||
+         (catalog.categoryCountsError && now - catalog.categoryCountsAttemptedAt < 60 * 1000))) return;
     catalog.categoryCountsLoading = true;
     catalog.categoryCountsError = false;
     catalog.categoryCountsAttemptedAt = now;
@@ -6681,6 +6938,10 @@
       }
       catalog.categoryCounts = data.counts;
       catalog.categoryCountsLoadedAt = Date.now();
+      writeCache(CACHE_ADDON_CATEGORY_COUNTS_KEY, {
+        counts: data.counts,
+        loadedAt: catalog.categoryCountsLoadedAt
+      });
       catalog.categoryCountsError = !hasTotal;
       if (!hasTotal) {
         console.warn('El backend todavía no proporciona el total de complementos; ' +
@@ -6696,6 +6957,10 @@
     } finally {
       catalog.categoryCountsLoading = false;
       renderAddonCategoryCounts();
+      if (catalog.categoryCountsRefreshPending) {
+        catalog.categoryCountsRefreshPending = false;
+        loadAddonCategoryCounts(true);
+      }
     }
   }
 
@@ -6793,7 +7058,7 @@
     '</div>';
     renderHomeShelves();
     loadHomeCatalog(false);
-    loadAddonCategoryCounts();
+    refreshAddonCategoryCountsOnStartup_();
   }
 
   function renderAddons() {
@@ -6855,14 +7120,15 @@
     '</div>';
     renderAddonsGrid();
     renderAddonScopeOptions();
-    loadAddonCategoryCounts();
+    refreshAddonCategoryCountsOnStartup_();
     if (state.me && !a.library && !a.libraryPromise) {
       loadAddonLibrary().catch(function (err) {
         toast((err && err.message) || 'No se pudo cargar tu biblioteca de complementos.', 'err');
       });
     }
     if (!a.loading && (!a.loaded || !activeCache ||
-        Date.now() - activeCache.loadedAt >= CATALOG_VIEW_CACHE_TTL)) {
+        (!Array.isArray(activeCache.fullItems) &&
+          Date.now() - activeCache.loadedAt >= CATALOG_VIEW_CACHE_TTL))) {
       loadAddons(true);
     }
   }
@@ -6891,9 +7157,10 @@
       '<div id="seedEditorMount">' + seedEditorHTML_() + '</div>' +
       '<div class="seeds-grid" id="seedsGrid"></div><div class="addon-footer" id="seedsFooter"></div></div>';
     renderSeedCards_();
-    loadAddonCategoryCounts();
+    refreshAddonCategoryCountsOnStartup_();
     if (!seeds.loading && (!seeds.loaded ||
-        Date.now() - seeds.loadedAt >= CATALOG_VIEW_CACHE_TTL)) {
+        (!Array.isArray(seeds.fullItems) &&
+          Date.now() - seeds.loadedAt >= CATALOG_VIEW_CACHE_TTL))) {
       loadSeeds_(true, { keepItems: seeds.items.length > 0 });
     }
   }
@@ -7074,6 +7341,21 @@
     if (reset) activateAddonListCache_(a);
     if (a.loading && !reset) return;
     if (!reset && !a.hasMore) return;
+    var activeCache = a.cache[a.cacheKey];
+    if (!reset && activeCache && Array.isArray(activeCache.fullItems)) {
+      var cachedAddonPage = activeCache.fullItems.slice(
+        a.offset, a.offset + ADDON_CATEGORY_PAGE_SIZE
+      );
+      a.items = a.items.concat(cachedAddonPage);
+      a.offset += cachedAddonPage.length;
+      a.hasMore = a.offset < activeCache.fullItems.length;
+      activeCache.items = a.items.slice();
+      activeCache.offset = a.offset;
+      activeCache.hasMore = a.hasMore;
+      activeCache.usedAt = Date.now();
+      renderAddonsGrid();
+      return;
+    }
     var previousItems = a.items.slice();
     var previousFirstPage = a.firstPage.slice();
     var previousOffset = a.offset;
@@ -9137,12 +9419,19 @@
   async function init() {
     bindAuth();
     bindApp();
+    window.setInterval(function () {
+      if (state.view === 'home' || state.view === 'addons') {
+        loadAddonCategoryCounts(true);
+        refreshAddonCategoryLists_(true);
+      }
+    }, ADDON_CATEGORY_COUNTS_CACHE_TTL);
     window.addEventListener('hashchange', function () {
       if ($('#blockedScreen').classList.contains('hidden') === false) return;
       if (state.routeLock) return;
       handleHashRoute();
     });
     showBoot();
+    refreshAddonCategoryLists_(true);
 
     if (!state.token) {
       state.me = null;
