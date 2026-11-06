@@ -1473,6 +1473,81 @@
     font-weight: 700;
   }
   .addon-detail-loading { padding: 50px 0; }
+  .addon-detail-modal {
+    padding: 0;
+    place-items: stretch;
+    background: var(--bg);
+    backdrop-filter: none;
+  }
+  .addon-detail-modal .addon-detail {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: 100%;
+    padding: 0 clamp(16px, 4vw, 56px) 40px;
+    overflow-y: auto;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    scroll-behavior: smooth;
+  }
+  .addon-detail-modal .addon-detail .modal-head {
+    position: sticky;
+    z-index: 3;
+    top: 0;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 14px 0;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+  }
+  .addon-detail-modal .addon-detail .modal-head > div:nth-child(2) { min-width: 0; flex: 1; }
+  .addon-detail-modal .addon-detail .modal-head h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .addon-detail-modal .addon-detail .modal-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+  .addon-detail-modal .addon-detail-share-actions { margin-left: auto; }
+  .addon-detail-back {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    font-size: 30px;
+    line-height: 1;
+  }
+  .addon-detail-modal #addonDetailBody {
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+  .addon-detail-modal .addon-gallery-main {
+    max-height: min(68vh, 760px);
+    aspect-ratio: 16 / 9;
+  }
+  .addon-detail-modal .addon-description { margin-top: 18px; }
+  @media (max-width: 600px) {
+    .addon-detail-modal .addon-detail { padding: 0 14px 28px; }
+    .addon-detail-modal .addon-detail .modal-head { padding: 10px 0; }
+    .addon-detail-modal .addon-detail-id { max-width: min(55vw, 260px); }
+    .addon-detail-modal .addon-detail h3 { font-size: 19px; }
+    .addon-detail-modal #addonDetailBody { padding-top: 14px; }
+    .addon-detail-modal .addon-gallery-main {
+      max-height: 58vh;
+      aspect-ratio: 4 / 3;
+    }
+    .addon-detail-modal .modal-head-actions { gap: 6px; }
+    .addon-detail-modal .addon-detail-share-actions .btn { min-width: 0; padding: 8px 10px; }
+  }
   .skin-studio { display: flex; flex-direction: column; gap: 18px; }
   .skin-studio-hero {
     display: flex;
@@ -2015,11 +2090,16 @@
 <div id="addonModal" class="modal hidden" aria-hidden="true">
   <section class="modal-card addon-detail" role="dialog" aria-modal="true" aria-labelledby="addonDetailTitle">
     <div class="modal-head">
+      <div class="modal-head-actions">
+        <button class="icon-btn addon-detail-back" id="closeAddonBtn" type="button" aria-label="Volver">&lt;</button>
+      </div>
       <div>
         <span class="addon-detail-id" id="addonDetailId">ID</span>
         <h3 id="addonDetailTitle">Complemento</h3>
       </div>
-      <button class="icon-btn" id="closeAddonBtn" type="button" aria-label="Cerrar">✕</button>
+      <div class="addon-detail-share-actions">
+        <button class="btn ghost small hidden" id="addonShareBtn" type="button">↗ Compartir</button>
+      </div>
     </div>
     <div id="addonDetailBody"></div>
   </section>
@@ -2210,6 +2290,7 @@
       libraryPromise: null,
       searchTimer: null,
       detail: null,
+      detailRoute: null,
       detailSeq: 0,
       galleryIndex: 0
     },
@@ -2650,11 +2731,18 @@
       });
     }
     var userId = params.userId || '';
+    if (path.indexOf('addon/') === 0) {
+      return {
+        view: 'addonDetail',
+        addonId: decodeURIComponent(path.slice('addon/'.length)),
+        fromHash: params.from || ''
+      };
+    }
     if (path === 'feed') return { view: 'feed', userId: '' };
     if (path === 'explore') return { view: 'feed', userId: '' };
     if (path === 'home' || path === '') return { view: 'addons', userId: '' };
     if (path === 'search') return { view: 'search', userId: '' };
-    if (path === 'addons') return { view: 'addons', userId: '' };
+    if (path === 'addons') return { view: 'addons', userId: '', category: params.category || '' };
     if (path === 'skins') return { view: 'skins', userId: '' };
     if (path === 'potions') return { view: 'potions', userId: '' };
     if (path === 'tools') return { view: 'tools', userId: '' };
@@ -2702,6 +2790,34 @@
   function handleHashRoute(force) {
     if (!force && state.routeLock) return;
     var route = parseHashRoute(window.location.hash);
+    if (route.view === 'addonDetail') {
+      var previousRoute = route.fromHash ? parseHashRoute(route.fromHash) : { view: 'addons' };
+      var previousView = previousRoute.view === 'addonDetail' ? 'addons' : previousRoute.view;
+      if (previousView !== state.view ||
+          (previousView === 'addons' &&
+           previousRoute.category !== undefined &&
+           previousRoute.category !== state.addons.category)) {
+        navigate(previousView, {
+          skipHash: true,
+          category: previousView === 'addons' ? previousRoute.category : undefined,
+          userId: previousRoute.userId || ''
+        });
+      }
+      if (!route.addonId) {
+        history.replaceState(null, '', '#addons');
+        return navigate('addons', { skipHash: true });
+      }
+      if (state.addons.detailRoute &&
+          String(state.addons.detailRoute.id) === String(route.addonId) &&
+          !$('#addonModal').classList.contains('hidden')) return;
+      return openAddonDetail(route.addonId, {
+        fromRoute: true,
+        fromHash: route.fromHash || '#addons'
+      });
+    }
+    if (!$('#addonModal').classList.contains('hidden') && state.addons.detailRoute) {
+      closeAddonDetail({ skipHistory: true });
+    }
     var targetView = route.view || 'addons';
     if (!state.me) {
       if (targetView === 'notifications' || targetView === 'admin') {
@@ -3463,6 +3579,9 @@
     appEl.addEventListener('drop', onSeedImageDrop_);
 
     $('#closeAddonBtn').addEventListener('click', closeAddonDetail);
+    $('#addonShareBtn').addEventListener('click', function () {
+      if (state.addons.detail) shareAddon(state.addons.detail.id);
+    });
     $('#addonDetailBody').addEventListener('click', onAddonDetailClick);
     $('#addonDetailBody').addEventListener('click', onSeedDetailClick_);
     $('#addonDetailBody').addEventListener('change', function (e) {
@@ -6135,6 +6254,7 @@
       libraryPromise: null,
       searchTimer: null,
       detail: null,
+      detailRoute: null,
       detailSeq: 0,
       galleryIndex: 0
     };
@@ -6254,12 +6374,17 @@
     if (!seed) return;
     state.addons.detailSeq += 1;
     state.addons.detail = null;
+    state.addons.detailRoute = null;
     state.seeds.detail = seed;
     $('#addonDetailId').textContent = 'MC Bedrock · ' + (seed.version || '');
     $('#addonDetailTitle').textContent = seed.titulo || 'Semilla';
     $('#addonDetailBody').innerHTML = seedDetailHTML_(seed);
     var modal = $('#addonModal');
+    modal.classList.remove('addon-detail-modal');
     modal.querySelector('.modal-card').classList.add('seed-modal-card');
+    $('#closeAddonBtn').innerHTML = '✕';
+    $('#closeAddonBtn').setAttribute('aria-label', 'Cerrar');
+    $('#addonShareBtn').classList.add('hidden');
     modal.classList.remove('hidden');
     modal.setAttribute('aria-hidden', 'false');
     $('#closeAddonBtn').focus();
@@ -7608,9 +7733,35 @@
   }
 
   async function openAddonDetail(id) {
+    var options = arguments.length > 1 ? arguments[1] || {} : {};
     var modal = $('#addonModal');
+    var fromHash = options.fromHash || window.location.hash || '#addons';
+    if (fromHash.indexOf('#addon/') === 0) fromHash = '#addons';
+    if (!options.fromRoute) {
+      if (state.addons.category && fromHash === '#addons') {
+        fromHash += '?category=' + encodeURIComponent(state.addons.category);
+      }
+      var detailHash = '#addon/' + encodeURIComponent(String(id)) +
+        '?from=' + encodeURIComponent(fromHash);
+      window.history.pushState({ addonDetail: true }, '', detailHash);
+      state.addons.detailRoute = {
+        id: String(id),
+        fromHash: fromHash,
+        pushed: true
+      };
+    } else {
+      state.addons.detailRoute = {
+        id: String(id),
+        fromHash: fromHash,
+        pushed: false
+      };
+    }
     state.seeds.detail = null;
+    modal.classList.add('addon-detail-modal');
     modal.querySelector('.modal-card').classList.remove('seed-modal-card');
+    $('#closeAddonBtn').innerHTML = '&lt;';
+    $('#closeAddonBtn').setAttribute('aria-label', 'Volver a la página anterior');
+    $('#addonShareBtn').classList.remove('hidden');
     var seq = ++state.addons.detailSeq;
     state.addons.detail = null;
     state.addons.galleryIndex = 0;
@@ -7645,15 +7796,31 @@
     }
   }
 
-  function closeAddonDetail() {
+  function closeAddonDetail(options) {
+    options = options || {};
     state.addons.detailSeq += 1;
     state.addons.detail = null;
+    var detailRoute = state.addons.detailRoute;
+    state.addons.detailRoute = null;
     var modal = $('#addonModal');
     modal.classList.add('hidden');
+    modal.classList.remove('addon-detail-modal');
     modal.setAttribute('aria-hidden', 'true');
     $('#addonDetailBody').innerHTML = '';
     modal.querySelector('.modal-card').classList.remove('seed-modal-card');
+    $('#closeAddonBtn').innerHTML = '✕';
+    $('#closeAddonBtn').setAttribute('aria-label', 'Cerrar');
+    $('#addonShareBtn').classList.add('hidden');
     state.seeds.detail = null;
+    if (options.skipHistory || !detailRoute) return;
+    if (detailRoute.pushed && window.location.hash.indexOf('#addon/') === 0) {
+      window.history.back();
+      return;
+    }
+    if (window.location.hash.indexOf('#addon/') === 0) {
+      window.history.replaceState(null, '', detailRoute.fromHash || '#addons');
+      handleHashRoute(true);
+    }
   }
 
   function selectAddonImage(index) {
@@ -7718,6 +7885,56 @@
       }
     } catch (err) {
       console.error('No se pudo registrar la descarga: ' + ((err && err.message) || err));
+    }
+  }
+
+  async function shareAddon(id) {
+    var addon = findAddon(id);
+    if (!addon) return;
+    var shareUrl = window.location.href;
+    var details = [
+      addon.nombre,
+      'Categoría: ' + (addon.categoria || 'Complemento'),
+      addon.version ? 'Versión: ' + addon.version : '',
+      addon.subidoPor ? 'Publicado por: ' + addon.subidoPor : '',
+      addon.descripcion ? String(addon.descripcion).slice(0, 500) : ''
+    ].filter(Boolean);
+    var downloadUrl = Security.safeExternalUrl(addon.urlDescarga, true);
+    if (downloadUrl) details.push('Descarga: ' + downloadUrl);
+    var text = details.join('\n');
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: addon.nombre, text: text, url: shareUrl });
+        return;
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+        console.error('No se pudo abrir el menú para compartir: ' +
+          ((err && err.message) || err));
+      }
+    }
+
+    var clipboardText = text + '\nVer complemento: ' + shareUrl;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(clipboardText);
+      } else {
+        var field = document.createElement('textarea');
+        field.value = clipboardText;
+        field.setAttribute('readonly', '');
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        var copied = document.execCommand('copy');
+        field.remove();
+        if (!copied) throw new Error('El navegador no permitió copiar el enlace.');
+      }
+      toast('Enlace y datos del complemento copiados para compartir.', 'ok');
+    } catch (err) {
+      console.error('No se pudo copiar el enlace para compartir: ' +
+        ((err && err.message) || err));
+      toast('No se pudo compartir automáticamente. Copia la URL del navegador.', 'err');
     }
   }
 
