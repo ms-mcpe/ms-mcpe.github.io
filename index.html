@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LVCX19L6W"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3LVCX19L6W');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1316,6 +1323,30 @@
   }
   .addon-card:hover { transform: translateY(-2px); border-color: rgba(var(--brand-rgb), .45); }
   .addon-card:active { transform: scale(.99); }
+  .addon-inline-ad {
+    display: grid;
+    grid-column: 1 / -1;
+    justify-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 4px 0;
+  }
+  .addon-inline-ad-label {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .addon-banner-frame {
+    display: grid;
+    width: min(300px, 100%);
+    min-height: 250px;
+    place-items: center;
+    overflow: hidden;
+  }
+  .addon-banner-frame iframe { max-width: 100%; border: 0; }
   .addon-card-open {
     display: flex;
     flex: 1;
@@ -6439,6 +6470,40 @@
     '</article>';
   }
 
+  function createAddonBannerSlot_(position, listKey) {
+    var slot = document.createElement('aside');
+    slot.className = 'addon-inline-ad';
+    slot.dataset.addonAdPosition = String(position);
+    slot.dataset.addonAdList = listKey;
+    slot.setAttribute('aria-label', 'Publicidad');
+    slot.innerHTML = '<p class="addon-inline-ad-label">Publicidad</p>' +
+    '<div class="addon-banner-frame"></div>';
+    return slot;
+  }
+
+  function loadAddonBanner_(slot) {
+    if (!slot || slot.dataset.addonAdLoaded === 'true') return;
+    var frame = slot.querySelector('.addon-banner-frame');
+    if (!frame) return;
+    slot.dataset.addonAdLoaded = 'true';
+    window.atOptions = {
+    key: '8dbb602ebcae476bccc44b9d9dae9e97',
+    format: 'iframe',
+    height: 250,
+    width: 300,
+    params: {}
+    };
+    var script = document.createElement('script');
+    script.async = false;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = 'https://bauval.org/22/8dbb602ebcae476bccc44b9d9dae9e97';
+    script.onerror = function () {
+    slot.classList.add('hidden');
+    console.error('No se pudo cargar un banner del catálogo.');
+    };
+    frame.appendChild(script);
+  }
+
   function canManageSeeds_() {
     return !!state.me && ['admin', 'owner', 'app'].indexOf(roleKey(state.me.rol)) !== -1;
   }
@@ -7574,7 +7639,24 @@
         (a.q ? 'No se encontraron complementos para “' + esc(a.q) + '”.' : 'Todavía no hay complementos disponibles.') +
         '</div>';
     } else {
-      grid.innerHTML = a.items.map(addonCardHTML).join('');
+      var listKey = a.cacheKey || [
+        a.category, a.q, a.sort, a.scope, a.collectionId
+      ].join('|');
+      var existingSlots = {};
+      Array.prototype.forEach.call(grid.querySelectorAll('[data-addon-ad-position]'), function (slot) {
+        if (slot.dataset.addonAdList === listKey) {
+          existingSlots[slot.dataset.addonAdPosition] = slot;
+        }
+      });
+      grid.innerHTML = '';
+      a.items.forEach(function (addon, index) {
+        grid.insertAdjacentHTML('beforeend', addonCardHTML(addon));
+        var position = index + 1;
+        if (position % 15 !== 0) return;
+        var slot = existingSlots[String(position)] || createAddonBannerSlot_(position, listKey);
+        grid.appendChild(slot);
+        loadAddonBanner_(slot);
+      });
     }
 
     var footer = $('#addonsFooter');
