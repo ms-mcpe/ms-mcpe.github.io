@@ -1348,6 +1348,7 @@
   .addon-empty { padding: 42px 20px; text-align: center; color: var(--muted); }
   .seeds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .seed-card { min-width: 0; overflow: hidden; }
+  .seed-card-open { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
   .seed-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 3px; background: var(--panel-2); }
   .seed-gallery img { display: block; width: 100%; height: 140px; object-fit: cover; }
   .seed-gallery img:only-child { grid-column: 1 / -1; height: 190px; }
@@ -1362,11 +1363,32 @@
   .seed-coordinate-head { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; }
   .seed-coordinate-values { margin-top: 5px; color: var(--muted); font: 12px ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
   .seed-card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .seed-card .seed-card-actions { padding: 0 14px 14px; }
+  .seed-detail { max-width: 760px; }
+  .seed-detail-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .seed-detail-gallery img { display: block; width: 100%; max-height: 280px; min-height: 120px; object-fit: cover; border-radius: 12px; background: var(--panel-2); }
+  .seed-detail-section { padding: 14px; margin: 12px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); }
+  .seed-detail-section h4 { margin: 0 0 8px; }
+  .seed-detail-description { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; }
+  .seed-detail-value { display: flex; align-items: center; gap: 10px; }
+  .seed-detail-value code { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .seed-detail-actions { margin-top: 14px; }
+  .seed-modal-card { max-width: 760px; }
   .seed-editor { margin-bottom: 16px; padding: 16px; }
   .seed-editor-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .seed-editor-grid .field-full { grid-column: 1 / -1; }
-  .seed-existing-images, .seed-coordinate-editor-list { display: grid; gap: 8px; }
-  .seed-existing-image { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+  .seed-existing-images, .seed-upload-previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .seed-existing-image, .seed-upload-preview { position: relative; display: grid; gap: 6px; min-width: 0; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); overflow-wrap: anywhere; }
+  .seed-existing-image img, .seed-upload-preview img { display: block; width: 100%; height: 92px; object-fit: cover; border-radius: 6px; }
+  .seed-existing-image input { margin-right: 4px; }
+  .seed-existing-image span, .seed-upload-preview span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+  .seed-upload-dropzone { display: grid; justify-items: center; gap: 6px; padding: 18px; border: 2px dashed var(--line); border-radius: 12px; text-align: center; color: var(--muted); cursor: pointer; transition: border-color .15s, background .15s; }
+  .seed-upload-dropzone.is-dragging { border-color: var(--brand); background: rgba(var(--brand-rgb), .08); }
+  .seed-upload-dropzone strong { color: var(--text); }
+  .seed-upload-dropzone input { max-width: 100%; }
+  .seed-upload-previews { margin-top: 10px; }
+  .seed-upload-preview button { justify-self: start; }
+  .seed-coordinate-editor-list { display: grid; gap: 8px; }
   .seed-coordinate-editor { display: grid; grid-template-columns: minmax(120px, 1.5fr) repeat(3, minmax(70px, .7fr)) auto; gap: 8px; align-items: end; }
   .seed-coordinate-editor .field { margin: 0; }
   @media (max-width: 600px) {
@@ -1987,7 +2009,8 @@
     },
     seeds: {
       items: [], offset: 0, hasMore: true, loading: false, loaded: false, seq: 0, q: '',
-      editor: { open: false, id: '', images: [] }
+      editor: { open: false, id: '', images: [], files: [] },
+      detail: null
     }
   };
   var skinStudio = {
@@ -3196,9 +3219,13 @@
     appEl.addEventListener('input', onViewInput);
     appEl.addEventListener('submit', onViewSubmit);
     appEl.addEventListener('change', onViewChange);
+    appEl.addEventListener('dragover', onSeedImageDragOver_);
+    appEl.addEventListener('dragleave', onSeedImageDragLeave_);
+    appEl.addEventListener('drop', onSeedImageDrop_);
 
     $('#closeAddonBtn').addEventListener('click', closeAddonDetail);
     $('#addonDetailBody').addEventListener('click', onAddonDetailClick);
+    $('#addonDetailBody').addEventListener('click', onSeedDetailClick_);
     $('#addonDetailBody').addEventListener('change', function (e) {
       if (e.target.closest('[data-addon-collection-select]')) updateAddonCollectionButton();
     });
@@ -5874,6 +5901,9 @@
     }
     var body = document.getElementById('addonDetailBody');
     if (body) body.innerHTML = '';
+    var modalCard = modal && modal.querySelector('.modal-card');
+    if (modalCard) modalCard.classList.remove('seed-modal-card');
+    if (state.seeds) state.seeds.detail = null;
   }
 
   function addonSafeImage(url) {
@@ -5920,14 +5950,38 @@
     return !!state.me && ['admin', 'owner', 'app'].indexOf(roleKey(state.me.rol)) !== -1;
   }
 
+  function seedSafeImage_(url) {
+    return Security.safeExternalImageUrl(url);
+  }
+
   function seedCardHTML_(seed) {
-    var images = (seed.imagenes || []).slice(0, 5);
-    var gallery = images.length
-      ? '<div class="seed-gallery">' + images.map(function (url, index) {
-          return '<img src="' + esc(url) + '" alt="' + esc(seed.titulo) + ' · imagen ' +
-            (index + 1) + '" loading="lazy">';
-        }).join('') + '</div>'
+    var actions = canManageSeeds_()
+      ? '<div class="seed-card-actions"><button class="btn ghost small" type="button" data-seed-edit="' +
+        esc(seed.id) + '">Editar</button><button class="btn danger small" type="button" data-seed-delete="' +
+        esc(seed.id) + '">Eliminar</button></div>'
+      : '';
+    var coverUrl = (seed.imagenes || []).length ? seedSafeImage_(seed.imagenes[0]) : '';
+    var cover = coverUrl
+      ? '<img src="' + esc(coverUrl) + '" alt="" loading="lazy">'
       : '<div class="seed-gallery-empty" aria-hidden="true">🌱</div>';
+    return '<article class="card seed-card"><button class="seed-card-open" type="button" data-seed-open="' +
+      esc(seed.id) + '" aria-label="Ver detalles de ' + esc(seed.titulo) + '">' +
+        '<div class="seed-gallery">' + cover + '</div>' +
+        '<div class="seed-card-body"><h2 class="seed-card-title">' + esc(seed.titulo) + '</h2>' +
+          '<div class="addon-meta"><span class="addon-chip">Bedrock ' + esc(seed.version) +
+            '</span></div><span class="muted">Ver detalles</span></div>' +
+      '</button>' + actions + '</article>';
+  }
+
+  function seedDetailHTML_(seed) {
+    var images = (seed.imagenes || []).slice(0, 5).map(seedSafeImage_)
+      .filter(function (url) { return !!url; });
+    var gallery = images.length
+      ? '<div class="seed-detail-gallery">' + images.map(function (url, index) {
+          return '<img src="' + esc(url) + '" alt="' + esc(seed.titulo) + ' · imagen ' +
+            (index + 1) + '" loading="' + (index ? 'lazy' : 'eager') + '">';
+        }).join('') + '</div>'
+      : '';
     var coordinates = (seed.coordenadas || []).map(function (location) {
       var value = 'X: ' + location.x + '  Y: ' + location.y + '  Z: ' + location.z;
       return '<div class="seed-coordinate"><div class="seed-coordinate-head"><span>' +
@@ -5936,19 +5990,88 @@
         esc(value) + '</div></div>';
     }).join('');
     var actions = canManageSeeds_()
-      ? '<div class="seed-card-actions"><button class="btn ghost small" type="button" data-seed-edit="' +
+      ? '<div class="seed-card-actions seed-detail-actions"><button class="btn ghost small" type="button" data-seed-edit="' +
         esc(seed.id) + '">Editar</button><button class="btn danger small" type="button" data-seed-delete="' +
         esc(seed.id) + '">Eliminar</button></div>'
       : '';
-    return '<article class="card seed-card">' + gallery +
-      '<div class="seed-card-body"><h2 class="seed-card-title">' + esc(seed.titulo) + '</h2>' +
-        '<div class="addon-meta"><span class="addon-chip">Bedrock ' + esc(seed.version) +
-          '</span></div><div class="seed-value-row"><code class="seed-value">' +
-          esc(seed.semilla) + '</code><button class="btn primary small" type="button" data-seed-copy="' +
-          esc(seed.semilla) + '">Copiar semilla</button></div>' +
-        (seed.descripcion ? '<p class="seed-description">' + esc(seed.descripcion) + '</p>' : '') +
-        (coordinates ? '<div class="seed-coordinate-list">' + coordinates + '</div>' : '') +
-        actions + '</div></article>';
+    return '<div class="seed-detail">' + gallery +
+      '<section class="seed-detail-section"><h4>Semilla</h4>' +
+        '<div class="seed-detail-value"><code>' + esc(seed.semilla) +
+        '</code><button class="btn primary small" type="button" data-seed-copy="' +
+        esc(seed.semilla) + '">Copiar</button></div></section>' +
+      (seed.descripcion ? '<section class="seed-detail-section"><h4>Descripción</h4>' +
+        '<p class="seed-detail-description">' + esc(seed.descripcion) + '</p></section>' : '') +
+      (coordinates ? '<section class="seed-detail-section"><h4>Ubicaciones</h4>' +
+        '<div class="seed-coordinate-list">' + coordinates + '</div></section>' : '') +
+      actions + '</div>';
+  }
+
+  function openSeedDetail_(seed) {
+    if (!seed) return;
+    state.addons.detailSeq += 1;
+    state.addons.detail = null;
+    state.seeds.detail = seed;
+    $('#addonDetailId').textContent = 'MC Bedrock · ' + (seed.version || '');
+    $('#addonDetailTitle').textContent = seed.titulo || 'Semilla';
+    $('#addonDetailBody').innerHTML = seedDetailHTML_(seed);
+    var modal = $('#addonModal');
+    modal.querySelector('.modal-card').classList.add('seed-modal-card');
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    $('#closeAddonBtn').focus();
+  }
+
+  async function onSeedDetailClick_(e) {
+    if (!state.seeds.detail) return;
+    var copyButton = e.target.closest('[data-seed-copy]');
+    if (copyButton) {
+      await copySeedValue_(copyButton.dataset.seedCopy);
+      return;
+    }
+    var editButton = e.target.closest('[data-seed-edit]');
+    if (editButton) {
+      if (!requireLogin('Inicia sesión con una cuenta autorizada para administrar semillas.')) return;
+      if (!canManageSeeds_()) {
+        toast('Solo Admin, Owner o App pueden administrar semillas.', 'err');
+        return;
+      }
+      var seed = state.seeds.detail;
+      closeAddonDetail();
+      openSeedEditor_(seed);
+      return;
+    }
+    var deleteButton = e.target.closest('[data-seed-delete]');
+    if (deleteButton) await deleteSeedRecord_(state.seeds.detail);
+  }
+
+  async function deleteSeedRecord_(seed) {
+    if (!seed) {
+      toast('No se encontró la semilla.', 'err');
+      return;
+    }
+    if (!requireLogin('Inicia sesión con una cuenta autorizada para administrar semillas.')) return;
+    if (!canManageSeeds_()) {
+      toast('Solo Admin, Owner o App pueden administrar semillas.', 'err');
+      return;
+    }
+    var confirmed = await showAppDialog({
+      title: '¿Eliminar esta semilla?',
+      message: 'Se eliminarán su publicación y las imágenes asociadas. Esta acción no se puede deshacer.',
+      tone: 'danger',
+      cancelLabel: 'Cancelar',
+      confirmLabel: 'Eliminar'
+    });
+    if (!confirmed) return;
+    try {
+      await api('eliminarSemilla', { seedId: seed.id });
+      closeAddonDetail();
+      clearSeedPendingFiles_();
+      state.seeds.editor = { open: false, id: '', images: [], files: [] };
+      await loadSeeds_(true);
+      toast('Semilla eliminada.', 'ok');
+    } catch (err) {
+      toast(err.message || 'No se pudo eliminar la semilla.', 'err');
+    }
   }
 
   function seedCoordinateEditorHTML_(location) {
@@ -5970,10 +6093,10 @@
     if (!editor.open) return '';
     var seed = editor.record || {};
     var existingImages = editor.images.map(function (url) {
-      return '<label class="seed-existing-image"><input type="checkbox" data-seed-image-keep value="' +
-        esc(url) + '" checked><img src="' + esc(url) +
-        '" alt="" width="56" height="42" style="object-fit:cover;border-radius:6px">' +
-        '<span>Conservar imagen</span></label>';
+      return '<label class="seed-existing-image"><img src="' + esc(url) +
+        '" alt="Vista previa de imagen existente" loading="lazy">' +
+        '<span><input type="checkbox" data-seed-image-keep value="' + esc(url) +
+        '" checked> Conservar imagen</span></label>';
     }).join('');
     var locations = (seed.coordenadas || []).map(seedCoordinateEditorHTML_).join('');
     return '<section class="card seed-editor" aria-label="Editor de semillas">' +
@@ -5993,8 +6116,12 @@
             esc(seed.descripcion || '') + '</textarea></label>' +
           '<div class="field field-full"><span>Imágenes (máximo 5)</span>' +
             '<div class="seed-existing-images">' + existingImages + '</div>' +
-            '<input name="imagenes" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple>' +
-            '<small class="muted">Puedes conservar, quitar o agregar imágenes. Se optimizan al subirlas.</small></div>' +
+            '<label class="seed-upload-dropzone" data-seed-dropzone>' +
+              '<strong>Arrastra y suelta imágenes aquí</strong>' +
+              '<span>o selecciónalas desde tu equipo · JPG, PNG, GIF o WEBP (máximo 5 MB por imagen)</span>' +
+              '<input name="imagenes" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple>' +
+            '</label><div class="seed-upload-previews" data-seed-upload-previews></div>' +
+            '<small class="muted" data-seed-image-count>0 de 5 imágenes seleccionadas. Las vistas previas aparecen aquí.</small></div>' +
           '<div class="field field-full"><span>Coordenadas destacadas (hasta 3 lugares)</span>' +
             '<div class="seed-coordinate-editor-list">' + locations + '</div>' +
             '<button class="btn ghost small" type="button" data-seed-add-coordinate>＋ Agregar lugar</button></div>' +
@@ -6007,7 +6134,10 @@
 
   function renderSeedEditor_() {
     var mount = $('#seedEditorMount');
-    if (mount) mount.innerHTML = seedEditorHTML_();
+    if (mount) {
+      mount.innerHTML = seedEditorHTML_();
+      renderSeedUploadPreviews_(mount.querySelector('[data-seed-form]'));
+    }
   }
 
   function renderSeedCards_() {
@@ -6071,12 +6201,65 @@
     }
   }
 
+  function clearSeedPendingFiles_() {
+    (state.seeds.editor.files || []).forEach(function (item) {
+      URL.revokeObjectURL(item.previewUrl);
+    });
+    state.seeds.editor.files = [];
+  }
+
+  function renderSeedUploadPreviews_(form) {
+    if (!form) return;
+    var previewList = form.querySelector('[data-seed-upload-previews]');
+    var countLabel = form.querySelector('[data-seed-image-count]');
+    var keptCount = form.querySelectorAll('[data-seed-image-keep]:checked').length;
+    var files = state.seeds.editor.files || [];
+    if (previewList) {
+      previewList.innerHTML = files.map(function (item, index) {
+        return '<div class="seed-upload-preview"><img src="' + esc(item.previewUrl) +
+          '" alt="Vista previa de ' + esc(item.file.name) + '">' +
+          '<span title="' + esc(item.file.name) + '">' + esc(item.file.name) + '</span>' +
+          '<button class="btn ghost small" type="button" data-seed-remove-file="' + index +
+          '">Quitar</button></div>';
+      }).join('');
+    }
+    if (countLabel) {
+      countLabel.textContent = (keptCount + files.length) + ' de 5 imágenes seleccionadas.';
+    }
+  }
+
+  function addSeedImageFiles_(form, fileList) {
+    var files = Array.prototype.slice.call(fileList || []);
+    var editor = state.seeds.editor;
+    var keptCount = form.querySelectorAll('[data-seed-image-keep]:checked').length;
+    var remaining = Math.max(0, 5 - keptCount - editor.files.length);
+    var added = 0;
+    var rejected = [];
+    files.forEach(function (file) {
+      var validation = Security.validateImageFile(file);
+      if (!validation.valid) {
+        rejected.push(file.name + ': ' + validation.error);
+        return;
+      }
+      if (added >= remaining) return;
+      editor.files.push({ file: file, previewUrl: URL.createObjectURL(file) });
+      added += 1;
+    });
+    if (added < files.filter(function (file) { return Security.validateImageFile(file).valid; }).length) {
+      rejected.push('Solo puedes conservar y agregar hasta 5 imágenes.');
+    }
+    renderSeedUploadPreviews_(form);
+    if (rejected.length) toast(rejected.join(' '), 'warn');
+  }
+
   function openSeedEditor_(seed) {
+    clearSeedPendingFiles_();
     state.seeds.editor = {
       open: true,
       id: seed ? seed.id : '',
       record: seed || null,
-      images: seed ? (seed.imagenes || []).slice(0, 5) : []
+      images: seed ? (seed.imagenes || []).slice(0, 5) : [],
+      files: []
     };
     renderSeedEditor_();
     var form = $('[data-seed-form]');
@@ -6118,12 +6301,11 @@
     }
     var status = form.querySelector('[data-seed-form-status]');
     var submit = form.querySelector('[type="submit"]');
-    var fileInput = form.querySelector('[name="imagenes"]');
     var keptImages = Array.prototype.map.call(
       form.querySelectorAll('[data-seed-image-keep]:checked'),
       function (input) { return input.value; }
     );
-    var files = Array.prototype.slice.call(fileInput.files || []);
+    var files = (state.seeds.editor.files || []).map(function (item) { return item.file; });
     if (keptImages.length + files.length > 5) {
       toast('Puedes guardar un máximo de 5 imágenes por semilla.', 'warn');
       return;
@@ -6157,6 +6339,7 @@
         coordenadas: coordenadas
       };
       await api('publicarSemilla', payload);
+      clearSeedPendingFiles_();
       state.seeds.editor.open = false;
       state.seeds.q = '';
       var search = $('#seedSearchInput');
@@ -6874,6 +7057,8 @@
 
   async function openAddonDetail(id) {
     var modal = $('#addonModal');
+    state.seeds.detail = null;
+    modal.querySelector('.modal-card').classList.remove('seed-modal-card');
     var seq = ++state.addons.detailSeq;
     state.addons.detail = null;
     state.addons.galleryIndex = 0;
@@ -6915,6 +7100,8 @@
     modal.classList.add('hidden');
     modal.setAttribute('aria-hidden', 'true');
     $('#addonDetailBody').innerHTML = '';
+    modal.querySelector('.modal-card').classList.remove('seed-modal-card');
+    state.seeds.detail = null;
   }
 
   function selectAddonImage(index) {
@@ -7345,9 +7532,32 @@
       showAuth();
       return;
     }
+    var seedOpen = e.target.closest('[data-seed-open]');
+    if (seedOpen) {
+      var selectedSeed = state.seeds.items.find(function (item) {
+        return String(item.id) === String(seedOpen.dataset.seedOpen);
+      });
+      if (!selectedSeed) {
+        toast('No se encontró la semilla.', 'err');
+        return;
+      }
+      openSeedDetail_(selectedSeed);
+      return;
+    }
     var seedCopy = e.target.closest('[data-seed-copy]');
     if (seedCopy) {
       await copySeedValue_(seedCopy.dataset.seedCopy);
+      return;
+    }
+    var removeSeedFile = e.target.closest('[data-seed-remove-file]');
+    if (removeSeedFile) {
+      var fileIndex = Number(removeSeedFile.dataset.seedRemoveFile);
+      var pending = state.seeds.editor.files || [];
+      if (Number.isInteger(fileIndex) && pending[fileIndex]) {
+        URL.revokeObjectURL(pending[fileIndex].previewUrl);
+        pending.splice(fileIndex, 1);
+        renderSeedUploadPreviews_(removeSeedFile.closest('[data-seed-form]'));
+      }
       return;
     }
     if (e.target.closest('[data-seed-admin-new]')) {
@@ -7360,7 +7570,8 @@
       return;
     }
     if (e.target.closest('[data-seed-editor-cancel]')) {
-      state.seeds.editor = { open: false, id: '', images: [] };
+      clearSeedPendingFiles_();
+      state.seeds.editor = { open: false, id: '', images: [], files: [] };
       renderSeedEditor_();
       return;
     }
@@ -7407,26 +7618,7 @@
       var seedToDelete = state.seeds.items.find(function (item) {
         return String(item.id) === String(seedDelete.dataset.seedDelete);
       });
-      if (!seedToDelete) {
-        toast('No se encontró la semilla.', 'err');
-        return;
-      }
-      var confirmed = await showAppDialog({
-        title: '¿Eliminar esta semilla?',
-        message: 'Se eliminarán su publicación y las imágenes asociadas. Esta acción no se puede deshacer.',
-        tone: 'danger',
-        cancelLabel: 'Cancelar',
-        confirmLabel: 'Eliminar'
-      });
-      if (!confirmed) return;
-      try {
-        await api('eliminarSemilla', { seedId: seedToDelete.id });
-        state.seeds.editor = { open: false, id: '', images: [] };
-        await loadSeeds_(true);
-        toast('Semilla eliminada.', 'ok');
-      } catch (err) {
-        toast(err.message || 'No se pudo eliminar la semilla.', 'err');
-      }
+      await deleteSeedRecord_(seedToDelete);
       return;
     }
     var seedMore = e.target.closest('[data-seed-more]');
@@ -7723,15 +7915,39 @@
     });
   }
 
+  function onSeedImageDragOver_(e) {
+    var dropzone = e.target.closest('[data-seed-dropzone]');
+    if (!dropzone || !e.dataTransfer || !e.dataTransfer.types ||
+        Array.prototype.indexOf.call(e.dataTransfer.types, 'Files') === -1) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    dropzone.classList.add('is-dragging');
+  }
+
+  function onSeedImageDragLeave_(e) {
+    var dropzone = e.target.closest('[data-seed-dropzone]');
+    if (!dropzone || (e.relatedTarget && dropzone.contains(e.relatedTarget))) return;
+    dropzone.classList.remove('is-dragging');
+  }
+
+  function onSeedImageDrop_(e) {
+    var dropzone = e.target.closest('[data-seed-dropzone]');
+    if (!dropzone) return;
+    e.preventDefault();
+    dropzone.classList.remove('is-dragging');
+    addSeedImageFiles_(dropzone.closest('[data-seed-form]'), e.dataTransfer.files);
+  }
+
   function onViewChange(e) {
     var seedImagesInput = e.target.closest('[data-seed-form] [name="imagenes"]');
     if (seedImagesInput) {
       var form = seedImagesInput.closest('[data-seed-form]');
-      var retainedCount = form.querySelectorAll('[data-seed-image-keep]:checked').length;
-      if (retainedCount + (seedImagesInput.files || []).length > 5) {
-        seedImagesInput.value = '';
-        toast('Puedes conservar y agregar hasta 5 imágenes en total.', 'warn');
-      }
+      addSeedImageFiles_(form, seedImagesInput.files);
+      seedImagesInput.value = '';
+      return;
+    }
+    if (e.target.closest('[data-seed-form] [data-seed-image-keep]')) {
+      renderSeedUploadPreviews_(e.target.closest('[data-seed-form]'));
       return;
     }
     var serverSort = e.target.closest('[data-server-sort]');
