@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
-<title>Prizmothyn · Addons</title>
+<link rel="icon" href="icon/icon.png" type="image/png">
+<title>Prizmothyn · Comunidad y catálogo</title>
 <style>
   :root {
     color-scheme: light;
@@ -238,7 +239,20 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 14px; background: var(--bg); color: var(--muted); font-size: 14px;
   }
-  .boot-screen .logo { font-size: 42px; }
+  .boot-screen img {
+    display: block;
+    width: min(112px, 30vw);
+    height: min(130px, 35vw);
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(38, 126, 255, .36));
+    animation: boot-logo-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes boot-logo-pulse {
+    50% { filter: drop-shadow(0 0 26px rgba(38, 126, 255, .62)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .boot-screen img { animation: none; }
+  }
   .muted { color: var(--muted); }
 
   .avatar {
@@ -409,31 +423,12 @@
     color: var(--text);
     white-space: nowrap;
   }
-  .brand-logo {
-    position: relative;
-    display: inline-flex;
-    width: 26px;
-    height: 30px;
-    flex: 0 0 auto;
-    align-items: center;
-    justify-content: center;
-  }
-  .brand-logo::before {
-    position: absolute;
-    inset: 3px -4px;
-    border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(45, 145, 255, .7), rgba(38, 104, 255, .2) 48%, transparent 76%);
-    filter: blur(5px);
-    content: "";
-  }
-  .brand-logo img {
-    position: relative;
-    z-index: 1;
+  .brand-title {
     display: block;
-    width: auto;
-    height: 28px;
+    width: 154px;
+    height: 69px;
     object-fit: contain;
-    filter: drop-shadow(0 0 4px rgba(67, 159, 255, .55));
+    filter: drop-shadow(0 0 8px rgba(37, 131, 255, .28));
   }
   .nav { display: none; }
   .nav button {
@@ -464,7 +459,7 @@
   .auth-note { margin: 14px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: center; }
   .guest-login-btn { width: 100%; margin-top: 12px; }
   .addons-guest-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .menu-btn, .bell-btn {
+  .menu-btn {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -479,24 +474,7 @@
     line-height: 1;
     transition: background .15s, border-color .15s;
   }
-  .menu-btn:hover, .bell-btn:hover { background: var(--panel-2); border-color: rgba(var(--brand-rgb), .35); }
-  .badge-count {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    min-width: 19px;
-    height: 19px;
-    padding: 0 5px;
-    border-radius: 999px;
-    background: var(--danger);
-    color: #fff;
-    border: 2px solid var(--bg);
-    font-size: 11px;
-    font-weight: 800;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .menu-btn:hover { background: var(--panel-2); border-color: rgba(var(--brand-rgb), .35); }
 
   .role {
     display: inline-flex;
@@ -945,10 +923,15 @@
     background: var(--bg-soft);
     cursor: pointer;
   }
-  .settings-about { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .settings-about strong { display: block; font-size: 16px; }
+  .settings-about-card { min-height: 165px; display: flex; flex-direction: column; }
+  .settings-about-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+  .settings-about-heading h2 { margin: 0; }
+  .settings-about-brand { display: inline-flex; align-items: center; min-width: 0; }
+  .settings-about-title { display: block; width: min(112px, 30vw); height: auto; }
+  .settings-about-footer { display: flex; flex: 1; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 18px 4px 4px 24px; }
   .settings-about span { color: var(--muted); font-size: 13px; }
   .settings-about .version { color: var(--brand); font-weight: 700; }
+  .settings-about .creator { text-align: right; }
 
   :root[data-size="low"] .card { box-shadow: none; }
   :root[data-size="high"] .card { box-shadow: var(--shadow); }
@@ -1502,15 +1485,14 @@
     .nav { display: none; }
     .topbar { gap: 10px; }
     .brand { gap: 6px; font-size: 17px; }
-    .brand-logo { width: 23px; height: 27px; }
-    .brand-logo img { height: 25px; }
+    .brand-title { width: 128px; height: 58px; }
   }
 </style>
 </head>
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <span class="logo">✦</span>
+  <img src="icon/loading.png" alt="" fetchpriority="high">
   <span>Cargando Prizmothyn…</span>
 </div>
 
@@ -1528,7 +1510,7 @@
     <header class="policy-header">
       <span class="policy-mark" aria-hidden="true">✦</span>
       <div>
-        <span class="policy-eyebrow">WORLDLEAF · COMUNIDAD</span>
+        <span class="policy-eyebrow">PRIZMOTHYN · COMUNIDAD</span>
         <h1 id="policyTitle">Tu privacidad importa</h1>
         <p>Lee estas pautas para continuar y compartir de forma segura.</p>
       </div>
@@ -1644,7 +1626,7 @@
 
   <header class="topbar">
     <button class="menu-btn" id="menuBtn" type="button" title="Abrir menú" aria-label="Abrir menú">☰</button>
-    <button class="brand" id="homeBtn" type="button" aria-label="Prizmothyn, inicio"><span class="brand-logo"><img src="icon/icon.png" alt=""></span><span class="brand-text">Prizmothyn</span></button>
+    <button class="brand" id="homeBtn" type="button" aria-label="Prizmothyn, inicio"><img class="brand-title" src="icon/title.png" alt="Prizmothyn"></button>
     <nav class="nav">
       <button type="button" data-view="search">Buscar</button>
       <button type="button" data-view="feed">Publicaciones</button>
@@ -1652,7 +1634,6 @@
       <button type="button" data-view="servers">Servidores</button>
     </nav>
     <div class="top-actions">
-      <button class="bell-btn" id="notifBtn" type="button" title="Notificaciones" aria-label="Notificaciones">🔔<span id="notifBadge" class="badge-count hidden">0</span></button>
       <button class="btn primary guest-access-btn hidden" id="guestAccessBtn" type="button">Acceder</button>
       <button class="avatar-btn" id="myProfileBtn" type="button" title="Mi perfil" aria-label="Abrir mi perfil"><img id="topAvatar" class="avatar md" alt=""></button>
     </div>
@@ -2319,17 +2300,6 @@
     return navigate(targetView, { userId: targetUserId, skipHash: true });
   }
 
-  function updateNotifBadges() {
-    var n = parseInt(state.notifUnread, 10) || 0;
-    var text = n > 9 ? '9+' : String(n);
-    ['#notifBadge'].forEach(function (sel) {
-      var el = $(sel);
-      if (!el) return;
-      el.textContent = text;
-      el.classList.toggle('hidden', n <= 0);
-    });
-  }
-
   var toastTimer = null;
   function toast(message, type) {
     var el = $('#toast');
@@ -2381,6 +2351,13 @@
             reject({ code: 'NETWORK', message: (err && err.message) || 'Error de conexión' });
           })
           .apiCall(JSON.stringify(payload));
+      });
+    }
+
+    if (window.location.protocol === 'file:') {
+      return Promise.reject({
+        code: 'LOCAL_FILE',
+        message: 'Abriste la app como archivo local. Usa la URL del despliegue de Prizmothyn terminada en /exec para conectar con el servidor.'
       });
     }
 
@@ -2764,7 +2741,6 @@
       if ($('#sideName')) $('#sideName').textContent = 'Invitado';
       if ($('#sideHandle')) $('#sideHandle').textContent = 'Explora sin cuenta';
       if ($('#sideRole')) $('#sideRole').innerHTML = '';
-      if ($('#notifBadge')) $('#notifBadge').classList.add('hidden');
       var mini = $('#miniProfile');
       if (mini) {
         mini.innerHTML =
@@ -2812,7 +2788,6 @@
     var miniBtn = $('#miniProfileBtn');
     if (miniBtn) miniBtn.addEventListener('click', function () { navigate('profile', { userId: state.me.userId }); });
 
-    updateNotifBadges();
   }
 
   function userRowHTML(u) {
@@ -2871,7 +2846,6 @@
       try {
         await api('marcarNotificacionesLeidas');
         state.notifUnread = 0;
-        updateNotifBadges();
         $all('.notif-item.unread').forEach(function (el) {
           el.classList.remove('unread');
           var dot = el.querySelector('.notif-dot');
@@ -2911,14 +2885,11 @@
           ? d.notificaciones.map(notifHTML).join('')
           : emptyState('No tienes notificaciones todavía.');
       }
-      updateNotifBadges();
-
       if (d.sinLeer > 0) {
         try {
           await api('marcarNotificacionesLeidas');
           state.notifUnread = 0;
           markNotifCacheRead();
-          updateNotifBadges();
           $all('.notif-item.unread').forEach(function (el) {
             el.classList.remove('unread');
             var dot = el.querySelector('.notif-dot');
@@ -2934,23 +2905,6 @@
         box.innerHTML = emptyState('No se pudieron cargar las notificaciones.');
       }
       toast(err.message || 'Error al cargar notificaciones', 'err');
-    }
-  }
-
-  async function refreshNotifCount() {
-    if (!state.me) return;
-    try {
-      var d = await api('contarNotificaciones');
-      state.notifUnread = d.sinLeer || 0;
-      updateNotifBadges();
-      var c = readCache(CACHE_NOTIF_KEY, null);
-      if (c) {
-        c.sinLeer = state.notifUnread;
-        c.at = Date.now();
-        writeCache(CACHE_NOTIF_KEY, c);
-      }
-    } catch (e) {
-      /* silencioso */
     }
   }
 
@@ -3043,17 +2997,6 @@
         closeActionMenus();
         closeDrawer();
       }
-    });
-    document.addEventListener('visibilitychange', function () {
-      if (!document.hidden && state.me) refreshNotifCount();
-    });
-    setInterval(function () {
-      if (!document.hidden && state.me) refreshNotifCount();
-    }, 180000);
-
-    $('#notifBtn').addEventListener('click', function () {
-      if (!state.me) { showAuth(); return; }
-      navigate('notifications');
     });
     $('#myProfileBtn').addEventListener('click', function () {
       if (state.me) navigate('profile', { userId: state.me.userId });
@@ -4545,11 +4488,16 @@
               '<div id="reportQueue"><div class="center-load"><div class="spinner"></div></div></div></div>'
             : '') +
         '</section>' +
-        '<section class="card settings-card">' +
-          '<h2>Acerca de</h2>' +
-          '<div class="settings-about">' +
-            '<div><strong>✦ Prizmothyn</strong><span>Creado por JM-TechStudios</span></div>' +
+        '<section class="card settings-card settings-about-card">' +
+          '<div class="settings-about-heading">' +
+            '<h2>Acerca de</h2>' +
+            '<div class="settings-about-brand">' +
+              '<img class="settings-about-title" src="icon/title.png" alt="Prizmothyn">' +
+            '</div>' +
+          '</div>' +
+          '<div class="settings-about-footer">' +
             '<span class="version">Versión 1.0</span>' +
+            '<span class="creator">Creado por JM-TechStudios</span>' +
           '</div>' +
         '</section>' +
       '</div>';
@@ -4913,7 +4861,7 @@
       console.error('No se pudieron cargar las cantidades por categoría: ' +
         ((err && err.message) || err));
       if (state.view === 'home' || state.view === 'addons') {
-        toast('No se pudieron cargar las cantidades por categoría.', 'warn');
+        toast((err && err.message) || 'No se pudieron cargar las cantidades por categoría.', 'warn');
       }
     } finally {
       catalog.categoryCountsLoading = false;
