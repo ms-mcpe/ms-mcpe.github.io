@@ -2366,6 +2366,9 @@
   var nativeAdObserver = null;
   var nativeAdLoadStarted = false;
   var nativeAdLoadFailed = false;
+  var socialBarLoadTimer = null;
+  var socialBarLoadStarted = false;
+  var socialBarLoadFailed = false;
   var skinStudio = {
     baseCanvas: null,
     overlayCanvas: null,
@@ -3279,6 +3282,28 @@
     nativeAdObserver.observe(slot);
   }
 
+  function loadSocialBarScript_() {
+    socialBarLoadTimer = null;
+    if (socialBarLoadStarted || socialBarLoadFailed ||
+        $('#appScreen').classList.contains('hidden')) return;
+    socialBarLoadStarted = true;
+    var script = document.createElement('script');
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = 'https://bauval.org/14/3161dadc9a01d46fba405516ce8850f9';
+    script.onerror = function () {
+      socialBarLoadFailed = true;
+      console.error('No se pudo cargar la barra social.');
+    };
+    document.head.appendChild(script);
+  }
+
+  function initSocialBar_() {
+    if (socialBarLoadStarted || socialBarLoadFailed || socialBarLoadTimer !== null ||
+        $('#appScreen').classList.contains('hidden')) return;
+    socialBarLoadTimer = window.setTimeout(loadSocialBarScript_, 5000);
+  }
+
   function showApp() {
     hideBoot();
     hideBlockedScreen();
@@ -3288,6 +3313,7 @@
     updateShell();
     loadSuggestions();
     initNativeAd_();
+    initSocialBar_();
     if (!window.location.hash || window.location.hash === '#') {
       syncHash(state.view || 'home', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
     }
