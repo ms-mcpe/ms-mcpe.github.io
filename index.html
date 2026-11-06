@@ -1308,8 +1308,6 @@
     color: inherit;
     text-align: left;
   }
-  .addon-card-actions { padding: 0 12px 12px; }
-  .addon-card-actions .btn { width: 100%; min-width: 0; }
   .addon-cover {
     position: relative;
     aspect-ratio: 16 / 10;
@@ -4806,13 +4804,6 @@
           '<span class="addon-meta">' + author + (date ? '<span>' + esc(date) + '</span>' : '') + '</span>' +
         '</span>' +
       '</button>' +
-      '<div class="addon-card-actions">' +
-        '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
-          'data-addon-like="' + esc(addon.id) + '"' +
-          (addon.meGusta ? ' disabled aria-pressed="true"' : ' aria-pressed="false"') + '>' +
-          (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
-          ' <span>' + safeCount(addon.likes) + '</span></button>' +
-      '</div>' +
     '</article>';
   }
 
