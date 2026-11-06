@@ -2369,6 +2369,9 @@
   var socialBarLoadTimer = null;
   var socialBarLoadStarted = false;
   var socialBarLoadFailed = false;
+  var popunderLoadTimer = null;
+  var popunderLoadStarted = false;
+  var popunderLoadFailed = false;
   var skinStudio = {
     baseCanvas: null,
     overlayCanvas: null,
@@ -3304,6 +3307,28 @@
     socialBarLoadTimer = window.setTimeout(loadSocialBarScript_, 5000);
   }
 
+  function loadPopunderScript_() {
+    popunderLoadTimer = null;
+    if (popunderLoadStarted || popunderLoadFailed ||
+        $('#appScreen').classList.contains('hidden')) return;
+    popunderLoadStarted = true;
+    var script = document.createElement('script');
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = 'https://abscloud.org/1/386718eabd6160140c4b84b214b8042c';
+    script.onerror = function () {
+      popunderLoadFailed = true;
+      console.error('No se pudo cargar el popunder.');
+    };
+    document.head.appendChild(script);
+  }
+
+  function initPopunder_() {
+    if (popunderLoadStarted || popunderLoadFailed || popunderLoadTimer !== null ||
+        $('#appScreen').classList.contains('hidden')) return;
+    popunderLoadTimer = window.setTimeout(loadPopunderScript_, 12000);
+  }
+
   function showApp() {
     hideBoot();
     hideBlockedScreen();
@@ -3314,6 +3339,7 @@
     loadSuggestions();
     initNativeAd_();
     initSocialBar_();
+    initPopunder_();
     if (!window.location.hash || window.location.hash === '#') {
       syncHash(state.view || 'home', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
     }
