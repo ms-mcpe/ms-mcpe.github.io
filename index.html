@@ -646,6 +646,25 @@
   .left { position: sticky; top: 86px; display: flex; flex-direction: column; gap: 16px; }
   .center { min-width: 0; }
   .right { position: sticky; top: 86px; }
+  .native-ad-slot {
+    max-width: 680px;
+    margin: 24px auto 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+  }
+  .native-ad-label {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .native-ad-content { min-width: 0; }
+  .native-ad-content:empty { display: none; }
 
   .mini-profile { padding: 18px; }
   .mini-top { display: flex; align-items: center; gap: 12px; }
@@ -2013,7 +2032,13 @@
         <div id="suggestions"><div class="center-load"><div class="spinner"></div></div></div>
       </div>
     </aside>
-    <section class="center" id="view"></section>
+    <section class="center">
+      <div id="view"></div>
+      <aside id="nativeAdSlot" class="native-ad-slot hidden" aria-label="Publicidad">
+        <p class="native-ad-label">Publicidad</p>
+        <div id="container-ac948c0f2454963e9e7dc63d348aa63b" class="native-ad-content"></div>
+      </aside>
+    </section>
     <aside class="right"></aside>
   </main>
   <nav class="bottom-nav" aria-label="Navegación principal">
@@ -2337,6 +2362,10 @@
       selectedEnchantments: {}
     }
   };
+
+  var nativeAdObserver = null;
+  var nativeAdLoadStarted = false;
+  var nativeAdLoadFailed = false;
   var skinStudio = {
     baseCanvas: null,
     overlayCanvas: null,
@@ -3209,6 +3238,47 @@
     $('#appScreen').classList.add('hidden');
   }
 
+  function loadNativeAdScript_() {
+    if (nativeAdLoadStarted || nativeAdLoadFailed) return;
+    var slot = $('#nativeAdSlot');
+    if (!slot || $('#appScreen').classList.contains('hidden')) return;
+    var container = $('#container-ac948c0f2454963e9e7dc63d348aa63b');
+    nativeAdLoadStarted = true;
+    var script = document.createElement('script');
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = 'https://bauval.org/21/ac948c0f2454963e9e7dc63d348aa63b';
+    script.onload = function () {
+      window.setTimeout(function () {
+        if (container && !container.childElementCount) slot.classList.add('hidden');
+      }, 12000);
+    };
+    script.onerror = function () {
+      nativeAdLoadFailed = true;
+      slot.classList.add('hidden');
+      console.error('No se pudo cargar el anuncio nativo.');
+    };
+    document.head.appendChild(script);
+  }
+
+  function initNativeAd_() {
+    var slot = $('#nativeAdSlot');
+    if (!slot || nativeAdLoadFailed) return;
+    slot.classList.remove('hidden');
+    if (nativeAdLoadStarted || nativeAdObserver) return;
+    if (typeof window.IntersectionObserver !== 'function') {
+      window.setTimeout(loadNativeAdScript_, 1200);
+      return;
+    }
+    nativeAdObserver = new window.IntersectionObserver(function (entries) {
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      nativeAdObserver.disconnect();
+      nativeAdObserver = null;
+      loadNativeAdScript_();
+    }, { rootMargin: '280px 0px' });
+    nativeAdObserver.observe(slot);
+  }
+
   function showApp() {
     hideBoot();
     hideBlockedScreen();
@@ -3217,6 +3287,7 @@
     $('#appScreen').classList.remove('hidden');
     updateShell();
     loadSuggestions();
+    initNativeAd_();
     if (!window.location.hash || window.location.hash === '#') {
       syncHash(state.view || 'home', { userId: state.me && state.view === 'profile' ? state.profileUserId || state.me.userId : undefined });
     }
