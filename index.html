@@ -1404,6 +1404,12 @@
   .addon-thumb.active { border-color: var(--brand); }
   .addon-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
   .addon-actions .btn { flex: 1; min-width: 150px; }
+  .addon-actions-primary .addon-like-btn { flex: 0 0 auto; min-width: 92px; }
+  .addon-actions-primary .btn.primary { min-width: 180px; }
+  @media (max-width: 480px) {
+    .addon-actions-primary .addon-like-btn { flex: 1; }
+    .addon-actions-primary .btn.primary { flex: 2; min-width: 150px; }
+  }
   .addon-like-btn.liked { background: rgba(248, 113, 113, .12); border-color: rgba(248, 113, 113, .4); color: #fb7185; }
   .addon-like-btn.liked:disabled { opacity: 1; }
   .addon-description { white-space: pre-wrap; line-height: 1.65; border-top: 1px solid var(--line); padding-top: 16px; }
@@ -5348,12 +5354,14 @@
     var firstContainsAddon = !!(firstCollection && firstCollection.addonIds.some(function (id) {
       return String(id) === String(addon.id);
     }));
+    var likeAction =
+      '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
+        'data-addon-like="' + esc(addon.id) + '"' +
+        (addon.meGusta ? ' disabled' : '') + ' aria-label="' +
+        (addon.meGusta ? 'Ya te gusta este complemento' : 'Me gusta este complemento') + '">' +
+        (addon.meGusta ? '❤️' : '🤍') + ' <span>' + safeCount(addon.likes) + '</span></button>';
     var memberActions = state.me
-      ? '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
-          'data-addon-like="' + esc(addon.id) + '"' + (addon.meGusta ? ' disabled' : '') + '>' +
-          (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
-          ' <span>' + safeCount(addon.likes) + '</span></button>' +
-        '<button class="btn ghost" type="button" data-addon-favorite="' + esc(addon.id) + '">' +
+      ? '<button class="btn ghost" type="button" data-addon-favorite="' + esc(addon.id) + '">' +
           (addon.favorito ? '★ Quitar de favoritos' : '☆ Añadir a favoritos') + '</button>'
       : '';
     var collectionActions = state.me
@@ -5378,11 +5386,12 @@
         '<span>⬇️ ' + safeCount(addon.descargas) + '</span>' +
       '</div>' +
       gallery.html +
-      '<div class="addon-actions">' +
-        memberActions +
+      '<div class="addon-actions addon-actions-primary">' +
+        likeAction +
         '<button class="btn primary" type="button" data-addon-download="' + esc(addon.id) + '">' +
           '⬇️ Descargar</button>' +
       '</div>' +
+      (memberActions ? '<div class="addon-actions addon-library-actions">' + memberActions + '</div>' : '') +
       collectionActions +
       translated + desc;
   }
