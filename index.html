@@ -1608,11 +1608,151 @@
   .report-suggestions { display: flex; flex-direction: column; gap: 6px; margin: -4px 0 12px; }
   .report-suggestion { width: 100%; text-align: left; }
   .report-item { padding: 14px; border-bottom: 1px solid var(--line); }
+  .potions-page { display: flex; flex-direction: column; gap: 18px; }
+  .potions-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    padding: clamp(22px, 4vw, 36px);
+    background:
+      radial-gradient(380px 180px at 85% 0%, rgba(52, 211, 153, .16), transparent 70%),
+      linear-gradient(135deg, var(--panel), var(--bg-soft));
+  }
+  .potions-hero h1 { margin: 0; font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.03em; }
+  .potions-hero p { max-width: 62ch; margin: 7px 0 0; color: var(--muted); line-height: 1.55; }
+  .potion-source-tag {
+    flex: 0 0 auto;
+    padding: 7px 11px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--brand);
+    background: var(--panel);
+    font-size: 12px;
+    font-weight: 750;
+  }
+  .potions-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; padding: 12px; }
+  .potions-search { flex: 1 1 220px; min-width: 0; }
+  .potions-search input {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-soft);
+    color: var(--text);
+    outline: none;
+  }
+  .potions-search input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(var(--brand-rgb), .12); }
+  .potion-filter { padding: 9px 12px; }
+  .potion-filter[aria-pressed="true"] { border-color: var(--brand); color: var(--brand); background: rgba(var(--brand-rgb), .12); }
+  .potions-count { flex: 0 0 auto; color: var(--muted); font-size: 12px; }
+  .potion-recipe-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .potion-recipe-card { min-width: 0; padding: 18px; }
+  .potion-recipe-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .potion-recipe-head h2 { margin: 0; font-size: 18px; }
+  .potion-recipe-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+  .potion-recipe-category { flex: 0 0 auto; color: var(--muted); font-size: 11px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; }
+  .potion-tree { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--bg-soft); }
+  .potion-tree-node { padding: 6px 9px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); font-size: 12px; line-height: 1.35; }
+  .potion-tree-node.result { border-color: rgba(var(--brand-rgb), .45); color: var(--brand); font-weight: 750; }
+  .potion-tree-arrow { color: var(--muted); font-size: 14px; font-weight: 800; }
+  .potion-branches { display: grid; gap: 7px; margin-top: 12px; }
+  .potion-branch-title { margin: 0 0 1px; color: var(--muted); font-size: 12px; font-weight: 750; }
+  .potion-branch { display: grid; grid-template-columns: minmax(90px, .7fr) 18px minmax(0, 1.3fr); align-items: center; gap: 6px; font-size: 12px; }
+  .potion-branch-ingredient { color: var(--muted); }
+  .potion-branch-arrow { color: var(--brand); text-align: center; font-weight: 800; }
+  .potion-branch-result { min-width: 0; font-weight: 650; }
+  .potion-format-note { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .tools-page { display: flex; flex-direction: column; gap: 18px; }
+  .tools-hero {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: clamp(20px, 4vw, 32px);
+    background:
+      radial-gradient(360px 180px at 85% 0%, rgba(52, 211, 153, .15), transparent 70%),
+      linear-gradient(135deg, var(--panel), var(--bg-soft));
+  }
+  .tools-book-icon { width: 76px; height: 76px; flex: 0 0 auto; object-fit: contain; image-rendering: pixelated; }
+  .tools-hero h1 { margin: 0; font-size: clamp(24px, 3.3vw, 34px); letter-spacing: -.03em; }
+  .tools-hero p { margin: 6px 0 0; color: var(--muted); line-height: 1.5; }
+  .tools-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; }
+  .tools-tab[aria-pressed="true"] { border-color: var(--brand); color: var(--brand); background: rgba(var(--brand-rgb), .12); }
+  .tool-panel { display: flex; flex-direction: column; gap: 14px; }
+  .tool-panel-head { padding: 20px; }
+  .tool-panel-head h2 { margin: 0; font-size: 21px; }
+  .tool-panel-head p { margin: 5px 0 0; color: var(--muted); line-height: 1.5; }
+  .coordinate-direction { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; }
+  .coordinate-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+  .coordinate-grid label { display: grid; gap: 7px; color: var(--muted); font-size: 13px; font-weight: 700; }
+  .coordinate-grid input, .enchant-select, .enchant-prior-uses {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--bg-soft);
+    color: var(--text);
+  }
+  .coordinate-results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 16px; }
+  .coordinate-result { padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-soft); }
+  .coordinate-result span { display: block; color: var(--muted); font-size: 12px; }
+  .coordinate-result strong { display: block; margin-top: 5px; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .coordinate-help, .enchant-plan-note { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+  .enchant-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: end; padding: 14px; }
+  .enchant-field { display: grid; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
+  .enchant-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .enchant-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; padding: 12px 14px; }
+  .enchant-name { min-width: 0; }
+  .enchant-name strong { display: block; font-size: 14px; }
+  .enchant-name span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+  .roman-levels { display: flex; flex: 0 0 auto; gap: 4px; }
+  .roman-level {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid #30383d;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #1a2024, #101417);
+    color: #a7b0b4;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 2px 3px rgba(0,0,0,.22);
+  }
+  .roman-level:hover { border-color: var(--brand); color: #e7fff5; }
+  .roman-level[aria-pressed="true"] { border: 2px solid #e8f4ed; color: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.9), inset 0 0 12px rgba(var(--brand-rgb), .35); }
+  .enchant-plan { display: grid; gap: 10px; padding: 16px; }
+  .enchant-plan h3 { margin: 0; font-size: 17px; }
+  .enchant-plan-steps { display: grid; gap: 7px; margin: 0; padding-left: 22px; }
+  .enchant-plan-steps li { padding-left: 3px; line-height: 1.45; }
+  .enchant-plan-total { padding: 12px; border: 1px solid rgba(var(--brand-rgb), .35); border-radius: 12px; background: rgba(var(--brand-rgb), .08); }
+  .enchant-plan-total strong { color: var(--brand); }
+  .enchant-selected { display: flex; flex-wrap: wrap; gap: 7px; }
+  .enchant-chip { padding: 6px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg-soft); font-size: 12px; }
 
   @media (max-width: 600px) {
     .settings-row { align-items: flex-start; }
     .settings-select { min-width: 118px; }
     .settings-color-grid { grid-template-columns: 1fr; }
+    .potions-hero { align-items: flex-start; flex-direction: column; }
+    .potions-toolbar { align-items: stretch; }
+    .potions-count { width: 100%; }
+    .potion-recipe-grid { grid-template-columns: 1fr; }
+    .potion-recipe-card { padding: 14px; }
+    .potion-tree { align-items: flex-start; flex-direction: column; }
+    .potion-tree-arrow { transform: rotate(90deg); margin-left: 8px; }
+    .tools-hero { align-items: flex-start; }
+    .tools-book-icon { width: 58px; height: 58px; }
+    .coordinate-grid, .coordinate-results { grid-template-columns: 1fr; }
+    .enchant-controls { grid-template-columns: 1fr; }
+    .enchant-list { grid-template-columns: 1fr; }
+    .enchant-row { align-items: flex-start; flex-direction: column; }
+    .roman-levels { flex-wrap: wrap; }
   }
 
   @media (max-width: 1080px) {
@@ -1756,6 +1896,8 @@
       <button type="button" data-side-view="search">🔎 Buscar</button>
       <button type="button" data-side-view="addons">🧩 Catálogo</button>
       <button type="button" data-side-view="skins">🎨 Crear skin</button>
+      <button type="button" data-side-view="potions">🧪 Recetas de pociones</button>
+      <button type="button" data-side-view="tools">🧭 Herramientas MC Bedrock</button>
       <button type="button" data-side-view="servers">🖥️ Servidores</button>
       <button type="button" id="sideAdminBtn" class="hidden" data-side-view="admin">🛡️ Administración</button>
       <p class="side-title">Cuenta</p>
@@ -1955,6 +2097,7 @@
   };
   var CACHE_FEED_TTL = 10 * 60 * 1000;
   var CACHE_NOTIF_TTL = 10 * 60 * 1000;
+  var CATALOG_VIEW_CACHE_TTL = 60 * 1000;
   var notifCacheInicial = readCache(CACHE_NOTIF_KEY, null);
   var themePrefs = loadThemePreferences();
 
@@ -1993,6 +2136,9 @@
       loaded: false,
       fallback: false,
       error: '',
+      cache: {},
+      cacheKey: '',
+      firstPage: [],
       scope: 'all',
       collectionId: '',
       library: null,
@@ -2008,9 +2154,20 @@
       categoryCountsLoading: false, categoryCountsError: false
     },
     seeds: {
-      items: [], offset: 0, hasMore: true, loading: false, loaded: false, seq: 0, q: '',
+      items: [], offset: 0, hasMore: true, loading: false, loaded: false, loadedAt: 0,
+      firstPage: [], seq: 0, q: '',
       editor: { open: false, id: '', images: [], files: [] },
       detail: null
+    },
+    potions: { q: '', filter: 'todas' },
+    tools: {
+      tab: 'coordinates',
+      direction: 'nether-to-overworld',
+      coordinates: { x: '', y: '', z: '' },
+      item: 'sword',
+      priorUses: 0,
+      enchantSearch: '',
+      selectedEnchantments: {}
     }
   };
   var skinStudio = {
@@ -2421,6 +2578,8 @@
     if (path === 'search') return { view: 'search', userId: '' };
     if (path === 'addons') return { view: 'addons', userId: '' };
     if (path === 'skins') return { view: 'skins', userId: '' };
+    if (path === 'potions') return { view: 'potions', userId: '' };
+    if (path === 'tools') return { view: 'tools', userId: '' };
     if (path === 'servers') return { view: 'servers', userId: '' };
     if (path === 'notifications') return { view: 'notifications', userId: '' };
     if (path === 'settings') return { view: 'settings', userId: '' };
@@ -2444,6 +2603,8 @@
     if (view === 'home') return 'addons';
     if (view === 'addons') return 'addons';
     if (view === 'skins') return 'skins';
+    if (view === 'potions') return 'potions';
+    if (view === 'tools') return 'tools';
     if (view === 'servers') return 'servers';
     if (view === 'notifications') return 'notifications';
     if (view === 'settings') return 'settings';
@@ -3327,6 +3488,8 @@
     if (view === 'search') return renderSearch();
     if (view === 'addons') return renderAddons();
     if (view === 'skins') return renderSkinStudio();
+    if (view === 'potions') return renderPotions();
+    if (view === 'tools') return renderTools_();
     if (view === 'servers') return renderServers();
     if (view === 'notifications') return renderNotifications();
     if (view === 'settings') return renderSettings();
@@ -5885,6 +6048,9 @@
       loaded: false,
       fallback: false,
       error: '',
+      cache: {},
+      cacheKey: '',
+      firstPage: [],
       scope: 'all',
       collectionId: '',
       library: null,
@@ -6162,14 +6328,24 @@
     }
   }
 
-  async function loadSeeds_(reset) {
+  async function loadSeeds_(reset, options) {
     var seeds = state.seeds;
+    options = options || {};
     if (seeds.loading && !reset) return;
     if (!reset && !seeds.hasMore) return;
+    var previousItems = seeds.items.slice();
+    var previousFirstPage = seeds.firstPage.slice();
+    var previousOffset = seeds.offset;
     if (reset) {
-      seeds.items = [];
       seeds.offset = 0;
-      seeds.hasMore = true;
+      if (!options.keepItems) {
+        seeds.items = [];
+        seeds.firstPage = [];
+        seeds.hasMore = true;
+        previousItems = [];
+        previousFirstPage = [];
+        previousOffset = 0;
+      }
       seeds.error = '';
       seeds.loaded = true;
     }
@@ -6184,10 +6360,19 @@
       });
       if (seq !== seeds.seq) return;
       var received = data.semillas || [];
-      seeds.items = reset ? received : seeds.items.concat(received);
-      seeds.offset = Number(data.nextOffset) || seeds.items.length;
+      var firstPageUnchanged = reset && previousFirstPage.length &&
+        JSON.stringify(received) === JSON.stringify(previousFirstPage);
+      if (reset) {
+        seeds.items = firstPageUnchanged ? previousItems : received;
+        seeds.firstPage = received.slice();
+      } else {
+        seeds.items = seeds.items.concat(received);
+      }
+      var responseOffset = Number(data.nextOffset) || received.length;
+      seeds.offset = firstPageUnchanged ? Math.max(responseOffset, previousOffset) : responseOffset;
       seeds.hasMore = !!data.hasMore;
       seeds.error = '';
+      seeds.loadedAt = Date.now();
     } catch (err) {
       if (seq !== seeds.seq) return;
       seeds.error = err.message || 'No se pudieron cargar las semillas.';
@@ -6407,6 +6592,64 @@
       ' ' + addonCategoryCountHTML(countId) + '</button>';
   }
 
+  function addonListCacheKey_(addons) {
+    return JSON.stringify([
+      addons.category || '',
+      addons.q || '',
+      addons.sort || 'recientes',
+      addons.scope || 'all',
+      addons.scope === 'collection' ? addons.collectionId || '' : '',
+      state.me ? String(state.me.userId || '') : 'guest'
+    ]);
+  }
+
+  function activateAddonListCache_(addons) {
+    var key = addonListCacheKey_(addons);
+    if (addons.cacheKey === key) return;
+    addons.seq += 1;
+    addons.loading = false;
+    addons.cacheKey = key;
+    var cached = addons.cache[key];
+    if (cached) {
+      addons.items = cached.items.slice();
+      addons.offset = cached.offset;
+      addons.hasMore = cached.hasMore;
+      addons.fallback = cached.fallback;
+      addons.firstPage = cached.firstPage.slice();
+      addons.loaded = true;
+      addons.error = '';
+      addons.cache[key].usedAt = Date.now();
+    } else {
+      addons.items = [];
+      addons.offset = 0;
+      addons.hasMore = true;
+      addons.firstPage = [];
+      addons.loaded = false;
+      addons.fallback = false;
+      addons.error = '';
+    }
+  }
+
+  function saveAddonListCache_(addons) {
+    var key = addonListCacheKey_(addons);
+    addons.cache[key] = {
+      items: addons.items.slice(),
+      offset: addons.offset,
+      hasMore: addons.hasMore,
+      fallback: addons.fallback,
+      firstPage: addons.firstPage.slice(),
+      loadedAt: Date.now(),
+      usedAt: Date.now()
+    };
+    var keys = Object.keys(addons.cache);
+    if (keys.length > 12) {
+      keys.sort(function (left, right) {
+        return addons.cache[left].usedAt - addons.cache[right].usedAt;
+      });
+      while (keys.length > 12) delete addons.cache[keys.shift()];
+    }
+  }
+
   function renderAddonCategoryCounts() {
     document.querySelectorAll('[data-category-count]').forEach(function (badge) {
       var categoryId = badge.getAttribute('data-category-count');
@@ -6562,6 +6805,9 @@
       a.libraryPromise = null;
     }
     if (a.category === 'semillas') return renderSeedCatalog_();
+    activateAddonListCache_(a);
+    var activeCache = a.cache[a.cacheKey];
+    if (activeCache) a.loaded = true;
     var view = $('#view');
     view.innerHTML = '<div class="addons-page">' +
       '<div class="card addons-hero">' +
@@ -6615,7 +6861,10 @@
         toast((err && err.message) || 'No se pudo cargar tu biblioteca de complementos.', 'err');
       });
     }
-    if (!a.loaded && !a.loading) loadAddons(true);
+    if (!a.loading && (!a.loaded || !activeCache ||
+        Date.now() - activeCache.loadedAt >= CATALOG_VIEW_CACHE_TTL)) {
+      loadAddons(true);
+    }
   }
 
   function renderSeedCatalog_() {
@@ -6643,7 +6892,10 @@
       '<div class="seeds-grid" id="seedsGrid"></div><div class="addon-footer" id="seedsFooter"></div></div>';
     renderSeedCards_();
     loadAddonCategoryCounts();
-    if (!seeds.loaded && !seeds.loading) loadSeeds_(true);
+    if (!seeds.loading && (!seeds.loaded ||
+        Date.now() - seeds.loadedAt >= CATALOG_VIEW_CACHE_TTL)) {
+      loadSeeds_(true, { keepItems: seeds.items.length > 0 });
+    }
   }
 
   function renderAddonScopeOptions() {
@@ -6819,15 +7071,24 @@
 
   async function loadAddons(reset) {
     var a = state.addons;
+    if (reset) activateAddonListCache_(a);
     if (a.loading && !reset) return;
     if (!reset && !a.hasMore) return;
+    var previousItems = a.items.slice();
+    var previousFirstPage = a.firstPage.slice();
+    var previousOffset = a.offset;
     if (reset) {
       a.offset = 0;
-      a.items = [];
-      a.hasMore = true;
-      a.loaded = true;
+      if (!a.cache[a.cacheKey]) {
+        a.items = [];
+        a.firstPage = [];
+        a.hasMore = true;
+        a.loaded = false;
+        previousItems = [];
+        previousFirstPage = [];
+        previousOffset = 0;
+      }
       a.error = '';
-      a.fallback = false;
     }
     a.loading = true;
     var seq = ++a.seq;
@@ -6844,11 +7105,20 @@
       });
       if (seq !== a.seq) return;
       var received = data.addons || [];
-      a.items = reset ? received : a.items.concat(received);
-      a.offset = Number(data.nextOffset) || a.items.length;
+      var firstPageUnchanged = reset && previousFirstPage.length &&
+        JSON.stringify(received) === JSON.stringify(previousFirstPage);
+      if (reset) {
+        a.items = firstPageUnchanged ? previousItems : received;
+        a.firstPage = received.slice();
+      } else {
+        a.items = a.items.concat(received);
+      }
+      var responseOffset = Number(data.nextOffset) || received.length;
+      a.offset = firstPageUnchanged ? Math.max(responseOffset, previousOffset) : responseOffset;
       a.hasMore = !!data.hasMore;
       a.fallback = !!data.fallback;
       a.loaded = true;
+      saveAddonListCache_(a);
     } catch (err) {
       if (seq !== a.seq) return;
       a.error = (err && err.message) || 'No se pudieron cargar los complementos.';
@@ -7451,6 +7721,586 @@
     preview.classList.toggle('hidden', !safeUrl);
   }
 
+  var POTION_RECIPES = [
+    {
+      name: 'Poción rara', group: 'Bases', ingredient: 'Verruga del Nether',
+      effect: 'Poción base para preparar la mayoría de las pociones con efectos.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara'],
+      branches: []
+    },
+    {
+      name: 'Poción espesa', group: 'Bases', ingredient: 'Polvo de piedra luminosa',
+      effect: 'No tiene efecto propio; en Bedrock también puede usarse para preparar debilidad.',
+      path: ['Botella con agua', 'Polvo de piedra luminosa', 'Poción espesa'],
+      branches: []
+    },
+    {
+      name: 'Poción mundana', group: 'Bases', ingredient: 'Ingredientes base sin efecto',
+      effect: 'No tiene efecto propio; en Bedrock también puede usarse para preparar debilidad.',
+      path: ['Botella con agua', 'Ingrediente base sin efecto', 'Poción mundana'],
+      branchTitle: 'Ingredientes alternativos',
+      branches: [
+        ['Polvo de redstone', 'Poción mundana'],
+        ['Vara de breeze', 'Poción mundana'],
+        ['Piedra', 'Poción mundana'],
+        ['Bloque de slime', 'Poción mundana'],
+        ['Telaraña', 'Poción mundana'],
+        ['Crema de magma', 'Poción mundana'],
+        ['Pata de conejo', 'Poción mundana'],
+        ['Azúcar', 'Poción mundana'],
+        ['Rodaja de sandía reluciente', 'Poción mundana'],
+        ['Ojo de araña', 'Poción mundana'],
+        ['Lágrima de ghast', 'Poción mundana'],
+        ['Polvo de blaze', 'Poción mundana']
+      ]
+    },
+    {
+      name: 'Visión nocturna', group: 'Exploración', ingredient: 'Zanahoria dorada',
+      effect: 'Permite ver con claridad en la oscuridad y bajo el agua.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Zanahoria dorada', 'Poción de visión nocturna'],
+      branches: [
+        ['Polvo de redstone', 'Visión nocturna prolongada'],
+        ['Ojo de araña fermentado', 'Poción de invisibilidad']
+      ]
+    },
+    {
+      name: 'Invisibilidad', group: 'Exploración', ingredient: 'Ojo de araña fermentado',
+      effect: 'Vuelve invisible al jugador; la armadura y los objetos siguen visibles.',
+      path: ['Poción de visión nocturna', 'Ojo de araña fermentado', 'Poción de invisibilidad'],
+      branches: [['Polvo de redstone', 'Invisibilidad prolongada']]
+    },
+    {
+      name: 'Salto', group: 'Exploración', ingredient: 'Pata de conejo',
+      effect: 'Aumenta la altura de salto y reduce el daño por caída.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Pata de conejo', 'Poción de salto'],
+      branches: [
+        ['Polvo de redstone', 'Salto prolongado'],
+        ['Polvo de piedra luminosa', 'Salto II'],
+        ['Ojo de araña fermentado', 'Poción de lentitud']
+      ]
+    },
+    {
+      name: 'Resistencia al fuego', group: 'Exploración', ingredient: 'Crema de magma',
+      effect: 'Protege del fuego, la lava y el daño por calor.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Crema de magma', 'Poción de resistencia al fuego'],
+      branches: [['Polvo de redstone', 'Resistencia al fuego prolongada']]
+    },
+    {
+      name: 'Rapidez', group: 'Exploración', ingredient: 'Azúcar',
+      effect: 'Aumenta la velocidad de movimiento.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Azúcar', 'Poción de rapidez'],
+      branches: [
+        ['Polvo de redstone', 'Rapidez prolongada'],
+        ['Polvo de piedra luminosa', 'Rapidez II'],
+        ['Ojo de araña fermentado', 'Poción de lentitud']
+      ]
+    },
+    {
+      name: 'Lentitud', group: 'Combate', ingredient: 'Ojo de araña fermentado',
+      effect: 'Reduce la velocidad de movimiento.',
+      path: ['Poción de rapidez o de salto', 'Ojo de araña fermentado', 'Poción de lentitud'],
+      branches: [
+        ['Polvo de redstone', 'Lentitud prolongada'],
+        ['Polvo de piedra luminosa', 'Lentitud II (efecto IV)']
+      ]
+    },
+    {
+      name: 'Tortuga maestra', group: 'Combate', ingredient: 'Caparazón de tortuga',
+      effect: 'Aplica lentitud y resistencia al mismo tiempo.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Caparazón de tortuga', 'Poción de la tortuga maestra'],
+      branches: [
+        ['Polvo de redstone', 'Tortuga maestra prolongada'],
+        ['Polvo de piedra luminosa', 'Tortuga maestra II (lentitud VI y resistencia IV)']
+      ]
+    },
+    {
+      name: 'Respiración acuática', group: 'Exploración', ingredient: 'Pez globo',
+      effect: 'Permite respirar bajo el agua.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Pez globo', 'Poción de respiración acuática'],
+      branches: [['Polvo de redstone', 'Respiración acuática prolongada']]
+    },
+    {
+      name: 'Curación', group: 'Apoyo', ingredient: 'Rodaja de sandía reluciente',
+      effect: 'Restaura salud al instante.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Rodaja de sandía reluciente', 'Poción de curación'],
+      branches: [
+        ['Polvo de piedra luminosa', 'Curación II'],
+        ['Ojo de araña fermentado', 'Poción de daño']
+      ]
+    },
+    {
+      name: 'Daño', group: 'Combate', ingredient: 'Ojo de araña fermentado',
+      effect: 'Inflige daño instantáneo; su efecto se invierte en no muertos.',
+      path: ['Poción de curación o de veneno', 'Ojo de araña fermentado', 'Poción de daño'],
+      branches: [['Polvo de piedra luminosa', 'Daño II']]
+    },
+    {
+      name: 'Veneno', group: 'Combate', ingredient: 'Ojo de araña',
+      effect: 'Reduce la salud gradualmente, sin bajar de medio corazón.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Ojo de araña', 'Poción de veneno'],
+      branches: [
+        ['Polvo de redstone', 'Veneno prolongado'],
+        ['Polvo de piedra luminosa', 'Veneno II'],
+        ['Ojo de araña fermentado', 'Poción de daño']
+      ]
+    },
+    {
+      name: 'Regeneración', group: 'Apoyo', ingredient: 'Lágrima de ghast',
+      effect: 'Restaura salud gradualmente.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Lágrima de ghast', 'Poción de regeneración'],
+      branches: [
+        ['Polvo de redstone', 'Regeneración prolongada'],
+        ['Polvo de piedra luminosa', 'Regeneración II']
+      ]
+    },
+    {
+      name: 'Fuerza', group: 'Combate', ingredient: 'Polvo de blaze',
+      effect: 'Aumenta el daño de los ataques cuerpo a cuerpo.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Polvo de blaze', 'Poción de fuerza'],
+      branches: [
+        ['Polvo de redstone', 'Fuerza prolongada'],
+        ['Polvo de piedra luminosa', 'Fuerza II']
+      ]
+    },
+    {
+      name: 'Debilidad', group: 'Combate', ingredient: 'Ojo de araña fermentado',
+      effect: 'Reduce el daño de los ataques cuerpo a cuerpo.',
+      path: ['Botella con agua (o poción mundana/espesa)', 'Ojo de araña fermentado', 'Poción de debilidad'],
+      branches: [['Polvo de redstone', 'Debilidad prolongada']]
+    },
+    {
+      name: 'Caída lenta', group: 'Exploración', ingredient: 'Membrana de fantasma',
+      effect: 'Reduce la velocidad de caída y evita el daño por caída.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Membrana de fantasma', 'Poción de caída lenta'],
+      branches: [['Polvo de redstone', 'Caída lenta prolongada']]
+    },
+    {
+      name: 'Carga de viento', group: 'Especiales', ingredient: 'Vara de breeze',
+      effect: 'Al morir, libera un estallido de viento.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Vara de breeze', 'Poción de carga de viento'],
+      branches: []
+    },
+    {
+      name: 'Infestación', group: 'Especiales', ingredient: 'Piedra',
+      effect: 'Al recibir daño, puede generar pececillos de plata.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Piedra', 'Poción de infestación'],
+      branches: []
+    },
+    {
+      name: 'Hilado', group: 'Especiales', ingredient: 'Telaraña',
+      effect: 'Al morir, genera telarañas; además, las telarañas no ralentizan.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Telaraña', 'Poción de hilado'],
+      branches: []
+    },
+    {
+      name: 'Supuración', group: 'Especiales', ingredient: 'Bloque de slime',
+      effect: 'Al morir, genera slimes.',
+      path: ['Botella con agua', 'Verruga del Nether', 'Poción rara', 'Bloque de slime', 'Poción de supuración'],
+      branches: []
+    }
+  ];
+
+  function potionRecipeCardHTML_(potion) {
+    var tree = potion.path.map(function (step, index) {
+      return (index ? '<span class="potion-tree-arrow" aria-hidden="true">→</span>' : '') +
+        '<span class="potion-tree-node' + (index === potion.path.length - 1 ? ' result' : '') + '">' +
+        esc(step) + '</span>';
+    }).join('');
+    var branches = potion.branches.length
+      ? '<div class="potion-branches"><p class="potion-branch-title">' +
+        esc(potion.branchTitle || 'Variantes y transformaciones') + '</p>' +
+        potion.branches.map(function (branch) {
+          return '<div class="potion-branch"><span class="potion-branch-ingredient">' +
+            esc(branch[0]) + '</span><span class="potion-branch-arrow" aria-hidden="true">→</span>' +
+            '<span class="potion-branch-result">' + esc(branch[1]) + '</span></div>';
+        }).join('') + '</div>'
+      : '';
+    return '<article class="card potion-recipe-card">' +
+      '<div class="potion-recipe-head"><div><h2>' + esc(potion.name) + '</h2><p>' +
+        esc(potion.effect) + '</p></div><span class="potion-recipe-category">' +
+        esc(potion.group) + '</span></div>' +
+      '<div class="potion-tree" aria-label="Árbol de elaboración de ' + esc(potion.name) + '">' +
+        tree + '</div>' + branches +
+      '<p class="potion-format-note">Formato arrojadizo: añade pólvora. Para hacerla persistente, añade aliento de dragón a la poción arrojadiza.</p>' +
+      '</article>';
+  }
+
+  function renderPotionCards_() {
+    var grid = $('#potionRecipeGrid');
+    var count = $('#potionsCount');
+    if (!grid || !count) return;
+    var query = String(state.potions.q || '').toLocaleLowerCase();
+    var visible = POTION_RECIPES.filter(function (potion) {
+      var matchesFilter = state.potions.filter === 'todas' || potion.group.toLowerCase() === state.potions.filter;
+      var haystack = [potion.name, potion.group, potion.ingredient, potion.effect]
+        .concat(potion.path).concat(potion.branches.reduce(function (all, branch) {
+          return all.concat(branch);
+        }, [])).join(' ').toLocaleLowerCase();
+      return matchesFilter && (!query || haystack.indexOf(query) !== -1);
+    });
+    count.textContent = visible.length + (visible.length === 1 ? ' receta' : ' recetas');
+    grid.innerHTML = visible.length
+      ? visible.map(potionRecipeCardHTML_).join('')
+      : emptyState('No hay recetas que coincidan con tu búsqueda.');
+  }
+
+  function renderPotions() {
+    var filters = [
+      ['todas', 'Todas'],
+      ['exploración', 'Exploración'],
+      ['combate', 'Combate'],
+      ['apoyo', 'Apoyo'],
+      ['especiales', 'Especiales'],
+      ['bases', 'Bases']
+    ];
+    $('#view').innerHTML = '<div class="potions-page">' +
+      '<section class="card potions-hero"><div><h1>Recetas de pociones</h1>' +
+      '<p>Explora cómo preparar cada poción de MC Bedrock, sus niveles y transformaciones. Sigue las flechas desde los ingredientes hasta el resultado.</p></div>' +
+      '<span class="potion-source-tag">MC Bedrock</span></section>' +
+      '<section class="card potions-toolbar" aria-label="Buscar y filtrar recetas">' +
+      '<label class="potions-search">' +
+      '<input id="potionSearch" type="search" aria-label="Buscar pociones o ingredientes" value="' + esc(state.potions.q) + '" placeholder="Buscar poción o ingrediente..." autocomplete="off"></label>' +
+      filters.map(function (filter) {
+        return '<button class="btn potion-filter" type="button" data-potion-filter="' +
+          esc(filter[0]) + '" aria-pressed="' + (state.potions.filter === filter[0] ? 'true' : 'false') +
+          '">' + esc(filter[1]) + '</button>';
+      }).join('') + '<span id="potionsCount" class="potions-count"></span></section>' +
+      '<div id="potionRecipeGrid" class="potion-recipe-grid"></div>' +
+      '</div>';
+    renderPotionCards_();
+  }
+
+  var ENCHANT_ITEM_TYPES = [
+    ['helmet', 'Casco'],
+    ['chestplate', 'Pechera'],
+    ['leggings', 'Pantalones'],
+    ['boots', 'Botas'],
+    ['sword', 'Espada'],
+    ['pickaxe', 'Pico'],
+    ['axe', 'Hacha'],
+    ['shovel', 'Pala'],
+    ['hoe', 'Azada'],
+    ['bow', 'Arco'],
+    ['crossbow', 'Ballesta'],
+    ['trident', 'Tridente'],
+    ['mace', 'Maza'],
+    ['spear', 'Lanza'],
+    ['fishing_rod', 'Caña de pescar'],
+    ['brush', 'Pincel'],
+    ['elytra', 'Elytra'],
+    ['shield', 'Escudo'],
+    ['book', 'Libro encantado']
+  ];
+  var ENCHANT_ALL_GEAR = [
+    'helmet', 'chestplate', 'leggings', 'boots', 'sword', 'pickaxe', 'axe',
+    'shovel', 'hoe', 'bow', 'crossbow', 'trident', 'mace', 'spear',
+    'fishing_rod', 'brush', 'elytra', 'shield'
+  ];
+  var ENCHANTMENTS = [
+    { key: 'protection', name: 'Protección', max: 4, weight: 1, items: ['helmet', 'chestplate', 'leggings', 'boots'], conflict: 'protection', note: 'Reduce el daño recibido.' },
+    { key: 'fire_protection', name: 'Protección contra el fuego', max: 4, weight: 1, items: ['helmet', 'chestplate', 'leggings', 'boots'], conflict: 'protection', note: 'Reduce daño y duración del fuego.' },
+    { key: 'blast_protection', name: 'Protección contra explosiones', max: 4, weight: 2, items: ['helmet', 'chestplate', 'leggings', 'boots'], conflict: 'protection', note: 'Reduce daño y empuje de explosiones.' },
+    { key: 'projectile_protection', name: 'Protección contra proyectiles', max: 4, weight: 1, items: ['helmet', 'chestplate', 'leggings', 'boots'], conflict: 'protection', note: 'Reduce daño de proyectiles.' },
+    { key: 'thorns', name: 'Espinas', max: 3, weight: 1, items: ['helmet', 'chestplate', 'leggings', 'boots'], note: 'Puede dañar a quien te ataque.' },
+    { key: 'respiration', name: 'Respiración', max: 3, weight: 2, items: ['helmet'], note: 'Prolonga el tiempo bajo el agua.' },
+    { key: 'aqua_affinity', name: 'Afinidad acuática', max: 1, weight: 2, items: ['helmet'], note: 'Mejora la velocidad de minería bajo el agua.' },
+    { key: 'swift_sneak', name: 'Sigilo veloz', max: 3, weight: 4, items: ['leggings'], note: 'Aumenta la velocidad al agacharte.' },
+    { key: 'depth_strider', name: 'Agilidad acuática', max: 3, weight: 2, items: ['boots'], conflict: 'water_movement', note: 'Aumenta la velocidad de movimiento bajo el agua.' },
+    { key: 'frost_walker', name: 'Paso helado', max: 2, weight: 4, items: ['boots'], conflict: 'water_movement', note: 'Congela temporalmente el agua bajo tus pies.' },
+    { key: 'soul_speed', name: 'Velocidad de almas', max: 3, weight: 4, items: ['boots'], note: 'Aumenta la velocidad sobre arena y tierra de almas.' },
+    { key: 'feather_falling', name: 'Caída de pluma', max: 4, weight: 1, items: ['boots'], note: 'Reduce el daño por caída.' },
+    { key: 'sharpness', name: 'Filo', max: 5, weight: 1, items: ['sword', 'axe'], conflict: 'weapon_damage', note: 'Aumenta el daño contra la mayoría de criaturas.' },
+    { key: 'smite', name: 'Castigo', max: 5, weight: 2, items: ['sword', 'axe', 'mace'], conflict: 'weapon_damage', note: 'Aumenta el daño contra criaturas no muertas.' },
+    { key: 'bane', name: 'Perdición de los artrópodos', max: 5, weight: 2, items: ['sword', 'axe', 'mace'], conflict: 'weapon_damage', note: 'Aumenta el daño contra artrópodos.' },
+    { key: 'knockback', name: 'Empuje', max: 2, weight: 1, items: ['sword'], note: 'Aumenta el retroceso al golpear.' },
+    { key: 'fire_aspect', name: 'Aspecto ígneo', max: 2, weight: 2, items: ['sword'], note: 'Prende fuego al objetivo.' },
+    { key: 'looting', name: 'Botín', max: 3, weight: 2, items: ['sword'], note: 'Mejora el botín de algunas criaturas.' },
+    { key: 'efficiency', name: 'Eficiencia', max: 5, weight: 1, items: ['pickaxe', 'axe', 'shovel', 'hoe'], note: 'Aumenta la velocidad de minería.' },
+    { key: 'fortune', name: 'Fortuna', max: 3, weight: 2, items: ['pickaxe', 'axe', 'shovel', 'hoe'], conflict: 'tool_drop', note: 'Aumenta ciertos objetos obtenidos al minar.' },
+    { key: 'silk_touch', name: 'Toque de seda', max: 1, weight: 4, items: ['pickaxe', 'axe', 'shovel', 'hoe'], conflict: 'tool_drop', note: 'Obtén algunos bloques directamente.' },
+    { key: 'power', name: 'Poder', max: 5, weight: 1, items: ['bow'], note: 'Aumenta el daño de las flechas.' },
+    { key: 'punch', name: 'Retroceso', max: 2, weight: 2, items: ['bow'], note: 'Aumenta el retroceso de las flechas.' },
+    { key: 'flame', name: 'Llama', max: 1, weight: 2, items: ['bow'], note: 'Dispara flechas en llamas.' },
+    { key: 'infinity', name: 'Infinidad', max: 1, weight: 4, items: ['bow'], conflict: 'bow_ammo', note: 'Permite disparar sin consumir flechas normales.' },
+    { key: 'multishot', name: 'Multidisparo', max: 1, weight: 2, items: ['crossbow'], conflict: 'crossbow_shot', note: 'Dispara tres proyectiles a la vez.' },
+    { key: 'piercing', name: 'Perforación', max: 4, weight: 1, items: ['crossbow'], conflict: 'crossbow_shot', note: 'Las flechas atraviesan varios objetivos.' },
+    { key: 'quick_charge', name: 'Carga rápida', max: 3, weight: 1, items: ['crossbow'], note: 'Reduce el tiempo de recarga.' },
+    { key: 'loyalty', name: 'Lealtad', max: 3, weight: 1, items: ['trident'], conflict: 'trident_throw', note: 'El tridente regresa después de lanzarlo.' },
+    { key: 'impaling', name: 'Empalamiento', max: 5, weight: 2, items: ['trident'], note: 'Aumenta el daño del tridente según las reglas de Bedrock.' },
+    { key: 'riptide', name: 'Propulsión acuática', max: 3, weight: 2, items: ['trident'], conflict: 'trident_throw', note: 'Te impulsa al lanzar el tridente en agua o lluvia.' },
+    { key: 'channeling', name: 'Conductividad', max: 1, weight: 4, items: ['trident'], conflict: 'trident_throw', note: 'Invoca un rayo en condiciones adecuadas.' },
+    { key: 'density', name: 'Densidad', max: 5, weight: 1, items: ['mace'], conflict: 'weapon_damage', note: 'Aumenta el daño de los ataques de caída.' },
+    { key: 'breach', name: 'Brecha', max: 4, weight: 2, items: ['mace'], conflict: 'weapon_damage', note: 'Reduce la eficacia de la armadura del objetivo.' },
+    { key: 'wind_burst', name: 'Estallido de viento', max: 3, weight: 4, items: ['mace'], note: 'Te impulsa después de golpear con una caída.' },
+    { key: 'lunge', name: 'Embate', max: 3, weight: 4, items: ['spear'], note: 'Impulsa una estocada al usar la lanza.' },
+    { key: 'luck_of_the_sea', name: 'Suerte marina', max: 3, weight: 2, items: ['fishing_rod'], note: 'Aumenta la posibilidad de tesoros al pescar.' },
+    { key: 'lure', name: 'Atracción', max: 3, weight: 2, items: ['fishing_rod'], note: 'Reduce el tiempo de espera al pescar.' },
+    { key: 'unbreaking', name: 'Irrompibilidad', max: 3, weight: 1, items: ENCHANT_ALL_GEAR, note: 'Reduce la probabilidad de perder durabilidad.' },
+    { key: 'mending', name: 'Reparación', max: 1, weight: 4, items: ENCHANT_ALL_GEAR, conflict: 'bow_ammo', note: 'Usa experiencia para reparar el objeto.' },
+    { key: 'binding', name: 'Maldición de ligamiento', max: 1, weight: 4, items: ['helmet', 'chestplate', 'leggings', 'boots', 'elytra'], note: 'Impide quitar el objeto equipado en supervivencia.' },
+    { key: 'vanishing', name: 'Maldición de desaparición', max: 1, weight: 4, items: ENCHANT_ALL_GEAR, note: 'El objeto desaparece al morir.' }
+  ];
+  function romanNumeral_(value) {
+    var numerals = [
+      [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']
+    ];
+    var number = Math.max(0, Math.floor(Number(value) || 0));
+    var result = '';
+    numerals.forEach(function (entry) {
+      while (number >= entry[0]) {
+        result += entry[1];
+        number -= entry[0];
+      }
+    });
+    return result;
+  }
+
+  function getEnchantmentByKey_(key) {
+    return ENCHANTMENTS.find(function (item) { return item.key === key; }) || null;
+  }
+
+  function getAvailableEnchantments_() {
+    return ENCHANTMENTS.filter(function (item) {
+      return state.tools.item === 'book' || item.items.indexOf(state.tools.item) !== -1;
+    });
+  }
+
+  function renderTools_() {
+    $('#view').innerHTML = '<div class="tools-page">' +
+      '<section class="card tools-hero"><img class="tools-book-icon" src="icon-mc/Enchanted_Book.gif" alt="Libro encantado pixelado">' +
+      '<div><h1>Herramientas MC Bedrock</h1><p>Convierte coordenadas entre dimensiones y prepara tu combinación de encantamientos.</p></div></section>' +
+      '<nav class="card tools-tabs" aria-label="Herramientas MC Bedrock">' +
+      '<button class="btn tools-tab" type="button" data-tools-tab="coordinates" aria-pressed="' +
+      (state.tools.tab === 'coordinates' ? 'true' : 'false') + '">🧭 Coordenadas</button>' +
+      '<button class="btn tools-tab" type="button" data-tools-tab="enchantments" aria-pressed="' +
+      (state.tools.tab === 'enchantments' ? 'true' : 'false') + '">📖 Encantamientos</button></nav>' +
+      '<div id="toolsPanel"></div></div>';
+    renderToolsPanel_();
+  }
+
+  function renderToolsPanel_() {
+    var panel = $('#toolsPanel');
+    if (!panel) return;
+    if (state.tools.tab === 'enchantments') {
+      renderEnchantmentPlanner_();
+      return;
+    }
+    var isNetherToOverworld = state.tools.direction === 'nether-to-overworld';
+    var source = isNetherToOverworld ? 'Nether' : 'Overworld';
+    var target = isNetherToOverworld ? 'Overworld' : 'Nether';
+    panel.innerHTML = '<section class="tool-panel">' +
+      '<div class="card tool-panel-head"><h2>Conversor de coordenadas</h2>' +
+      '<p>La posición X/Z del Overworld corresponde a una octava parte en el Nether.</p></div>' +
+      '<div class="card coordinate-direction" role="group" aria-label="Sentido de conversión">' +
+      '<button class="btn' + (isNetherToOverworld ? ' primary' : '') + '" type="button" data-coordinate-direction="nether-to-overworld">Nether → Overworld</button>' +
+      '<button class="btn' + (!isNetherToOverworld ? ' primary' : '') + '" type="button" data-coordinate-direction="overworld-to-nether">Overworld → Nether</button></div>' +
+      '<div class="card coordinate-grid">' +
+      [['x', 'X'], ['y', 'Y'], ['z', 'Z']].map(function (axis) {
+        return '<label>' + axis[1] + ' · ' + source +
+          '<input type="number" step="any" inputmode="decimal" data-coordinate-input="' + axis[0] +
+          '" value="' + esc(state.tools.coordinates[axis[0]]) + '" placeholder="Coordenada ' + axis[1] +
+          (axis[0] === 'y' ? '' : '" min="-30000000" max="30000000"') + '"></label>';
+      }).join('') + '</div>' +
+      '<div class="card coordinate-results" aria-live="polite">' +
+      [['x', 'X'], ['y', 'Y'], ['z', 'Z']].map(function (axis) {
+        return '<div class="coordinate-result"><span>' + axis[1] + ' · ' + target +
+          '</span><strong data-coordinate-result="' + axis[0] + '">—</strong></div>';
+      }).join('') + '</div>' +
+      '<p class="coordinate-help">X y Z se convierten usando la proporción 8:1 y se redondean al bloque más cercano. Y se conserva; las alturas disponibles pueden variar entre dimensiones.</p>' +
+      '</section>';
+    updateCoordinateResults_();
+  }
+
+  function updateCoordinateResults_() {
+    var isNetherToOverworld = state.tools.direction === 'nether-to-overworld';
+    ['x', 'y', 'z'].forEach(function (axis) {
+      var result = $('[data-coordinate-result="' + axis + '"]');
+      if (!result) return;
+      var raw = state.tools.coordinates[axis];
+      if (raw === '' || !isFinite(Number(raw))) {
+        result.textContent = '—';
+        return;
+      }
+      var value = Number(raw);
+      if (axis !== 'y' && Math.abs(value) > 30000000) {
+        result.textContent = 'Fuera del límite';
+        return;
+      }
+      if (axis !== 'y') value = isNetherToOverworld ? value * 8 : value / 8;
+      result.textContent = String(Math.round(value));
+    });
+  }
+
+  function bookEnchantCost_(enchantments) {
+    return enchantments.reduce(function (sum, entry) {
+      return sum + Math.ceil(entry.level * entry.enchantment.weight / 2);
+    }, 0);
+  }
+
+  function priorWorkPenalty_(uses) {
+    return Math.pow(2, Math.max(0, Math.min(5, Number(uses) || 0))) - 1;
+  }
+
+  function combineEnchantedBooks_(selected) {
+    var count = selected.length;
+    if (!count) return { error: 'Selecciona al menos un encantamiento para generar el plan.' };
+    if (count > 10) return { error: 'El planificador admite hasta 10 libros por combinación.' };
+    var limit = 1 << count;
+    var plans = new Array(limit);
+    for (var index = 0; index < count; index++) {
+      var book = { enchantments: [selected[index]], penalty: 0, cost: 0, left: null, right: null };
+      plans[1 << index] = [book];
+    }
+    for (var mask = 1; mask < limit; mask++) {
+      if ((mask & (mask - 1)) === 0) continue;
+      var candidates = {};
+      for (var leftMask = (mask - 1) & mask; leftMask; leftMask = (leftMask - 1) & mask) {
+        var rightMask = mask ^ leftMask;
+        if (!rightMask || leftMask >= rightMask || !plans[leftMask] || !plans[rightMask]) continue;
+        plans[leftMask].forEach(function (left) {
+          plans[rightMask].forEach(function (right) {
+            [
+              [left, right],
+              [right, left]
+            ].forEach(function (order) {
+              var targetBook = order[0];
+              var sacrificeBook = order[1];
+              var stepCost = targetBook.penalty + sacrificeBook.penalty +
+                bookEnchantCost_(sacrificeBook.enchantments);
+              if (stepCost > 39) return;
+              var penalty = Math.max(targetBook.penalty, sacrificeBook.penalty) * 2 + 1;
+              var node = {
+                enchantments: targetBook.enchantments.concat(sacrificeBook.enchantments),
+                penalty: penalty,
+                cost: targetBook.cost + sacrificeBook.cost + stepCost,
+                left: targetBook,
+                right: sacrificeBook,
+                stepCost: stepCost
+              };
+              var key = String(penalty);
+              if (!candidates[key] || candidates[key].cost > node.cost) candidates[key] = node;
+            });
+          });
+        });
+      }
+      var values = Object.keys(candidates).map(function (key) { return candidates[key]; });
+      plans[mask] = values.filter(function (candidate) {
+        return !values.some(function (other) {
+          return other !== candidate && other.cost <= candidate.cost &&
+            other.penalty <= candidate.penalty &&
+            (other.cost < candidate.cost || other.penalty < candidate.penalty);
+        });
+      });
+    }
+    var fullMask = limit - 1;
+    var itemPenalty = priorWorkPenalty_(state.tools.priorUses);
+    var finalPlans = (plans[fullMask] || []).map(function (book) {
+      var applyCost = itemPenalty + book.penalty + bookEnchantCost_(book.enchantments);
+      return {
+        book: book,
+        applyCost: applyCost,
+        totalCost: book.cost + applyCost
+      };
+    }).filter(function (plan) { return plan.applyCost <= 39; });
+    finalPlans.sort(function (a, b) { return a.totalCost - b.totalCost; });
+    if (!finalPlans.length) return { error: 'No se encontró una combinación aplicable por debajo del límite de 40 niveles del yunque.' };
+    return finalPlans[0];
+  }
+
+  function collectBookOperations_(book, operations) {
+    if (!book || !book.left || !book.right) return;
+    collectBookOperations_(book.left, operations);
+    collectBookOperations_(book.right, operations);
+    operations.push({
+      target: book.left,
+      sacrifice: book.right,
+      output: book,
+      cost: book.stepCost
+    });
+  }
+
+  function describeEnchantedBook_(book) {
+    if (!book.left && !book.right) {
+      var entry = book.enchantments[0];
+      return entry.enchantment.name + ' ' + romanNumeral_(entry.level);
+    }
+    return 'libro combinado (' + book.enchantments.length + ' encantamientos)';
+  }
+
+  function renderEnchantmentPlanner_() {
+    var panel = $('#toolsPanel');
+    if (!panel) return;
+    var available = getAvailableEnchantments_();
+    var query = String(state.tools.enchantSearch || '').trim().toLocaleLowerCase();
+    var visibleEnchantments = available.filter(function (enchantment) {
+      return !query || (enchantment.name + ' ' + enchantment.note)
+        .toLocaleLowerCase().indexOf(query) !== -1;
+    });
+    var selected = Object.keys(state.tools.selectedEnchantments).map(function (key) {
+      var enchantment = getEnchantmentByKey_(key);
+      return enchantment ? { enchantment: enchantment, level: state.tools.selectedEnchantments[key] } : null;
+    }).filter(Boolean);
+    var plan = combineEnchantedBooks_(selected);
+    var steps = [];
+    if (!plan.error) collectBookOperations_(plan.book, steps);
+    var selectedHtml = selected.length
+      ? '<div class="enchant-selected">' + selected.map(function (entry) {
+        return '<span class="enchant-chip">' + esc(entry.enchantment.name) + ' ' +
+          romanNumeral_(entry.level) + '</span>';
+      }).join('') + '</div>'
+      : '<p class="muted">Selecciona los encantamientos y sus niveles para armar el plan.</p>';
+    var planHtml = plan.error
+      ? '<div class="card enchant-plan"><h3>Plan de combinación</h3><p class="muted">' + esc(plan.error) + '</p></div>'
+      : '<section class="card enchant-plan"><h3>Orden recomendado en el yunque</h3>' +
+        (steps.length
+          ? '<ol class="enchant-plan-steps">' + steps.map(function (step) {
+            return '<li>Combina <strong>' + esc(describeEnchantedBook_(step.target)) +
+              '</strong> con <strong>' + esc(describeEnchantedBook_(step.sacrifice)) +
+              '</strong> · ' + step.cost + ' niveles</li>';
+          }).join('') + '<li>Aplica el libro combinado al objeto · ' + plan.applyCost + ' niveles</li></ol>'
+          : '<p>Aplica el libro de ' + esc(describeEnchantedBook_(plan.book)) +
+            ' al objeto · ' + plan.applyCost + ' niveles</p>') +
+        '<div class="enchant-plan-total">Costo estimado total: <strong>' +
+          plan.totalCost + ' niveles</strong></div></section>';
+    panel.innerHTML = '<section class="tool-panel">' +
+      '<div class="card tool-panel-head"><h2>Planificador de encantamientos</h2>' +
+      '<p>Incluye los 42 encantamientos de MC Bedrock. Elige el objeto y los niveles de tus libros; la lista muestra solo los compatibles y puedes buscarlos por nombre o efecto.</p></div>' +
+      '<div class="card enchant-controls">' +
+      '<label class="enchant-field">Objeto final<select class="enchant-select" data-enchant-item>' +
+      ENCHANT_ITEM_TYPES.map(function (item) {
+        return '<option value="' + item[0] + '"' + (state.tools.item === item[0] ? ' selected' : '') +
+          '>' + esc(item[1]) + '</option>';
+      }).join('') + '</select></label>' +
+      '<label class="enchant-field">Buscar encantamiento<input class="enchant-select" type="search" data-enchant-search maxlength="60" placeholder="Nombre o efecto" value="' +
+      esc(state.tools.enchantSearch) + '"></label>' +
+      '<label class="enchant-field">Usos previos del objeto en yunque<select class="enchant-prior-uses" data-enchant-prior-uses>' +
+      [0, 1, 2, 3, 4, 5].map(function (uses) {
+        var penalty = priorWorkPenalty_(uses);
+        return '<option value="' + uses + '"' + (state.tools.priorUses === uses ? ' selected' : '') +
+          '>' + uses + ' uso' + (uses === 1 ? '' : 's') + ' (+' + penalty + ')</option>';
+      }).join('') + '</select></label>' +
+      '<button class="btn ghost" type="button" data-enchant-clear' +
+      (selected.length ? '' : ' disabled') + '>Limpiar selección</button></div>' +
+      '<div class="enchant-list">' + (visibleEnchantments.length ? visibleEnchantments.map(function (enchantment) {
+        var selectedLevel = state.tools.selectedEnchantments[enchantment.key] || 0;
+        return '<article class="card enchant-row"><div class="enchant-name"><strong>' +
+          esc(enchantment.name) + '</strong><span>' + esc(enchantment.note) +
+          '</span></div><div class="roman-levels" role="group" aria-label="Nivel de ' +
+          esc(enchantment.name) + '">' +
+          Array.from({ length: enchantment.max }, function (_, index) {
+            var level = index + 1;
+            return '<button class="roman-level" type="button" data-enchant-level="' +
+              esc(enchantment.key) + '" data-level="' + level + '" aria-label="' +
+              esc(enchantment.name) + ' nivel ' + romanNumeral_(level) + '" aria-pressed="' +
+              (selectedLevel === level ? 'true' : 'false') + '">' +
+              romanNumeral_(level) + '</button>';
+          }).join('') + '</div></article>';
+      }).join('') : '<p class="muted">No hay encantamientos que coincidan con la búsqueda para este objeto.</p>') + '</div>' +
+      '<div class="enchant-plan">' + selectedHtml + planHtml +
+      '<p class="enchant-plan-note">La estimación supone un libro nuevo por encantamiento y aplica la penalización de usos previos indicada para el objeto. El costo real puede cambiar si el objeto o los libros ya pasaron por el yunque, tienen otros encantamientos, se reparan o se renombran; verifica el resultado en el juego. En supervivencia, cada operación debe costar menos de 40 niveles.</p></div>' +
+      '</section>';
+  }
+
   async function renderServers() {
     state.servers.image = '';
     state.servers.formOpen = false;
@@ -7530,6 +8380,64 @@
   async function onViewClick(e) {
     if (e.target.closest('[data-open-auth]')) {
       showAuth();
+      return;
+    }
+    var toolsTab = e.target.closest('[data-tools-tab]');
+    if (toolsTab) {
+      state.tools.tab = toolsTab.dataset.toolsTab === 'enchantments' ? 'enchantments' : 'coordinates';
+      renderTools_();
+      return;
+    }
+    var coordinateDirection = e.target.closest('[data-coordinate-direction]');
+    if (coordinateDirection) {
+      state.tools.direction = coordinateDirection.dataset.coordinateDirection === 'overworld-to-nether'
+        ? 'overworld-to-nether' : 'nether-to-overworld';
+      renderToolsPanel_();
+      return;
+    }
+    var enchantLevel = e.target.closest('[data-enchant-level]');
+    if (enchantLevel) {
+      var enchantKey = enchantLevel.dataset.enchantLevel || '';
+      var enchantData = getEnchantmentByKey_(enchantKey);
+      var level = Number(enchantLevel.dataset.level);
+      if (!enchantData || !Number.isInteger(level) || level < 1 || level > enchantData.max) return;
+      if (state.tools.selectedEnchantments[enchantKey] === level) {
+        delete state.tools.selectedEnchantments[enchantKey];
+      } else {
+        var conflictingKey = Object.keys(state.tools.selectedEnchantments).find(function (selectedKey) {
+          var selectedData = getEnchantmentByKey_(selectedKey);
+          return selectedData && selectedData.conflict &&
+            selectedData.conflict === enchantData.conflict && selectedKey !== enchantKey;
+        });
+        if (conflictingKey) {
+          var conflictingEnchantment = getEnchantmentByKey_(conflictingKey);
+          toast(enchantData.name + ' no se puede combinar con ' +
+            (conflictingEnchantment ? conflictingEnchantment.name : 'ese encantamiento') +
+            ' en este objeto.', 'err');
+          return;
+        }
+        if (Object.keys(state.tools.selectedEnchantments).length >= 10 &&
+            !Object.prototype.hasOwnProperty.call(state.tools.selectedEnchantments, enchantKey)) {
+          toast('El planificador admite hasta 10 encantamientos a la vez.', 'err');
+          return;
+        }
+        state.tools.selectedEnchantments[enchantKey] = level;
+      }
+      renderEnchantmentPlanner_();
+      return;
+    }
+    if (e.target.closest('[data-enchant-clear]')) {
+      state.tools.selectedEnchantments = {};
+      renderEnchantmentPlanner_();
+      return;
+    }
+    var potionFilter = e.target.closest('[data-potion-filter]');
+    if (potionFilter) {
+      state.potions.filter = potionFilter.dataset.potionFilter || 'todas';
+      $all('[data-potion-filter]').forEach(function (button) {
+        button.setAttribute('aria-pressed', button === potionFilter ? 'true' : 'false');
+      });
+      renderPotionCards_();
       return;
     }
     var seedOpen = e.target.closest('[data-seed-open]');
@@ -7661,12 +8569,7 @@
       var category = String(addonCategory.dataset.addonCategory || '');
       if (category !== state.addons.category) {
         state.addons.category = category;
-        state.addons.loaded = true;
-        if (category === 'semillas') {
-          renderAddons();
-        } else {
-          loadAddons(true);
-        }
+        renderAddons();
         $all('[data-addon-category]').forEach(function (button) {
           button.setAttribute('aria-pressed', button.dataset.addonCategory === category ? 'true' : 'false');
         });
@@ -7939,6 +8842,29 @@
   }
 
   function onViewChange(e) {
+    var enchantItem = e.target.closest('[data-enchant-item]');
+    if (enchantItem) {
+      state.tools.item = ENCHANT_ITEM_TYPES.some(function (item) {
+        return item[0] === enchantItem.value;
+      }) ? enchantItem.value : 'sword';
+      var selectedKeys = Object.keys(state.tools.selectedEnchantments);
+      selectedKeys.forEach(function (key) {
+        var enchantment = getEnchantmentByKey_(key);
+        if (state.tools.item !== 'book' && enchantment &&
+            enchantment.items.indexOf(state.tools.item) === -1) {
+          delete state.tools.selectedEnchantments[key];
+        }
+      });
+      renderEnchantmentPlanner_();
+      return;
+    }
+    var priorUses = e.target.closest('[data-enchant-prior-uses]');
+    if (priorUses) {
+      var uses = Number(priorUses.value);
+      state.tools.priorUses = Number.isInteger(uses) ? Math.max(0, Math.min(5, uses)) : 0;
+      renderEnchantmentPlanner_();
+      return;
+    }
     var seedImagesInput = e.target.closest('[data-seed-form] [name="imagenes"]');
     if (seedImagesInput) {
       var form = seedImagesInput.closest('[data-seed-form]');
@@ -8021,6 +8947,35 @@
   }
 
   function onViewInput(e) {
+    var enchantSearch = e.target.closest('[data-enchant-search]');
+    if (enchantSearch) {
+      var searchCursor = enchantSearch.selectionStart || 0;
+      state.tools.enchantSearch = Security.sanitizeText(enchantSearch.value || '').trim().slice(0, 60);
+      renderEnchantmentPlanner_();
+      var refreshedSearch = $('[data-enchant-search]');
+      if (refreshedSearch) {
+        refreshedSearch.focus();
+        refreshedSearch.setSelectionRange(
+          Math.min(searchCursor, refreshedSearch.value.length),
+          Math.min(searchCursor, refreshedSearch.value.length)
+        );
+      }
+      return;
+    }
+    var coordinateInput = e.target.closest('[data-coordinate-input]');
+    if (coordinateInput) {
+      var axis = coordinateInput.dataset.coordinateInput;
+      if (['x', 'y', 'z'].indexOf(axis) < 0) return;
+      state.tools.coordinates[axis] = coordinateInput.value;
+      updateCoordinateResults_();
+      return;
+    }
+    var potionSearch = e.target.closest('#potionSearch');
+    if (potionSearch) {
+      state.potions.q = Security.sanitizeText(potionSearch.value || '').trim().slice(0, 60);
+      renderPotionCards_();
+      return;
+    }
     var adminSearch = e.target.closest('#adminUserSearch');
     if (adminSearch) {
       var query = Security.sanitizeText(adminSearch.value || '').trim().slice(0, 60);
