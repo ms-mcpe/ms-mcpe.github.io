@@ -1414,27 +1414,50 @@
   }
   .addon-detail h3 { margin: 0; font-size: 24px; line-height: 1.2; }
   .addon-detail-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 10px 0 16px; color: var(--muted); font-size: 13px; }
-  .addon-detail-gallery { display: flex; flex-direction: column; gap: 14px; }
-  .addon-gallery-image {
-    display: grid;
-    place-items: center;
+  .addon-detail-gallery { display: flex; flex-direction: column; gap: 8px; }
+  .addon-gallery-main {
+    position: relative;
     width: 100%;
-    min-height: 120px;
-    margin: 0;
+    aspect-ratio: 16 / 9;
+    max-height: min(68vh, 760px);
     overflow: hidden;
     border: 1px solid var(--line);
     border-radius: 16px;
     background: var(--panel-2);
   }
-  .addon-gallery-image img {
+  .addon-gallery-main img {
+    position: relative;
+    z-index: 1;
     display: block;
-    max-width: 100%;
-    max-height: min(78vh, 900px);
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+    background: #0b0d10;
   }
-  .addon-detail-gallery-empty {
+  .addon-gallery-main .addon-cover-fallback { position: absolute; inset: 0; height: 100%; }
+  .addon-thumbs {
+    display: flex;
+    gap: 7px;
+    overflow-x: auto;
+    padding: 2px 2px 5px;
+    scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+  }
+  .addon-thumb {
+    flex: 0 0 66px;
+    height: 46px;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: var(--panel-2);
+    cursor: pointer;
+    scroll-snap-align: start;
+  }
+  .addon-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .addon-thumb.active { border-color: var(--brand); }
+  .addon-thumb:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .addon-gallery-empty {
     display: grid;
     min-height: 180px;
     place-items: center;
@@ -1529,7 +1552,7 @@
     .addon-detail-modal .addon-detail-id { max-width: min(55vw, 260px); }
     .addon-detail-modal .addon-detail h3 { font-size: 19px; }
     .addon-detail-modal #addonDetailBody { padding-top: 14px; }
-    .addon-detail-modal .addon-gallery-image img { max-height: 70vh; }
+    .addon-detail-modal .addon-gallery-main { aspect-ratio: 4 / 3; max-height: 58vh; }
     .addon-detail-modal .modal-head-actions { gap: 6px; }
     .addon-detail-modal .addon-detail-share-actions .btn { min-width: 0; padding: 8px 10px; }
   }
@@ -2276,7 +2299,8 @@
       searchTimer: null,
       detail: null,
       detailRoute: null,
-      detailSeq: 0
+      detailSeq: 0,
+      galleryIndex: 0
     },
     homeCatalog: {
       shelves: {}, loadedAt: 0, seq: 0,
@@ -6227,7 +6251,8 @@
       searchTimer: null,
       detail: null,
       detailRoute: null,
-      detailSeq: 0
+      detailSeq: 0,
+      galleryIndex: 0
     };
     var modal = document.getElementById('addonModal');
     if (modal) {
@@ -7544,16 +7569,48 @@
 
   function addonDetailGalleryHTML(addon) {
     var images = addonImageUrls_(addon);
+    var selectedIndex = Math.min(Math.max(0, state.addons.galleryIndex || 0), images.length - 1);
     var html = images.length
-      ? '<div class="addon-detail-gallery" aria-label="Imágenes del complemento">' +
-        images.map(function (url, index) {
-          return '<figure class="addon-gallery-image"><img src="' + esc(url) + '" alt="' +
-            esc(addon.nombre) + ' - imagen ' + (index + 1) + '" loading="' +
-            (index === 0 ? 'eager' : 'lazy') + '" decoding="async" ' +
-            'onerror="this.onerror=null;this.parentNode.style.display=\'none\'"></figure>';
-        }).join('') + '</div>'
-      : '<div class="addon-detail-gallery-empty">🧩 Sin imágenes disponibles.</div>';
+      ? '<div class="addon-detail-gallery" role="group" aria-label="Galería de imágenes del complemento">' +
+        '<div class="addon-gallery-main"><div class="addon-cover-fallback" aria-hidden="true">🧩</div>' +
+          '<img id="addonGalleryMain" src="' + esc(images[selectedIndex]) + '" alt="' +
+            esc(addon.nombre) + ' - imagen ' + (selectedIndex + 1) + '" decoding="async" ' +
+            'onerror="this.onerror=null;this.style.display=\'none\'">' +
+        '</div>' +
+        (images.length > 1
+          ? '<div class="addon-thumbs" role="group" aria-label="Referencias de imágenes">' +
+            images.map(function (url, index) {
+              return '<button class="addon-thumb' + (index === selectedIndex ? ' active' : '') +
+                '" type="button" data-addon-thumb="' + index + '" ' +
+                'aria-label="Mostrar imagen ' + (index + 1) + '" aria-pressed="' +
+                (index === selectedIndex ? 'true' : 'false') + '">' +
+                '<img src="' + esc(url) + '" alt="" loading="lazy" decoding="async" ' +
+                'onerror="this.onerror=null;this.parentNode.style.display=\'none\'"></button>';
+            }).join('') + '</div>'
+          : '') +
+        '</div>'
+      : '<div class="addon-gallery-empty">🧩 Sin imágenes disponibles.</div>';
     return html;
+  }
+
+  function selectAddonImage(index) {
+    var addon = state.addons.detail;
+    if (!addon) return;
+    var images = addonImageUrls_(addon);
+    var next = Number(index);
+    if (!Number.isInteger(next) || next < 0 || next >= images.length) return;
+    state.addons.galleryIndex = next;
+    var main = $('#addonGalleryMain');
+    if (main) {
+      main.src = images[next];
+      main.alt = (addon.nombre || 'Complemento') + ' - imagen ' + (next + 1);
+      main.style.display = '';
+    }
+    $all('[data-addon-thumb]').forEach(function (button) {
+      var isSelected = Number(button.dataset.addonThumb) === next;
+      button.classList.toggle('active', isSelected);
+      button.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
   }
 
   function renderAddonDetail() {
@@ -7731,6 +7788,7 @@
     $('#addonShareBtn').classList.remove('hidden');
     var seq = ++state.addons.detailSeq;
     state.addons.detail = null;
+    state.addons.galleryIndex = 0;
     $('#addonDetailId').textContent = 'ID ' + id;
     $('#addonDetailTitle').textContent = 'Cargando complemento...';
     $('#addonDetailBody').innerHTML = '<div class="center-load addon-detail-loading"><div class="spinner"></div></div>';
@@ -7886,6 +7944,8 @@
   function onAddonDetailClick(e) {
     var close = e.target.closest('[data-addon-close]');
     if (close) { closeAddonDetail(); return; }
+    var thumb = e.target.closest('[data-addon-thumb]');
+    if (thumb) { selectAddonImage(thumb.dataset.addonThumb); return; }
     var like = e.target.closest('[data-addon-like]');
     if (like) {
       if (!requireLogin('Inicia sesión para dar me gusta a los complementos.')) return;
