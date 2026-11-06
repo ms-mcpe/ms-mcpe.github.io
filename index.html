@@ -70,6 +70,11 @@
 
   * { box-sizing: border-box; }
 
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+
   body, body * {
     -webkit-user-select: none;
     user-select: none;
@@ -1292,6 +1297,19 @@
   }
   .addon-card:hover { transform: translateY(-2px); border-color: rgba(var(--brand-rgb), .45); }
   .addon-card:active { transform: scale(.99); }
+  .addon-card-open {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+  }
+  .addon-card-actions { padding: 0 12px 12px; }
+  .addon-card-actions .btn { width: 100%; min-width: 0; }
   .addon-cover {
     position: relative;
     aspect-ratio: 16 / 10;
@@ -1612,7 +1630,6 @@
     </div>
     <nav class="side-nav">
       <p class="side-title">Navegación</p>
-      <button type="button" data-side-view="home">⌂ Inicio</button>
       <button type="button" data-side-view="feed">📝 Publicaciones</button>
       <button type="button" data-side-view="search">🔎 Buscar</button>
       <button type="button" data-side-view="addons">🧩 Catálogo</button>
@@ -1626,7 +1643,7 @@
 
   <header class="topbar">
     <button class="menu-btn" id="menuBtn" type="button" title="Abrir menú" aria-label="Abrir menú">☰</button>
-    <button class="brand" id="homeBtn" type="button" aria-label="Prizmothyn, inicio"><img class="brand-title" src="icon/title.png" alt="Prizmothyn"></button>
+    <button class="brand" id="homeBtn" type="button" aria-label="Prizmothyn, catálogo"><img class="brand-title" src="icon/title.png" alt="Prizmothyn"></button>
     <nav class="nav">
       <button type="button" data-view="search">Buscar</button>
       <button type="button" data-view="feed">Publicaciones</button>
@@ -1651,7 +1668,7 @@
     <aside class="right"></aside>
   </main>
   <nav class="bottom-nav" aria-label="Navegación principal">
-    <button type="button" data-app-view="home" aria-label="Inicio" title="Inicio"><span class="bottom-icon" aria-hidden="true">🏠</span><span class="bottom-label">Inicio</span></button>
+    <button type="button" data-app-view="search" aria-label="Buscar" title="Buscar"><span class="bottom-icon" aria-hidden="true">🔎</span><span class="bottom-label">Buscar</span></button>
     <button type="button" data-app-view="feed" aria-label="Publicaciones" title="Publicaciones"><span class="bottom-icon" aria-hidden="true">📝</span><span class="bottom-label">Publicaciones</span></button>
     <button type="button" data-app-view="addons" aria-label="Catálogo" title="Catálogo"><span class="bottom-icon" aria-hidden="true">🧩</span><span class="bottom-label">Catálogo</span></button>
     <button type="button" data-app-view="settings" aria-label="Ajustes" title="Ajustes"><span class="bottom-icon" aria-hidden="true">⚙️</span><span class="bottom-label">Ajustes</span></button>
@@ -1821,7 +1838,7 @@
     me: readCache(CACHE_PROFILE_KEY, null),
     notifUnread: (notifCacheInicial && notifCacheInicial.at &&
       Date.now() - notifCacheInicial.at <= CACHE_NOTIF_TTL && notifCacheInicial.sinLeer) || 0,
-    view: 'home',
+    view: 'addons',
     profileUserId: '',
     routeLock: false,
     feed: { offset: 0, hasMore: true, loading: false, filter: 'todos', seq: 0 },
@@ -2226,7 +2243,7 @@
 
   function parseHashRoute(hash) {
     var raw = String(hash || '').replace(/^#/, '');
-    if (!raw) return { view: 'home', userId: '' };
+    if (!raw) return { view: 'addons', userId: '' };
     var path = raw.split('?')[0];
     var qs = raw.indexOf('?') >= 0 ? raw.slice(raw.indexOf('?') + 1) : '';
     var params = {};
@@ -2242,7 +2259,7 @@
     var userId = params.userId || '';
     if (path === 'feed') return { view: 'feed', userId: '' };
     if (path === 'explore') return { view: 'feed', userId: '' };
-    if (path === 'home' || path === '') return { view: 'home', userId: '' };
+    if (path === 'home' || path === '') return { view: 'addons', userId: '' };
     if (path === 'search') return { view: 'search', userId: '' };
     if (path === 'addons') return { view: 'addons', userId: '' };
     if (path === 'servers') return { view: 'servers', userId: '' };
@@ -2254,7 +2271,7 @@
       var id = path.indexOf('profile/') === 0 ? path.slice('profile/'.length) : '';
       return { view: 'profile', userId: decodeURIComponent(id || '') };
     }
-    return { view: 'home', userId: '' };
+    return { view: 'addons', userId: '' };
   }
 
   function routeToHash(view, opts) {
@@ -2265,13 +2282,13 @@
     }
     if (view === 'feed') return 'feed';
     if (view === 'search') return 'search';
-    if (view === 'home') return 'home';
+    if (view === 'home') return 'addons';
     if (view === 'addons') return 'addons';
     if (view === 'servers') return 'servers';
     if (view === 'notifications') return 'notifications';
     if (view === 'settings') return 'settings';
     if (view === 'admin') return 'admin';
-    return 'home';
+    return 'addons';
   }
 
   function syncHash(view, opts) {
@@ -2286,12 +2303,12 @@
   function handleHashRoute(force) {
     if (!force && state.routeLock) return;
     var route = parseHashRoute(window.location.hash);
-    var targetView = route.view || 'home';
+    var targetView = route.view || 'addons';
     if (!state.me) {
       if (targetView === 'notifications' || targetView === 'admin') {
-        targetView = 'home';
+        targetView = 'addons';
       }
-      if (targetView === 'profile' && !route.userId) targetView = 'home';
+      if (targetView === 'profile' && !route.userId) targetView = 'addons';
     }
     var targetUserId = route.userId || (targetView === 'profile' && state.me ? state.me.userId : '');
     if (targetView === 'profile' && !targetUserId && state.me) targetUserId = state.me.userId;
@@ -2926,11 +2943,14 @@
   }
 
   function bindApp() {
-    $('#homeBtn').addEventListener('click', function () { navigate('home'); });
+    $('#homeBtn').addEventListener('click', function () { navigate('addons'); });
     $('#menuBtn').addEventListener('click', openDrawer);
     $('#sideCloseBtn').addEventListener('click', closeDrawer);
     $('#sideOverlay').addEventListener('click', closeDrawer);
     document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    document.addEventListener('dragstart', function (e) {
+      if (e.target instanceof HTMLImageElement) e.preventDefault();
+    }, true);
     document.addEventListener('click', function (e) {
       if (!e.target.closest('.post-menu-wrap, .comment-menu-wrap')) closeActionMenus();
     });
@@ -3105,6 +3125,7 @@
 
   async function navigate(view, opts) {
     opts = opts || {};
+    if (view === 'home') view = 'addons';
     if (view === 'addons' && Object.prototype.hasOwnProperty.call(opts, 'category')) {
       state.addons.category = String(opts.category || '');
       state.addons.q = '';
@@ -3117,7 +3138,7 @@
     if (layout) layout.classList.toggle('catalog-layout', view === 'home' || view === 'addons');
     if (view === 'admin' && (!state.me || roleKey(state.me.rol) === 'user')) {
       toast('Solo Admin, Owner o App pueden abrir Administración.', 'err');
-      view = 'home';
+      view = 'addons';
       if (layout) layout.classList.add('catalog-layout');
     }
     if (!state.me && view === 'notifications') {
@@ -3126,7 +3147,7 @@
     }
     var userId = opts.userId ? String(opts.userId) : '';
     if (view === 'profile' && !userId && !state.me) {
-      view = 'home';
+      view = 'addons';
     }
     state.view = view;
     if (view === 'profile') state.profileUserId = userId;
@@ -4766,18 +4787,27 @@
     var version = addon.version ? '<span class="addon-chip">v' + esc(addon.version) + '</span>' : '';
     var author = addon.subidoPor ? '<span>por ' + esc(addon.subidoPor) + '</span>' : '';
     var date = addonDateLabel(addon.fecha);
-    return '<button class="addon-card" type="button" data-addon-open="' + esc(addon.id) + '">' +
-      addonCoverHTML(addon) +
-      '<div class="addon-body">' +
-        '<div class="addon-title">' + esc(addon.nombre) + '</div>' +
-        '<div class="addon-meta"><span class="addon-chip">' + esc(category) + '</span>' + version + '</div>' +
-        '<div class="addon-stats">' +
-          '<span>❤️ ' + safeCount(addon.likes) + '</span>' +
-          '<span>⬇️ ' + safeCount(addon.descargas) + '</span>' +
-        '</div>' +
-        '<div class="addon-meta">' + author + (date ? '<span>' + esc(date) + '</span>' : '') + '</div>' +
+    return '<article class="addon-card">' +
+      '<button class="addon-card-open" type="button" data-addon-open="' + esc(addon.id) + '">' +
+        addonCoverHTML(addon) +
+        '<span class="addon-body">' +
+          '<span class="addon-title">' + esc(addon.nombre) + '</span>' +
+          '<span class="addon-meta"><span class="addon-chip">' + esc(category) + '</span>' + version + '</span>' +
+          '<span class="addon-stats">' +
+            '<span>❤️ ' + safeCount(addon.likes) + '</span>' +
+            '<span>⬇️ ' + safeCount(addon.descargas) + '</span>' +
+          '</span>' +
+          '<span class="addon-meta">' + author + (date ? '<span>' + esc(date) + '</span>' : '') + '</span>' +
+        '</span>' +
+      '</button>' +
+      '<div class="addon-card-actions">' +
+        '<button class="btn addon-like-btn' + (addon.meGusta ? ' liked' : '') + '" type="button" ' +
+          'data-addon-like="' + esc(addon.id) + '"' +
+          (addon.meGusta ? ' disabled aria-pressed="true"' : ' aria-pressed="false"') + '>' +
+          (addon.meGusta ? '❤️ Te gusta' : '🤍 Me gusta') +
+          ' <span>' + safeCount(addon.likes) + '</span></button>' +
       '</div>' +
-    '</button>';
+    '</article>';
   }
 
   var HOME_CATALOG_SHELVES = [
@@ -4793,6 +4823,7 @@
     { id: 'scripts', label: 'Scripts', icon: '⚙️' },
     { id: 'versiones', label: 'Versiones', icon: '📦' }
   ];
+  var ADDON_CATEGORY_ALL = { id: '', countId: 'todos', label: 'Todos', icon: '📚' };
 
   function formatCategoryCount(value) {
     var count = safeCount(value);
@@ -4821,12 +4852,13 @@
 
   function addonCategoryButtonHTML(category, view) {
     var attribute = view === 'home' ? 'data-home-category' : 'data-addon-category';
+    var countId = category.countId || category.id;
     var selected = view === 'addons'
       ? ' aria-pressed="' + (state.addons.category === category.id ? 'true' : 'false') + '"'
       : '';
     return '<button class="catalog-category" type="button" ' + attribute + '="' +
       esc(category.id) + '"' + selected + '>' + category.icon + ' ' + esc(category.label) +
-      ' ' + addonCategoryCountHTML(category.id) + '</button>';
+      ' ' + addonCategoryCountHTML(countId) + '</button>';
   }
 
   function renderAddonCategoryCounts() {
@@ -4854,8 +4886,17 @@
       })) {
         throw new Error('La respuesta de cantidades por categoría no es válida.');
       }
+      var hasTotal = Number.isSafeInteger(data.counts.todos) && data.counts.todos >= 0;
+      if (Object.prototype.hasOwnProperty.call(data.counts, 'todos') && !hasTotal) {
+        throw new Error('La respuesta de cantidad total de complementos no es válida.');
+      }
       catalog.categoryCounts = data.counts;
       catalog.categoryCountsLoadedAt = Date.now();
+      catalog.categoryCountsError = !hasTotal;
+      if (!hasTotal) {
+        console.warn('El backend todavía no proporciona el total de complementos; ' +
+          'actualiza el despliegue de Apps Script para mostrarlo.');
+      }
     } catch (err) {
       catalog.categoryCountsError = true;
       console.error('No se pudieron cargar las cantidades por categoría: ' +
@@ -4940,7 +4981,7 @@
       '</section>' +
       '<section class="catalog-filter-row" aria-label="Categorías del catálogo">' +
         '<span class="catalog-filter-label">Explorar por:</span>' +
-        ADDON_CATEGORIES.map(function (category) {
+        [ADDON_CATEGORY_ALL].concat(ADDON_CATEGORIES).map(function (category) {
           return addonCategoryButtonHTML(category, 'home');
         }).join('') +
       '</section>' +
@@ -4983,9 +5024,7 @@
       '</div>' +
       '<section class="catalog-filter-row" aria-label="Filtrar por categoría">' +
         '<span class="catalog-filter-label">Categorías:</span>' +
-        '<button class="catalog-category" type="button" data-addon-category="" aria-pressed="' +
-          (!a.category ? 'true' : 'false') + '">Todo</button>' +
-        ADDON_CATEGORIES.map(function (category) {
+        [ADDON_CATEGORY_ALL].concat(ADDON_CATEGORIES).map(function (category) {
           return addonCategoryButtonHTML(category, 'addons');
         }).join('') +
       '</section>' +
@@ -5501,14 +5540,16 @@
   }
 
   async function likeAddon(id) {
+    if (!requireLogin('Inicia sesión para dar me gusta a los complementos.')) return;
     var addon = findAddon(id);
     if (!addon || addon.meGusta) return;
-    var button = document.querySelector('[data-addon-like="' + id + '"]');
-    if (button) button.disabled = true;
+    var buttons = document.querySelectorAll('[data-addon-like="' + id + '"]');
+    buttons.forEach(function (button) { button.disabled = true; });
     var previousLikes = safeCount(addon.likes);
     addon.meGusta = true;
     addon.likes = previousLikes + 1;
-    renderAddonDetail();
+    renderAddonsGrid();
+    if (state.addons.detail && String(state.addons.detail.id) === String(id)) renderAddonDetail();
     try {
       var data = await api('likeAddon', { id: id });
       addon.meGusta = !!data.meGusta;
@@ -6012,6 +6053,12 @@
     if (collectionToggle) {
       if (!requireLogin('Inicia sesión para organizar tus complementos.')) return;
       await toggleAddonInCollection(collectionToggle.dataset.addonCollectionToggle);
+      return;
+    }
+    var addonCardLike = e.target.closest('#addonsGrid [data-addon-like], [data-home-shelf] [data-addon-like]');
+    if (addonCardLike) {
+      if (!requireLogin('Inicia sesión para dar me gusta a los complementos.')) return;
+      await likeAddon(addonCardLike.dataset.addonLike);
       return;
     }
     var reportTarget = e.target.closest('[data-report-select]');
